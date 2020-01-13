@@ -11,6 +11,18 @@ export default {
     OracleKey: 'CurrencyId',
     OracleValue: 'Price',
     Rate: 'FixedU128',
-    Ratio: 'FixedU128'
+    Ratio: 'FixedU128',
+    LiquidityPoolId: 'u32',
+    Leverages: 'u16',
+    LiquidityPoolOption: {
+      bidSpread: 'Permill',
+      askSpread: 'Permill',
+      additionalCollateralRatio: 'Option<Permill>',
+      enabled: 'Leverages'
+    },
+    Position: {
+      collateral: 'Balance',
+      synthetic: 'Balance'
+    }
   }
 };

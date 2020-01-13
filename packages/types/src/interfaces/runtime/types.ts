@@ -2,8 +2,8 @@
 /* eslint-disable @typescript-eslint/no-empty-interface */
 
 import { Codec, ITuple } from '@polkadot/types/types';
-import { Compact, Enum, Struct } from '@polkadot/types/codec';
-import { Bytes, Fixed64, GenericAccountId, GenericAccountIndex, GenericAddress, GenericBlock, GenericCall, GenericConsensusEngineId, GenericDigest, GenericDigestItem, GenericExtrinsic, GenericExtrinsicEra, GenericExtrinsicPayload, GenericExtrinsicPayloadUnknown, GenericExtrinsicPayloadV1, GenericExtrinsicPayloadV2, GenericExtrinsicPayloadV3, GenericExtrinsicPayloadV4, GenericExtrinsicUnknown, GenericExtrinsicV1, GenericExtrinsicV2, GenericExtrinsicV3, GenericExtrinsicV4, GenericImmortalEra, GenericMortalEra, GenericOrigin, GenericSignerPayload, H256, H512, Null, StorageData, StorageKey, bool, i128, u128, u32, u64, u8 } from '@polkadot/types/primitive';
+import { Compact, Enum, Option, Struct } from '@polkadot/types/codec';
+import { Bytes, Fixed64, GenericAccountId, GenericAccountIndex, GenericAddress, GenericBlock, GenericCall, GenericConsensusEngineId, GenericDigest, GenericDigestItem, GenericExtrinsic, GenericExtrinsicEra, GenericExtrinsicPayload, GenericExtrinsicPayloadUnknown, GenericExtrinsicPayloadV1, GenericExtrinsicPayloadV2, GenericExtrinsicPayloadV3, GenericExtrinsicPayloadV4, GenericExtrinsicUnknown, GenericExtrinsicV1, GenericExtrinsicV2, GenericExtrinsicV3, GenericExtrinsicV4, GenericImmortalEra, GenericMortalEra, GenericOrigin, GenericSignerPayload, H256, H512, Null, StorageData, StorageKey, bool, i128, u128, u16, u32, u64, u8 } from '@polkadot/types/primitive';
 import { Price } from '@orml/types/interfaces/prices';
 import { FixedU128 } from '@orml/types/interfaces/utilities';
 
@@ -159,6 +159,24 @@ export interface KeyTypeId extends u32 {}
 /** ITuple<[StorageKey, StorageData]> */
 export interface KeyValue extends ITuple<[StorageKey, StorageData]> {}
 
+/** u16 */
+export interface Leverages extends u16 {}
+
+/** u32 */
+export interface LiquidityPoolId extends u32 {}
+
+/** Struct */
+export interface LiquidityPoolOption extends Struct {
+  /** Permill */
+  readonly bidSpread: Permill;
+  /** Permill */
+  readonly askSpread: Permill;
+  /** Option<Permill> */
+  readonly additionalCollateralRatio: Option<Permill>;
+  /** Leverages */
+  readonly enabled: Leverages;
+}
+
 /** Uint8Array, Codec */
 export interface LockIdentifier extends Uint8Array, Codec {}
 
@@ -204,6 +222,14 @@ export interface Phantom extends Null {}
 
 /** Null */
 export interface PhantomData extends Null {}
+
+/** Struct */
+export interface Position extends Struct {
+  /** Balance */
+  readonly collateral: Balance;
+  /** Balance */
+  readonly synthetic: Balance;
+}
 
 /** ITuple<[ConsensusEngineId, Bytes]> */
 export interface PreRuntime extends ITuple<[ConsensusEngineId, Bytes]> {}
