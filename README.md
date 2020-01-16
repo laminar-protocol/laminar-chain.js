@@ -1,1 +1,1 @@
-# laminar-chain.js
+# Laminar Chain JS SDK

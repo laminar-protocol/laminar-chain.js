@@ -1,1 +1,1 @@
-# laminar-chain.js
+# @laminar/types
