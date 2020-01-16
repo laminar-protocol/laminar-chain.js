@@ -4,7 +4,7 @@ import * as defaultDefinations from '@polkadot/types/interfaces/definitions';
 
 import * as ormlDefinations from '@orml/types/interfaces/definitions';
 
-import * as flowchainDefinations from '../src/interfaces/definitions';
+import * as laminarDefinations from '../src/interfaces/definitions';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const { runtime, deprecated, ...substrateDefinations } = defaultDefinations;
@@ -15,8 +15,8 @@ const { runtime: _runtime, ...ormlModulesDefinations } = ormlDefinations;
 const definations = {
   '@polkadot/types/interfaces': substrateDefinations,
   '@orml/types/interfaces': ormlModulesDefinations,
-  '@flowchain/types/interfaces': flowchainDefinations
+  '@laminar/types/interfaces': laminarDefinations
 };
 
-generateTsDef(definations, 'packages/types/src/interfaces', '@flowchain/types/interfaces');
+generateTsDef(definations, 'packages/types/src/interfaces', '@laminar/types/interfaces');
 generateInterfaceRegistry(definations, 'packages/types/src/interfaceRegistry.ts');

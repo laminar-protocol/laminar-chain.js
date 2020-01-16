@@ -1,1 +1,1 @@
-# flowchain.js
+# laminar-chain.js
