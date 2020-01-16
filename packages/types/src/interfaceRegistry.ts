@@ -32,7 +32,7 @@ import { TimestampedValue, TimestampedValueOf } from '@orml/types/interfaces/ora
 import { Price } from '@orml/types/interfaces/prices';
 import { AuctionInfo } from '@orml/types/interfaces/traits';
 import { FixedU128 } from '@orml/types/interfaces/utilities';
-import { AccountId, AccountIdOf, AccountIndex, Address, Amount, AmountOf, AssetId, Balance, BalanceOf, Block, BlockNumber, Call, Consensus, ConsensusEngineId, CurrencyId, CurrencyIdOf, Digest, DigestItem, DispatchClass, DispatchInfo, EcdsaSignature, Ed25519Signature, ExchangeRate, Extrinsic, ExtrinsicEra, ExtrinsicPayload, ExtrinsicPayloadUnknown, ExtrinsicPayloadV1, ExtrinsicPayloadV2, ExtrinsicPayloadV3, ExtrinsicPayloadV4, ExtrinsicUnknown, ExtrinsicV1, ExtrinsicV2, ExtrinsicV3, ExtrinsicV4, Hash, Header, ImmortalEra, Index, Justification, KeyTypeId, KeyValue, LockIdentifier, Moment, MortalEra, MultiSignature, OracleKey, OracleValue, Origin, Perbill, Permill, Phantom, PhantomData, PreRuntime, Rate, Ratio, Seal, SealV0, Signature, SignedBlock, SignerPayload, Sr25519Signature, ValidatorId, Weight, WeightMultiplier } from '@flowchain/types/interfaces/runtime';
+import { AccountId, AccountIdOf, AccountIndex, Address, Amount, AmountOf, AssetId, Balance, BalanceOf, Block, BlockNumber, Call, Consensus, ConsensusEngineId, CurrencyId, CurrencyIdOf, Digest, DigestItem, DispatchClass, DispatchInfo, EcdsaSignature, Ed25519Signature, ExchangeRate, Extrinsic, ExtrinsicEra, ExtrinsicPayload, ExtrinsicPayloadUnknown, ExtrinsicPayloadV1, ExtrinsicPayloadV2, ExtrinsicPayloadV3, ExtrinsicPayloadV4, ExtrinsicUnknown, ExtrinsicV1, ExtrinsicV2, ExtrinsicV3, ExtrinsicV4, Hash, Header, ImmortalEra, Index, Justification, KeyTypeId, KeyValue, Leverages, LiquidityPoolId, LiquidityPoolOption, LockIdentifier, Moment, MortalEra, MultiSignature, OracleKey, OracleValue, Origin, Perbill, Permill, Phantom, PhantomData, Position, PreRuntime, Rate, Ratio, Seal, SealV0, Signature, SignedBlock, SignerPayload, Sr25519Signature, ValidatorId, Weight, WeightMultiplier } from '@flowchain/types/interfaces/runtime';
 
 export interface InterfaceRegistry {
   bool: bool;
@@ -1348,4 +1348,18 @@ export interface InterfaceRegistry {
   Ratio: Ratio;
   'Option<Ratio>': Option<Ratio>;
   'Vec<Ratio>': Vec<Ratio>;
+  LiquidityPoolId: LiquidityPoolId;
+  'Compact<LiquidityPoolId>': Compact<LiquidityPoolId>;
+  'Option<LiquidityPoolId>': Option<LiquidityPoolId>;
+  'Vec<LiquidityPoolId>': Vec<LiquidityPoolId>;
+  Leverages: Leverages;
+  'Compact<Leverages>': Compact<Leverages>;
+  'Option<Leverages>': Option<Leverages>;
+  'Vec<Leverages>': Vec<Leverages>;
+  LiquidityPoolOption: LiquidityPoolOption;
+  'Option<LiquidityPoolOption>': Option<LiquidityPoolOption>;
+  'Vec<LiquidityPoolOption>': Vec<LiquidityPoolOption>;
+  Position: Position;
+  'Option<Position>': Option<Position>;
+  'Vec<Position>': Vec<Position>;
 }
