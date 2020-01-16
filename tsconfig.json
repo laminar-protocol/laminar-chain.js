@@ -8,10 +8,10 @@
       "baseUrl": ".",
       "paths":
       {
-        "@flowchain/api": ["packages/api/src"],
-        "@flowchain/api/*": ["packages/api/src/*"],
-        "@flowchain/types": ["packages/types/src"],
-        "@flowchain/types/*": ["packages/types/src/*"],
+        "@laminar/api": ["packages/api/src"],
+        "@laminar/api/*": ["packages/api/src/*"],
+        "@laminar/types": ["packages/types/src"],
+        "@laminar/types/*": ["packages/types/src/*"],
       },
       "skipLibCheck": true,
       "typeRoots": [
