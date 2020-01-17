@@ -79,6 +79,14 @@ export interface DispatchInfo extends Struct {
   readonly paysFee: bool;
 }
 
+/** Struct */
+export interface DispatchInfoTo190 extends Struct {
+  /** Weight */
+  readonly weight: Weight;
+  /** DispatchClass */
+  readonly class: DispatchClass;
+}
+
 /** Uint8Array, Codec */
 export interface EcdsaSignature extends Uint8Array, Codec {}
 
@@ -214,8 +222,14 @@ export interface Origin extends GenericOrigin {}
 /** u32 */
 export interface Perbill extends u32 {}
 
+/** u8 */
+export interface Percent extends u8 {}
+
 /** u32 */
 export interface Permill extends u32 {}
+
+/** u64 */
+export interface Perquintill extends u64 {}
 
 /** Null */
 export interface Phantom extends Null {}
