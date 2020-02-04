@@ -1,6 +1,8 @@
+import definitions from '@polkadot/types/interfaces/runtime/definitions';
 
 export default {
   types: {
+    ...definitions.types,
     CurrencyId: {
       _enum: ['LAMI', 'AUSD', 'FEUR', 'FJPY']
     },
