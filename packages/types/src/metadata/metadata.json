@@ -1,0 +1,1486 @@
+{
+  "magicNumber": 1635018093,
+  "metadata": {
+    "V10": {
+      "modules": [
+        {
+          "name": "System",
+          "storage": {
+            "prefix": "System",
+            "items": [
+              {
+                "name": "AccountNonce",
+                "modifier": "default",
+                "type": { "Map": { "hasher": "blake2256", "key": "AccountId", "value": "Index", "linked": false } },
+                "fallback": "0x00000000",
+                "documentation": [" Extrinsics nonce for accounts."]
+              },
+              {
+                "name": "ExtrinsicCount",
+                "modifier": "optional",
+                "type": { "Plain": "u32" },
+                "fallback": "0x00",
+                "documentation": [" Total extrinsics count for the current block."]
+              },
+              {
+                "name": "AllExtrinsicsWeight",
+                "modifier": "optional",
+                "type": { "Plain": "Weight" },
+                "fallback": "0x00",
+                "documentation": [" Total weight for all extrinsics put together, for the current block."]
+              },
+              {
+                "name": "AllExtrinsicsLen",
+                "modifier": "optional",
+                "type": { "Plain": "u32" },
+                "fallback": "0x00",
+                "documentation": [" Total length (in bytes) for all extrinsics put together, for the current block."]
+              },
+              {
+                "name": "BlockHash",
+                "modifier": "default",
+                "type": { "Map": { "hasher": "blake2256", "key": "BlockNumber", "value": "Hash", "linked": false } },
+                "fallback": "0x0000000000000000000000000000000000000000000000000000000000000000",
+                "documentation": [" Map of block numbers to block hashes."]
+              },
+              {
+                "name": "ExtrinsicData",
+                "modifier": "default",
+                "type": { "Map": { "hasher": "blake2256", "key": "u32", "value": "Bytes", "linked": false } },
+                "fallback": "0x00",
+                "documentation": [" Extrinsics data for the current block (maps an extrinsic's index to its data)."]
+              },
+              {
+                "name": "Number",
+                "modifier": "default",
+                "type": { "Plain": "BlockNumber" },
+                "fallback": "0x00000000",
+                "documentation": [" The current block number being processed. Set by `execute_block`."]
+              },
+              {
+                "name": "ParentHash",
+                "modifier": "default",
+                "type": { "Plain": "Hash" },
+                "fallback": "0x0000000000000000000000000000000000000000000000000000000000000000",
+                "documentation": [" Hash of the previous block."]
+              },
+              {
+                "name": "ExtrinsicsRoot",
+                "modifier": "default",
+                "type": { "Plain": "Hash" },
+                "fallback": "0x0000000000000000000000000000000000000000000000000000000000000000",
+                "documentation": [" Extrinsics root of the current block, also part of the block header."]
+              },
+              {
+                "name": "Digest",
+                "modifier": "default",
+                "type": { "Plain": "DigestOf" },
+                "fallback": "0x00",
+                "documentation": [" Digest of the current block, also part of the block header."]
+              },
+              {
+                "name": "Events",
+                "modifier": "default",
+                "type": { "Plain": "Vec<EventRecord>" },
+                "fallback": "0x00",
+                "documentation": [" Events deposited for the current block."]
+              },
+              {
+                "name": "EventCount",
+                "modifier": "default",
+                "type": { "Plain": "EventIndex" },
+                "fallback": "0x00000000",
+                "documentation": [" The number of events in the `Events<T>` list."]
+              },
+              {
+                "name": "EventTopics",
+                "modifier": "default",
+                "type": {
+                  "Map": {
+                    "hasher": "blake2256",
+                    "key": "Hash",
+                    "value": "Vec<(BlockNumber,EventIndex)>",
+                    "linked": false
+                  }
+                },
+                "fallback": "0x00",
+                "documentation": [
+                  " Mapping between a topic (represented by T::Hash) and a vector of indexes",
+                  " of events in the `<Events<T>>` list.",
+                  "",
+                  " All topic vectors have deterministic storage locations depending on the topic. This",
+                  " allows light-clients to leverage the changes trie storage tracking mechanism and",
+                  " in case of changes fetch the list of events of interest.",
+                  "",
+                  " The value has the type `(T::BlockNumber, EventIndex)` because if we used only just",
+                  " the `EventIndex` then in case if the topic has the same contents on the next block",
+                  " no notification will be triggered thus the event might be lost."
+                ]
+              }
+            ]
+          },
+          "calls": [
+            {
+              "name": "fill_block",
+              "args": [],
+              "documentation": [" A big dispatch that will disallow any other transaction to be included."]
+            },
+            {
+              "name": "remark",
+              "args": [{ "name": "_remark", "type": "Bytes" }],
+              "documentation": [" Make some on-chain remark."]
+            },
+            {
+              "name": "set_heap_pages",
+              "args": [{ "name": "pages", "type": "u64" }],
+              "documentation": [" Set the number of pages in the WebAssembly environment's heap."]
+            },
+            {
+              "name": "set_code",
+              "args": [{ "name": "new", "type": "Bytes" }],
+              "documentation": [" Set the new code."]
+            },
+            {
+              "name": "set_storage",
+              "args": [{ "name": "items", "type": "Vec<KeyValue>" }],
+              "documentation": [" Set some items of storage."]
+            },
+            {
+              "name": "kill_storage",
+              "args": [{ "name": "keys", "type": "Vec<Key>" }],
+              "documentation": [" Kill some items from storage."]
+            },
+            {
+              "name": "kill_prefix",
+              "args": [{ "name": "prefix", "type": "Key" }],
+              "documentation": [" Kill all storage items with a key that starts with the given prefix."]
+            }
+          ],
+          "events": [
+            {
+              "name": "ExtrinsicSuccess",
+              "args": ["DispatchInfo"],
+              "documentation": [" An extrinsic completed successfully."]
+            },
+            {
+              "name": "ExtrinsicFailed",
+              "args": ["DispatchError", "DispatchInfo"],
+              "documentation": [" An extrinsic failed."]
+            }
+          ],
+          "constants": [],
+          "errors": []
+        },
+        {
+          "name": "Timestamp",
+          "storage": {
+            "prefix": "Timestamp",
+            "items": [
+              {
+                "name": "Now",
+                "modifier": "default",
+                "type": { "Plain": "Moment" },
+                "fallback": "0x0000000000000000",
+                "documentation": [" Current time for the current block."]
+              },
+              {
+                "name": "DidUpdate",
+                "modifier": "default",
+                "type": { "Plain": "bool" },
+                "fallback": "0x00",
+                "documentation": [" Did the timestamp get updated in this block?"]
+              }
+            ]
+          },
+          "calls": [
+            {
+              "name": "set",
+              "args": [{ "name": "now", "type": "Compact<Moment>" }],
+              "documentation": [
+                " Set the current time.",
+                "",
+                " This call should be invoked exactly once per block. It will panic at the finalization",
+                " phase, if this call hasn't been invoked by that time.",
+                "",
+                " The timestamp should be greater than the previous one by the amount specified by",
+                " `MinimumPeriod`.",
+                "",
+                " The dispatch origin for this call must be `Inherent`."
+              ]
+            }
+          ],
+          "events": null,
+          "constants": [
+            {
+              "name": "MinimumPeriod",
+              "type": "Moment",
+              "value": "0xd007000000000000",
+              "documentation": [
+                " The minimum period between blocks. Beware that this is different to the *expected* period",
+                " that the block production apparatus provides. Your chosen consensus system will generally",
+                " work with this to determine a sensible block time. e.g. For Aura, it will be double this",
+                " period on default settings."
+              ]
+            }
+          ],
+          "errors": []
+        },
+        { "name": "Aura", "storage": null, "calls": null, "events": null, "constants": [], "errors": [] },
+        {
+          "name": "Grandpa",
+          "storage": {
+            "prefix": "GrandpaFinality",
+            "items": [
+              {
+                "name": "Authorities",
+                "modifier": "default",
+                "type": { "Plain": "AuthorityList" },
+                "fallback": "0x00",
+                "documentation": [
+                  " DEPRECATED",
+                  "",
+                  " This used to store the current authority set, which has been migrated to the well-known",
+                  " GRANDPA_AUTHORITES_KEY unhashed key."
+                ]
+              },
+              {
+                "name": "State",
+                "modifier": "default",
+                "type": { "Plain": "StoredState" },
+                "fallback": "0x00",
+                "documentation": [" State of the current authority set."]
+              },
+              {
+                "name": "PendingChange",
+                "modifier": "optional",
+                "type": { "Plain": "StoredPendingChange" },
+                "fallback": "0x00",
+                "documentation": [" Pending change: (signaled at, scheduled change)."]
+              },
+              {
+                "name": "NextForced",
+                "modifier": "optional",
+                "type": { "Plain": "BlockNumber" },
+                "fallback": "0x00",
+                "documentation": [" next block number where we can force a change."]
+              },
+              {
+                "name": "Stalled",
+                "modifier": "optional",
+                "type": { "Plain": "(BlockNumber,BlockNumber)" },
+                "fallback": "0x00",
+                "documentation": [" `true` if we are currently stalled."]
+              },
+              {
+                "name": "CurrentSetId",
+                "modifier": "default",
+                "type": { "Plain": "SetId" },
+                "fallback": "0x0000000000000000",
+                "documentation": [
+                  " The number of changes (both in terms of keys and underlying economic responsibilities)",
+                  " in the \"set\" of Grandpa validators from genesis."
+                ]
+              },
+              {
+                "name": "SetIdSession",
+                "modifier": "optional",
+                "type": { "Map": { "hasher": "blake2256", "key": "SetId", "value": "SessionIndex", "linked": false } },
+                "fallback": "0x00",
+                "documentation": [
+                  " A mapping from grandpa set ID to the index of the *most recent* session for which its members were responsible."
+                ]
+              }
+            ]
+          },
+          "calls": [
+            {
+              "name": "report_misbehavior",
+              "args": [{ "name": "_report", "type": "Bytes" }],
+              "documentation": [" Report some misbehavior."]
+            }
+          ],
+          "events": [
+            {
+              "name": "NewAuthorities",
+              "args": ["AuthorityList"],
+              "documentation": [" New authority set has been applied."]
+            },
+            { "name": "Paused", "args": [], "documentation": [" Current authority set has been paused."] },
+            { "name": "Resumed", "args": [], "documentation": [" Current authority set has been resumed."] }
+          ],
+          "constants": [],
+          "errors": [
+            {
+              "name": "PauseFailed",
+              "documentation": [
+                " Attempt to signal GRANDPA pause when the authority set isn't live",
+                " (either paused or already pending pause)."
+              ]
+            },
+            {
+              "name": "ResumeFailed",
+              "documentation": [
+                " Attempt to signal GRANDPA resume when the authority set isn't paused",
+                " (either live or already pending resume)."
+              ]
+            },
+            {
+              "name": "ChangePending",
+              "documentation": [" Attempt to signal GRANDPA change with one already pending."]
+            },
+            { "name": "TooSoon", "documentation": [" Cannot signal forced change so soon after last."] }
+          ]
+        },
+        {
+          "name": "Indices",
+          "storage": {
+            "prefix": "Indices",
+            "items": [
+              {
+                "name": "NextEnumSet",
+                "modifier": "default",
+                "type": { "Plain": "AccountIndex" },
+                "fallback": "0x00000000",
+                "documentation": [" The next free enumeration set."]
+              },
+              {
+                "name": "EnumSet",
+                "modifier": "default",
+                "type": {
+                  "Map": { "hasher": "blake2256", "key": "AccountIndex", "value": "Vec<AccountId>", "linked": false }
+                },
+                "fallback": "0x00",
+                "documentation": [" The enumeration sets."]
+              }
+            ]
+          },
+          "calls": [],
+          "events": [
+            {
+              "name": "NewAccountIndex",
+              "args": ["AccountId", "AccountIndex"],
+              "documentation": [
+                " A new account index was assigned.",
+                "",
+                " This event is not triggered when an existing index is reassigned",
+                " to another `AccountId`."
+              ]
+            }
+          ],
+          "constants": [],
+          "errors": []
+        },
+        {
+          "name": "Balances",
+          "storage": {
+            "prefix": "Balances",
+            "items": [
+              {
+                "name": "TotalIssuance",
+                "modifier": "default",
+                "type": { "Plain": "Balance" },
+                "fallback": "0x00000000000000000000000000000000",
+                "documentation": [" The total units issued in the system."]
+              },
+              {
+                "name": "Vesting",
+                "modifier": "optional",
+                "type": {
+                  "Map": { "hasher": "blake2256", "key": "AccountId", "value": "VestingSchedule", "linked": false }
+                },
+                "fallback": "0x00",
+                "documentation": [" Information regarding the vesting of a given account."]
+              },
+              {
+                "name": "FreeBalance",
+                "modifier": "default",
+                "type": { "Map": { "hasher": "blake2256", "key": "AccountId", "value": "Balance", "linked": false } },
+                "fallback": "0x00000000000000000000000000000000",
+                "documentation": [
+                  " The 'free' balance of a given account.",
+                  "",
+                  " This is the only balance that matters in terms of most operations on tokens. It",
+                  " alone is used to determine the balance when in the contract execution environment. When this",
+                  " balance falls below the value of `ExistentialDeposit`, then the 'current account' is",
+                  " deleted: specifically `FreeBalance`. Further, the `OnFreeBalanceZero` callback",
+                  " is invoked, giving a chance to external modules to clean up data associated with",
+                  " the deleted account.",
+                  "",
+                  " `frame_system::AccountNonce` is also deleted if `ReservedBalance` is also zero (it also gets",
+                  " collapsed to zero if it ever becomes less than `ExistentialDeposit`."
+                ]
+              },
+              {
+                "name": "ReservedBalance",
+                "modifier": "default",
+                "type": { "Map": { "hasher": "blake2256", "key": "AccountId", "value": "Balance", "linked": false } },
+                "fallback": "0x00000000000000000000000000000000",
+                "documentation": [
+                  " The amount of the balance of a given account that is externally reserved; this can still get",
+                  " slashed, but gets slashed last of all.",
+                  "",
+                  " This balance is a 'reserve' balance that other subsystems use in order to set aside tokens",
+                  " that are still 'owned' by the account holder, but which are suspendable.",
+                  "",
+                  " When this balance falls below the value of `ExistentialDeposit`, then this 'reserve account'",
+                  " is deleted: specifically, `ReservedBalance`.",
+                  "",
+                  " `frame_system::AccountNonce` is also deleted if `FreeBalance` is also zero (it also gets",
+                  " collapsed to zero if it ever becomes less than `ExistentialDeposit`.)"
+                ]
+              },
+              {
+                "name": "Locks",
+                "modifier": "default",
+                "type": {
+                  "Map": { "hasher": "blake2256", "key": "AccountId", "value": "Vec<BalanceLock>", "linked": false }
+                },
+                "fallback": "0x00",
+                "documentation": [" Any liquidity locks on some account balances."]
+              }
+            ]
+          },
+          "calls": [
+            {
+              "name": "transfer",
+              "args": [
+                { "name": "dest", "type": "Address" },
+                { "name": "value", "type": "Compact<Balance>" }
+              ],
+              "documentation": [
+                " Transfer some liquid free balance to another account.",
+                "",
+                " `transfer` will set the `FreeBalance` of the sender and receiver.",
+                " It will decrease the total issuance of the system by the `TransferFee`.",
+                " If the sender's account is below the existential deposit as a result",
+                " of the transfer, the account will be reaped.",
+                "",
+                " The dispatch origin for this call must be `Signed` by the transactor.",
+                "",
+                " # <weight>",
+                " - Dependent on arguments but not critical, given proper implementations for",
+                "   input config types. See related functions below.",
+                " - It contains a limited number of reads and writes internally and no complex computation.",
+                "",
+                " Related functions:",
+                "",
+                "   - `ensure_can_withdraw` is always called internally but has a bounded complexity.",
+                "   - Transferring balances to accounts that did not exist before will cause",
+                "      `T::OnNewAccount::on_new_account` to be called.",
+                "   - Removing enough funds from an account will trigger",
+                "     `T::DustRemoval::on_unbalanced` and `T::OnFreeBalanceZero::on_free_balance_zero`.",
+                "   - `transfer_keep_alive` works the same way as `transfer`, but has an additional",
+                "     check that the transfer will not kill the origin account.",
+                "",
+                " # </weight>"
+              ]
+            },
+            {
+              "name": "set_balance",
+              "args": [
+                { "name": "who", "type": "Address" },
+                { "name": "new_free", "type": "Compact<Balance>" },
+                { "name": "new_reserved", "type": "Compact<Balance>" }
+              ],
+              "documentation": [
+                " Set the balances of a given account.",
+                "",
+                " This will alter `FreeBalance` and `ReservedBalance` in storage. it will",
+                " also decrease the total issuance of the system (`TotalIssuance`).",
+                " If the new free or reserved balance is below the existential deposit,",
+                " it will reset the account nonce (`frame_system::AccountNonce`).",
+                "",
+                " The dispatch origin for this call is `root`.",
+                "",
+                " # <weight>",
+                " - Independent of the arguments.",
+                " - Contains a limited number of reads and writes.",
+                " # </weight>"
+              ]
+            },
+            {
+              "name": "force_transfer",
+              "args": [
+                { "name": "source", "type": "Address" },
+                { "name": "dest", "type": "Address" },
+                { "name": "value", "type": "Compact<Balance>" }
+              ],
+              "documentation": [
+                " Exactly as `transfer`, except the origin must be root and the source account may be",
+                " specified."
+              ]
+            },
+            {
+              "name": "transfer_keep_alive",
+              "args": [
+                { "name": "dest", "type": "Address" },
+                { "name": "value", "type": "Compact<Balance>" }
+              ],
+              "documentation": [
+                " Same as the [`transfer`] call, but with a check that the transfer will not kill the",
+                " origin account.",
+                "",
+                " 99% of the time you want [`transfer`] instead.",
+                "",
+                " [`transfer`]: struct.Module.html#method.transfer"
+              ]
+            }
+          ],
+          "events": [
+            {
+              "name": "NewAccount",
+              "args": ["AccountId", "Balance"],
+              "documentation": [" A new account was created."]
+            },
+            { "name": "ReapedAccount", "args": ["AccountId", "Balance"], "documentation": [" An account was reaped."] },
+            {
+              "name": "Transfer",
+              "args": ["AccountId", "AccountId", "Balance", "Balance"],
+              "documentation": [" Transfer succeeded (from, to, value, fees)."]
+            },
+            {
+              "name": "BalanceSet",
+              "args": ["AccountId", "Balance", "Balance"],
+              "documentation": [" A balance was set by root (who, free, reserved)."]
+            },
+            {
+              "name": "Deposit",
+              "args": ["AccountId", "Balance"],
+              "documentation": [" Some amount was deposited (e.g. for transaction fees)."]
+            }
+          ],
+          "constants": [
+            {
+              "name": "ExistentialDeposit",
+              "type": "Balance",
+              "value": "0xf4010000000000000000000000000000",
+              "documentation": [" The minimum amount required to keep an account open."]
+            },
+            {
+              "name": "TransferFee",
+              "type": "Balance",
+              "value": "0x00000000000000000000000000000000",
+              "documentation": [" The fee required to make a transfer."]
+            },
+            {
+              "name": "CreationFee",
+              "type": "Balance",
+              "value": "0x00000000000000000000000000000000",
+              "documentation": [" The fee required to create an account."]
+            }
+          ],
+          "errors": [
+            { "name": "VestingBalance", "documentation": [" Vesting balance too high to send value"] },
+            {
+              "name": "LiquidityRestrictions",
+              "documentation": [" Account liquidity restrictions prevent withdrawal"]
+            },
+            { "name": "Overflow", "documentation": [" Got an overflow after adding"] },
+            { "name": "InsufficientBalance", "documentation": [" Balance too low to send value"] },
+            {
+              "name": "ExistentialDeposit",
+              "documentation": [" Value too low to create account due to existential deposit"]
+            },
+            { "name": "KeepAlive", "documentation": [" Transfer/payment would kill account"] },
+            {
+              "name": "ExistingVestingSchedule",
+              "documentation": [" A vesting schedule already exists for this account"]
+            },
+            { "name": "DeadAccount", "documentation": [" Beneficiary account must pre-exist"] }
+          ]
+        },
+        {
+          "name": "TransactionPayment",
+          "storage": {
+            "prefix": "Balances",
+            "items": [
+              {
+                "name": "NextFeeMultiplier",
+                "modifier": "default",
+                "type": { "Plain": "Multiplier" },
+                "fallback": "0x0000000000000000",
+                "documentation": []
+              }
+            ]
+          },
+          "calls": null,
+          "events": null,
+          "constants": [
+            {
+              "name": "TransactionBaseFee",
+              "type": "BalanceOf",
+              "value": "0x00000000000000000000000000000000",
+              "documentation": [" The fee to be paid for making a transaction; the base."]
+            },
+            {
+              "name": "TransactionByteFee",
+              "type": "BalanceOf",
+              "value": "0x01000000000000000000000000000000",
+              "documentation": [" The fee to be paid for making a transaction; the per-byte portion."]
+            }
+          ],
+          "errors": []
+        },
+        {
+          "name": "Sudo",
+          "storage": {
+            "prefix": "Sudo",
+            "items": [
+              {
+                "name": "Key",
+                "modifier": "default",
+                "type": { "Plain": "AccountId" },
+                "fallback": "0x0000000000000000000000000000000000000000000000000000000000000000",
+                "documentation": [" The `AccountId` of the sudo key."]
+              }
+            ]
+          },
+          "calls": [
+            {
+              "name": "sudo",
+              "args": [{ "name": "proposal", "type": "Proposal" }],
+              "documentation": [
+                " Authenticates the sudo key and dispatches a function call with `Root` origin.",
+                "",
+                " The dispatch origin for this call must be _Signed_.",
+                "",
+                " # <weight>",
+                " - O(1).",
+                " - Limited storage reads.",
+                " - One DB write (event).",
+                " - Unknown weight of derivative `proposal` execution.",
+                " # </weight>"
+              ]
+            },
+            {
+              "name": "set_key",
+              "args": [{ "name": "new", "type": "Address" }],
+              "documentation": [
+                " Authenticates the current sudo key and sets the given AccountId (`new`) as the new sudo key.",
+                "",
+                " The dispatch origin for this call must be _Signed_.",
+                "",
+                " # <weight>",
+                " - O(1).",
+                " - Limited storage reads.",
+                " - One DB change.",
+                " # </weight>"
+              ]
+            },
+            {
+              "name": "sudo_as",
+              "args": [
+                { "name": "who", "type": "Address" },
+                { "name": "proposal", "type": "Proposal" }
+              ],
+              "documentation": [
+                " Authenticates the sudo key and dispatches a function call with `Signed` origin from",
+                " a given account.",
+                "",
+                " The dispatch origin for this call must be _Signed_.",
+                "",
+                " # <weight>",
+                " - O(1).",
+                " - Limited storage reads.",
+                " - One DB write (event).",
+                " - Unknown weight of derivative `proposal` execution.",
+                " # </weight>"
+              ]
+            }
+          ],
+          "events": [
+            { "name": "Sudid", "args": ["bool"], "documentation": [" A sudo just took place."] },
+            {
+              "name": "KeyChanged",
+              "args": ["AccountId"],
+              "documentation": [" The sudoer just switched identity; the old key is supplied."]
+            },
+            { "name": "SudoAsDone", "args": ["bool"], "documentation": [" A sudo just took place."] }
+          ],
+          "constants": [],
+          "errors": [{ "name": "RequireSudo", "documentation": [" Sender must be the Sudo account"] }]
+        },
+        {
+          "name": "RandomnessCollectiveFlip",
+          "storage": {
+            "prefix": "RandomnessCollectiveFlip",
+            "items": [
+              {
+                "name": "RandomMaterial",
+                "modifier": "default",
+                "type": { "Plain": "Vec<Hash>" },
+                "fallback": "0x00",
+                "documentation": [
+                  " Series of block headers from the last 81 blocks that acts as random seed material. This",
+                  " is arranged as a ring buffer with `block_number % 81` being the index into the `Vec` of",
+                  " the oldest hash."
+                ]
+              }
+            ]
+          },
+          "calls": [],
+          "events": null,
+          "constants": [],
+          "errors": []
+        },
+        {
+          "name": "OperatorCollective",
+          "storage": {
+            "prefix": "Instance1Collective",
+            "items": [
+              {
+                "name": "Proposals",
+                "modifier": "default",
+                "type": { "Plain": "Vec<Hash>" },
+                "fallback": "0x00",
+                "documentation": [" The hashes of the active proposals."]
+              },
+              {
+                "name": "ProposalOf",
+                "modifier": "optional",
+                "type": { "Map": { "hasher": "blake2256", "key": "Hash", "value": "Proposal", "linked": false } },
+                "fallback": "0x00",
+                "documentation": [" Actual proposal for a given hash, if it's current."]
+              },
+              {
+                "name": "Voting",
+                "modifier": "optional",
+                "type": { "Map": { "hasher": "blake2256", "key": "Hash", "value": "Votes", "linked": false } },
+                "fallback": "0x00",
+                "documentation": [" Votes on a given proposal, if it is ongoing."]
+              },
+              {
+                "name": "ProposalCount",
+                "modifier": "default",
+                "type": { "Plain": "u32" },
+                "fallback": "0x00000000",
+                "documentation": [" Proposals so far."]
+              },
+              {
+                "name": "Members",
+                "modifier": "default",
+                "type": { "Plain": "Vec<AccountId>" },
+                "fallback": "0x00",
+                "documentation": [" The current members of the collective. This is stored sorted (just by value)."]
+              }
+            ]
+          },
+          "calls": [
+            {
+              "name": "set_members",
+              "args": [{ "name": "new_members", "type": "Vec<AccountId>" }],
+              "documentation": [
+                " Set the collective's membership manually to `new_members`. Be nice to the chain and",
+                " provide it pre-sorted.",
+                "",
+                " Requires root origin."
+              ]
+            },
+            {
+              "name": "execute",
+              "args": [{ "name": "proposal", "type": "Proposal" }],
+              "documentation": [
+                " Dispatch a proposal from a member using the `Member` origin.",
+                "",
+                " Origin must be a member of the collective."
+              ]
+            },
+            {
+              "name": "propose",
+              "args": [
+                { "name": "threshold", "type": "Compact<MemberCount>" },
+                { "name": "proposal", "type": "Proposal" }
+              ],
+              "documentation": [
+                " # <weight>",
+                " - Bounded storage reads and writes.",
+                " - Argument `threshold` has bearing on weight.",
+                " # </weight>"
+              ]
+            },
+            {
+              "name": "vote",
+              "args": [
+                { "name": "proposal", "type": "Hash" },
+                { "name": "index", "type": "Compact<ProposalIndex>" },
+                { "name": "approve", "type": "bool" }
+              ],
+              "documentation": [
+                " # <weight>",
+                " - Bounded storage read and writes.",
+                " - Will be slightly heavier if the proposal is approved / disapproved after the vote.",
+                " # </weight>"
+              ]
+            }
+          ],
+          "events": [
+            {
+              "name": "Proposed",
+              "args": ["AccountId", "ProposalIndex", "Hash", "MemberCount"],
+              "documentation": [
+                " A motion (given hash) has been proposed (by given account) with a threshold (given",
+                " `MemberCount`)."
+              ]
+            },
+            {
+              "name": "Voted",
+              "args": ["AccountId", "Hash", "bool", "MemberCount", "MemberCount"],
+              "documentation": [
+                " A motion (given hash) has been voted on by given account, leaving",
+                " a tally (yes votes and no votes given respectively as `MemberCount`)."
+              ]
+            },
+            {
+              "name": "Approved",
+              "args": ["Hash"],
+              "documentation": [" A motion was approved by the required threshold."]
+            },
+            {
+              "name": "Disapproved",
+              "args": ["Hash"],
+              "documentation": [" A motion was not approved by the required threshold."]
+            },
+            {
+              "name": "Executed",
+              "args": ["Hash", "bool"],
+              "documentation": [" A motion was executed; `bool` is true if returned without error."]
+            },
+            {
+              "name": "MemberExecuted",
+              "args": ["Hash", "bool"],
+              "documentation": [" A single member did some action; `bool` is true if returned without error."]
+            }
+          ],
+          "constants": [],
+          "errors": [
+            { "name": "NotMember", "documentation": [" Account is not a member"] },
+            { "name": "DuplicateProposal", "documentation": [" Duplicate proposals not allowed"] },
+            { "name": "ProposalMissing", "documentation": [" Proposal must exist"] },
+            { "name": "WrongIndex", "documentation": [" Mismatched index"] },
+            { "name": "DuplicateVote", "documentation": [" Duplicate vote ignored"] },
+            { "name": "AlreadyInitialized", "documentation": [" Members are already initialized!"] }
+          ]
+        },
+        {
+          "name": "OperatorMembership",
+          "storage": {
+            "prefix": "Instance1Membership",
+            "items": [
+              {
+                "name": "Members",
+                "modifier": "default",
+                "type": { "Plain": "Vec<AccountId>" },
+                "fallback": "0x00",
+                "documentation": [" The current membership, stored as an ordered Vec."]
+              }
+            ]
+          },
+          "calls": [
+            {
+              "name": "add_member",
+              "args": [{ "name": "who", "type": "AccountId" }],
+              "documentation": [" Add a member `who` to the set.", "", " May only be called from `AddOrigin` or root."]
+            },
+            {
+              "name": "remove_member",
+              "args": [{ "name": "who", "type": "AccountId" }],
+              "documentation": [
+                " Remove a member `who` from the set.",
+                "",
+                " May only be called from `RemoveOrigin` or root."
+              ]
+            },
+            {
+              "name": "swap_member",
+              "args": [
+                { "name": "remove", "type": "AccountId" },
+                { "name": "add", "type": "AccountId" }
+              ],
+              "documentation": [
+                " Swap out one member `remove` for another `add`.",
+                "",
+                " May only be called from `SwapOrigin` or root."
+              ]
+            },
+            {
+              "name": "reset_members",
+              "args": [{ "name": "members", "type": "Vec<AccountId>" }],
+              "documentation": [
+                " Change the membership to a new set, disregarding the existing membership. Be nice and",
+                " pass `members` pre-sorted.",
+                "",
+                " May only be called from `ResetOrigin` or root."
+              ]
+            },
+            {
+              "name": "change_key",
+              "args": [{ "name": "new", "type": "AccountId" }],
+              "documentation": [
+                " Swap out the sending member for some other key `new`.",
+                "",
+                " May only be called from `Signed` origin of a current member."
+              ]
+            }
+          ],
+          "events": [
+            {
+              "name": "MemberAdded",
+              "args": [],
+              "documentation": [" The given member was added; see the transaction for who."]
+            },
+            {
+              "name": "MemberRemoved",
+              "args": [],
+              "documentation": [" The given member was removed; see the transaction for who."]
+            },
+            {
+              "name": "MembersSwapped",
+              "args": [],
+              "documentation": [" Two members were swapped; see the transaction for who."]
+            },
+            {
+              "name": "MembersReset",
+              "args": [],
+              "documentation": [" The membership was reset; see the transaction for who the new set is."]
+            },
+            { "name": "KeyChanged", "args": [], "documentation": [" One of the members' keys changed."] },
+            { "name": "Dummy", "args": ["PhantomData"], "documentation": [" Phantom member, never used."] }
+          ],
+          "constants": [],
+          "errors": []
+        },
+        {
+          "name": "Oracle",
+          "storage": {
+            "prefix": "Oracle",
+            "items": [
+              {
+                "name": "RawValues",
+                "modifier": "optional",
+                "type": {
+                  "DoubleMap": {
+                    "hasher": "blake2256",
+                    "key1": "OracleKey",
+                    "key2": "AccountId",
+                    "value": "TimestampedValueOf",
+                    "key2Hasher": "blake2256"
+                  }
+                },
+                "fallback": "0x00",
+                "documentation": []
+              },
+              {
+                "name": "HasUpdate",
+                "modifier": "default",
+                "type": { "Map": { "hasher": "blake2256", "key": "OracleKey", "value": "bool", "linked": false } },
+                "fallback": "0x00",
+                "documentation": []
+              },
+              {
+                "name": "Values",
+                "modifier": "optional",
+                "type": {
+                  "Map": { "hasher": "blake2256", "key": "OracleKey", "value": "TimestampedValueOf", "linked": false }
+                },
+                "fallback": "0x00",
+                "documentation": []
+              }
+            ]
+          },
+          "calls": [
+            {
+              "name": "feed_value",
+              "args": [
+                { "name": "key", "type": "OracleKey" },
+                { "name": "value", "type": "OracleValue" }
+              ],
+              "documentation": []
+            },
+            {
+              "name": "feed_values",
+              "args": [{ "name": "values", "type": "Vec<(OracleKey,OracleValue)>" }],
+              "documentation": []
+            }
+          ],
+          "events": [
+            {
+              "name": "NewFeedData",
+              "args": ["AccountId", "Vec<(OracleKey,OracleValue)>"],
+              "documentation": [" New feed data is submitted (sender, values)"]
+            }
+          ],
+          "constants": [],
+          "errors": [{ "name": "NoPermission", "documentation": [] }]
+        },
+        {
+          "name": "Tokens",
+          "storage": {
+            "prefix": "Tokens",
+            "items": [
+              {
+                "name": "TotalIssuance",
+                "modifier": "default",
+                "type": { "Map": { "hasher": "blake2256", "key": "CurrencyId", "value": "Balance", "linked": false } },
+                "fallback": "0x00000000000000000000000000000000",
+                "documentation": [" The total issuance of a token type."]
+              },
+              {
+                "name": "Balance",
+                "modifier": "default",
+                "type": {
+                  "DoubleMap": {
+                    "hasher": "blake2256",
+                    "key1": "CurrencyId",
+                    "key2": "AccountId",
+                    "value": "Balance",
+                    "key2Hasher": "blake2256"
+                  }
+                },
+                "fallback": "0x00000000000000000000000000000000",
+                "documentation": [" The balance of a token type under an account."]
+              }
+            ]
+          },
+          "calls": [
+            {
+              "name": "transfer",
+              "args": [
+                { "name": "dest", "type": "Address" },
+                { "name": "currency_id", "type": "CurrencyId" },
+                { "name": "amount", "type": "Compact<Balance>" }
+              ],
+              "documentation": [" Transfer some balance to another account."]
+            },
+            {
+              "name": "transfer_all",
+              "args": [
+                { "name": "dest", "type": "Address" },
+                { "name": "currency_id", "type": "CurrencyId" }
+              ],
+              "documentation": [" Transfer all remaining balance to the given account."]
+            }
+          ],
+          "events": [
+            {
+              "name": "Transferred",
+              "args": ["CurrencyId", "AccountId", "AccountId", "Balance"],
+              "documentation": [" Token transfer success (currency_id, from, to, amount)"]
+            }
+          ],
+          "constants": [],
+          "errors": [
+            { "name": "BalanceTooLow", "documentation": [] },
+            { "name": "TotalIssuanceOverflow", "documentation": [] },
+            { "name": "AmountIntoBalanceFailed", "documentation": [] },
+            { "name": "ExistentialDeposit", "documentation": [] }
+          ]
+        },
+        {
+          "name": "Currencies",
+          "storage": null,
+          "calls": [
+            {
+              "name": "transfer",
+              "args": [
+                { "name": "dest", "type": "Address" },
+                { "name": "currency_id", "type": "CurrencyIdOf" },
+                { "name": "amount", "type": "Compact<BalanceOf>" }
+              ],
+              "documentation": [" Transfer some balance to another account."]
+            },
+            {
+              "name": "transfer_native_currency",
+              "args": [
+                { "name": "dest", "type": "Address" },
+                { "name": "amount", "type": "Compact<BalanceOf>" }
+              ],
+              "documentation": [" Transfer native currency balance from one account to another."]
+            },
+            {
+              "name": "update_balance",
+              "args": [
+                { "name": "who", "type": "Address" },
+                { "name": "currency_id", "type": "CurrencyIdOf" },
+                { "name": "amount", "type": "AmountOf" }
+              ],
+              "documentation": [" Update balance of an account. This is a root call."]
+            }
+          ],
+          "events": [
+            {
+              "name": "Transferred",
+              "args": ["CurrencyId", "AccountId", "AccountId", "Balance"],
+              "documentation": [" Currency transfer success (currency_id, from, to, amount)"]
+            },
+            {
+              "name": "BalanceUpdated",
+              "args": ["CurrencyId", "AccountId", "Amount"],
+              "documentation": [" Update balance success (currency_id, who, amount)"]
+            }
+          ],
+          "constants": [],
+          "errors": [
+            { "name": "AmountIntoBalanceFailed", "documentation": [] },
+            { "name": "BalanceTooLow", "documentation": [] }
+          ]
+        },
+        {
+          "name": "Prices",
+          "storage": { "prefix": "Prices", "items": [] },
+          "calls": null,
+          "events": null,
+          "constants": [],
+          "errors": []
+        },
+        {
+          "name": "SyntheticTokens",
+          "storage": {
+            "prefix": "SyntheticTokens",
+            "items": [
+              {
+                "name": "ExtremeRatio",
+                "modifier": "optional",
+                "type": { "Map": { "hasher": "blake2256", "key": "CurrencyId", "value": "Permill", "linked": false } },
+                "fallback": "0x00",
+                "documentation": []
+              },
+              {
+                "name": "LiquidationRatio",
+                "modifier": "optional",
+                "type": { "Map": { "hasher": "blake2256", "key": "CurrencyId", "value": "Permill", "linked": false } },
+                "fallback": "0x00",
+                "documentation": []
+              },
+              {
+                "name": "CollateralRatio",
+                "modifier": "optional",
+                "type": { "Map": { "hasher": "blake2256", "key": "CurrencyId", "value": "Permill", "linked": false } },
+                "fallback": "0x00",
+                "documentation": []
+              },
+              {
+                "name": "Positions",
+                "modifier": "default",
+                "type": {
+                  "Map": {
+                    "hasher": "blake2256",
+                    "key": "(LiquidityPoolId,CurrencyId)",
+                    "value": "Position",
+                    "linked": false
+                  }
+                },
+                "fallback": "0x0000000000000000000000000000000000000000000000000000000000000000",
+                "documentation": []
+              }
+            ]
+          },
+          "calls": [
+            {
+              "name": "set_extreme_ratio",
+              "args": [
+                { "name": "currency_id", "type": "CurrencyId" },
+                { "name": "ratio", "type": "Permill" }
+              ],
+              "documentation": []
+            },
+            {
+              "name": "set_liquidation_ratio",
+              "args": [
+                { "name": "currency_id", "type": "CurrencyId" },
+                { "name": "ratio", "type": "Permill" }
+              ],
+              "documentation": []
+            },
+            {
+              "name": "set_collateral_ratio",
+              "args": [
+                { "name": "currency_id", "type": "CurrencyId" },
+                { "name": "ratio", "type": "Permill" }
+              ],
+              "documentation": []
+            }
+          ],
+          "events": [
+            {
+              "name": "ExtremeRatioUpdated",
+              "args": ["CurrencyId", "Permill"],
+              "documentation": [" Extreme ratio updated. (currency_id, ratio)"]
+            },
+            {
+              "name": "LiquidationRatioUpdated",
+              "args": ["CurrencyId", "Permill"],
+              "documentation": [" Liquidation ratio updated. (currency_id, ratio)"]
+            },
+            {
+              "name": "CollateralRatioUpdated",
+              "args": ["CurrencyId", "Permill"],
+              "documentation": [" Collateral ratio updated. (currency_id, ratio)"]
+            }
+          ],
+          "constants": [],
+          "errors": []
+        },
+        {
+          "name": "SyntheticProtocol",
+          "storage": null,
+          "calls": [
+            {
+              "name": "mint",
+              "args": [
+                { "name": "pool_id", "type": "LiquidityPoolId" },
+                { "name": "currency_id", "type": "CurrencyId" },
+                { "name": "collateral_amount", "type": "Balance" },
+                { "name": "max_slippage", "type": "Permill" }
+              ],
+              "documentation": []
+            },
+            {
+              "name": "redeem",
+              "args": [
+                { "name": "pool_id", "type": "LiquidityPoolId" },
+                { "name": "currency_id", "type": "CurrencyId" },
+                { "name": "synthetic_amount", "type": "Balance" },
+                { "name": "max_slippage", "type": "Permill" }
+              ],
+              "documentation": []
+            },
+            {
+              "name": "liquidate",
+              "args": [
+                { "name": "pool_id", "type": "LiquidityPoolId" },
+                { "name": "currency_id", "type": "CurrencyId" },
+                { "name": "synthetic_amount", "type": "Balance" }
+              ],
+              "documentation": []
+            },
+            {
+              "name": "add_collateral",
+              "args": [
+                { "name": "pool_id", "type": "LiquidityPoolId" },
+                { "name": "currency_id", "type": "CurrencyId" },
+                { "name": "collateral_amount", "type": "Balance" }
+              ],
+              "documentation": []
+            },
+            {
+              "name": "withdraw_collateral",
+              "args": [
+                { "name": "pool_id", "type": "LiquidityPoolId" },
+                { "name": "currency_id", "type": "CurrencyId" }
+              ],
+              "documentation": []
+            }
+          ],
+          "events": [
+            {
+              "name": "Minted",
+              "args": ["AccountId", "CurrencyId", "LiquidityPoolId", "Balance", "Balance"],
+              "documentation": [
+                " Synthetic token minted.",
+                " (who, synthetic_currency_id, liquidity_pool_id, collateral_amount, synthetic_amount)"
+              ]
+            },
+            {
+              "name": "Redeemed",
+              "args": ["AccountId", "CurrencyId", "LiquidityPoolId", "Balance", "Balance"],
+              "documentation": [
+                " Synthetic token redeemed.",
+                " (who, synthetic_currency_id, liquidity_pool_id, collateral_amount, synthetic_amount)"
+              ]
+            },
+            {
+              "name": "Liquidated",
+              "args": ["AccountId", "CurrencyId", "LiquidityPoolId", "Balance", "Balance"],
+              "documentation": [
+                " Synthetic token liquidated.",
+                " (who, synthetic_currency_id, liquidity_pool_id, collateral_amount, synthetic_amount)"
+              ]
+            },
+            {
+              "name": "CollateralAdded",
+              "args": ["AccountId", "CurrencyId", "LiquidityPoolId", "Balance"],
+              "documentation": [
+                " Collateral added.",
+                " (who, synthetic_currency_id, liquidity_pool_id, collateral_amount)"
+              ]
+            },
+            {
+              "name": "CollateralWithdrew",
+              "args": ["AccountId", "CurrencyId", "LiquidityPoolId", "Balance"],
+              "documentation": [
+                " Collateral withdrew.",
+                " (who, synthetic_currency_id, liquidity_pool_id, collateral_amount)"
+              ]
+            }
+          ],
+          "constants": [],
+          "errors": [
+            { "name": "BalanceTooLow", "documentation": [] },
+            { "name": "LiquidityProviderBalanceTooLow", "documentation": [] },
+            { "name": "NotSupportedByLiquidityPool", "documentation": [] },
+            { "name": "SlippageTooHigh", "documentation": [] },
+            { "name": "NumOverflow", "documentation": [] },
+            { "name": "NoPrice", "documentation": [] },
+            { "name": "NegativeAdditionalCollateralAmount", "documentation": [] },
+            { "name": "LiquidityPoolSyntheticPositionTooLow", "documentation": [] },
+            { "name": "LiquidityPoolCollateralPositionTooLow", "documentation": [] },
+            { "name": "NotEnoughLockedCollateralAvailable", "documentation": [] },
+            { "name": "StillInSafePosition", "documentation": [] },
+            { "name": "BalanceToU128Failed", "documentation": [] },
+            { "name": "NotPoolOwner", "documentation": [] },
+            { "name": "NoBidSpread", "documentation": [] },
+            { "name": "NoAskSpread", "documentation": [] },
+            { "name": "NoAdditionalCollateralRatio", "documentation": [] }
+          ]
+        },
+        {
+          "name": "LiquidityPools",
+          "storage": {
+            "prefix": "LiquidityPools",
+            "items": [
+              {
+                "name": "NextPoolId",
+                "modifier": "default",
+                "type": { "Plain": "LiquidityPoolId" },
+                "fallback": "0x00000000",
+                "documentation": []
+              },
+              {
+                "name": "Owners",
+                "modifier": "optional",
+                "type": {
+                  "Map": { "hasher": "blake2256", "key": "LiquidityPoolId", "value": "AccountId", "linked": false }
+                },
+                "fallback": "0x00",
+                "documentation": []
+              },
+              {
+                "name": "LiquidityPoolOptions",
+                "modifier": "optional",
+                "type": {
+                  "DoubleMap": {
+                    "hasher": "blake2256",
+                    "key1": "LiquidityPoolId",
+                    "key2": "CurrencyId",
+                    "value": "LiquidityPoolOption",
+                    "key2Hasher": "blake2256"
+                  }
+                },
+                "fallback": "0x00",
+                "documentation": []
+              },
+              {
+                "name": "Balances",
+                "modifier": "default",
+                "type": {
+                  "Map": { "hasher": "blake2256", "key": "LiquidityPoolId", "value": "Balance", "linked": false }
+                },
+                "fallback": "0x00000000000000000000000000000000",
+                "documentation": []
+              }
+            ]
+          },
+          "calls": [
+            { "name": "create_pool", "args": [], "documentation": [] },
+            { "name": "disable_pool", "args": [{ "name": "pool_id", "type": "LiquidityPoolId" }], "documentation": [] },
+            { "name": "remove_pool", "args": [{ "name": "pool_id", "type": "LiquidityPoolId" }], "documentation": [] },
+            {
+              "name": "deposit_liquidity",
+              "args": [
+                { "name": "pool_id", "type": "LiquidityPoolId" },
+                { "name": "amount", "type": "Balance" }
+              ],
+              "documentation": []
+            },
+            {
+              "name": "withdraw_liquidity",
+              "args": [
+                { "name": "pool_id", "type": "LiquidityPoolId" },
+                { "name": "amount", "type": "Balance" }
+              ],
+              "documentation": []
+            },
+            {
+              "name": "set_spread",
+              "args": [
+                { "name": "pool_id", "type": "LiquidityPoolId" },
+                { "name": "currency_id", "type": "CurrencyId" },
+                { "name": "ask", "type": "Permill" },
+                { "name": "bid", "type": "Permill" }
+              ],
+              "documentation": []
+            },
+            {
+              "name": "set_additional_collateral_ratio",
+              "args": [
+                { "name": "pool_id", "type": "LiquidityPoolId" },
+                { "name": "currency_id", "type": "CurrencyId" },
+                { "name": "ratio", "type": "Option<Permill>" }
+              ],
+              "documentation": []
+            },
+            {
+              "name": "set_enabled_trades",
+              "args": [
+                { "name": "pool_id", "type": "LiquidityPoolId" },
+                { "name": "currency_id", "type": "CurrencyId" },
+                { "name": "enabled", "type": "Leverages" }
+              ],
+              "documentation": []
+            }
+          ],
+          "events": [
+            {
+              "name": "LiquidityPoolCreated",
+              "args": ["AccountId", "LiquidityPoolId"],
+              "documentation": [" Liquidity pool created (who, pool_id)"]
+            },
+            {
+              "name": "LiquidityPoolDisabled",
+              "args": ["AccountId", "LiquidityPoolId"],
+              "documentation": [" Liquidity pool disabled (who, pool_id)"]
+            },
+            {
+              "name": "LiquidityPoolRemoved",
+              "args": ["AccountId", "LiquidityPoolId"],
+              "documentation": [" Liquidity pool removed (who, pool_id)"]
+            },
+            {
+              "name": "DepositLiquidity",
+              "args": ["AccountId", "LiquidityPoolId", "Balance"],
+              "documentation": [" Deposit liquidity (who, pool_id, amount)"]
+            },
+            {
+              "name": "WithdrawLiquidity",
+              "args": ["AccountId", "LiquidityPoolId", "Balance"],
+              "documentation": [" Withdraw liquidity (who, pool_id, amount)"]
+            },
+            {
+              "name": "SetSpread",
+              "args": ["AccountId", "LiquidityPoolId", "CurrencyId", "Permill", "Permill"],
+              "documentation": [" Set spread (who, pool_id, currency_id, ask, bid)"]
+            },
+            {
+              "name": "SetAdditionalCollateralRatio",
+              "args": ["AccountId", "LiquidityPoolId", "CurrencyId", "Option<Permill>"],
+              "documentation": [" Set additional collateral ratio (who, pool_id, currency_id, ratio)"]
+            },
+            {
+              "name": "SetEnabledTrades",
+              "args": ["AccountId", "LiquidityPoolId", "CurrencyId", "Leverages"],
+              "documentation": [" Set enabled trades (who, pool_id, currency_id, enabled)"]
+            }
+          ],
+          "constants": [],
+          "errors": [
+            { "name": "NoPermission", "documentation": [] },
+            { "name": "CannotCreateMorePool", "documentation": [] },
+            { "name": "CannotRemovePool", "documentation": [] },
+            { "name": "CannotDepositAmount", "documentation": [] },
+            { "name": "CannotWithdrawAmount", "documentation": [] }
+          ]
+        }
+      ]
+    }
+  }
+}

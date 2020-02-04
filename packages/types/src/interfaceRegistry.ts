@@ -34,7 +34,7 @@ import { TimestampedValue, TimestampedValueOf } from '@orml/types/interfaces/ora
 import { Price } from '@orml/types/interfaces/prices';
 import { AuctionInfo } from '@orml/types/interfaces/traits';
 import { FixedU128 } from '@orml/types/interfaces/utilities';
-import { AccountId, AccountIdOf, AccountIndex, Address, Amount, AmountOf, AssetId, Balance, BalanceOf, Block, BlockNumber, Call, Consensus, ConsensusEngineId, CurrencyId, CurrencyIdOf, Digest, DigestItem, DispatchClass, DispatchInfo, DispatchInfoTo190, EcdsaSignature, Ed25519Signature, ExchangeRate, Extrinsic, ExtrinsicEra, ExtrinsicPayload, ExtrinsicPayloadUnknown, ExtrinsicPayloadV1, ExtrinsicPayloadV2, ExtrinsicPayloadV3, ExtrinsicPayloadV4, ExtrinsicUnknown, ExtrinsicV1, ExtrinsicV2, ExtrinsicV3, ExtrinsicV4, Hash, Header, ImmortalEra, Index, Justification, KeyTypeId, KeyValue, Leverages, LiquidityPoolId, LiquidityPoolOption, LockIdentifier, Moment, MortalEra, MultiSignature, OracleKey, OracleValue, Origin, Perbill, Percent, Permill, Perquintill, Phantom, PhantomData, Position, PreRuntime, Rate, Ratio, Seal, SealV0, Signature, SignedBlock, SignerPayload, Sr25519Signature, ValidatorId, Weight, WeightMultiplier } from '@laminar/types/interfaces/runtime';
+import { AccountId, AccountIdOf, AccountIndex, Address, Amount, AmountOf, AssetId, Balance, BalanceOf, Block, BlockNumber, Call, Consensus, ConsensusEngineId, CurrencyId, CurrencyIdOf, Digest, DigestItem, DispatchClass, DispatchInfo, DispatchInfoTo190, EcdsaSignature, Ed25519Signature, Extrinsic, ExtrinsicEra, ExtrinsicPayload, ExtrinsicPayloadUnknown, ExtrinsicPayloadV1, ExtrinsicPayloadV2, ExtrinsicPayloadV3, ExtrinsicPayloadV4, ExtrinsicUnknown, ExtrinsicV1, ExtrinsicV2, ExtrinsicV3, ExtrinsicV4, Hash, Header, ImmortalEra, Index, Justification, KeyTypeId, KeyValue, Leverages, LiquidityPoolId, LiquidityPoolOption, LockIdentifier, Moment, MortalEra, MultiSignature, OracleKey, OracleValue, Origin, Perbill, Percent, Permill, Perquintill, Phantom, PhantomData, Position, PreRuntime, Seal, SealV0, Signature, SignedBlock, SignerPayload, Sr25519Signature, ValidatorId, Weight, WeightMultiplier } from '@laminar/types/interfaces/runtime';
 
 export interface InterfaceRegistry {
   bool: bool;
@@ -1446,7 +1446,6 @@ export interface InterfaceRegistry {
   'Option<Consensus>': Option<Consensus>;
   'Vec<Consensus>': Vec<Consensus>;
   CurrencyId: CurrencyId;
-  'Compact<CurrencyId>': Compact<CurrencyId>;
   'Option<CurrencyId>': Option<CurrencyId>;
   'Vec<CurrencyId>': Vec<CurrencyId>;
   CurrencyIdOf: CurrencyIdOf;
@@ -1458,21 +1457,12 @@ export interface InterfaceRegistry {
   AmountOf: AmountOf;
   'Option<AmountOf>': Option<AmountOf>;
   'Vec<AmountOf>': Vec<AmountOf>;
-  ExchangeRate: ExchangeRate;
-  'Option<ExchangeRate>': Option<ExchangeRate>;
-  'Vec<ExchangeRate>': Vec<ExchangeRate>;
   OracleKey: OracleKey;
   'Option<OracleKey>': Option<OracleKey>;
   'Vec<OracleKey>': Vec<OracleKey>;
   OracleValue: OracleValue;
   'Option<OracleValue>': Option<OracleValue>;
   'Vec<OracleValue>': Vec<OracleValue>;
-  Rate: Rate;
-  'Option<Rate>': Option<Rate>;
-  'Vec<Rate>': Vec<Rate>;
-  Ratio: Ratio;
-  'Option<Ratio>': Option<Ratio>;
-  'Vec<Ratio>': Vec<Ratio>;
   LiquidityPoolId: LiquidityPoolId;
   'Compact<LiquidityPoolId>': Compact<LiquidityPoolId>;
   'Option<LiquidityPoolId>': Option<LiquidityPoolId>;

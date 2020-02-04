@@ -5,7 +5,6 @@ import { Codec, ITuple } from '@polkadot/types/types';
 import { Compact, Enum, Option, Struct } from '@polkadot/types/codec';
 import { Bytes, Fixed64, GenericAccountId, GenericAccountIndex, GenericAddress, GenericBlock, GenericCall, GenericConsensusEngineId, GenericDigest, GenericDigestItem, GenericExtrinsic, GenericExtrinsicEra, GenericExtrinsicPayload, GenericExtrinsicPayloadUnknown, GenericExtrinsicPayloadV1, GenericExtrinsicPayloadV2, GenericExtrinsicPayloadV3, GenericExtrinsicPayloadV4, GenericExtrinsicUnknown, GenericExtrinsicV1, GenericExtrinsicV2, GenericExtrinsicV3, GenericExtrinsicV4, GenericImmortalEra, GenericMortalEra, GenericOrigin, GenericSignerPayload, H256, H512, Null, StorageData, StorageKey, bool, i128, u128, u16, u32, u64, u8 } from '@polkadot/types/primitive';
 import { Price } from '@orml/types/interfaces/prices';
-import { FixedU128 } from '@orml/types/interfaces/utilities';
 
 /** GenericAccountId */
 export interface AccountId extends GenericAccountId {}
@@ -49,8 +48,17 @@ export interface Consensus extends ITuple<[ConsensusEngineId, Bytes]> {}
 /** GenericConsensusEngineId */
 export interface ConsensusEngineId extends GenericConsensusEngineId {}
 
-/** u8 */
-export interface CurrencyId extends u8 {}
+/** Enum */
+export interface CurrencyId extends Enum {
+  /** 0:: LAMI */
+  readonly isLami: boolean;
+  /** 1:: AUSD */
+  readonly isAusd: boolean;
+  /** 2:: FEUR */
+  readonly isFeur: boolean;
+  /** 3:: FJPY */
+  readonly isFjpy: boolean;
+}
 
 /** CurrencyId */
 export interface CurrencyIdOf extends CurrencyId {}
@@ -92,9 +100,6 @@ export interface EcdsaSignature extends Uint8Array, Codec {}
 
 /** Signature */
 export interface Ed25519Signature extends Signature {}
-
-/** FixedU128 */
-export interface ExchangeRate extends FixedU128 {}
 
 /** GenericExtrinsic */
 export interface Extrinsic extends GenericExtrinsic {}
@@ -247,12 +252,6 @@ export interface Position extends Struct {
 
 /** ITuple<[ConsensusEngineId, Bytes]> */
 export interface PreRuntime extends ITuple<[ConsensusEngineId, Bytes]> {}
-
-/** FixedU128 */
-export interface Rate extends FixedU128 {}
-
-/** FixedU128 */
-export interface Ratio extends FixedU128 {}
 
 /** ITuple<[ConsensusEngineId, Bytes]> */
 export interface Seal extends ITuple<[ConsensusEngineId, Bytes]> {}

@@ -20,5 +20,9 @@
     "@polkadot/metadata": "^1.0.0-beta.8",
     "@polkadot/types": "^1.0.0-beta.8",
     "@polkadot/util": "^2.0.0-beta.4"
+  },
+  "devDependencies": {
+    "@polkadot/metadata": "^1.0.0-beta.8",
+    "@polkadot/rpc-provider": "^1.0.0-beta.8"
   }
 }
