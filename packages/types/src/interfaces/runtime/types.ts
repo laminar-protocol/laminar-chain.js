@@ -3,40 +3,34 @@
 
 import { Enum, Option, Struct } from '@polkadot/types/codec';
 import { i128, u16, u32 } from '@polkadot/types/primitive';
-import { Permill, Balance, Price } from '@orml/types/interfaces';
+import { Price, Permill, Balance } from '@orml/types/interfaces';
+
+/** i128 */
+export interface Amount extends i128 {}
+
+/** Amount */
+export interface AmountOf extends Amount {}
 
 /** Enum */
 export interface CurrencyId extends Enum {
   /** 0:: LAMI */
-  readonly LAMI: boolean;
+  readonly isLami: boolean;
   /** 1:: AUSD */
-  readonly AUSD: boolean;
-  /** 1:: FEUR */
-  readonly FEUR: boolean;
-  /** 1:: FJPY */
-  readonly FJPY: boolean;
+  readonly isAusd: boolean;
+  /** 2:: FEUR */
+  readonly isFeur: boolean;
+  /** 3:: FJPY */
+  readonly isFjpy: boolean;
 }
 
 /** CurrencyId */
 export interface CurrencyIdOf extends CurrencyId {}
 
-/** i128 */
-export interface Amount extends i128 {}
-
-/** i128 */
-export interface AmountOf extends Amount {}
-
-/** OracleKey */
-export interface OracleKey extends CurrencyId {}
-
-/** OracleValue */
-export interface OracleValue extends Price {}
+/** u16 */
+export interface Leverages extends u16 {}
 
 /** u32 */
 export interface LiquidityPoolId extends u32 {}
-
-/** u16 */
-export interface Leverages extends u16 {}
 
 /** Struct */
 export interface LiquidityPoolOption extends Struct {
@@ -49,6 +43,12 @@ export interface LiquidityPoolOption extends Struct {
   /** Leverages */
   readonly enabled: Leverages;
 }
+
+/** CurrencyId */
+export interface OracleKey extends CurrencyId {}
+
+/** Price */
+export interface OracleValue extends Price {}
 
 /** Struct */
 export interface Position extends Struct {
