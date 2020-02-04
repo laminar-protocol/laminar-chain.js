@@ -1468,6 +1468,7 @@ export interface InterfaceRegistry {
   'Option<LiquidityPoolId>': Option<LiquidityPoolId>;
   'Vec<LiquidityPoolId>': Vec<LiquidityPoolId>;
   Leverages: Leverages;
+  'Compact<Leverages>': Compact<Leverages>;
   'Option<Leverages>': Option<Leverages>;
   'Vec<Leverages>': Vec<Leverages>;
   LiquidityPoolOption: LiquidityPoolOption;

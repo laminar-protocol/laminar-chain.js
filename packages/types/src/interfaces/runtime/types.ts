@@ -2,8 +2,8 @@
 /* eslint-disable @typescript-eslint/no-empty-interface */
 
 import { Codec, ITuple } from '@polkadot/types/types';
-import { Compact, Enum, Option, Set, Struct } from '@polkadot/types/codec';
-import { Bytes, Fixed64, GenericAccountId, GenericAccountIndex, GenericAddress, GenericBlock, GenericCall, GenericConsensusEngineId, GenericDigest, GenericDigestItem, GenericExtrinsic, GenericExtrinsicEra, GenericExtrinsicPayload, GenericExtrinsicPayloadUnknown, GenericExtrinsicPayloadV1, GenericExtrinsicPayloadV2, GenericExtrinsicPayloadV3, GenericExtrinsicPayloadV4, GenericExtrinsicUnknown, GenericExtrinsicV1, GenericExtrinsicV2, GenericExtrinsicV3, GenericExtrinsicV4, GenericImmortalEra, GenericMortalEra, GenericOrigin, GenericSignerPayload, H256, H512, Null, StorageData, StorageKey, bool, i128, u128, u32, u64, u8 } from '@polkadot/types/primitive';
+import { Compact, Enum, Option, Struct } from '@polkadot/types/codec';
+import { Bytes, Fixed64, GenericAccountId, GenericAccountIndex, GenericAddress, GenericBlock, GenericCall, GenericConsensusEngineId, GenericDigest, GenericDigestItem, GenericExtrinsic, GenericExtrinsicEra, GenericExtrinsicPayload, GenericExtrinsicPayloadUnknown, GenericExtrinsicPayloadV1, GenericExtrinsicPayloadV2, GenericExtrinsicPayloadV3, GenericExtrinsicPayloadV4, GenericExtrinsicUnknown, GenericExtrinsicV1, GenericExtrinsicV2, GenericExtrinsicV3, GenericExtrinsicV4, GenericImmortalEra, GenericMortalEra, GenericOrigin, GenericSignerPayload, H256, H512, Null, StorageData, StorageKey, bool, i128, u128, u16, u32, u64, u8 } from '@polkadot/types/primitive';
 import { Price } from '@orml/types/interfaces/prices';
 
 /** GenericAccountId */
@@ -172,41 +172,8 @@ export interface KeyTypeId extends u32 {}
 /** ITuple<[StorageKey, StorageData]> */
 export interface KeyValue extends ITuple<[StorageKey, StorageData]> {}
 
-/** Set */
-export interface Leverages extends Set {
-  /** boolean */
-  readonly isLongOne: boolean;
-  /** boolean */
-  readonly isLongTwo: boolean;
-  /** boolean */
-  readonly isLongThree: boolean;
-  /** boolean */
-  readonly isLongFive: boolean;
-  /** boolean */
-  readonly isLongTen: boolean;
-  /** boolean */
-  readonly isLongTwenty: boolean;
-  /** boolean */
-  readonly isLongThirty: boolean;
-  /** boolean */
-  readonly isLongFifty: boolean;
-  /** boolean */
-  readonly isShortOne: boolean;
-  /** boolean */
-  readonly isShortTwo: boolean;
-  /** boolean */
-  readonly isShortThree: boolean;
-  /** boolean */
-  readonly isShortFive: boolean;
-  /** boolean */
-  readonly isShortTen: boolean;
-  /** boolean */
-  readonly isShortTwenty: boolean;
-  /** boolean */
-  readonly isShortThirty: boolean;
-  /** boolean */
-  readonly isShortFifty: boolean;
-}
+/** u16 */
+export interface Leverages extends u16 {}
 
 /** u32 */
 export interface LiquidityPoolId extends u32 {}
