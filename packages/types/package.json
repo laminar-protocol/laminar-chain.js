@@ -16,13 +16,13 @@
   "homepage": "https://github.com/laminar-protocol/laminar-chain.js",
   "dependencies": {
     "@babel/runtime": "^7.8.0",
-    "@orml/types": "^0.2.0-beta.5",
-    "@polkadot/metadata": "^1.0.0-beta.8",
-    "@polkadot/types": "^1.0.0-beta.8",
-    "@polkadot/util": "^2.0.0-beta.4"
+    "@orml/types": "^0.2.0-beta.12",
+    "@polkadot/metadata": "beta",
+    "@polkadot/types": "beta",
+    "@polkadot/util": "beta"
   },
   "devDependencies": {
-    "@polkadot/metadata": "^1.0.0-beta.8",
-    "@polkadot/rpc-provider": "^1.0.0-beta.8"
+    "@polkadot/metadata": "beta",
+    "@polkadot/rpc-provider": "beta"
   }
 }
