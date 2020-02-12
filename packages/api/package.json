@@ -16,6 +16,9 @@
   "homepage": "https://github.com/laminar-protocol/laminar-chain.js",
   "dependencies": {
     "@babel/runtime": "^7.8.0",
-    "@polkadot/types": "beta"
+    "@polkadot/types": "beta",
+    "@polkadot/api": "beta",
+    "@orml/jsonrpc": "beta",
+    "@laminar/types": "beta"
   }
 }
