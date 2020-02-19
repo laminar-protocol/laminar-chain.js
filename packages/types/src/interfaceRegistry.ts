@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-empty-interface */
 
 import { Compact, Option, Raw, Vec } from '@polkadot/types/codec';
-import { BitVec, Bytes, Data, Fixed64, H160, H256, H512, IdentityFields, Null, StorageData, StorageKey, Text, Type, U256, bool, i128, i16, i256, i32, i64, i8, u128, u16, u256, u32, u64, u8, usize } from '@polkadot/types/primitive';
+import { BitVec, Bytes, Data, Fixed64, IdentityFields, Null, StorageData, StorageKey, Text, Type, U256, Unconstructable, bool, i128, i16, i256, i32, i64, i8, u128, u16, u256, u32, u64, u8, usize } from '@polkadot/types/primitive';
 import { InclusionHeight, Uncle, UncleEntryItem } from '@polkadot/types/interfaces/authorship';
 import { RawAuraPreDigest } from '@polkadot/types/interfaces/aura';
 import { BabeAuthorityWeight, BabeBlockWeight, BabeWeight, MaybeVrf, RawBabePreDigest, RawBabePreDigestCompat, RawBabePreDigestPrimary, RawBabePreDigestPrimaryTo159, RawBabePreDigestSecondary, RawBabePreDigestSecondaryTo159, RawBabePreDigestTo159, SlotNumber, VrfData, VrfProof } from '@polkadot/types/interfaces/babe';
@@ -36,7 +36,7 @@ import { TimestampedValue, TimestampedValueOf } from '@orml/types/interfaces/ora
 import { Price } from '@orml/types/interfaces/prices';
 import { AuctionInfo } from '@orml/types/interfaces/traits';
 import { FixedU128 } from '@orml/types/interfaces/utilities';
-import { AccountId, AccountIdOf, AccountIndex, Address, Amount, AmountOf, AssetId, Balance, BalanceOf, Block, BlockNumber, Call, ChangesTrieConfiguration, Consensus, ConsensusEngineId, CurrencyId, CurrencyIdOf, Digest, DigestItem, DispatchClass, DispatchInfo, DispatchInfoTo190, EcdsaSignature, Ed25519Signature, Extrinsic, ExtrinsicEra, ExtrinsicPayload, ExtrinsicPayloadUnknown, ExtrinsicPayloadV1, ExtrinsicPayloadV2, ExtrinsicPayloadV3, ExtrinsicPayloadV4, ExtrinsicSignatureV1, ExtrinsicSignatureV2, ExtrinsicSignatureV3, ExtrinsicSignatureV4, ExtrinsicUnknown, ExtrinsicV1, ExtrinsicV2, ExtrinsicV3, ExtrinsicV4, Hash, Header, ImmortalEra, Index, Justification, KeyTypeId, KeyValue, Leverages, LiquidityPoolId, LiquidityPoolOption, LockIdentifier, LookupSource, LookupTarget, Moment, MortalEra, MultiSignature, OracleKey, OracleValue, Origin, Perbill, Percent, Permill, Perquintill, Phantom, PhantomData, Position, PreRuntime, Seal, SealV0, Signature, SignedBlock, SignerPayload, Sr25519Signature, ValidatorId, Weight, WeightMultiplier } from '@laminar/types/interfaces/runtime';
+import { AccountId, AccountIdOf, AccountIndex, Address, Amount, AmountOf, AssetId, Balance, BalanceOf, Block, BlockNumber, Call, ChangesTrieConfiguration, Consensus, ConsensusEngineId, CurrencyId, CurrencyIdOf, Digest, DigestItem, DispatchClass, DispatchInfo, DispatchInfoTo190, EcdsaSignature, Ed25519Signature, Extrinsic, ExtrinsicEra, ExtrinsicPayload, ExtrinsicPayloadUnknown, ExtrinsicPayloadV1, ExtrinsicPayloadV2, ExtrinsicPayloadV3, ExtrinsicPayloadV4, ExtrinsicSignatureV1, ExtrinsicSignatureV2, ExtrinsicSignatureV3, ExtrinsicSignatureV4, ExtrinsicUnknown, ExtrinsicV1, ExtrinsicV2, ExtrinsicV3, ExtrinsicV4, H160, H256, H512, Hash, Header, ImmortalEra, Index, Justification, KeyTypeId, KeyValue, Leverages, LiquidityPoolId, LiquidityPoolOption, LockIdentifier, LookupSource, LookupTarget, Moment, MortalEra, MultiSignature, OracleKey, OracleValue, Origin, Perbill, Percent, Permill, Perquintill, Phantom, PhantomData, Position, PreRuntime, Seal, SealV0, Signature, SignedBlock, SignerPayload, Sr25519Signature, ValidatorId, Weight, WeightMultiplier } from '@laminar/types/interfaces/runtime';
 
 export interface InterfaceRegistry {
   bool: bool;
@@ -51,15 +51,6 @@ export interface InterfaceRegistry {
   Data: Data;
   'Option<Data>': Option<Data>;
   'Vec<Data>': Vec<Data>;
-  H160: H160;
-  'Option<H160>': Option<H160>;
-  'Vec<H160>': Vec<H160>;
-  H256: H256;
-  'Option<H256>': Option<H256>;
-  'Vec<H256>': Vec<H256>;
-  H512: H512;
-  'Option<H512>': Option<H512>;
-  'Vec<H512>': Vec<H512>;
   IdentityFields: IdentityFields;
   'Option<IdentityFields>': Option<IdentityFields>;
   'Vec<IdentityFields>': Vec<IdentityFields>;
@@ -127,6 +118,9 @@ export interface InterfaceRegistry {
   'Compact<U256>': Compact<U256>;
   'Option<U256>': Option<U256>;
   'Vec<U256>': Vec<U256>;
+  Unconstructable: Unconstructable;
+  'Option<Unconstructable>': Option<Unconstructable>;
+  'Vec<Unconstructable>': Vec<Unconstructable>;
   usize: usize;
   'Compact<usize>': Compact<usize>;
   'Option<usize>': Option<usize>;
@@ -1396,6 +1390,15 @@ export interface InterfaceRegistry {
   DispatchInfoTo190: DispatchInfoTo190;
   'Option<DispatchInfoTo190>': Option<DispatchInfoTo190>;
   'Vec<DispatchInfoTo190>': Vec<DispatchInfoTo190>;
+  H160: H160;
+  'Option<H160>': Option<H160>;
+  'Vec<H160>': Vec<H160>;
+  H256: H256;
+  'Option<H256>': Option<H256>;
+  'Vec<H256>': Vec<H256>;
+  H512: H512;
+  'Option<H512>': Option<H512>;
+  'Vec<H512>': Vec<H512>;
   Hash: Hash;
   'Option<Hash>': Option<Hash>;
   'Vec<Hash>': Vec<Hash>;
