@@ -17,12 +17,6 @@
   "dependencies": {
     "@babel/runtime": "^7.8.0",
     "@orml/types": "beta",
-    "@polkadot/metadata": "beta",
-    "@polkadot/types": "beta",
-    "@polkadot/util": "beta"
-  },
-  "devDependencies": {
-    "@polkadot/metadata": "beta",
-    "@polkadot/rpc-provider": "beta"
+    "@polkadot/api": "^1.2.0-beta.9"
   }
 }

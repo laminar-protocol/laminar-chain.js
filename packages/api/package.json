@@ -18,7 +18,6 @@
     "@babel/runtime": "^7.8.0",
     "@laminar/types": "beta",
     "@orml/jsonrpc": "beta",
-    "@polkadot/api": "beta",
-    "@polkadot/types": "beta"
+    "@polkadot/api": "^1.2.0-beta.9"
   }
 }

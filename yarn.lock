@@ -2020,7 +2020,7 @@
     "@polkadot/api" "^1.2.0-beta.9"
     "@polkadot/types" "^1.2.0-beta.9"
 
-"@polkadot/api@^1.2.0-beta.9", "@polkadot/api@beta":
+"@polkadot/api@^1.2.0-beta.9":
   version "1.2.0-beta.9"
   resolved "https://registry.yarnpkg.com/@polkadot/api/-/api-1.2.0-beta.9.tgz#9230fae974f2bf4b05d120ebe882e6e8a2d36953"
   integrity sha512-DtbRsZR2M7hTvYAFoaodp1N8EQ2JKLJC+NHZ0UUNtqwqtzJ8MNvGfrDhdH5TOqdaverYl6+Kqiuo9Rlfj1Tjyw==
@@ -2122,7 +2122,7 @@
     "@polkadot/util" "^2.2.1"
     rxjs "^6.5.4"
 
-"@polkadot/rpc-provider@^1.2.0-beta.9", "@polkadot/rpc-provider@beta":
+"@polkadot/rpc-provider@^1.2.0-beta.9":
   version "1.2.0-beta.9"
   resolved "https://registry.yarnpkg.com/@polkadot/rpc-provider/-/rpc-provider-1.2.0-beta.9.tgz#ebcfd6982338afd5d7aba2a3ba22ebfe29552960"
   integrity sha512-YInrGkcjko3KrrFV3FkYG4CmORR4FSNLqJCYJ2HHb0FhsmQaH88hS3nq+KHAXVFTuSjK0S30Blw4Psbzb2vbDA==
@@ -2187,17 +2187,6 @@
     chalk "^3.0.0"
     ip-regex "^4.1.0"
     moment "^2.24.0"
-
-"@polkadot/util@beta":
-  version "2.4.0-beta.2"
-  resolved "https://registry.yarnpkg.com/@polkadot/util/-/util-2.4.0-beta.2.tgz#c0e4095d9df54bef50a57906962765a22eec89dc"
-  integrity sha512-FJEzE5DjCGOMn49vkqrFJOXgqftuACu1MO9LQ5YpoShfqdIRclAZYJbhSxLLXBJwDudHsxiqe3nFBg/FFWv+kw==
-  dependencies:
-    "@babel/runtime" "^7.8.4"
-    bn.js "^5.1.1"
-    camelcase "^5.3.1"
-    chalk "^3.0.0"
-    ip-regex "^4.1.0"
 
 "@polkadot/wasm-crypto@^0.20.1":
   version "0.20.1"
