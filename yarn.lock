@@ -2188,6 +2188,17 @@
     ip-regex "^4.1.0"
     moment "^2.24.0"
 
+"@polkadot/util@beta":
+  version "2.4.0-beta.2"
+  resolved "https://registry.yarnpkg.com/@polkadot/util/-/util-2.4.0-beta.2.tgz#c0e4095d9df54bef50a57906962765a22eec89dc"
+  integrity sha512-FJEzE5DjCGOMn49vkqrFJOXgqftuACu1MO9LQ5YpoShfqdIRclAZYJbhSxLLXBJwDudHsxiqe3nFBg/FFWv+kw==
+  dependencies:
+    "@babel/runtime" "^7.8.4"
+    bn.js "^5.1.1"
+    camelcase "^5.3.1"
+    chalk "^3.0.0"
+    ip-regex "^4.1.0"
+
 "@polkadot/wasm-crypto@^0.20.1":
   version "0.20.1"
   resolved "https://registry.yarnpkg.com/@polkadot/wasm-crypto/-/wasm-crypto-0.20.1.tgz#422f61cf61c8067b9800e6493608aeed2c701729"
