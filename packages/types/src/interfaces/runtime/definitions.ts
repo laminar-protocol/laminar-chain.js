@@ -4,7 +4,7 @@ export default {
   types: {
     ...definitions.types,
     CurrencyId: {
-      _enum: ['LAMI', 'AUSD', 'FEUR', 'FJPY']
+      _enum: ['LAMI', 'AUSD', 'FEUR', 'FJPY', 'FBTC', 'FETH']
     },
     CurrencyIdOf: 'CurrencyId',
     Amount: 'i128',
