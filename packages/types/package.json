@@ -17,6 +17,9 @@
   "dependencies": {
     "@babel/runtime": "^7.8.0",
     "@orml/types": "beta",
-    "@polkadot/api": "^1.2.0-beta.9"
+    "@polkadot/api": "beta"
+  },
+  "devDependencies": {
+    "@polkadot/typegen": "beta"
   }
 }
