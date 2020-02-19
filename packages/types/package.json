@@ -19,7 +19,7 @@
     "@orml/types": "beta",
     "@polkadot/metadata": "beta",
     "@polkadot/types": "beta",
-    "@polkadot/util": "^2.1.1"
+    "@polkadot/util": "beta"
   },
   "devDependencies": {
     "@polkadot/metadata": "beta",
