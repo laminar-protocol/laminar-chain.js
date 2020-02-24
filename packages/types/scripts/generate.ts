@@ -1,4 +1,4 @@
-import { generateInterfaceRegistry } from '@polkadot/typegen/generate/interfaceRegistry';
+// import { generateInterfaceRegistry } from '@polkadot/typegen/generate/interfaceRegistry';
 import { generateTsDef } from '@polkadot/typegen/generate/tsDef';
 
 import * as defaultDefinations from '@polkadot/types/interfaces/definitions';
@@ -20,4 +20,4 @@ const definations = {
 };
 
 generateTsDef(definations, 'packages/types/src/interfaces', '@laminar/types/interfaces');
-generateInterfaceRegistry(definations, 'packages/types/src/interfaceRegistry.ts');
+// generateInterfaceRegistry(definations, 'packages/types/src/interfaceRegistry.ts');
