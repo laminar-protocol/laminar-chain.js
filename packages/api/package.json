@@ -17,6 +17,7 @@
   "dependencies": {
     "@babel/runtime": "^7.8.0",
     "@laminar/types": "beta",
+    "@orml/api-derive": "beta",
     "@orml/jsonrpc": "beta",
     "@polkadot/api": "beta"
   }
