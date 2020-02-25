@@ -1,4 +1,5 @@
 import ormlRPC from '@orml/jsonrpc';
+import { derive as ormlDerives } from '@orml/api-derive';
 import { types as laminarTypes } from '@laminar/types';
 import { ApiOptions } from '@polkadot/api/types';
 
@@ -8,10 +9,11 @@ const laminarRpc: any = { oracle: Object.values(ormlRPC.oracle.methods) };
 
 export const defaultOptions: ApiOptions = {
   types: laminarTypes,
-  rpc: laminarRpc
+  rpc: laminarRpc,
+  derives: ormlDerives
 };
 
-export const options = ({ types = {}, rpc = {}, ...otherOptions }: ApiOptions): ApiOptions => ({
+export const options = ({ types = {}, rpc = {}, derives = {}, ...otherOptions }: ApiOptions): ApiOptions => ({
   types: {
     ...laminarTypes,
     ...types
@@ -19,6 +21,10 @@ export const options = ({ types = {}, rpc = {}, ...otherOptions }: ApiOptions): 
   rpc: {
     ...laminarRpc,
     ...rpc
+  },
+  derives: {
+    ...ormlDerives,
+    ...derives
   },
   ...otherOptions
 });
