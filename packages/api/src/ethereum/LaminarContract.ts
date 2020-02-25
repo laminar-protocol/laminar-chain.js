@@ -5,7 +5,7 @@ import { provider as Web3Provider } from 'web3-core';
 
 import protocols, { TokenName, TradingPairSymbol, Protocol, ProtocolType } from './protocols';
 
-interface LaminarContractOptions {
+export interface LaminarContractOptions {
   provider: Web3Provider;
   protocolType?: ProtocolType;
 }
@@ -59,6 +59,10 @@ class LaminarContract implements LaminarContract {
     return new this.web3.eth.Contract(abi, address);
   }
 
+  public getTradingPairInfo(pairSymbol: TradingPairSymbol) {
+    return this.protocol.tradingPairs[pairSymbol];
+  }
+
   public getTokenContract(tokenName: keyof LaminarContract['tokenContracts']): Contract {
     return this.tokenContracts[tokenName];
   }
@@ -66,6 +70,12 @@ class LaminarContract implements LaminarContract {
   public getBaseContract(name: keyof LaminarContract['baseContracts']): Contract {
     return this.baseContracts[name];
   }
+
+  public createLiquidityPoolContract(poolAddress: string) {
+    return this.createContract(this.protocol.abis.LiquidityPoolInterface, poolAddress);
+  }
+
+  public getNetworkType = async (): Promise<string> => this.web3.eth.net.getNetworkType();
 }
 
 export default LaminarContract;
