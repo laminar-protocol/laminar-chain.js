@@ -3,7 +3,8 @@ import * as ormlDefinations from '@orml/types/interfaces/definitions';
 
 import * as laminarDefinations from './interfaces/definitions';
 
-export { InterfaceRegistry } from './interfaceRegistry';
+import * as InterfaceRegistry from './interfaceRegistry';
+export { InterfaceRegistry };
 
 export const allDefinitions = {
   ...ormlDefinations,
