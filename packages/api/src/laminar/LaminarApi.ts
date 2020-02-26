@@ -1,7 +1,7 @@
 import BN from 'bn.js';
-import { options } from '@laminar/api';
 import { ApiPromise, WsProvider } from '@polkadot/api';
 
+import { options } from './options';
 import { FlowApi, TokenInfo, TokenName, PoolOptions } from '../types';
 import { InterfaceRegistry } from '@laminar/types/interfaceRegistry';
 

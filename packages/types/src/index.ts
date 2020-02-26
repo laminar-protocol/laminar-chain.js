@@ -2,6 +2,7 @@ import { RegistryTypes } from '@polkadot/types/types';
 import * as ormlDefinations from '@orml/types/interfaces/definitions';
 
 import * as laminarDefinations from './interfaces/definitions';
+import { Permill } from './generic';
 
 export { InterfaceRegistry } from './interfaceRegistry';
 
@@ -10,4 +11,9 @@ export const allDefinitions = {
   ...laminarDefinations
 };
 
-export const types: RegistryTypes = Object.values(allDefinitions).map(({ types }) => types).reduce((all, types) => Object.assign(all, types), {});
+export const types: RegistryTypes = Object.values(allDefinitions)
+  .map(({ types }) => ({
+    ...types,
+    Permill
+  }))
+  .reduce((all, types) => Object.assign(all, types), {});
