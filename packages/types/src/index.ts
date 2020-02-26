@@ -3,12 +3,14 @@ import * as ormlDefinations from '@orml/types/interfaces/definitions';
 
 import * as laminarDefinations from './interfaces/definitions';
 
-import * as InterfaceRegistry from './interfaceRegistry';
-export { InterfaceRegistry };
+import './interfaces/augment-api';
+import './interfaces/augment-types';
 
 export const allDefinitions = {
   ...ormlDefinations,
   ...laminarDefinations
 };
 
-export const types: RegistryTypes = Object.values(allDefinitions).map(({ types }) => types).reduce((all, types) => Object.assign(all, types), {});
+export const types: RegistryTypes = Object.values(allDefinitions)
+  .map(({ types }) => types)
+  .reduce((all, types) => Object.assign(all, types), {});

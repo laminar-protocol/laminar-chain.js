@@ -1,5 +1,9 @@
 import { generateInterfaceTypes } from '@polkadot/typegen/generate/interfaceRegistry';
 import { generateTsDef } from '@polkadot/typegen/generate/tsDef';
+import generateConst from '@polkadot/typegen/generate/consts';
+// import generateQuery from '@polkadot/typegen/generate/query';
+import generateTx from '@polkadot/typegen/generate/tx';
+import metaHex from '../src/metadata/static-latest';
 
 import * as defaultDefinations from '@polkadot/types/interfaces/definitions';
 
@@ -20,4 +24,8 @@ const definations = {
 };
 
 generateTsDef(definations, 'packages/types/src/interfaces', '@laminar/types/interfaces');
-generateInterfaceTypes(definations, 'packages/types/src/interfaceRegistry.ts');
+generateInterfaceTypes(definations, 'packages/types/src/augment-types.ts');
+generateConst('packages/types/src/augment-api-consts.ts', metaHex, definations as any);
+generateTx('packages/types/src/augment-api-tx.ts', metaHex, definations as any);
+// @TODO fix error
+// generateQuery('packages/types/src/augment-api-query.ts', metaHex, definations as any);
