@@ -2,28 +2,12 @@ import BN from 'bn.js';
 
 import LaminarContract, { LaminarContractOptions } from './LaminarContract';
 
-import { PoolInfo } from '../types';
-import { TokenName, TradingPairSymbol } from './protocols';
+import { PoolInfo, TokenInfo, FlowApi, TokenName, TradingPairSymbol } from '../types';
 
-class EthereumApi extends LaminarContract {
+class EthereumApi extends LaminarContract implements FlowApi {
   constructor(options: LaminarContractOptions) {
     super(options);
   }
-
-  public getPools = async (): Promise<PoolInfo[]> => {
-    return [
-      {
-        id: this.protocol.addresses.pool,
-        name: 'Laminar',
-        address: this.protocol.addresses.pool
-      },
-      {
-        id: this.protocol.addresses.pool2,
-        name: 'ACME',
-        address: this.protocol.addresses.pool2
-      }
-    ];
-  };
 
   public getBaseTokenAllowance = async (account: string): Promise<string> => {
     return this.tokenContracts.DAI.methods
@@ -43,7 +27,9 @@ class EthereumApi extends LaminarContract {
       .call();
   };
 
-  public getSpread = async (poolAddr: string, tokenAddr: string) => {
+  public getSpread = async (poolAddr: string, tokenName: TokenName) => {
+    const tokenAddr = this.getTokenContract(tokenName).options.address;
+
     const contract = this.createLiquidityPoolContract(poolAddr);
 
     const [askSpread, bidSpread] = await Promise.all<string, string>([
@@ -55,10 +41,10 @@ class EthereumApi extends LaminarContract {
   };
 
   public getPoolOptions = async (poolAddr: string, tokenName: TokenName) => {
-    const tokenAddr = this.tokenContracts[tokenName].options.address;
+    const tokenAddr = this.getTokenContract(tokenName).options.address;
 
     const [{ askSpread, bidSpread }, additionalCollateralRatio] = await Promise.all([
-      this.getSpread(poolAddr, tokenAddr),
+      this.getSpread(poolAddr, tokenName),
       this.createLiquidityPoolContract(poolAddr)
         .methods.getAdditionalCollateralRatio(tokenAddr)
         .call() as Promise<string>
@@ -72,7 +58,7 @@ class EthereumApi extends LaminarContract {
   };
 
   public getTokenLiquidity = async (poolId: string, tokenName: TokenName) => {
-    const tokenAddr = this.tokenContracts[tokenName].options.address;
+    const tokenAddr = this.getTokenContract(tokenName).options.address;
     const contract = this.createLiquidityPoolContract(poolId);
 
     const [ratio, amount] = await Promise.all<number, string>([
@@ -119,6 +105,66 @@ class EthereumApi extends LaminarContract {
 
   public getOrcalePrice = () => {
     throw new Error('not support');
+  };
+
+  public getPools = async (): Promise<PoolInfo[]> => {
+    return [
+      {
+        id: this.protocol.addresses.pool,
+        name: 'Laminar',
+        address: this.protocol.addresses.pool
+      },
+      {
+        id: this.protocol.addresses.pool2,
+        name: 'ACME',
+        address: this.protocol.addresses.pool2
+      }
+    ];
+  };
+
+  public getTokens = async (): Promise<TokenInfo[]> => {
+    return [
+      {
+        name: 'DAI',
+        displayName: 'DAI',
+        precision: 18,
+        isBaseToken: true,
+        isNetworkToken: false,
+        id: 'DAI'
+      },
+      {
+        name: 'EUR',
+        displayName: 'Euro',
+        precision: 18,
+        isBaseToken: false,
+        isNetworkToken: false,
+        id: 'fEUR'
+      },
+      {
+        name: 'JPY',
+        displayName: 'Yen',
+        precision: 18,
+        isBaseToken: false,
+        isNetworkToken: false,
+        id: 'fJPY'
+      },
+      {
+        name: 'XAU',
+        displayName: 'Gold',
+        precision: 18,
+        isBaseToken: false,
+        isNetworkToken: false,
+        id: 'fXAU'
+      },
+      {
+        name: 'AAPL',
+        displayName: 'Apple',
+        precision: 18,
+        isBaseToken: false,
+        isNetworkToken: false,
+        id: 'fAAPL'
+      }
+    ];
   };
 }
 

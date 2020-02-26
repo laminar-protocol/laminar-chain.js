@@ -63,8 +63,10 @@ class LaminarContract implements LaminarContract {
     return this.protocol.tradingPairs[pairSymbol];
   }
 
-  public getTokenContract(tokenName: keyof LaminarContract['tokenContracts']): Contract {
-    return this.tokenContracts[tokenName];
+  public getTokenContract(tokenName: string): Contract {
+    const contract = this.tokenContracts[tokenName as keyof LaminarContract['tokenContracts']];
+    if (!contract) throw new Error(`token ${tokenName} is undefined`);
+    return contract;
   }
 
   public getBaseContract(name: keyof LaminarContract['baseContracts']): Contract {
