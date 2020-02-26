@@ -3,8 +3,8 @@ import * as ormlDefinations from '@orml/types/interfaces/definitions';
 
 import * as laminarDefinations from './interfaces/definitions';
 
-import './interfaces/augment-api';
-import './interfaces/augment-types';
+import './augment-api';
+import './augment-types';
 
 export const allDefinitions = {
   ...ormlDefinations,
