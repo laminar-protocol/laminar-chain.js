@@ -1,7 +1,9 @@
 import { u32 } from '@polkadot/types/primitive';
+import { fromPrecision } from '../utils/precision';
+export default class Permill extends u32 {
+  public precision = 6;
 
-export default class Permill extends u32{
   toJSON() {
-    return super.toJSON()
+    return fromPrecision(super.toJSON(), this.precision);
   }
 }

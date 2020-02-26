@@ -2,7 +2,7 @@
   "extends": "./node_modules/@polkadot/dev/config/tsconfig",
   "exclude": ["build/**/*", "**/build/**/*"],
   "compilerOptions": {
-    "module": "esnext",
+    "module": "commonjs",
     "resolveJsonModule": true,
     "esModuleInterop": true,
     "baseUrl": ".",

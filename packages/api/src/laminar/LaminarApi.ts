@@ -3,7 +3,7 @@ import { ApiPromise, WsProvider } from '@polkadot/api';
 
 import { options } from './options';
 import { FlowApi, TokenInfo, TokenName, PoolOptions } from '../types';
-import { InterfaceRegistry } from '@laminar/types/interfaceRegistry';
+import { Balance, LiquidityPoolId } from '@laminar/types/interfaces';
 
 class LaminarApi implements FlowApi {
   private api: ApiPromise;
@@ -23,7 +23,7 @@ class LaminarApi implements FlowApi {
   }
 
   public getBalance = async (address: string, tokenId: TokenName) => {
-    const result: InterfaceRegistry['Balance'] = await (this.api.derive as any).currencies.balance(address, tokenId);
+    const result: Balance = await (this.api.derive as any).currencies.balance(address, tokenId);
     return result.toString();
   };
 
@@ -106,7 +106,7 @@ class LaminarApi implements FlowApi {
   };
 
   public getPools = async () => {
-    const nextPoolId = await this.api.query.liquidityPools.nextPoolId<InterfaceRegistry['LiquidityPoolId']>();
+    const nextPoolId = await this.api.query.liquidityPools.nextPoolId<LiquidityPoolId>();
 
     return Promise.all(
       Array.from(Array(nextPoolId.toNumber()).keys()).map(id => {

@@ -4,8 +4,6 @@ import * as ormlDefinations from '@orml/types/interfaces/definitions';
 import * as laminarDefinations from './interfaces/definitions';
 import { Permill } from './generic';
 
-export { InterfaceRegistry } from './interfaceRegistry';
-
 export const allDefinitions = {
   ...ormlDefinations,
   ...laminarDefinations
