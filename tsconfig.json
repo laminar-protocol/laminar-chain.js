@@ -1,22 +1,18 @@
 {
-    "extends": "./node_modules/@polkadot/dev/config/tsconfig",
-    "exclude": [
-      "build/**/*",
-      "**/build/**/*"
-    ],
-    "compilerOptions": {
-      "baseUrl": ".",
-      "paths":
-      {
-        "@laminar/api": ["packages/api/src"],
-        "@laminar/api/*": ["packages/api/src/*"],
-        "@laminar/types": ["packages/types/src"],
-        "@laminar/types/*": ["packages/types/src/*"],
-      },
-      "skipLibCheck": true,
-      "typeRoots": [
-        "./node_modules/@polkadot/ts",
-        "./node_modules/@types"
-      ]
-    }
+  "extends": "./node_modules/@polkadot/dev/config/tsconfig",
+  "exclude": ["build/**/*", "**/build/**/*"],
+  "compilerOptions": {
+    "module": "commonjs",
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "baseUrl": ".",
+    "paths": {
+      "@laminar/api": ["packages/api/src"],
+      "@laminar/api/*": ["packages/api/src/*"],
+      "@laminar/types": ["packages/types/src"],
+      "@laminar/types/*": ["packages/types/src/*"]
+    },
+    "skipLibCheck": true,
+    "typeRoots": ["./node_modules/@polkadot/ts", "./node_modules/@types"]
   }
+}

@@ -19,6 +19,11 @@
     "@laminar/types": "beta",
     "@orml/api-derive": "beta",
     "@orml/jsonrpc": "beta",
-    "@polkadot/api": "beta"
+    "@polkadot/api": "beta",
+    "flow-protocol-ethereum": "laminar-protocol/flow-protocol-ethereum",
+    "web3": "1.2.6",
+    "web3-core": "1.2.6",
+    "web3-eth-contract": "1.2.6",
+    "web3-utils": "1.2.6"
   }
 }
