@@ -6,16 +6,18 @@ import { FlowApi, TokenInfo, TokenName, PoolOptions } from '../types';
 import { Balance, LiquidityPoolId, LiquidityPoolOption } from '@laminar/types/interfaces';
 import { Option } from '@polkadot/types/codec';
 
+interface LaminarApiOptions {
+  provider: WsProvider;
+}
+
 class LaminarApi implements FlowApi {
   private api: ApiPromise;
 
-  constructor() {
+  constructor({ provider }: LaminarApiOptions) {
     this.api = new ApiPromise(
       options({
-        provider: new WsProvider(
-          'wss://node-6636393196323627008.jm.onfinality.io/ws?apikey=20cf0fa0-c7ee-4545-8227-4d488f71c6d2'
-        )
-      }) as any
+        provider: provider
+      })
     );
   }
 
