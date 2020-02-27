@@ -2,7 +2,11 @@ import { RegistryTypes } from '@polkadot/types/types';
 import * as ormlDefinations from '@orml/types/interfaces/definitions';
 
 import * as laminarDefinations from './interfaces/definitions';
+
 import { Permill } from './generic';
+
+import './augment-api';
+import './augment-types';
 
 export const allDefinitions = {
   ...ormlDefinations,
