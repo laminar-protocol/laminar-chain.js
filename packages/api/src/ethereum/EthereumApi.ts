@@ -1,14 +1,10 @@
 import BN from 'bn.js';
 
-import LaminarContract, { LaminarContractOptions } from './LaminarContract';
+import LaminarContract from './LaminarContract';
 
-import { PoolInfo, TokenInfo, FlowApi, TokenName, TradingPairSymbol } from '../types';
+import { PoolInfo, TokenInfo, FlowApi, TokenName, TradingPairSymbol, PoolOptions } from '../types';
 
 class EthereumApi extends LaminarContract implements FlowApi {
-  constructor(options: LaminarContractOptions) {
-    super(options);
-  }
-
   public getBaseTokenAllowance = async (account: string): Promise<string> => {
     return this.tokenContracts.DAI.methods
       .allowance(account, this.baseContracts.flowMarginProtocol.options.address)
@@ -27,12 +23,18 @@ class EthereumApi extends LaminarContract implements FlowApi {
       .call();
   };
 
-  public getSpread = async (poolAddr: string, tokenName: TokenName) => {
+  public getSpread = async (
+    poolAddr: string,
+    tokenName: TokenName
+  ): Promise<{
+    askSpread: number;
+    bidSpread: number;
+  }> => {
     const tokenAddr = this.getTokenContract(tokenName).options.address;
 
     const contract = this.createLiquidityPoolContract(poolAddr);
 
-    const [askSpread, bidSpread] = await Promise.all<string, string>([
+    const [askSpread, bidSpread] = await Promise.all<number, number>([
       contract.methods.getAskSpread(tokenAddr).call(),
       contract.methods.getBidSpread(tokenAddr).call()
     ]);
@@ -40,14 +42,14 @@ class EthereumApi extends LaminarContract implements FlowApi {
     return { askSpread, bidSpread };
   };
 
-  public getPoolOptions = async (poolAddr: string, tokenName: TokenName) => {
+  public getPoolOptions = async (poolAddr: string, tokenName: TokenName): Promise<PoolOptions> => {
     const tokenAddr = this.getTokenContract(tokenName).options.address;
 
     const [{ askSpread, bidSpread }, additionalCollateralRatio] = await Promise.all([
       this.getSpread(poolAddr, tokenName),
       this.createLiquidityPoolContract(poolAddr)
         .methods.getAdditionalCollateralRatio(tokenAddr)
-        .call() as Promise<string>
+        .call() as Promise<number>
     ]);
 
     return {
@@ -57,7 +59,7 @@ class EthereumApi extends LaminarContract implements FlowApi {
     };
   };
 
-  public getTokenLiquidity = async (poolId: string, tokenName: TokenName) => {
+  public getTokenLiquidity = async (poolId: string, tokenName: TokenName): Promise<string> => {
     const tokenAddr = this.getTokenContract(tokenName).options.address;
     const contract = this.createLiquidityPoolContract(poolId);
 

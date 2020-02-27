@@ -3,7 +3,8 @@ import { ApiPromise, WsProvider } from '@polkadot/api';
 
 import { options } from './options';
 import { FlowApi, TokenInfo, TokenName, PoolOptions } from '../types';
-import { Balance, LiquidityPoolId } from '@laminar/types/interfaces';
+import { Balance, LiquidityPoolId, LiquidityPoolOption } from '@laminar/types/interfaces';
+import { Option } from '@polkadot/types/codec';
 
 class LaminarApi implements FlowApi {
   private api: ApiPromise;
@@ -18,78 +19,48 @@ class LaminarApi implements FlowApi {
     );
   }
 
-  private parsePoolId(str: string) {
+  private parsePoolId = (str: string) => {
     return str.split('//');
-  }
+  };
+
+  private extrinsicHelper = (extrinsic: any, signOption: any) => {
+    return new Promise((resolve, reject) => {
+      extrinsic.signAndSend(signOption, (result: any) => {
+        if (result.status.isFinalized || result.status.isInBlock) {
+          result.events
+            .filter(({ event: { section } }: any): boolean => section === 'system')
+            .forEach(({ event: { method } }: any): void => {
+              if (method === 'ExtrinsicFailed') {
+                reject(result);
+              } else if (method === 'ExtrinsicSuccess') {
+                resolve(result);
+              }
+            });
+        } else if (result.isError) {
+          reject(result);
+        }
+      });
+    });
+  };
 
   public getBalance = async (address: string, tokenId: TokenName) => {
     const result: Balance = await (this.api.derive as any).currencies.balance(address, tokenId);
     return result.toString();
   };
 
-  public redeem = async (account: string, poolId: string, fromToken: string, fromAmount: string) => {
-    return new Promise((resolve, reject) => {
-      this.api.tx.syntheticProtocol.redeem(poolId, fromToken, fromAmount, '1000000').signAndSend(account, result => {
-        if (result.status.isFinalized || result.status.isInBlock) {
-          result.events
-            .filter(({ event: { section } }): boolean => section === 'system')
-            .forEach(({ event: { method } }): void => {
-              if (method === 'ExtrinsicFailed') {
-                reject(result);
-              } else if (method === 'ExtrinsicSuccess') {
-                resolve(result);
-              }
-            });
-        } else if (result.isError) {
-          reject(result);
-        }
-      });
-    });
-  };
-
-  public mint = async (account: string, poolId: string, toToken: string, fromAmount: string) => {
-    return new Promise((resolve, reject) => {
-      this.api.tx.syntheticProtocol.mint(poolId, toToken, fromAmount, '1000000').signAndSend(account, result => {
-        if (result.status.isFinalized || result.status.isInBlock) {
-          result.events
-            .filter(({ event: { section } }): boolean => section === 'system')
-            .forEach(({ event: { method } }): void => {
-              if (method === 'ExtrinsicFailed') {
-                reject(result);
-              } else if (method === 'ExtrinsicSuccess') {
-                resolve(result);
-              }
-            });
-        } else if (result.isError) {
-          reject(result);
-        }
-      });
-    });
-  };
-
   public getPoolOptions = async (poolId: string, tokenId: string): Promise<PoolOptions> => {
-    const data = await this.api.query.liquidityPools.liquidityPoolOptions<
-      InterfaceRegistry['Option<LiquidityPoolOption>']
-    >(poolId, tokenId);
+    const data = await this.api.query.liquidityPools.liquidityPoolOptions<Option<LiquidityPoolOption>>(poolId, tokenId);
 
-    // if (!data) {
-    return {
-      bidSpread: null,
-      askSpread: null,
-      additionalCollateralRatio: null
-    };
-    // }
+    if (!data) {
+      return {
+        bidSpread: null,
+        askSpread: null,
+        additionalCollateralRatio: null
+      };
+    }
+    const options = data.value as LiquidityPoolOption;
 
-    // const askSpread = data.askSpread;
-    // const bidSpread = (data.value as any).get('bidSpread');
-    // const additionalCollateralRatio = data.additionalCollateralRatio;
-
-    // return {
-    //   bidSpread: data.bidSpread !== null ? fromPrecision(bidSpread.toString(10), 6) : null,
-    //   askSpread: askSpread !== null ? fromPrecision(askSpread.toString(10), 6) : null,
-    //   additionalCollateralRatio:
-    //     additionalCollateralRatio !== null ? fromPrecision(additionalCollateralRatio.toString(10), 6) : null
-    // };
+    return options.toJSON() as any;
   };
 
   public getOrcalePrice = async (tokenId: TokenName) => {
@@ -103,6 +74,16 @@ class LaminarApi implements FlowApi {
     const balance = await this.getBalance(poolAddr, tokenId);
     const { additionalCollateralRatio } = await this.getPoolOptions(poolId, tokenId);
     return new BN(balance).mul(new BN(1 + Number(additionalCollateralRatio))).toString();
+  };
+
+  public redeem = async (account: string, poolId: string, fromToken: TokenName, fromAmount: string) => {
+    const extrinsic = this.api.tx.syntheticProtocol.redeem(poolId, fromToken as any, fromAmount, '1000000');
+    return this.extrinsicHelper(extrinsic, account);
+  };
+
+  public mint = async (account: string, poolId: string, toToken: TokenName, fromAmount: string) => {
+    const extrinsic = this.api.tx.syntheticProtocol.mint(poolId, toToken as any, fromAmount, '1000000');
+    return this.extrinsicHelper(extrinsic, account);
   };
 
   public getPools = async () => {

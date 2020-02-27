@@ -21,9 +21,9 @@ export interface TokenInfo {
 }
 
 export interface PoolOptions {
-  additionalCollateralRatio: string | null;
-  askSpread: string | null;
-  bidSpread: string | null;
+  additionalCollateralRatio: number | null;
+  askSpread: number | null;
+  bidSpread: number | null;
 }
 
 export interface FlowApi {

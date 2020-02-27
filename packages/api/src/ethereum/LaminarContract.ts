@@ -3,7 +3,7 @@ import { Contract } from 'web3-eth-contract';
 import { AbiItem } from 'web3-utils';
 import { provider as Web3Provider } from 'web3-core';
 
-import protocols, { TokenName, TradingPairSymbol, Protocol, ProtocolType } from './protocols';
+import protocols, { TokenName, TradingPairSymbol, Protocol, ProtocolType, TradingPair } from './protocols';
 
 export interface LaminarContractOptions {
   provider: Web3Provider;
@@ -59,7 +59,7 @@ class LaminarContract implements LaminarContract {
     return new this.web3.eth.Contract(abi, address);
   }
 
-  public getTradingPairInfo(pairSymbol: TradingPairSymbol) {
+  public getTradingPairInfo(pairSymbol: TradingPairSymbol): TradingPair {
     return this.protocol.tradingPairs[pairSymbol];
   }
 
@@ -73,7 +73,7 @@ class LaminarContract implements LaminarContract {
     return this.baseContracts[name];
   }
 
-  public createLiquidityPoolContract(poolAddress: string) {
+  public createLiquidityPoolContract(poolAddress: string): Contract {
     return this.createContract(this.protocol.abis.LiquidityPoolInterface, poolAddress);
   }
 

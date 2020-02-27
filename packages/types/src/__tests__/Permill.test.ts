@@ -1,14 +1,13 @@
-import Metadata from '@polkadot/metadata/Metadata';
+// import Metadata from '@polkadot/metadata/Metadata';
 import { TypeRegistry } from '@polkadot/types';
 import { types } from '../index';
-import metadataStatic from '../metadata/static-latest';
+// import metadataStatic from '../metadata/static-latest';
 
 describe('permill', () => {
   const registry = new TypeRegistry();
   registry.register(types);
   const Permill: any = registry.get('Permill');
 
-  console.log(Permill);
   it('toJSON', () => {
     expect(new Permill(registry, 0).toJSON()).toBe('0');
     expect(new Permill(registry, 1).toJSON()).toBe('0.000001');
