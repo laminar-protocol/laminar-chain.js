@@ -37,7 +37,7 @@ export interface FlowApi {
 
   mint(account: string, poolId: string, toSymbol: string, fromAmount: string): Promise<any>;
 
-  getOrcalePrice(tokenName: string): Promise<string>;
+  getOraclePrice(tokenName: string): Promise<string>;
 
   getPools(): Promise<PoolInfo[]>;
 

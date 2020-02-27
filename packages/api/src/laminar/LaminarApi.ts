@@ -65,7 +65,7 @@ class LaminarApi implements FlowApi {
     return options.toJSON() as any;
   };
 
-  public getOrcalePrice = async (tokenId: TokenName) => {
+  public getOraclePrice = async (tokenId: TokenName) => {
     const result = await (this.api.rpc as any).oracle.getValue(tokenId);
     return result.value.get('value');
   };

@@ -105,7 +105,7 @@ class EthereumApi extends LaminarContract implements FlowApi {
       .send({ from: account });
   };
 
-  public getOrcalePrice = () => {
+  public getOraclePrice = () => {
     throw new Error('not support');
   };
 
