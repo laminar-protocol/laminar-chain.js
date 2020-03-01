@@ -56,7 +56,7 @@ describe('ethereum api', () => {
       console.log(`${tokenName}: balance: ${result}`);
       return expect(typeof result).toBe('string');
     };
-    await expect(api.getBalance(address1, 'LAMII')).rejects.toThrowError();
+    await expect(api.getBalance(address1, 'LAMII' as any)).rejects.toThrowError();
 
     return Promise.all(tokenNames.map(token => testFn(address1, token)));
   });
