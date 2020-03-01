@@ -1,17 +1,20 @@
 import BN from 'bn.js';
+import { fromWei } from 'web3-utils';
 
 import LaminarContract from './LaminarContract';
 
 import { PoolInfo, TokenInfo, FlowApi, TokenName, TradingPairSymbol, PoolOptions } from '../types';
 
 class EthereumApi extends LaminarContract implements FlowApi {
+  public isReady = async () => {};
+
   public getBaseTokenAllowance = async (account: string): Promise<string> => {
     return this.tokenContracts.DAI.methods
       .allowance(account, this.baseContracts.flowMarginProtocol.options.address)
       .call();
   };
 
-  public getTokenAllowance = async (account: string, tokenName: TokenName, address: string): Promise<string> => {
+  public getTokenAllowance = async (account: string, tokenName: TokenName, address?: string): Promise<string> => {
     const grantAddress = address || this.baseContracts.flowProtocol.options.address;
     const contract = this.getTokenContract(tokenName);
     return contract.methods.allowance(account, grantAddress).call();
@@ -34,12 +37,12 @@ class EthereumApi extends LaminarContract implements FlowApi {
 
     const contract = this.createLiquidityPoolContract(poolAddr);
 
-    const [askSpread, bidSpread] = await Promise.all<number, number>([
+    const [askSpread, bidSpread] = await Promise.all<string, string>([
       contract.methods.getAskSpread(tokenAddr).call(),
       contract.methods.getBidSpread(tokenAddr).call()
     ]);
 
-    return { askSpread, bidSpread };
+    return { askSpread: Number(fromWei(askSpread)), bidSpread: Number(fromWei(bidSpread)) };
   };
 
   public getPoolOptions = async (poolAddr: string, tokenName: TokenName): Promise<PoolOptions> => {
@@ -49,11 +52,11 @@ class EthereumApi extends LaminarContract implements FlowApi {
       this.getSpread(poolAddr, tokenName),
       this.createLiquidityPoolContract(poolAddr)
         .methods.getAdditionalCollateralRatio(tokenAddr)
-        .call() as Promise<number>
+        .call() as Promise<string>
     ]);
 
     return {
-      additionalCollateralRatio,
+      additionalCollateralRatio: Number(additionalCollateralRatio),
       askSpread,
       bidSpread
     };

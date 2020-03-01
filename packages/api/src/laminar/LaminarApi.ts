@@ -45,12 +45,17 @@ class LaminarApi implements FlowApi {
     });
   };
 
+  public isReady = async () => {
+    return this.api.isReady;
+  };
+
   public getBalance = async (address: string, tokenId: TokenName) => {
     const result: Balance = await (this.api.derive as any).currencies.balance(address, tokenId);
     return result.toString();
   };
 
-  public getPoolOptions = async (poolId: string, tokenId: string): Promise<PoolOptions> => {
+  public getPoolOptions = async (_poolId: string, tokenId: string): Promise<PoolOptions> => {
+    const [poolId] = this.parsePoolId(_poolId);
     const data = await this.api.query.liquidityPools.liquidityPoolOptions<Option<LiquidityPoolOption>>(poolId, tokenId);
 
     if (!data) {

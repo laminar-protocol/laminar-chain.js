@@ -27,11 +27,13 @@ export interface PoolOptions {
 }
 
 export interface FlowApi {
+  isReady(): Promise<any>;
+
   getBalance(address: string, tokenName: TokenName): Promise<string>;
 
   getPoolOptions(poolId: string, tokenName: TokenName): Promise<PoolOptions>;
 
-  getTokenLiquidity(poolAddr: string, tokenName: TokenName): Promise<string>;
+  getTokenLiquidity(poolId: string, tokenName: TokenName): Promise<string>;
 
   redeem(account: string, poolId: string, fromSymbol: string, fromAmount: string): Promise<any>;
 
