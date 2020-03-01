@@ -1,13 +1,19 @@
-import { TokenName as EthTokenName, TradingPairSymbol as EthTradingPairSymbol } from './ethereum/protocols';
+import {
+  TokenName as EthTokenName,
+  TradingPairSymbol as EthTradingPairSymbol,
+  TradingPair as EthTradingPair
+} from './ethereum/protocols';
 
 export type LaminarTokenName = 'LAMI' | 'AUSD' | 'FEUR' | 'FJPY' | 'FBTC' | 'FETH';
 
 export type TokenName = EthTokenName | LaminarTokenName;
 export type TradingPairSymbol = EthTradingPairSymbol;
+export type TradingPair = EthTradingPair;
 
 export interface PoolInfo {
   id: string;
   name: string;
+  isDefault: boolean;
   address: string;
 }
 
@@ -33,7 +39,7 @@ export interface FlowApi {
 
   getPoolOptions(poolId: string, tokenName: TokenName): Promise<PoolOptions>;
 
-  getTokenLiquidity(poolId: string, tokenName: TokenName): Promise<string>;
+  getLiquidity(poolId: string): Promise<string>;
 
   redeem(account: string, poolId: string, fromSymbol: string, fromAmount: string): Promise<any>;
 
@@ -41,7 +47,9 @@ export interface FlowApi {
 
   getOraclePrice(tokenName: string): Promise<string>;
 
-  getPools(): Promise<PoolInfo[]>;
+  getDefaultPools(): Promise<PoolInfo[]>;
 
   getTokens(): Promise<TokenInfo[]>;
+
+  getTradingPairs(): Promise<TradingPair[]>;
 }

@@ -42,6 +42,7 @@ export type TokenName = typeof tokenNames[number];
 export type TradingPairSymbol = typeof tradingPairSymbols[number];
 
 export interface TradingPair {
+  id: string;
   symbol: TradingPairSymbol;
   base: TokenName;
   quote: TokenName;
@@ -59,6 +60,7 @@ export interface Protocol {
 
 const getTradingPairs = (addresses: typeof KovanAddresses): Protocol['tradingPairs'] => ({
   l10USDEUR: {
+    id: 'l10USDEUR',
     symbol: 'l10USDEUR',
     base: 'DAI',
     quote: 'fEUR',
@@ -67,6 +69,7 @@ const getTradingPairs = (addresses: typeof KovanAddresses): Protocol['tradingPai
     name: 'USDEUR 10× Long'
   },
   s10USDEUR: {
+    id: 's10USDEUR',
     symbol: 's10USDEUR',
     base: 'DAI',
     quote: 'fEUR',
@@ -75,6 +78,7 @@ const getTradingPairs = (addresses: typeof KovanAddresses): Protocol['tradingPai
     name: 'USDEUR 10× Short'
   },
   l20USDJPY: {
+    id: 'l20USDJPY',
     symbol: 'l20USDJPY',
     base: 'DAI',
     quote: 'fJPY',
@@ -83,6 +87,7 @@ const getTradingPairs = (addresses: typeof KovanAddresses): Protocol['tradingPai
     name: 'USDJPY 20× Long'
   },
   s20USDJPY: {
+    id: 's20USDJPY',
     symbol: 's20USDJPY',
     base: 'DAI',
     quote: 'fJPY',
@@ -91,6 +96,7 @@ const getTradingPairs = (addresses: typeof KovanAddresses): Protocol['tradingPai
     name: 'USDJPY 20× Short'
   },
   l20USDXAU: {
+    id: 'l20USDXAU',
     symbol: 'l20USDXAU',
     base: 'DAI',
     quote: 'fXAU',
@@ -99,6 +105,7 @@ const getTradingPairs = (addresses: typeof KovanAddresses): Protocol['tradingPai
     name: 'XAUUSD 20× Long'
   },
   s20USDXAU: {
+    id: 's20USDXAU',
     symbol: 's20USDXAU',
     base: 'DAI',
     quote: 'fXAU',
@@ -107,6 +114,7 @@ const getTradingPairs = (addresses: typeof KovanAddresses): Protocol['tradingPai
     name: 'XAUUSD 20× Short'
   },
   l5USDAAPL: {
+    id: 'l5USDAAPL',
     symbol: 'l5USDAAPL',
     base: 'DAI',
     quote: 'fAAPL',
@@ -115,6 +123,7 @@ const getTradingPairs = (addresses: typeof KovanAddresses): Protocol['tradingPai
     name: 'AAPL 5× Long'
   },
   s5USDAAPL: {
+    id: 's5USDAAPL',
     symbol: 's5USDAAPL',
     base: 'DAI',
     quote: 'fAAPL',
