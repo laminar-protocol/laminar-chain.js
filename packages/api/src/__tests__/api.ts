@@ -5,8 +5,8 @@ import Web3 from 'web3';
 describe('ethereum api', () => {
   jest.setTimeout(300000);
 
-  // const chain = 'ethereum';
-  const chain = 'laminar';
+  const chain = 'ethereum';
+  // const chain = 'laminar';
 
   const getConfig = key => {
     if (key === 'ethereum') {
@@ -20,7 +20,7 @@ describe('ethereum api', () => {
       return {
         api: new LaminarApi({
           provider: new WsProvider(
-            'wss://node-6636393196323627008.jm.onfinality.io/ws?apikey=20cf0fa0-c7ee-4545-8227-4d488f71c6d2'
+            'wss://testnet-node-1.laminar-chain.laminar.one/ws'
           )
         }),
         address1: '5FBf5sTp3xZH7WhBMkTmMgrNQUyLmfTpGerwsEuAbC5fWVay'
