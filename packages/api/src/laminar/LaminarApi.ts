@@ -1,21 +1,23 @@
 import { ApiPromise, WsProvider } from '@polkadot/api';
+import { ApiOptions } from '@polkadot/api/types';
 
-import { options } from './options';
-import { FlowApi, TokenInfo, TokenName, PoolOptions, TradingPair } from '../types';
+import { options as getOptions } from './options';
+import { FlowApi, TokenInfo, TokenId, PoolOptions, TradingPair } from '../types';
 import { Balance, LiquidityPoolOption } from '@laminar/types/interfaces';
 import { Option } from '@polkadot/types/codec';
 
-interface LaminarApiOptions {
+interface LaminarApiOptions extends ApiOptions {
   provider: WsProvider;
 }
 
 class LaminarApi implements FlowApi {
   private api: ApiPromise;
 
-  constructor({ provider }: LaminarApiOptions) {
+  constructor(options: LaminarApiOptions) {
     this.api = new ApiPromise(
-      options({
-        provider: provider
+      getOptions({
+        ...options,
+        provider: options.provider
       })
     );
   }
@@ -44,28 +46,34 @@ class LaminarApi implements FlowApi {
     return this.api.isReady;
   };
 
-  public getBalance = async (address: string, tokenId: TokenName) => {
+  public getBalance = async (address: string, tokenId: TokenId) => {
     const result: Balance = await (this.api.derive as any).currencies.balance(address, tokenId);
     return result.toString();
   };
 
-  public getPoolOptions = async (poolId: string, tokenId: string): Promise<PoolOptions> => {
+  public getPoolOptions = async (poolId: string, tokenId: TokenId): Promise<PoolOptions> => {
     const data = await this.api.query.liquidityPools.liquidityPoolOptions<Option<LiquidityPoolOption>>(poolId, tokenId);
     const json = data.toJSON() as any;
 
-    console.error(poolId, tokenId, json);
     if (!json) {
       return {
+        poolId,
+        tokenId,
         bidSpread: null,
         askSpread: null,
-        additionalCollateralRatio: null
+        additionalCollateralRatio: null,
+        syntheticEnabled: false
       };
     } else {
-      return json;
+      return {
+        poolId,
+        tokenId,
+        ...json
+      };
     }
   };
 
-  public getOraclePrice = async (tokenId: TokenName) => {
+  public getOraclePrice = async (tokenId: TokenId) => {
     const result = await (this.api.rpc as any).oracle.getValue(tokenId);
     return result.value.get('value');
   };
@@ -74,12 +82,12 @@ class LaminarApi implements FlowApi {
     return (await this.api.query.liquidityPools.balances<Balance>(poolId)).toString();
   };
 
-  public redeem = async (account: string, poolId: string, fromToken: TokenName, fromAmount: string) => {
+  public redeem = async (account: string, poolId: string, fromToken: TokenId, fromAmount: string) => {
     const extrinsic = this.api.tx.syntheticProtocol.redeem(poolId, fromToken as any, fromAmount, '1000000');
     return this.extrinsicHelper(extrinsic, account);
   };
 
-  public mint = async (account: string, poolId: string, toToken: TokenName, fromAmount: string) => {
+  public mint = async (account: string, poolId: string, toToken: TokenId, fromAmount: string) => {
     const extrinsic = this.api.tx.syntheticProtocol.mint(poolId, toToken as any, fromAmount, '1000000');
     return this.extrinsicHelper(extrinsic, account);
   };
