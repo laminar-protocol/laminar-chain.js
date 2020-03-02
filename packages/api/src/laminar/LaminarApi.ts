@@ -3,7 +3,7 @@ import { ApiOptions } from '@polkadot/api/types';
 
 import { options as getOptions } from './options';
 import { FlowApi, TokenInfo, TokenId, PoolOptions, TradingPair } from '../types';
-import { Balance, LiquidityPoolOption } from '@laminar/types/interfaces';
+import { Balance, LiquidityPoolOption, Permill } from '@laminar/types/interfaces';
 import { Option } from '@polkadot/types/codec';
 
 interface LaminarApiOptions extends ApiOptions {
@@ -12,7 +12,7 @@ interface LaminarApiOptions extends ApiOptions {
 
 class LaminarApi implements FlowApi {
   private api: ApiPromise;
-
+  private minAdditionalCollateralRatio?: number;
   constructor(options: LaminarApiOptions) {
     this.api = new ApiPromise(
       getOptions({
@@ -55,20 +55,27 @@ class LaminarApi implements FlowApi {
     const data = await this.api.query.liquidityPools.liquidityPoolOptions<Option<LiquidityPoolOption>>(poolId, tokenId);
     const json = data.toJSON() as any;
 
+    if (!this.minAdditionalCollateralRatio) {
+      this.minAdditionalCollateralRatio = (
+        await this.api.query.liquidityPools.minAdditionalCollateralRatio<Permill>()
+      ).toJSON() as number;
+    }
+
     if (!json) {
       return {
         poolId,
         tokenId,
         bidSpread: null,
         askSpread: null,
-        additionalCollateralRatio: null,
+        additionalCollateralRatio: this.minAdditionalCollateralRatio,
         syntheticEnabled: false
       };
     } else {
       return {
+        ...json,
+        additionalCollateralRatio: Math.max(this.minAdditionalCollateralRatio, json.additionalCollateralRatio),
         poolId,
-        tokenId,
-        ...json
+        tokenId
       };
     }
   };
