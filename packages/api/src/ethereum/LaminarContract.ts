@@ -3,7 +3,7 @@ import { Contract } from 'web3-eth-contract';
 import { AbiItem } from 'web3-utils';
 import { provider as Web3Provider } from 'web3-core';
 
-import protocols, { TokenName, TradingPairSymbol, Protocol, ProtocolType, TradingPair } from './protocols';
+import protocols, { TokenId, TradingPairSymbol, Protocol, ProtocolType, TradingPair } from './protocols';
 
 export interface LaminarContractOptions {
   provider: Web3Provider;
@@ -15,7 +15,7 @@ interface LaminarContract {
   web3: Web3;
   protocol: Protocol;
   baseContracts: Record<'flowProtocol' | 'flowMarginProtocol' | 'oracle' | 'moneyMarket' | 'daiFaucet', Contract>;
-  tokenContracts: Record<TokenName | 'iUSD', Contract>;
+  tokenContracts: Record<TokenId | 'iUSD', Contract>;
   tradingPairContracts: Record<TradingPairSymbol, Contract>;
 }
 
@@ -63,9 +63,9 @@ class LaminarContract implements LaminarContract {
     return this.protocol.tradingPairs[pairSymbol];
   }
 
-  public getTokenContract(tokenName: string): Contract {
-    const contract = this.tokenContracts[tokenName as keyof LaminarContract['tokenContracts']];
-    if (!contract) throw new Error(`token ${tokenName} is undefined`);
+  public getTokenContract(tokenId: string): Contract {
+    const contract = this.tokenContracts[tokenId as keyof LaminarContract['tokenContracts']];
+    if (!contract) throw new Error(`token ${tokenId} is undefined`);
     return contract;
   }
 
@@ -73,8 +73,8 @@ class LaminarContract implements LaminarContract {
     return this.baseContracts[name];
   }
 
-  public createLiquidityPoolContract(poolAddress: string): Contract {
-    return this.createContract(this.protocol.abis.LiquidityPoolInterface, poolAddress);
+  public createLiquidityPoolContract(poolId: string): Contract {
+    return this.createContract(this.protocol.abis.LiquidityPoolInterface, poolId);
   }
 
   public getNetworkType = async (): Promise<string> => this.web3.eth.net.getNetworkType();

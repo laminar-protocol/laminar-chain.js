@@ -1,12 +1,12 @@
 import {
-  TokenName as EthTokenName,
+  TokenId as EthTokenId,
   TradingPairSymbol as EthTradingPairSymbol,
   TradingPair as EthTradingPair
 } from './ethereum/protocols';
 
-export type LaminarTokenName = 'LAMI' | 'AUSD' | 'FEUR' | 'FJPY' | 'FBTC' | 'FETH';
+export type LaminarTokenId = 'LAMI' | 'AUSD' | 'FEUR' | 'FJPY' | 'FBTC' | 'FETH';
 
-export type TokenName = EthTokenName | LaminarTokenName;
+export type TokenId = EthTokenId | LaminarTokenId;
 export type TradingPairSymbol = EthTradingPairSymbol;
 export type TradingPair = EthTradingPair;
 
@@ -18,26 +18,29 @@ export interface PoolInfo {
 }
 
 export interface TokenInfo {
+  id: TokenId;
   name: string;
   displayName: string;
   precision: number;
   isBaseToken: boolean;
   isNetworkToken: boolean;
-  id: string;
 }
 
 export interface PoolOptions {
+  poolId: PoolInfo['id'];
+  tokenId: TokenInfo['id'];
   additionalCollateralRatio: number | null;
   askSpread: number | null;
   bidSpread: number | null;
+  syntheticEnabled: boolean;
 }
 
 export interface FlowApi {
   isReady(): Promise<any>;
 
-  getBalance(address: string, tokenName: TokenName): Promise<string>;
+  getBalance(address: string, tokenName: TokenId): Promise<string>;
 
-  getPoolOptions(poolId: string, tokenName: TokenName): Promise<PoolOptions>;
+  getPoolOptions(poolId: string, tokenName: TokenId): Promise<PoolOptions>;
 
   getLiquidity(poolId: string): Promise<string>;
 

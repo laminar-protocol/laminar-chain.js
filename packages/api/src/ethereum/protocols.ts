@@ -21,7 +21,7 @@ export const abis = [
   'MoneyMarket',
   'PriceOracleInterface'
 ] as const;
-export const tokenNames = ['DAI', 'fEUR', 'fJPY', 'fXAU', 'fAAPL'] as const;
+export const tokenId = ['DAI', 'fEUR', 'fJPY', 'fXAU', 'fAAPL'] as const;
 export const tradingPairSymbols = [
   'l10USDEUR',
   's10USDEUR',
@@ -37,15 +37,15 @@ export type ProtocolType = 'kovan';
 
 export type AbiName = typeof abis[number];
 
-export type TokenName = typeof tokenNames[number];
+export type TokenId = typeof tokenId[number];
 
 export type TradingPairSymbol = typeof tradingPairSymbols[number];
 
 export interface TradingPair {
   id: string;
   symbol: TradingPairSymbol;
-  base: TokenName;
-  quote: TokenName;
+  base: TokenId;
+  quote: TokenId;
   leverage: number;
   address: string;
   name: string;
