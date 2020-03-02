@@ -5,7 +5,7 @@ import LaminarContract from './LaminarContract';
 import { PoolInfo, TokenInfo, FlowApi, TokenName, TradingPairSymbol, PoolOptions, TradingPair } from '../types';
 
 class EthereumApi extends LaminarContract implements FlowApi {
-  public isReady = async () => {};
+  public isReady = async () => true;
 
   public getBaseTokenAllowance = async (account: string): Promise<string> => {
     return this.tokenContracts.DAI.methods
