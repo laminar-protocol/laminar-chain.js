@@ -1,9 +1,8 @@
-import BN from 'bn.js';
 import { ApiPromise, WsProvider } from '@polkadot/api';
 
 import { options } from './options';
-import { FlowApi, TokenInfo, TokenName, PoolOptions } from '../types';
-import { Balance, LiquidityPoolId, LiquidityPoolOption } from '@laminar/types/interfaces';
+import { FlowApi, TokenInfo, TokenName, PoolOptions, TradingPair } from '../types';
+import { Balance, LiquidityPoolOption } from '@laminar/types/interfaces';
 import { Option } from '@polkadot/types/codec';
 
 interface LaminarApiOptions {
@@ -20,10 +19,6 @@ class LaminarApi implements FlowApi {
       })
     );
   }
-
-  private parsePoolId = (str: string) => {
-    return str.split('//');
-  };
 
   private extrinsicHelper = (extrinsic: any, signOption: any) => {
     return new Promise((resolve, reject) => {
@@ -45,6 +40,10 @@ class LaminarApi implements FlowApi {
     });
   };
 
+  public isReady = async () => {
+    return this.api.isReady;
+  };
+
   public getBalance = async (address: string, tokenId: TokenName) => {
     const result: Balance = await (this.api.derive as any).currencies.balance(address, tokenId);
     return result.toString();
@@ -52,17 +51,18 @@ class LaminarApi implements FlowApi {
 
   public getPoolOptions = async (poolId: string, tokenId: string): Promise<PoolOptions> => {
     const data = await this.api.query.liquidityPools.liquidityPoolOptions<Option<LiquidityPoolOption>>(poolId, tokenId);
+    const json = data.toJSON() as any;
 
-    if (!data) {
+    console.error(poolId, tokenId, json);
+    if (!json) {
       return {
         bidSpread: null,
         askSpread: null,
         additionalCollateralRatio: null
       };
+    } else {
+      return json;
     }
-    const options = data.value as LiquidityPoolOption;
-
-    return options.toJSON() as any;
   };
 
   public getOraclePrice = async (tokenId: TokenName) => {
@@ -70,12 +70,8 @@ class LaminarApi implements FlowApi {
     return result.value.get('value');
   };
 
-  public getTokenLiquidity = async (_poolId: string, tokenId: TokenName) => {
-    const [poolId, poolAddr] = this.parsePoolId(_poolId);
-
-    const balance = await this.getBalance(poolAddr, tokenId);
-    const { additionalCollateralRatio } = await this.getPoolOptions(poolId, tokenId);
-    return new BN(balance).mul(new BN(1 + Number(additionalCollateralRatio))).toString();
+  public getLiquidity = async (poolId: string): Promise<string> => {
+    return (await this.api.query.liquidityPools.balances<Balance>(poolId)).toString();
   };
 
   public redeem = async (account: string, poolId: string, fromToken: TokenName, fromAmount: string) => {
@@ -88,19 +84,20 @@ class LaminarApi implements FlowApi {
     return this.extrinsicHelper(extrinsic, account);
   };
 
-  public getPools = async () => {
-    const nextPoolId = await this.api.query.liquidityPools.nextPoolId<LiquidityPoolId>();
+  public getDefaultPools = async () => {
+    // const nextPoolId = await this.api.query.liquidityPools.nextPoolId<LiquidityPoolId>();
 
     return Promise.all(
-      Array.from(Array(nextPoolId.toNumber()).keys()).map(id => {
+      ['0'].map(id => {
         return this.api.query.liquidityPools.owners(id).then(result => {
           // @TODO fixme
           const address = (result.toJSON() && result.toJSON()) as string;
 
           return {
-            id: `${id}//${address}`,
+            id: `${id}`,
             address,
-            name: address.slice(0, 12)
+            isDefault: true,
+            name: `${id}//${address.slice(0, 12)}`
           };
         });
       })
@@ -157,6 +154,10 @@ class LaminarApi implements FlowApi {
       id: 'FETH'
     }
   ];
+
+  public getTradingPairs = async (): Promise<TradingPair[]> => {
+    return [];
+  };
 }
 
 export default LaminarApi;

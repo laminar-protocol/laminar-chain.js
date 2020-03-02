@@ -1,17 +1,19 @@
-import BN from 'bn.js';
+import { fromWei } from 'web3-utils';
 
 import LaminarContract from './LaminarContract';
 
-import { PoolInfo, TokenInfo, FlowApi, TokenName, TradingPairSymbol, PoolOptions } from '../types';
+import { PoolInfo, TokenInfo, FlowApi, TokenName, TradingPairSymbol, PoolOptions, TradingPair } from '../types';
 
 class EthereumApi extends LaminarContract implements FlowApi {
+  public isReady = async () => true;
+
   public getBaseTokenAllowance = async (account: string): Promise<string> => {
     return this.tokenContracts.DAI.methods
       .allowance(account, this.baseContracts.flowMarginProtocol.options.address)
       .call();
   };
 
-  public getTokenAllowance = async (account: string, tokenName: TokenName, address: string): Promise<string> => {
+  public getTokenAllowance = async (account: string, tokenName: TokenName, address?: string): Promise<string> => {
     const grantAddress = address || this.baseContracts.flowProtocol.options.address;
     const contract = this.getTokenContract(tokenName);
     return contract.methods.allowance(account, grantAddress).call();
@@ -34,41 +36,32 @@ class EthereumApi extends LaminarContract implements FlowApi {
 
     const contract = this.createLiquidityPoolContract(poolAddr);
 
-    const [askSpread, bidSpread] = await Promise.all<number, number>([
+    const [askSpread, bidSpread] = await Promise.all<string, string>([
       contract.methods.getAskSpread(tokenAddr).call(),
       contract.methods.getBidSpread(tokenAddr).call()
     ]);
 
-    return { askSpread, bidSpread };
+    return { askSpread: Number(fromWei(askSpread)), bidSpread: Number(fromWei(bidSpread)) };
   };
 
   public getPoolOptions = async (poolAddr: string, tokenName: TokenName): Promise<PoolOptions> => {
     const tokenAddr = this.getTokenContract(tokenName).options.address;
-
     const [{ askSpread, bidSpread }, additionalCollateralRatio] = await Promise.all([
       this.getSpread(poolAddr, tokenName),
       this.createLiquidityPoolContract(poolAddr)
         .methods.getAdditionalCollateralRatio(tokenAddr)
-        .call() as Promise<number>
+        .call() as Promise<string>
     ]);
 
     return {
-      additionalCollateralRatio,
+      additionalCollateralRatio: Number(additionalCollateralRatio),
       askSpread,
       bidSpread
     };
   };
 
-  public getTokenLiquidity = async (poolId: string, tokenName: TokenName): Promise<string> => {
-    const tokenAddr = this.getTokenContract(tokenName).options.address;
-    const contract = this.createLiquidityPoolContract(poolId);
-
-    const [ratio, amount] = await Promise.all<number, string>([
-      contract.methods.getAdditionalCollateralRatio(tokenAddr).call(),
-      this.tokenContracts.iUSD.methods.balanceOf(poolId).call()
-    ]);
-
-    return new BN(amount).mul(new BN(ratio + 1)).toString();
+  public getLiquidity = async (poolId: string): Promise<string> => {
+    return this.tokenContracts.iUSD.methods.balanceOf(poolId).call();
   };
 
   public openPosition = async (account: string, name: TradingPairSymbol, poolId: string, amount: string | number) => {
@@ -109,16 +102,18 @@ class EthereumApi extends LaminarContract implements FlowApi {
     throw new Error('not support');
   };
 
-  public getPools = async (): Promise<PoolInfo[]> => {
+  public getDefaultPools = async (): Promise<PoolInfo[]> => {
     return [
       {
         id: this.protocol.addresses.pool,
         name: 'Laminar',
+        isDefault: true,
         address: this.protocol.addresses.pool
       },
       {
         id: this.protocol.addresses.pool2,
         name: 'ACME',
+        isDefault: true,
         address: this.protocol.addresses.pool2
       }
     ];
@@ -167,6 +162,10 @@ class EthereumApi extends LaminarContract implements FlowApi {
         id: 'fAAPL'
       }
     ];
+  };
+
+  public getTradingPairs = async (): Promise<TradingPair[]> => {
+    return Object.values(this.protocol.tradingPairs);
   };
 }
 
