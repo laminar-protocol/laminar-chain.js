@@ -1,9 +1,8 @@
-import BN from 'bn.js';
 import { ApiPromise, WsProvider } from '@polkadot/api';
 
 import { options } from './options';
 import { FlowApi, TokenInfo, TokenName, PoolOptions, TradingPair } from '../types';
-import { Balance, LiquidityPoolId, LiquidityPoolOption } from '@laminar/types/interfaces';
+import { Balance, LiquidityPoolOption } from '@laminar/types/interfaces';
 import { Option } from '@polkadot/types/codec';
 
 interface LaminarApiOptions {
@@ -52,9 +51,9 @@ class LaminarApi implements FlowApi {
 
   public getPoolOptions = async (poolId: string, tokenId: string): Promise<PoolOptions> => {
     const data = await this.api.query.liquidityPools.liquidityPoolOptions<Option<LiquidityPoolOption>>(poolId, tokenId);
-
     const json = data.toJSON() as any;
 
+    console.error(poolId, tokenId, json);
     if (!json) {
       return {
         bidSpread: null,
@@ -89,7 +88,7 @@ class LaminarApi implements FlowApi {
     // const nextPoolId = await this.api.query.liquidityPools.nextPoolId<LiquidityPoolId>();
 
     return Promise.all(
-      ['0', '1'].map(id => {
+      ['0'].map(id => {
         return this.api.query.liquidityPools.owners(id).then(result => {
           // @TODO fixme
           const address = (result.toJSON() && result.toJSON()) as string;

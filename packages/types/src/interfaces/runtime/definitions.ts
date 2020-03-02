@@ -17,7 +17,8 @@ export default {
       bidSpread: 'Permill',
       askSpread: 'Permill',
       additionalCollateralRatio: 'Option<Permill>',
-      enabled: 'Leverages'
+      tradeEnabled: 'Leverages',
+			syntheticEnabled: 'bool',
     },
     Position: {
       collateral: 'Balance',

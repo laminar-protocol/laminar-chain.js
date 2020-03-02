@@ -157,7 +157,8 @@ export interface LiquidityPoolOption extends Struct {
   readonly bidSpread: Permill;
   readonly askSpread: Permill;
   readonly additionalCollateralRatio: Option<Permill>;
-  readonly enabled: Leverages;
+  readonly tradeEnabled: Leverages;
+  readonly syntheticEnabled: boolean;
 }
 
 /** @name LockIdentifier */

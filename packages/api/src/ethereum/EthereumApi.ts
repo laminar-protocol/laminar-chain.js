@@ -1,4 +1,3 @@
-import BN from 'bn.js';
 import { fromWei } from 'web3-utils';
 
 import LaminarContract from './LaminarContract';
@@ -47,7 +46,6 @@ class EthereumApi extends LaminarContract implements FlowApi {
 
   public getPoolOptions = async (poolAddr: string, tokenName: TokenName): Promise<PoolOptions> => {
     const tokenAddr = this.getTokenContract(tokenName).options.address;
-
     const [{ askSpread, bidSpread }, additionalCollateralRatio] = await Promise.all([
       this.getSpread(poolAddr, tokenName),
       this.createLiquidityPoolContract(poolAddr)

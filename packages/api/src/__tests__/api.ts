@@ -3,10 +3,10 @@ import { WsProvider } from '@polkadot/api';
 import Web3 from 'web3';
 
 describe('ethereum api', () => {
-  jest.setTimeout(30000);
+  jest.setTimeout(300000);
 
-  const chain = 'ethereum';
-  // const chain = 'laminar';
+  // const chain = 'ethereum';
+  const chain = 'laminar';
 
   const getConfig = key => {
     if (key === 'ethereum') {
