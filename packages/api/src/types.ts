@@ -35,11 +35,10 @@ export interface PoolOptions {
   syntheticEnabled: boolean;
 }
 
+export type ChainType = 'ethereum' | 'laminar';
+
 export interface FlowApi {
-  emit(type: string, ...args: any[]): boolean;
-  on(type: string, handler: (...args: any[]) => any): this;
-  off(type: string, handler: (...args: any[]) => any): this;
-  once(type: string, handler: (...args: any[]) => any): this;
+  chainType: ChainType;
 
   isReady(): Promise<void>;
 
