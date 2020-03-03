@@ -8,7 +8,9 @@ import { PoolInfo, TokenInfo, FlowApi, TokenId, TradingPairSymbol, PoolOptions, 
 class EthereumApi extends LaminarContract implements FlowApi {
   private _eventemitter = new EventEmitter();
 
-  public isReady = async () => {};
+  public isReady = async () => {
+    console.log('EthereumApi isReady');
+  };
 
   public emit = (type: string, ...args: any[]): boolean => this._eventemitter.emit(type, ...args);
 

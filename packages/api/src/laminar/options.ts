@@ -7,10 +7,12 @@ import { ApiOptions } from '@polkadot/api/types';
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const laminarRpc: any = { oracle: Object.values(ormlRPC.oracle.methods) };
 
+const anyOrmlDerives = ormlDerives as any;
+
 export const defaultOptions: ApiOptions = {
   types: laminarTypes,
   rpc: laminarRpc,
-  derives: ormlDerives
+  derives: anyOrmlDerives
 };
 
 export const options = ({ types = {}, rpc = {}, derives = {}, ...otherOptions }: ApiOptions): ApiOptions => ({
@@ -23,7 +25,7 @@ export const options = ({ types = {}, rpc = {}, derives = {}, ...otherOptions }:
     ...rpc
   },
   derives: {
-    ...ormlDerives,
+    ...anyOrmlDerives,
     ...derives
   },
   ...otherOptions

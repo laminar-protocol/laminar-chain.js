@@ -4,9 +4,10 @@
 import { AnyNumber, ITuple } from '@polkadot/types/types';
 import { Compact, Option, Vec } from '@polkadot/types/codec';
 import { Bytes, bool, u32, u64 } from '@polkadot/types/primitive';
+import { AccountId, AccountIndex, Address, AmountOf, Balance, BalanceOf, Call, ChangesTrieConfiguration, CurrencyId, CurrencyIdOf, Hash, KeyValue, Leverages, LiquidityPoolId, LookupSource, Moment, OracleKey, OracleValue, Permill } from '@laminar/types/interfaces/runtime';
 import { MemberCount, ProposalIndex } from '@polkadot/types/interfaces/collective';
 import { Proposal } from '@polkadot/types/interfaces/democracy';
-import { AccountId, AccountIndex, Address, AmountOf, Balance, BalanceOf, ChangesTrieConfiguration, CurrencyId, CurrencyIdOf, Hash, KeyValue, Leverages, LiquidityPoolId, LookupSource, Moment, OracleKey, OracleValue, Permill } from '@laminar/types/interfaces/runtime';
+import { Extrinsic } from '@polkadot/types/interfaces/extrinsics';
 import { Keys } from '@polkadot/types/interfaces/session';
 import { EraIndex, RewardDestination, ValidatorPrefs } from '@polkadot/types/interfaces/staking';
 import { Key } from '@polkadot/types/interfaces/system';
@@ -753,7 +754,7 @@ declare module '@polkadot/api/types/submittable' {
   }
 
   export interface SubmittableExtrinsics<ApiType extends ApiTypes> extends AugmentedSubmittables<ApiType> {
-    (extrinsic: Uint8Array | string): SubmittableExtrinsic<ApiType>;
+    (extrinsic: Call | Extrinsic | Uint8Array | string): SubmittableExtrinsic<ApiType>;
     [index: string]: SubmittableModuleExtrinsics<ApiType>;
   }
 }
