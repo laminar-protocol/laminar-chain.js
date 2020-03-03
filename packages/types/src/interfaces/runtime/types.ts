@@ -5,9 +5,9 @@ import { ITuple } from '@polkadot/types/types';
 import { Compact, Enum, Int, Option, Struct, U8aFixed, Vec } from '@polkadot/types/codec';
 import { GenericAccountId, GenericAccountIndex, GenericAddress, GenericBlock, GenericCall, GenericConsensusEngineId, GenericDigest, GenericOrigin } from '@polkadot/types/generic';
 import { Bytes, Null, StorageKey, bool, i128, u128, u16, u32, u64, u8 } from '@polkadot/types/primitive';
+import { Price } from '@orml/types/interfaces/prices';
 import { AuthorityId } from '@polkadot/types/interfaces/consensus';
 import { Signature } from '@polkadot/types/interfaces/extrinsics';
-import { Price } from '@orml/types/interfaces/prices';
 
 /** @name AccountId */
 export interface AccountId extends GenericAccountId {}

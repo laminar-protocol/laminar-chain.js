@@ -1,5 +1,6 @@
 import { ApiPromise, WsProvider } from '@polkadot/api';
 import { ApiOptions } from '@polkadot/api/types';
+import EventEmitter from 'eventemitter3';
 
 import { options as getOptions } from './options';
 import { FlowApi, TokenInfo, TokenId, PoolOptions, TradingPair } from '../types';
@@ -11,8 +12,10 @@ interface LaminarApiOptions extends ApiOptions {
 }
 
 class LaminarApi implements FlowApi {
+  private _eventemitter = new EventEmitter();
   private api: ApiPromise;
   private minAdditionalCollateralRatio?: number;
+
   constructor(options: LaminarApiOptions) {
     this.api = new ApiPromise(
       getOptions({
@@ -21,6 +24,23 @@ class LaminarApi implements FlowApi {
       })
     );
   }
+
+  public emit = (type: string, ...args: any[]): boolean => this._eventemitter.emit(type, ...args);
+
+  public on = (type: string, handler: (...args: any[]) => any): this => {
+    this._eventemitter.on(type, handler);
+    return this;
+  };
+
+  public off = (type: string, handler: (...args: any[]) => any): this => {
+    this._eventemitter.removeListener(type, handler);
+    return this;
+  };
+
+  public once = (type: string, handler: (...args: any[]) => any): this => {
+    this._eventemitter.once(type, handler);
+    return this;
+  };
 
   private extrinsicHelper = (extrinsic: any, signOption: any) => {
     return new Promise((resolve, reject) => {
@@ -43,7 +63,7 @@ class LaminarApi implements FlowApi {
   };
 
   public isReady = async () => {
-    return this.api.isReady;
+    await this.api.isReady;
   };
 
   public getBalance = async (address: string, tokenId: TokenId) => {
