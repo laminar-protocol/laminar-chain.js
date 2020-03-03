@@ -1,11 +1,31 @@
 import { fromWei } from 'web3-utils';
+import EventEmitter from 'eventemitter3';
 
 import LaminarContract from './LaminarContract';
 
 import { PoolInfo, TokenInfo, FlowApi, TokenId, TradingPairSymbol, PoolOptions, TradingPair } from '../types';
 
 class EthereumApi extends LaminarContract implements FlowApi {
-  public isReady = async () => true;
+  private _eventemitter = new EventEmitter();
+
+  public isReady = async () => {};
+
+  public emit = (type: string, ...args: any[]): boolean => this._eventemitter.emit(type, ...args);
+
+  public on = (type: string, handler: (...args: any[]) => any): this => {
+    this._eventemitter.on(type, handler);
+    return this;
+  };
+
+  public off = (type: string, handler: (...args: any[]) => any): this => {
+    this._eventemitter.removeListener(type, handler);
+    return this;
+  };
+
+  public once = (type: string, handler: (...args: any[]) => any): this => {
+    this._eventemitter.once(type, handler);
+    return this;
+  };
 
   public getBaseTokenAllowance = async (account: string): Promise<string> => {
     return this.tokenContracts.DAI.methods

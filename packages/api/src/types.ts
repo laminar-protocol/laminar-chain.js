@@ -36,7 +36,12 @@ export interface PoolOptions {
 }
 
 export interface FlowApi {
-  isReady(): Promise<any>;
+  emit(type: string, ...args: any[]): boolean;
+  on(type: string, handler: (...args: any[]) => any): this;
+  off(type: string, handler: (...args: any[]) => any): this;
+  once(type: string, handler: (...args: any[]) => any): this;
+
+  isReady(): Promise<void>;
 
   getBalance(address: string, tokenName: TokenId): Promise<string>;
 
