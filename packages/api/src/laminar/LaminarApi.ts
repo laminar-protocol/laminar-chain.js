@@ -1,9 +1,8 @@
 import { ApiPromise, WsProvider } from '@polkadot/api';
 import { ApiOptions } from '@polkadot/api/types';
-import EventEmitter from 'eventemitter3';
 
 import { options as getOptions } from './options';
-import { FlowApi, TokenInfo, TokenId, PoolOptions, TradingPair } from '../types';
+import { FlowApi, TokenInfo, TokenId, PoolOptions, TradingPair, ChainType } from '../types';
 import { Balance, LiquidityPoolOption, Permill } from '@laminar/types/interfaces';
 import { Option } from '@polkadot/types/codec';
 
@@ -12,9 +11,10 @@ interface LaminarApiOptions extends ApiOptions {
 }
 
 class LaminarApi implements FlowApi {
-  private _eventemitter = new EventEmitter();
-  private api: ApiPromise;
   private minAdditionalCollateralRatio?: number;
+
+  public api: ApiPromise;
+  public chainType: ChainType = 'laminar';
 
   constructor(options: LaminarApiOptions) {
     this.api = new ApiPromise(
@@ -24,23 +24,6 @@ class LaminarApi implements FlowApi {
       })
     );
   }
-
-  public emit = (type: string, ...args: any[]): boolean => this._eventemitter.emit(type, ...args);
-
-  public on = (type: string, handler: (...args: any[]) => any): this => {
-    this._eventemitter.on(type, handler);
-    return this;
-  };
-
-  public off = (type: string, handler: (...args: any[]) => any): this => {
-    this._eventemitter.removeListener(type, handler);
-    return this;
-  };
-
-  public once = (type: string, handler: (...args: any[]) => any): this => {
-    this._eventemitter.once(type, handler);
-    return this;
-  };
 
   private extrinsicHelper = (extrinsic: any, signOption: any) => {
     return new Promise((resolve, reject) => {

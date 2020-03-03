@@ -20,7 +20,6 @@
     "@orml/api-derive": "beta",
     "@orml/jsonrpc": "beta",
     "@polkadot/api": "beta",
-    "eventemitter3": "^4.0.0",
     "flow-protocol-ethereum": "laminar-protocol/flow-protocol-ethereum#aa4fa650c05fc2a885a8461ee87f40c55976146c",
     "web3": "1.2.6",
     "web3-core": "1.2.6",
