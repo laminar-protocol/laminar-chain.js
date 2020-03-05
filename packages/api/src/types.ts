@@ -1,3 +1,5 @@
+import BN from 'bn.js';
+
 import {
   TokenId as EthTokenId,
   TradingPairSymbol as EthTradingPairSymbol,
@@ -24,6 +26,7 @@ export interface TokenInfo {
   precision: number;
   isBaseToken: boolean;
   isNetworkToken: boolean;
+  address?: string;
 }
 
 export interface PoolOptions {
@@ -58,9 +61,9 @@ export interface FlowApi {
 
   getLiquidity(poolId: string): Promise<string>;
 
-  redeem(account: string, poolId: string, fromSymbol: string, fromAmount: string): Promise<ActionStatus>;
+  redeem(account: string, poolId: string, fromSymbol: string, fromAmount: string | BN): Promise<ActionStatus>;
 
-  mint(account: string, poolId: string, toSymbol: string, fromAmount: string): Promise<ActionStatus>;
+  mint(account: string, poolId: string, toSymbol: string, fromAmount: string | BN): Promise<ActionStatus>;
 
   getOraclePrice(tokenName: string): Promise<string>;
 

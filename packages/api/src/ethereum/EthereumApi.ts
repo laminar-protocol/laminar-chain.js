@@ -1,3 +1,4 @@
+import BN from 'bn.js';
 import { fromWei } from 'web3-utils';
 
 import LaminarContract from './LaminarContract';
@@ -32,12 +33,13 @@ class EthereumApi extends LaminarContract implements FlowApi {
       .then((result: any) => {
         actionStatus.data = result;
         actionStatus.status = 'success';
+        return actionStatus;
       })
       .catch((error: any) => {
         actionStatus.data = error;
         actionStatus.status = 'error';
         actionStatus.message = error && error.message ? error.message : '';
-        Promise.reject(actionStatus);
+        return Promise.reject(actionStatus);
       });
   };
 
@@ -105,7 +107,7 @@ class EthereumApi extends LaminarContract implements FlowApi {
     return this.tokenContracts.iUSD.methods.balanceOf(poolId).call();
   };
 
-  public openPosition = async (account: string, name: TradingPairSymbol, poolId: string, amount: string | number) => {
+  public openPosition = async (account: string, name: TradingPairSymbol, poolId: string, amount: string | BN) => {
     const pairAddress = this.getTradingPairInfo(name).address;
     const extrinsic = this.baseContracts.flowMarginProtocol.methods.openPosition(pairAddress, poolId, amount);
     return this.extrinsicHelper(extrinsic, { from: account }, { action: 'OpenPosition' });
@@ -122,19 +124,19 @@ class EthereumApi extends LaminarContract implements FlowApi {
     return this.extrinsicHelper(extrinsic, { from: account }, { action: 'Faucet' });
   };
 
-  public redeem = async (account: string, poolId: string, fromTokenId: TokenId, fromAmount: string | number) => {
+  public redeem = async (account: string, poolId: string, fromTokenId: TokenId, fromAmount: string | BN) => {
     const from = this.getTokenContract(fromTokenId);
     const extrinsic = this.baseContracts.flowProtocol.methods.redeem(from.options.address, poolId, fromAmount);
     return this.extrinsicHelper(extrinsic, { from: account }, { action: 'Swap' });
   };
 
-  public mint = async (account: string, poolId: string, toTokenId: TokenId, fromAmount: string | number) => {
+  public mint = async (account: string, poolId: string, toTokenId: TokenId, fromAmount: string | BN) => {
     const to = this.getTokenContract(toTokenId);
     const extrinsic = this.baseContracts.flowProtocol.methods.mint(to.options.address, poolId, fromAmount);
     return this.extrinsicHelper(extrinsic, { from: account }, { action: 'Swap' });
   };
 
-  public grant = async (account: string, tokenId: TokenId, balance: string | number) => {
+  public grant = async (account: string, tokenId: TokenId, balance: string | BN) => {
     const extrinsic = this.getTokenContract(tokenId).methods.approve(
       this.baseContracts.flowProtocol.options.address,
       balance
@@ -171,7 +173,8 @@ class EthereumApi extends LaminarContract implements FlowApi {
         precision: 18,
         isBaseToken: true,
         isNetworkToken: false,
-        id: 'DAI'
+        id: 'DAI',
+        address: this.tokenContracts.DAI.options.address
       },
       {
         name: 'EUR',
@@ -179,7 +182,8 @@ class EthereumApi extends LaminarContract implements FlowApi {
         precision: 18,
         isBaseToken: false,
         isNetworkToken: false,
-        id: 'fEUR'
+        id: 'fEUR',
+        address: this.tokenContracts.fEUR.options.address
       },
       {
         name: 'JPY',
@@ -187,7 +191,8 @@ class EthereumApi extends LaminarContract implements FlowApi {
         precision: 18,
         isBaseToken: false,
         isNetworkToken: false,
-        id: 'fJPY'
+        id: 'fJPY',
+        address: this.tokenContracts.fJPY.options.address
       },
       {
         name: 'XAU',
@@ -195,7 +200,8 @@ class EthereumApi extends LaminarContract implements FlowApi {
         precision: 18,
         isBaseToken: false,
         isNetworkToken: false,
-        id: 'fXAU'
+        id: 'fXAU',
+        address: this.tokenContracts.fXAU.options.address
       },
       {
         name: 'AAPL',
@@ -203,7 +209,8 @@ class EthereumApi extends LaminarContract implements FlowApi {
         precision: 18,
         isBaseToken: false,
         isNetworkToken: false,
-        id: 'fAAPL'
+        id: 'fAAPL',
+        address: this.tokenContracts.fAAPL.options.address
       }
     ];
   };
