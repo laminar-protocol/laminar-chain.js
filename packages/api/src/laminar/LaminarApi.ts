@@ -1,3 +1,4 @@
+import BN from 'bn.js';
 import { ApiPromise, WsProvider } from '@polkadot/api';
 import { ApiOptions } from '@polkadot/api/types';
 
@@ -134,12 +135,12 @@ class LaminarApi implements FlowApi {
     return (await this.api.query.liquidityPools.balances<Balance>(poolId)).toString();
   };
 
-  public redeem = async (account: string, poolId: string, fromToken: TokenId, fromAmount: string) => {
+  public redeem = async (account: string, poolId: string, fromToken: TokenId, fromAmount: string | BN) => {
     const extrinsic = this.api.tx.syntheticProtocol.redeem(poolId, fromToken as any, fromAmount, '1000000');
     return this.extrinsicHelper(extrinsic, account, { action: 'Swap' });
   };
 
-  public mint = async (account: string, poolId: string, toToken: TokenId, fromAmount: string) => {
+  public mint = async (account: string, poolId: string, toToken: TokenId, fromAmount: string | BN) => {
     const extrinsic = this.api.tx.syntheticProtocol.mint(poolId, toToken as any, fromAmount, '1000000');
     return this.extrinsicHelper(extrinsic, account, { action: 'Swap' });
   };
