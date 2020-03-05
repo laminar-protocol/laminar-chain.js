@@ -2,10 +2,44 @@ import { fromWei } from 'web3-utils';
 
 import LaminarContract from './LaminarContract';
 
-import { PoolInfo, TokenInfo, FlowApi, TokenId, TradingPairSymbol, PoolOptions, TradingPair, ChainType } from '../types';
+import {
+  PoolInfo,
+  TokenInfo,
+  FlowApi,
+  TokenId,
+  TradingPairSymbol,
+  PoolOptions,
+  TradingPair,
+  ChainType,
+  ActionStatus
+} from '../types';
 
 class EthereumApi extends LaminarContract implements FlowApi {
   public chainType: ChainType = 'ethereum';
+
+  private extrinsicHelper = (
+    extrinsic: any,
+    signOption: any,
+    { action }: { action?: string } = {}
+  ): Promise<ActionStatus> => {
+    const actionStatus = {
+      account: signOption.from,
+      action
+    } as Partial<ActionStatus>;
+
+    return extrinsic
+      .send(signOption)
+      .then((result: any) => {
+        actionStatus.data = result;
+        actionStatus.status = 'success';
+      })
+      .catch((error: any) => {
+        actionStatus.data = error;
+        actionStatus.status = 'error';
+        actionStatus.message = error && error.message ? error.message : '';
+        Promise.reject(actionStatus);
+      });
+  };
 
   public isReady = async () => {
     console.log('EthereumApi isReady');
@@ -73,36 +107,39 @@ class EthereumApi extends LaminarContract implements FlowApi {
 
   public openPosition = async (account: string, name: TradingPairSymbol, poolId: string, amount: string | number) => {
     const pairAddress = this.getTradingPairInfo(name).address;
-    return this.baseContracts.flowMarginProtocol.methods
-      .openPosition(pairAddress, poolId, amount)
-      .send({ from: account });
+    const extrinsic = this.baseContracts.flowMarginProtocol.methods.openPosition(pairAddress, poolId, amount);
+    return this.extrinsicHelper(extrinsic, { from: account }, { action: 'OpenPosition' });
   };
 
   public closePosition = async (account: string, name: TradingPairSymbol, positionId: number) => {
     const pairAddress = this.getTradingPairInfo(name).address;
-    return this.baseContracts.flowMarginProtocol.methods.closePosition(pairAddress, positionId).send({ from: account });
+    const extrinsic = this.baseContracts.flowMarginProtocol.methods.closePosition(pairAddress, positionId);
+    return this.extrinsicHelper(extrinsic, { from: account }, { action: 'ClosePosition' });
   };
 
   public daiFaucet = async (account: string, amount: number | string) => {
-    return this.baseContracts.daiFaucet.methods.allocateTo(account, amount).send({ from: account });
+    const extrinsic = this.baseContracts.daiFaucet.methods.allocateTo(account, amount);
+    return this.extrinsicHelper(extrinsic, { from: account }, { action: 'Faucet' });
   };
 
   public redeem = async (account: string, poolId: string, fromTokenId: TokenId, fromAmount: string | number) => {
     const from = this.getTokenContract(fromTokenId);
-    return this.baseContracts.flowProtocol.methods
-      .redeem(from.options.address, poolId, fromAmount)
-      .send({ from: account });
+    const extrinsic = this.baseContracts.flowProtocol.methods.redeem(from.options.address, poolId, fromAmount);
+    return this.extrinsicHelper(extrinsic, { from: account }, { action: 'Swap' });
   };
 
   public mint = async (account: string, poolId: string, toTokenId: TokenId, fromAmount: string | number) => {
     const to = this.getTokenContract(toTokenId);
-    return this.baseContracts.flowProtocol.methods.mint(to.options.address, poolId, fromAmount).send({ from: account });
+    const extrinsic = this.baseContracts.flowProtocol.methods.mint(to.options.address, poolId, fromAmount);
+    return this.extrinsicHelper(extrinsic, { from: account }, { action: 'Swap' });
   };
 
   public grant = async (account: string, tokenId: TokenId, balance: string | number) => {
-    await this.getTokenContract(tokenId)
-      .methods.approve(this.baseContracts.flowProtocol.options.address, balance)
-      .send({ from: account });
+    const extrinsic = this.getTokenContract(tokenId).methods.approve(
+      this.baseContracts.flowProtocol.options.address,
+      balance
+    );
+    return this.extrinsicHelper(extrinsic, { from: account }, { action: 'Grant' });
   };
 
   public getOraclePrice = () => {
