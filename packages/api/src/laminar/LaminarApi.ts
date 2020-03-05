@@ -2,7 +2,7 @@ import { ApiPromise, WsProvider } from '@polkadot/api';
 import { ApiOptions } from '@polkadot/api/types';
 
 import { options as getOptions } from './options';
-import { FlowApi, TokenInfo, TokenId, PoolOptions, TradingPair, ChainType } from '../types';
+import { FlowApi, TokenInfo, TokenId, PoolOptions, TradingPair, ChainType, ActionStatus } from '../types';
 import { Balance, LiquidityPoolOption, Permill } from '@laminar/types/interfaces';
 import { Option } from '@polkadot/types/codec';
 
@@ -25,21 +25,63 @@ class LaminarApi implements FlowApi {
     );
   }
 
-  private extrinsicHelper = (extrinsic: any, signOption: any) => {
+  private extrinsicHelper = (
+    extrinsic: any,
+    signOption: any,
+    { action }: { action?: string } = {}
+  ): Promise<ActionStatus> => {
     return new Promise((resolve, reject) => {
+      const actionStatus = {
+        txHash: extrinsic.toHex(),
+        action
+      } as Partial<ActionStatus>;
+
       extrinsic.signAndSend(signOption, (result: any) => {
+        if (result.status.isInBlock) {
+          actionStatus.blockHash = result.status.asInBlock.toHex();
+        }
+
         if (result.status.isFinalized || result.status.isInBlock) {
+          actionStatus.data = result;
+          actionStatus.account = extrinsic.signer.toString();
+
           result.events
             .filter(({ event: { section } }: any): boolean => section === 'system')
-            .forEach(({ event: { method } }: any): void => {
+            .forEach((event: any): void => {
+              const {
+                event: { data, method }
+              } = event;
+
               if (method === 'ExtrinsicFailed') {
-                reject(result);
+                const [dispatchError] = data;
+                let message = dispatchError.type;
+
+                if (dispatchError.isModule) {
+                  try {
+                    const mod = dispatchError.asModule;
+                    const error = this.api.registry.findMetaError(
+                      new Uint8Array([mod.index.toNumber(), mod.error.toNumber()])
+                    );
+                    message = `${error.section}.${error.name}`;
+                  } catch (error) {
+                    // swallow
+                  }
+                }
+
+                actionStatus.message = message;
+                actionStatus.status = 'error';
+                reject(actionStatus);
               } else if (method === 'ExtrinsicSuccess') {
-                resolve(result);
+                actionStatus.status = 'success';
+                resolve(actionStatus as ActionStatus);
               }
             });
         } else if (result.isError) {
-          reject(result);
+          actionStatus.account = extrinsic.signer.toString();
+          actionStatus.status = 'error';
+          actionStatus.data = result;
+
+          reject(actionStatus);
         }
       });
     });
@@ -94,12 +136,12 @@ class LaminarApi implements FlowApi {
 
   public redeem = async (account: string, poolId: string, fromToken: TokenId, fromAmount: string) => {
     const extrinsic = this.api.tx.syntheticProtocol.redeem(poolId, fromToken as any, fromAmount, '1000000');
-    return this.extrinsicHelper(extrinsic, account);
+    return this.extrinsicHelper(extrinsic, account, { action: 'Swap' });
   };
 
   public mint = async (account: string, poolId: string, toToken: TokenId, fromAmount: string) => {
     const extrinsic = this.api.tx.syntheticProtocol.mint(poolId, toToken as any, fromAmount, '1000000');
-    return this.extrinsicHelper(extrinsic, account);
+    return this.extrinsicHelper(extrinsic, account, { action: 'Swap' });
   };
 
   public getDefaultPools = async () => {

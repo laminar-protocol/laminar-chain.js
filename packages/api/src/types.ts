@@ -37,6 +37,16 @@ export interface PoolOptions {
 
 export type ChainType = 'ethereum' | 'laminar';
 
+export interface ActionStatus {
+  account: string;
+  action: string;
+  txHash?: string;
+  blockHash?: string;
+  message?: string;
+  data?: any;
+  status: 'error' | 'event' | 'queued' | 'success';
+}
+
 export interface FlowApi {
   chainType: ChainType;
 
@@ -48,9 +58,9 @@ export interface FlowApi {
 
   getLiquidity(poolId: string): Promise<string>;
 
-  redeem(account: string, poolId: string, fromSymbol: string, fromAmount: string): Promise<any>;
+  redeem(account: string, poolId: string, fromSymbol: string, fromAmount: string): Promise<ActionStatus>;
 
-  mint(account: string, poolId: string, toSymbol: string, fromAmount: string): Promise<any>;
+  mint(account: string, poolId: string, toSymbol: string, fromAmount: string): Promise<ActionStatus>;
 
   getOraclePrice(tokenName: string): Promise<string>;
 
