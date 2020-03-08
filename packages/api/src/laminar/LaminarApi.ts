@@ -4,7 +4,7 @@ import { ApiOptions } from '@polkadot/api/types';
 
 import { options as getOptions } from './options';
 import { FlowApi, TokenInfo, TokenId, PoolOptions, TradingPair, ChainType, ActionStatus } from '../types';
-import { Balance, LiquidityPoolOption, Permill } from '@laminar/types/interfaces';
+import { Balance, LiquidityPoolOption, Permill, AccountId } from '@laminar/types/interfaces';
 import { Option } from '@polkadot/types/codec';
 
 interface LaminarApiOptions extends ApiOptions {
@@ -126,6 +126,12 @@ class LaminarApi implements FlowApi {
     }
   };
 
+  public getPoolAddress = async (poolId: string) => {
+    const result = await this.api.query.liquidityPools.owners<Option<AccountId>>(poolId);
+    if (result.isNone) return null;
+    return (result.toJSON() && result.toJSON()) as string;
+  };
+
   public getOraclePrice = async (tokenId: TokenId) => {
     const result = await (this.api.rpc as any).oracle.getValue(tokenId);
     return result.value.get('value');
@@ -143,6 +149,16 @@ class LaminarApi implements FlowApi {
   public mint = async (account: string, poolId: string, toToken: TokenId, fromAmount: string | BN) => {
     const extrinsic = this.api.tx.syntheticProtocol.mint(poolId, toToken as any, fromAmount, '1000000');
     return this.extrinsicHelper(extrinsic, account, { action: 'Swap' });
+  };
+
+  public depositLiquidity = async (account: string, poolId: string, amount: string | BN) => {
+    const extrinsic = this.api.tx.liquidityPools.depositLiquidity(poolId, amount);
+    return this.extrinsicHelper(extrinsic, account, { action: 'Deposit Liquidity' });
+  };
+
+  public withdrawLiquidity = async (account: string, poolId: string, amount: string | BN) => {
+    const extrinsic = this.api.tx.liquidityPools.withdrawLiquidity(poolId, amount);
+    return this.extrinsicHelper(extrinsic, account, { action: 'WithDraw Liquidity' });
   };
 
   public getDefaultPools = async () => {
