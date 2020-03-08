@@ -5,8 +5,8 @@ import Web3 from 'web3';
 describe('ethereum api', () => {
   jest.setTimeout(300000);
 
-  // const chain = 'ethereum';
-  const chain = 'laminar';
+  const chain = 'ethereum';
+  // const chain = 'laminar';
 
   const getConfig = key => {
     if (key === 'ethereum') {
@@ -88,13 +88,23 @@ describe('ethereum api', () => {
     return Promise.all(pools.map(({ id }) => testFn(id)));
   });
 
-  it('getTradingPairs', () => {
+  it('getTradingPairs', async () => {
     const testFn = async () => {
       const result = await api.getTradingPairs();
       console.log(`${chain}: tradingPairs: ${JSON.stringify(result)}`);
       expect(Array.isArray(result)).toBeTruthy();
     };
 
-    testFn();
+    await testFn();
+  });
+
+  it('getPoolAddress', async () => {
+    const testFn = async () => {
+      const result = await api.getPoolAddress('0x6582204488d330ffAf464592179936EA1E8A3c1e');
+      console.log(`${chain}: getPoolAddress: ${JSON.stringify(result)}`);
+      expect(result).toBe(null);
+    };
+
+    await testFn();
   });
 });

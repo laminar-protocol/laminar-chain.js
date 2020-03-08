@@ -103,6 +103,20 @@ class EthereumApi extends LaminarContract implements FlowApi {
     };
   };
 
+  public getPoolAddress = async (poolId: string) => {
+    try {
+      const contract = this.createLiquidityPoolContract(poolId);
+      // @TODO
+      if ((await this.web3.eth.getCode(poolId)) !== '0x') {
+        return contract.options.address;
+      } else {
+        return null;
+      }
+    } catch {
+      return null;
+    }
+  };
+
   public getLiquidity = async (poolId: string): Promise<string> => {
     return this.tokenContracts.iUSD.methods.balanceOf(poolId).call();
   };
@@ -134,6 +148,20 @@ class EthereumApi extends LaminarContract implements FlowApi {
     const to = this.getTokenContract(toTokenId);
     const extrinsic = this.baseContracts.flowProtocol.methods.mint(to.options.address, poolId, fromAmount);
     return this.extrinsicHelper(extrinsic, { from: account }, { action: 'Swap' });
+  };
+
+  public depositLiquidity = async (account: string, poolId: string, amount: string | BN) => {
+    const contract = this.createLiquidityPoolContract(poolId);
+
+    const extrinsic = contract.methods.depositLiquidity(amount);
+    return this.extrinsicHelper(extrinsic, { from: account }, { action: 'Deposit Liquidity' });
+  };
+
+  public withdrawLiquidity = async (account: string, poolId: string, amount: string | BN) => {
+    const contract = this.createLiquidityPoolContract(poolId);
+
+    const extrinsic = contract.methods.withdrawLiquidity(amount);
+    return this.extrinsicHelper(extrinsic, { from: account }, { action: 'Withdraw Liquidity' });
   };
 
   public grant = async (account: string, tokenId: TokenId, balance: string | BN) => {

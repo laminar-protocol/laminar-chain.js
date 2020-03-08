@@ -59,11 +59,17 @@ export interface FlowApi {
 
   getPoolOptions(poolId: string, tokenName: TokenId): Promise<PoolOptions>;
 
+  getPoolAddress(poolId: string): Promise<PoolInfo['address'] | null>;
+
   getLiquidity(poolId: string): Promise<string>;
 
   redeem(account: string, poolId: string, fromSymbol: string, fromAmount: string | BN): Promise<ActionStatus>;
 
   mint(account: string, poolId: string, toSymbol: string, fromAmount: string | BN): Promise<ActionStatus>;
+
+  depositLiquidity(account: string, poolId: string, amount: string | BN): Promise<ActionStatus>;
+
+  withdrawLiquidity(account: string, poolId: string, amount: string | BN): Promise<ActionStatus>;
 
   getOraclePrice(tokenName: string): Promise<string>;
 
