@@ -138,6 +138,12 @@ class EthereumApi extends LaminarContract implements FlowApi {
     return this.extrinsicHelper(extrinsic, { from: account }, { action: 'Faucet' });
   };
 
+  public createPool = async (account: string) => {
+    throw new Error('not impl');
+    // const contract = new this.web3.eth.Contract(this.protocol.abis.LiquidityPoolInterface);
+    // return contract.deploy this.extrinsicHelper(extrinsic, account, { action: 'createPool' });
+  };
+
   public redeem = async (account: string, poolId: string, fromTokenId: TokenId, fromAmount: string | BN) => {
     const from = this.getTokenContract(fromTokenId);
     const extrinsic = this.baseContracts.flowProtocol.methods.redeem(from.options.address, poolId, fromAmount);

@@ -71,6 +71,8 @@ export interface FlowApi {
 
   withdrawLiquidity(account: string, poolId: string, amount: string | BN): Promise<ActionStatus>;
 
+  createPool(account: string): Promise<ActionStatus>;
+
   getOraclePrice(tokenName: string): Promise<string>;
 
   getDefaultPools(): Promise<PoolInfo[]>;
