@@ -1,4 +1,4 @@
-import { EthereumApi, LaminarApi } from '../';
+import { EthereumApi, LaminarApi } from '..';
 import { WsProvider } from '@polkadot/api';
 import Web3 from 'web3';
 
@@ -19,9 +19,7 @@ describe('ethereum api', () => {
     } else if (key === 'laminar') {
       return {
         api: new LaminarApi({
-          provider: new WsProvider(
-            'wss://testnet-node-1.laminar-chain.laminar.one/ws'
-          )
+          provider: new WsProvider('wss://testnet-node-1.laminar-chain.laminar.one/ws')
         }),
         address1: '5FBf5sTp3xZH7WhBMkTmMgrNQUyLmfTpGerwsEuAbC5fWVay'
       };
@@ -93,16 +91,6 @@ describe('ethereum api', () => {
       const result = await api.getTradingPairs();
       console.log(`${chain}: tradingPairs: ${JSON.stringify(result)}`);
       expect(Array.isArray(result)).toBeTruthy();
-    };
-
-    await testFn();
-  });
-
-  it('getPoolAddress', async () => {
-    const testFn = async () => {
-      const result = await api.getPoolAddress('0x6582204488d330ffAf464592179936EA1E8A3c1e');
-      console.log(`${chain}: getPoolAddress: ${JSON.stringify(result)}`);
-      expect(result).toBe(null);
     };
 
     await testFn();

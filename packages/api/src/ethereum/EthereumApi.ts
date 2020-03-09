@@ -15,6 +15,8 @@ import {
   ActionStatus
 } from '../types';
 
+export const UINT256_MAX = '115792089237316195423570985008687907853269984665640564039457584007913129639935';
+
 class EthereumApi extends LaminarContract implements FlowApi {
   public chainType: ChainType = 'ethereum';
 
@@ -47,14 +49,29 @@ class EthereumApi extends LaminarContract implements FlowApi {
     console.log('EthereumApi isReady');
   };
 
-  public getBaseTokenAllowance = async (account: string): Promise<string> => {
-    return this.tokenContracts.DAI.methods
-      .allowance(account, this.baseContracts.flowMarginProtocol.options.address)
-      .call();
+  public flowProtocolGrant = async (account: string, tokenId: TokenId, balance: string | BN = UINT256_MAX) => {
+    const extrinsic = this.getTokenContract(tokenId).methods.approve(
+      this.baseContracts.flowProtocol.options.address,
+      balance
+    );
+    return this.extrinsicHelper(extrinsic, { from: account }, { action: 'Grant' });
   };
 
-  public getTokenAllowance = async (account: string, tokenId: TokenId, address?: string): Promise<string> => {
-    const grantAddress = address || this.baseContracts.flowProtocol.options.address;
+  public liquidityPoolGrant = async (account: string, poolId: TokenId, balance: string | BN = UINT256_MAX) => {
+    const extrinsic = this.tokenContracts.DAI.methods.approve(
+      this.createLiquidityPoolContract(poolId).options.address,
+      balance
+    );
+    return this.extrinsicHelper(extrinsic, { from: account }, { action: 'Grant' });
+  };
+
+  public getPoolAllowance = async (account: string, poolId: string): Promise<string> => {
+    const grantAddress = this.createLiquidityPoolContract(poolId).options.address;
+    return this.tokenContracts.DAI.methods.allowance(account, grantAddress).call();
+  };
+
+  public getTokenAllowance = async (account: string, tokenId: TokenId): Promise<string> => {
+    const grantAddress = this.baseContracts.flowProtocol.options.address;
     const contract = this.getTokenContract(tokenId);
     return contract.methods.allowance(account, grantAddress).call();
   };
@@ -138,10 +155,8 @@ class EthereumApi extends LaminarContract implements FlowApi {
     return this.extrinsicHelper(extrinsic, { from: account }, { action: 'Faucet' });
   };
 
-  public createPool = async (account: string) => {
+  public createPool = async () => {
     throw new Error('not impl');
-    // const contract = new this.web3.eth.Contract(this.protocol.abis.LiquidityPoolInterface);
-    // return contract.deploy this.extrinsicHelper(extrinsic, account, { action: 'createPool' });
   };
 
   public redeem = async (account: string, poolId: string, fromTokenId: TokenId, fromAmount: string | BN) => {
@@ -158,7 +173,7 @@ class EthereumApi extends LaminarContract implements FlowApi {
 
   public depositLiquidity = async (account: string, poolId: string, amount: string | BN) => {
     const contract = this.createLiquidityPoolContract(poolId);
-
+    await this.baseContracts.flowProtocol.methods.deposit(poolId, amount);
     const extrinsic = contract.methods.depositLiquidity(amount);
     return this.extrinsicHelper(extrinsic, { from: account }, { action: 'Deposit Liquidity' });
   };
@@ -168,14 +183,6 @@ class EthereumApi extends LaminarContract implements FlowApi {
 
     const extrinsic = contract.methods.withdrawLiquidity(amount);
     return this.extrinsicHelper(extrinsic, { from: account }, { action: 'Withdraw Liquidity' });
-  };
-
-  public grant = async (account: string, tokenId: TokenId, balance: string | BN) => {
-    const extrinsic = this.getTokenContract(tokenId).methods.approve(
-      this.baseContracts.flowProtocol.options.address,
-      balance
-    );
-    return this.extrinsicHelper(extrinsic, { from: account }, { action: 'Grant' });
   };
 
   public getOraclePrice = () => {

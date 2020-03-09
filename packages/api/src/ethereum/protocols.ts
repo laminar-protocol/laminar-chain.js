@@ -4,6 +4,7 @@ import KovanFlowMarginProtocol from 'flow-protocol-ethereum/artifacts/kovan/abi/
 import KovanFlowProtocol from 'flow-protocol-ethereum/artifacts/kovan/abi/FlowProtocol.json';
 import KovanFlowToken from 'flow-protocol-ethereum/artifacts/kovan/abi/FlowToken.json';
 import KovanLiquidityPoolInterface from 'flow-protocol-ethereum/artifacts/kovan/abi/LiquidityPoolInterface.json';
+import KovanLiquidityPool from 'flow-protocol-ethereum/artifacts/kovan/abi/LiquidityPool.json';
 import KovanMarginTradingPair from 'flow-protocol-ethereum/artifacts/kovan/abi/MarginTradingPair.json';
 import KovanMoneyMarket from 'flow-protocol-ethereum/artifacts/kovan/abi/MoneyMarket.json';
 import KovanPriceOracleInterface from 'flow-protocol-ethereum/artifacts/kovan/abi/PriceOracleInterface.json';
@@ -17,6 +18,7 @@ export const abis = [
   'FlowProtocol',
   'FlowToken',
   'LiquidityPoolInterface',
+  'LiquidityPool',
   'MarginTradingPair',
   'MoneyMarket',
   'PriceOracleInterface'
@@ -142,6 +144,7 @@ const kovan: Readonly<Protocol> = {
     FlowProtocol: KovanFlowProtocol,
     FlowToken: KovanFlowToken,
     LiquidityPoolInterface: KovanLiquidityPoolInterface,
+    LiquidityPool: KovanLiquidityPool,
     MarginTradingPair: KovanMarginTradingPair,
     MoneyMarket: KovanMoneyMarket,
     PriceOracleInterface: KovanPriceOracleInterface

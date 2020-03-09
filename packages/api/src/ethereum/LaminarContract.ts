@@ -7,6 +7,7 @@ import protocols, { TokenId, TradingPairSymbol, Protocol, ProtocolType, TradingP
 
 export interface LaminarContractOptions {
   provider: Web3Provider;
+  signer?: Web3Provider;
   protocolType?: ProtocolType;
 }
 
@@ -74,7 +75,7 @@ class LaminarContract implements LaminarContract {
   }
 
   public createLiquidityPoolContract(poolId: string): Contract {
-    return this.createContract(this.protocol.abis.LiquidityPoolInterface, poolId);
+    return this.createContract(this.protocol.abis.LiquidityPool, poolId);
   }
 
   public getNetworkType = async (): Promise<string> => this.web3.eth.net.getNetworkType();
