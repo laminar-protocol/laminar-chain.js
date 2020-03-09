@@ -141,6 +141,11 @@ class LaminarApi implements FlowApi {
     return (await this.api.query.liquidityPools.balances<Balance>(poolId)).toString();
   };
 
+  public createPool = async (account: string) => {
+    const extrinsic = this.api.tx.liquidityPools.createPool();
+    return this.extrinsicHelper(extrinsic, account, { action: 'Create Pool' });
+  };
+
   public redeem = async (account: string, poolId: string, fromToken: TokenId, fromAmount: string | BN) => {
     const extrinsic = this.api.tx.syntheticProtocol.redeem(poolId, fromToken as any, fromAmount, '1000000');
     return this.extrinsicHelper(extrinsic, account, { action: 'Swap' });
