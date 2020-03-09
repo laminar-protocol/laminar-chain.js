@@ -6540,9 +6540,9 @@ flatten@^1.0.2:
   resolved "https://registry.yarnpkg.com/flatten/-/flatten-1.0.3.tgz#c1283ac9f27b368abc1e36d1ff7b04501a30356b"
   integrity sha512-dVsPA/UwQ8+2uoFe5GHtiBMu48dWLTdsuEd7CKGlZlD78r1TTWBvDuFaFGKCo/ZfEr95Uk56vZoX86OsHkUeIg==
 
-flow-protocol-ethereum@laminar-protocol/flow-protocol-ethereum#aa4fa650c05fc2a885a8461ee87f40c55976146c:
+flow-protocol-ethereum@laminar-protocol/flow-protocol-ethereum#3b326055e078c9158eca39d670f248e8ea00fcf1:
   version "0.0.2"
-  resolved "https://codeload.github.com/laminar-protocol/flow-protocol-ethereum/tar.gz/aa4fa650c05fc2a885a8461ee87f40c55976146c"
+  resolved "https://codeload.github.com/laminar-protocol/flow-protocol-ethereum/tar.gz/3b326055e078c9158eca39d670f248e8ea00fcf1"
 
 flush-write-stream@^1.0.0:
   version "1.1.1"
