@@ -20,7 +20,6 @@
     "@orml/api-derive": "beta",
     "@orml/jsonrpc": "beta",
     "@polkadot/api": "beta",
-    "flow-protocol-ethereum": "laminar-protocol/flow-protocol-ethereum#3b326055e078c9158eca39d670f248e8ea00fcf1",
     "web3": "1.2.6",
     "web3-core": "1.2.6",
     "web3-eth-contract": "1.2.6",
