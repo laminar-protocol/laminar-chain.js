@@ -126,7 +126,7 @@ class LaminarApi implements FlowApi {
     }
   };
 
-  public getPoolAddress = async (poolId: string) => {
+  public getPoolOwner = async (poolId: string) => {
     const result = await this.api.query.liquidityPools.owners<Option<AccountId>>(poolId);
     if (result.isNone) return null;
     return (result.toJSON() && result.toJSON()) as string;
@@ -177,7 +177,7 @@ class LaminarApi implements FlowApi {
 
           return {
             id: `${id}`,
-            address,
+            owner: address,
             isDefault: true,
             name: `${id}//${address.slice(0, 12)}`
           };
