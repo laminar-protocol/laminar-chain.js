@@ -120,15 +120,11 @@ class EthereumApi extends LaminarContract implements FlowApi {
     };
   };
 
-  public getPoolAddress = async (poolId: string) => {
+  public getPoolOwner = async (poolId: string) => {
     try {
       const contract = this.createLiquidityPoolContract(poolId);
-      // @TODO
-      if ((await this.web3.eth.getCode(poolId)) !== '0x') {
-        return contract.options.address;
-      } else {
-        return null;
-      }
+      const owner = await contract.methods.owner().call();
+      return owner || null;
     } catch {
       return null;
     }
@@ -190,20 +186,32 @@ class EthereumApi extends LaminarContract implements FlowApi {
   };
 
   public getDefaultPools = async (): Promise<PoolInfo[]> => {
-    return [
-      {
-        id: this.protocol.addresses.pool,
-        name: 'Laminar',
-        isDefault: true,
-        address: this.protocol.addresses.pool
-      },
-      {
-        id: this.protocol.addresses.pool2,
-        name: 'ACME',
-        isDefault: true,
-        address: this.protocol.addresses.pool2
-      }
-    ];
+    return Promise.all(
+      [
+        {
+          id: this.protocol.addresses.pool,
+          name: 'Laminar',
+          isDefault: true,
+          address: this.protocol.addresses.pool
+        },
+        {
+          id: this.protocol.addresses.pool2,
+          name: 'ACME',
+          isDefault: true,
+          address: this.protocol.addresses.pool2
+        }
+      ].map(info => {
+        return this.createLiquidityPoolContract(info.id)
+          .methods.owner()
+          .call()
+          .then((owner: string) => {
+            return {
+              ...info,
+              owner
+            };
+          });
+      })
+    );
   };
 
   public getTokens = async (): Promise<TokenInfo[]> => {

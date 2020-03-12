@@ -36,7 +36,7 @@ describe('ethereum api', () => {
     }
   };
 
-  const api = getConfig(chain).api;
+  const api = getConfig(chain).api as EthereumApi;
 
   const address1 = getConfig(chain).address1;
 
@@ -58,6 +58,12 @@ describe('ethereum api', () => {
     }, []);
   });
 
+  it('allowance', async () => {
+    const result = await api.getPoolAllowance('0x885501bcfBad1cAE12B4FD2272F1AbdE6dd88B38', pools[0].id);
+    console.log(`${pools[0].id} allowance: `, result);
+    expect(result).toBe(true);
+  });
+
   it('approve', async () => {
     // await (api as any).getTokenContract('DAI')
     //   .methods.approve((api as any).baseContracts.flowProtocol.options.address, '1000')
@@ -65,6 +71,7 @@ describe('ethereum api', () => {
     //   .then(result => console.log(result));
     // const allowance = await (api as any).getBaseTokenAllowance(getEthAccountPair().publicKey);
     // console.log(allowance)
-    // await api.depositLiquidity(getEthAccountPair().publicKey, pools[0].id, '10000');
+    await api.depositLiquidity(getEthAccountPair().publicKey, pools[0].id, '10000');
+    // await api.liquidityPoolGrant(getEthAccountPair().publicKey, pools[0].id);
   });
 });

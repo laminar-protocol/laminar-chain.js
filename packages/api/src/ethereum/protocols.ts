@@ -1,16 +1,16 @@
 import { AbiItem } from 'web3-utils';
 
-import KovanERC20 from './artifacts/kovan/abi/ERC20Detailed.json';
-import KovanFaucetInterface from './artifacts/kovan/abi/FaucetInterface.json';
-import KovanFlowMarginProtocol from './artifacts/kovan/abi/FlowMarginProtocol.json';
-import KovanFlowProtocol from './artifacts/kovan/abi/FlowProtocol.json';
-import KovanFlowToken from './artifacts/kovan/abi/FlowToken.json';
-import KovanLiquidityPoolInterface from './artifacts/kovan/abi/LiquidityPoolInterface.json';
-import KovanLiquidityPool from './artifacts/kovan/abi/LiquidityPool.json';
-import KovanMarginTradingPair from './artifacts/kovan/abi/MarginTradingPair.json';
-import KovanMoneyMarket from './artifacts/kovan/abi/MoneyMarket.json';
-import KovanPriceOracleInterface from './artifacts/kovan/abi/PriceOracleInterface.json';
-import KovanAddresses from './artifacts/kovan/deployment.json';
+import KovanERC20 from 'flow-protocol-ethereum/artifacts/kovan/abi/ERC20Detailed.json';
+import KovanFaucetInterface from 'flow-protocol-ethereum/artifacts/kovan/abi/FaucetInterface.json';
+import KovanFlowMarginProtocol from 'flow-protocol-ethereum/artifacts/kovan/abi/FlowMarginProtocol.json';
+import KovanFlowProtocol from 'flow-protocol-ethereum/artifacts/kovan/abi/FlowProtocol.json';
+import KovanFlowToken from 'flow-protocol-ethereum/artifacts/kovan/abi/FlowToken.json';
+import KovanLiquidityPoolInterface from 'flow-protocol-ethereum/artifacts/kovan/abi/LiquidityPoolInterface.json';
+import KovanLiquidityPool from 'flow-protocol-ethereum/artifacts/kovan/abi/LiquidityPool.json';
+import KovanMarginTradingPair from 'flow-protocol-ethereum/artifacts/kovan/abi/MarginTradingPair.json';
+import KovanMoneyMarket from 'flow-protocol-ethereum/artifacts/kovan/abi/MoneyMarket.json';
+import KovanPriceOracleInterface from 'flow-protocol-ethereum/artifacts/kovan/abi/PriceOracleInterface.json';
+import KovanAddresses from 'flow-protocol-ethereum/artifacts/kovan/deployment.json';
 
 export const abis = [
   'ERC20',

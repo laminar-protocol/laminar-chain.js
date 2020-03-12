@@ -16,7 +16,7 @@ export interface PoolInfo {
   id: string;
   name: string;
   isDefault: boolean;
-  address: string;
+  owner: string;
 }
 
 export interface TokenInfo {
@@ -59,7 +59,7 @@ export interface FlowApi {
 
   getPoolOptions(poolId: string, tokenName: TokenId): Promise<PoolOptions>;
 
-  getPoolAddress(poolId: string): Promise<PoolInfo['address'] | null>;
+  getPoolOwner(poolId: string): Promise<PoolInfo['owner'] | null>;
 
   getLiquidity(poolId: string): Promise<string>;
 
