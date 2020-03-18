@@ -1,7 +1,7 @@
 import BN from 'bn.js';
 import { fromWei } from 'web3-utils';
 
-import LaminarContract from './LaminarContract';
+import LaminarContract, { LaminarContractOptions } from './LaminarContract';
 
 import {
   PoolInfo,
@@ -19,6 +19,12 @@ export const UINT256_MAX = '1157920892373161954235709850086879078532699846656405
 
 class EthereumApi extends LaminarContract implements FlowApi {
   public chainType: ChainType = 'ethereum';
+  public gas?: string;
+
+  constructor(options: LaminarContractOptions & { gas?: string }) {
+    super(options);
+    this.gas = options.gas;
+  }
 
   private extrinsicHelper = (
     extrinsic: any,
@@ -29,6 +35,10 @@ class EthereumApi extends LaminarContract implements FlowApi {
       account: signOption.from,
       action
     } as Partial<ActionStatus>;
+
+    if (this.gas) {
+      signOption.gas = this.gas;
+    }
 
     return extrinsic
       .send(signOption)
@@ -161,9 +171,43 @@ class EthereumApi extends LaminarContract implements FlowApi {
     return this.extrinsicHelper(extrinsic, { from: account }, { action: 'Swap' });
   };
 
+  public redeemWithMinPrice = async (
+    account: string,
+    poolId: string,
+    fromTokenId: TokenId,
+    fromAmount: string | BN,
+    minPrice: string
+  ) => {
+    const from = this.getTokenContract(fromTokenId);
+    const extrinsic = this.baseContracts.flowProtocol.methods.redeemWithMinPrice(
+      from.options.address,
+      poolId,
+      fromAmount,
+      minPrice
+    );
+    return this.extrinsicHelper(extrinsic, { from: account }, { action: 'Swap' });
+  };
+
   public mint = async (account: string, poolId: string, toTokenId: TokenId, fromAmount: string | BN) => {
     const to = this.getTokenContract(toTokenId);
     const extrinsic = this.baseContracts.flowProtocol.methods.mint(to.options.address, poolId, fromAmount);
+    return this.extrinsicHelper(extrinsic, { from: account }, { action: 'Swap' });
+  };
+
+  public mintWithMaxPrice = async (
+    account: string,
+    poolId: string,
+    toTokenId: TokenId,
+    fromAmount: string | BN,
+    maxPrice: string
+  ) => {
+    const to = this.getTokenContract(toTokenId);
+    const extrinsic = this.baseContracts.flowProtocol.methods.mintWithMaxPrice(
+      to.options.address,
+      poolId,
+      fromAmount,
+      maxPrice
+    );
     return this.extrinsicHelper(extrinsic, { from: account }, { action: 'Swap' });
   };
 

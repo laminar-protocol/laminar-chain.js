@@ -29,15 +29,15 @@ describe('ethereum api', () => {
   const api = getConfig(chain).api;
   const address1 = getConfig(chain).address1;
 
-  let tokenNames: any;
+  let tokenIds: any;
   let pools: any;
   let poolAndTokenPair: any;
 
   beforeAll(async () => {
     await api.isReady();
-    tokenNames = (await api.getTokens()).map(r => r.id);
+    tokenIds = (await api.getTokens()).map(r => r.id);
     pools = await api.getDefaultPools();
-    poolAndTokenPair = tokenNames.reduce((result, token) => {
+    poolAndTokenPair = tokenIds.reduce((result, token) => {
       const tokens = pools.map((pool: any) => ({
         poolId: pool.id,
         tokenName: token
@@ -59,7 +59,7 @@ describe('ethereum api', () => {
     };
     await expect(api.getBalance(address1, 'LAMII' as any)).rejects.toThrowError();
 
-    return Promise.all(tokenNames.map(token => testFn(address1, token)));
+    return Promise.all(tokenIds.map(token => testFn(address1, token)));
   });
 
   it('getPoolOptions', async () => {
