@@ -57,7 +57,7 @@ class EthereumApi extends LaminarContract implements FlowApi {
     return this.extrinsicHelper(extrinsic, { from: account }, { action: 'Grant' });
   };
 
-  public liquidityPoolGrant = async (account: string, poolId: TokenId, balance: string | BN = UINT256_MAX) => {
+  public liquidityPoolGrant = async (account: string, poolId: string, balance: string | BN = UINT256_MAX) => {
     const extrinsic = this.tokenContracts.DAI.methods.approve(
       this.createLiquidityPoolContract(poolId).options.address,
       balance
