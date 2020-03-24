@@ -5,8 +5,8 @@ import Web3 from 'web3';
 describe('ethereum api', () => {
   jest.setTimeout(300000);
 
-  const chain = 'ethereum';
-  // const chain = 'laminar';
+  // const chain = 'ethereum';
+  const chain = 'laminar';
 
   const getConfig = key => {
     if (key === 'ethereum') {
@@ -94,5 +94,12 @@ describe('ethereum api', () => {
     };
 
     await testFn();
+  });
+
+  it.skip('json rpc', async () => {
+    const laminarApi = api as LaminarApi
+    //@ts-ignore
+    const result = await laminarApi.api.rpc.oracle.getValue('lami')
+    expect(result).toBeTruthy()
   });
 });

@@ -16,10 +16,9 @@
   "homepage": "https://github.com/laminar-protocol/laminar-chain.js",
   "dependencies": {
     "@babel/runtime": "^7.8.0",
-    "@laminar/types": "beta",
-    "@orml/api-derive": "beta",
-    "@orml/jsonrpc": "beta",
-    "@polkadot/api": "beta",
+    "@laminar/types": "0.2.0-beta.33",
+    "@orml/api-derive": "^0.2.0-beta.39",
+    "@polkadot/api": "1.8.1",
     "flow-protocol-ethereum": "github:laminar-protocol/flow-protocol-ethereum#0.0.2",
     "web3": "1.2.6",
     "web3-core": "1.2.6",

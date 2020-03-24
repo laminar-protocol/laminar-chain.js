@@ -24,11 +24,11 @@
     "@babel/core": "^7.8.0",
     "@babel/register": "^7.8.0",
     "@babel/runtime": "^7.8.0",
-    "@orml/util": "beta",
+    "@orml/util": "^0.2.0-beta.39",
     "@polkadot/dev": "^0.32.17",
     "@polkadot/ts": "^0.3.6",
     "jest": "^25.1.0",
     "ts-node": "^8.6.1",
-    "typescript": "^3.7.2"
+    "typescript": "^3.8.3"
   }
 }
