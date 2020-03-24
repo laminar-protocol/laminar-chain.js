@@ -1,7 +1,7 @@
 import { derive as ormlDerives } from '@orml/api-derive';
 import { types as laminarTypes } from '@laminar/types';
 import { ApiOptions } from '@polkadot/api/types';
-import jsonrpc from '@laminar/types/interfaces/jsonrpc'
+import jsonrpc from '@laminar/types/interfaces/jsonrpc';
 
 const laminarRpc = jsonrpc;
 
