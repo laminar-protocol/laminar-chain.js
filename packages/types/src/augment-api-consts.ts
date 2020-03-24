@@ -1,5 +1,5 @@
 // Auto-generated via `yarn polkadot-types-from-chain`, do not edit
-/* eslint-disable @typescript-eslint/no-empty-interface */
+/* eslint-disable */
 
 import { Codec } from '@polkadot/types/types';
 import { Vec } from '@polkadot/types/codec';
@@ -11,16 +11,6 @@ import { EraIndex } from '@polkadot/types/interfaces/staking';
 declare module '@polkadot/metadata/Decorated/consts/types' {
   export interface Constants {
     [index: string]: ModuleConstants;
-    timestamp: {
-      [index: string]: AugmentedConst<object & Codec>;
-      /**
-       * The minimum period between blocks. Beware that this is different to the *expected* period
-       * that the block production apparatus provides. Your chosen consensus system will generally
-       * work with this to determine a sensible block time. e.g. For Aura, it will be double this
-       * period on default settings.
-       **/
-      minimumPeriod: AugmentedConst<Moment>;
-    };
     babe: {
       [index: string]: AugmentedConst<object & Codec>;
       /**
@@ -44,19 +34,20 @@ declare module '@polkadot/metadata/Decorated/consts/types' {
        **/
       existentialDeposit: AugmentedConst<Balance>;
     };
-    transactionPayment: {
+    currencies: {
       [index: string]: AugmentedConst<object & Codec>;
-      /**
-       * The fee to be paid for making a transaction; the base.
-       **/
-      transactionBaseFee: AugmentedConst<BalanceOf>;
-      /**
-       * The fee to be paid for making a transaction; the per-byte portion.
-       **/
-      transactionByteFee: AugmentedConst<BalanceOf>;
+      nativeCurrencyId: AugmentedConst<CurrencyIdOf>;
+    };
+    liquidityPools: {
+      [index: string]: AugmentedConst<object & Codec>;
+      existentialDeposit: AugmentedConst<Balance>;
     };
     palletTreasury: {
       [index: string]: AugmentedConst<object & Codec>;
+      /**
+       * Percentage of spare funds (if any) that are burnt per spend period.
+       **/
+      burn: AugmentedConst<Permill>;
       /**
        * Fraction of a proposal's value that should be bonded in order to place the proposal.
        * An accepted proposal gets these back. A rejected proposal does not.
@@ -70,10 +61,6 @@ declare module '@polkadot/metadata/Decorated/consts/types' {
        * Period between successive spends.
        **/
       spendPeriod: AugmentedConst<BlockNumber>;
-      /**
-       * Percentage of spare funds (if any) that are burnt per spend period.
-       **/
-      burn: AugmentedConst<Permill>;
       /**
        * The period for which a tip remains open after is has achieved threshold tippers.
        **/
@@ -91,17 +78,6 @@ declare module '@polkadot/metadata/Decorated/consts/types' {
        **/
       tipReportDepositPerByte: AugmentedConst<BalanceOf>;
     };
-    staking: {
-      [index: string]: AugmentedConst<object & Codec>;
-      /**
-       * Number of sessions per era.
-       **/
-      sessionsPerEra: AugmentedConst<SessionIndex>;
-      /**
-       * Number of eras that staked funds must remain bonded for.
-       **/
-      bondingDuration: AugmentedConst<EraIndex>;
-    };
     session: {
       [index: string]: AugmentedConst<object & Codec>;
       /**
@@ -110,24 +86,48 @@ declare module '@polkadot/metadata/Decorated/consts/types' {
        **/
       dedupKeyPrefix: AugmentedConst<Bytes>;
     };
-    currencies: {
+    staking: {
       [index: string]: AugmentedConst<object & Codec>;
-      nativeCurrencyId: AugmentedConst<CurrencyIdOf>;
-    };
-    syntheticTokens: {
-      [index: string]: AugmentedConst<object & Codec>;
-      defaultExtremeRatio: AugmentedConst<Permill>;
-      defaultLiquidationRatio: AugmentedConst<Permill>;
-      defaultCollateralRatio: AugmentedConst<Permill>;
-      syntheticCurrencyIds: AugmentedConst<Vec<CurrencyId>>;
+      /**
+       * Number of eras that staked funds must remain bonded for.
+       **/
+      bondingDuration: AugmentedConst<EraIndex>;
+      /**
+       * Number of sessions per era.
+       **/
+      sessionsPerEra: AugmentedConst<SessionIndex>;
     };
     syntheticProtocol: {
       [index: string]: AugmentedConst<object & Codec>;
       getCollateralCurrencyId: AugmentedConst<CurrencyId>;
     };
-    liquidityPools: {
+    syntheticTokens: {
       [index: string]: AugmentedConst<object & Codec>;
-      existentialDeposit: AugmentedConst<Balance>;
+      defaultCollateralRatio: AugmentedConst<Permill>;
+      defaultExtremeRatio: AugmentedConst<Permill>;
+      defaultLiquidationRatio: AugmentedConst<Permill>;
+      syntheticCurrencyIds: AugmentedConst<Vec<CurrencyId>>;
+    };
+    timestamp: {
+      [index: string]: AugmentedConst<object & Codec>;
+      /**
+       * The minimum period between blocks. Beware that this is different to the *expected* period
+       * that the block production apparatus provides. Your chosen consensus system will generally
+       * work with this to determine a sensible block time. e.g. For Aura, it will be double this
+       * period on default settings.
+       **/
+      minimumPeriod: AugmentedConst<Moment>;
+    };
+    transactionPayment: {
+      [index: string]: AugmentedConst<object & Codec>;
+      /**
+       * The fee to be paid for making a transaction; the base.
+       **/
+      transactionBaseFee: AugmentedConst<BalanceOf>;
+      /**
+       * The fee to be paid for making a transaction; the per-byte portion.
+       **/
+      transactionByteFee: AugmentedConst<BalanceOf>;
     };
   }
 }
