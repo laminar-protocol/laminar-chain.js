@@ -12,17 +12,44 @@ export default {
     OracleKey: 'CurrencyId',
     OracleValue: 'Price',
     LiquidityPoolId: 'u32',
+    // @TODO
     Leverages: 'u16',
-    LiquidityPoolOption: {
+    Leverage: 'u16',
+    TradingPair: {
+      base: 'CurrencyId',
+      quote: 'CurrencyId'
+    },
+    AccumulateConfig: {
+      frequency: 'BlockNumber',
+      offset: 'BlockNumber'
+    },
+    MarginLiquidityPoolOption: {
+      bidSpread: 'Permill',
+      askSpread: 'Permill',
+      enabled_trades: 'Leverages'
+    },
+    SyntheticLiquidityPoolOption: {
       bidSpread: 'Permill',
       askSpread: 'Permill',
       additionalCollateralRatio: 'Option<Permill>',
-      tradeEnabled: 'Leverages',
       syntheticEnabled: 'bool'
     },
     Position: {
-      collateral: 'Balance',
-      synthetic: 'Balance'
-    }
+      owner: 'AccountId',
+      pool: 'LiquidityPoolId',
+      pair: 'TradingPair',
+      leverage: 'Leverage',
+      leveragedHeld: 'Fixed128',
+      leveragedDebits: 'Fixed128',
+      leveragedDebitsInUsd: 'Fixed128',
+      openAccumulatedSwapRate: 'Fixed128',
+      openMargin: 'Balance'
+    },
+    RiskThreshold: {
+      marginCall: 'Permill',
+      stopOut: 'Permill'
+    },
+    Fixed128: 'i128',
+    PositionId: 'u64'
   }
 };

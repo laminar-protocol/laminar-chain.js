@@ -4,7 +4,7 @@ import { ApiOptions } from '@polkadot/api/types';
 
 import { options as getOptions } from './options';
 import { FlowApi, TokenInfo, TokenId, PoolOptions, TradingPair, ChainType, ActionStatus } from '../types';
-import { Balance, LiquidityPoolOption, Permill, AccountId } from '@laminar/types/interfaces';
+import { Balance, MarginLiquidityPoolOption, Permill, AccountId } from '@laminar/types/interfaces';
 import { Option } from '@polkadot/types/codec';
 
 interface LaminarApiOptions extends ApiOptions {
@@ -98,7 +98,10 @@ class LaminarApi implements FlowApi {
   };
 
   public getPoolOptions = async (poolId: string, tokenId: TokenId): Promise<PoolOptions> => {
-    const data = await this.api.query.liquidityPools.liquidityPoolOptions<Option<LiquidityPoolOption>>(poolId, tokenId);
+    const data = await this.api.query.liquidityPools.liquidityPoolOptions<Option<MarginLiquidityPoolOption>>(
+      poolId,
+      tokenId
+    );
     const json = data.toJSON() as any;
 
     if (!this.minAdditionalCollateralRatio) {
