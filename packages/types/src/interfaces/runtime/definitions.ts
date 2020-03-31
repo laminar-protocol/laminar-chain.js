@@ -26,7 +26,7 @@ export default {
     MarginLiquidityPoolOption: {
       bidSpread: 'Permill',
       askSpread: 'Permill',
-      enabled_trades: 'Leverages'
+      enabledTrades: 'Leverages'
     },
     SyntheticLiquidityPoolOption: {
       bidSpread: 'Permill',
