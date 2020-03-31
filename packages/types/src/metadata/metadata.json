@@ -12,9 +12,9 @@
                 "name": "Account",
                 "modifier": "Default",
                 "type": {
-                  "Map": { "hasher": "Blake2_256", "key": "AccountId", "value": "(Index,AccountData)", "linked": false }
+                  "Map": { "hasher": "Blake2_256", "key": "AccountId", "value": "AccountInfo", "linked": false }
                 },
-                "fallback": "0x0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+                "fallback": "0x000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
                 "documentation": [" The full account information for a particular account ID."]
               },
               {
@@ -124,8 +124,8 @@
           "calls": [
             {
               "name": "fill_block",
-              "args": [],
-              "documentation": [" A big dispatch that will disallow any other transaction to be included."]
+              "args": [{ "name": "_ratio", "type": "Perbill" }],
+              "documentation": [" A dispatch that will fill the block weight up to the given ratio."]
             },
             {
               "name": "remark",
@@ -166,6 +166,14 @@
               "name": "kill_prefix",
               "args": [{ "name": "prefix", "type": "Key" }],
               "documentation": [" Kill all storage items with a key that starts with the given prefix."]
+            },
+            {
+              "name": "suicide",
+              "args": [],
+              "documentation": [
+                " Kill the sending account, assuming there are no references outstanding and the composite",
+                " data is equal to its default value."
+              ]
             }
           ],
           "events": [
@@ -181,7 +189,7 @@
             },
             { "name": "CodeUpdated", "args": [], "documentation": [" `:code` was updated."] },
             { "name": "NewAccount", "args": ["AccountId"], "documentation": [" A new account was created."] },
-            { "name": "ReapedAccount", "args": ["AccountId"], "documentation": [" An account was reaped."] }
+            { "name": "KilledAccount", "args": ["AccountId"], "documentation": [" An account was reaped."] }
           ],
           "constants": [],
           "errors": [
@@ -220,6 +228,14 @@
                 "",
                 " Either calling `Core_version` or decoding `RuntimeVersion` failed."
               ]
+            },
+            {
+              "name": "NonDefaultComposite",
+              "documentation": [" Suicide called when the account has non-default composite data."]
+            },
+            {
+              "name": "NonZeroRefCount",
+              "documentation": [" There is a non-zero reference count preventing the account from being purged."]
             }
           ]
         },
@@ -415,7 +431,7 @@
                   " DEPRECATED",
                   "",
                   " This used to store the current authority set, which has been migrated to the well-known",
-                  " GRANDPA_AUTHORITES_KEY unhashed key."
+                  " GRANDPA_AUTHORITIES_KEY unhashed key."
                 ]
               },
               {
@@ -558,7 +574,7 @@
               ],
               "documentation": [
                 " Assign an index already owned by the sender to another account. The balance reservation",
-                " is effectively transfered to the new account.",
+                " is effectively transferred to the new account.",
                 "",
                 " The dispatch origin for this call must be _Signed_.",
                 "",
@@ -879,7 +895,7 @@
           "calls": [
             {
               "name": "sudo",
-              "args": [{ "name": "proposal", "type": "Proposal" }],
+              "args": [{ "name": "call", "type": "Call" }],
               "documentation": [
                 " Authenticates the sudo key and dispatches a function call with `Root` origin.",
                 "",
@@ -889,7 +905,7 @@
                 " - O(1).",
                 " - Limited storage reads.",
                 " - One DB write (event).",
-                " - Unknown weight of derivative `proposal` execution.",
+                " - Weight of derivative `call` execution + 10,000.",
                 " # </weight>"
               ]
             },
@@ -912,7 +928,7 @@
               "name": "sudo_as",
               "args": [
                 { "name": "who", "type": "LookupSource" },
-                { "name": "proposal", "type": "Proposal" }
+                { "name": "call", "type": "Call" }
               ],
               "documentation": [
                 " Authenticates the sudo key and dispatches a function call with `Signed` origin from",
@@ -924,7 +940,7 @@
                 " - O(1).",
                 " - Limited storage reads.",
                 " - One DB write (event).",
-                " - Unknown weight of derivative `proposal` execution.",
+                " - Weight of derivative `call` execution + 10,000.",
                 " # </weight>"
               ]
             }
@@ -1652,11 +1668,11 @@
                 "modifier": "Optional",
                 "type": {
                   "DoubleMap": {
-                    "hasher": "Blake2_256",
+                    "hasher": "Twox64Concat",
                     "key1": "OracleKey",
                     "key2": "AccountId",
                     "value": "TimestampedValueOf",
-                    "key2Hasher": "Blake2_256"
+                    "key2Hasher": "Twox64Concat"
                   }
                 },
                 "fallback": "0x00",
@@ -1665,7 +1681,7 @@
               {
                 "name": "HasUpdate",
                 "modifier": "Default",
-                "type": { "Map": { "hasher": "Blake2_256", "key": "OracleKey", "value": "bool", "linked": false } },
+                "type": { "Map": { "hasher": "Twox64Concat", "key": "OracleKey", "value": "bool", "linked": false } },
                 "fallback": "0x00",
                 "documentation": []
               },
@@ -1673,7 +1689,12 @@
                 "name": "Values",
                 "modifier": "Optional",
                 "type": {
-                  "Map": { "hasher": "Blake2_256", "key": "OracleKey", "value": "TimestampedValueOf", "linked": false }
+                  "Map": {
+                    "hasher": "Twox64Concat",
+                    "key": "OracleKey",
+                    "value": "TimestampedValueOf",
+                    "linked": false
+                  }
                 },
                 "fallback": "0x00",
                 "documentation": []
@@ -2563,6 +2584,19 @@
                 " - Storage changes: Can't increase storage, only decrease it.",
                 " # </weight>"
               ]
+            },
+            {
+              "name": "reap_stash",
+              "args": [{ "name": "stash", "type": "AccountId" }],
+              "documentation": [
+                " Remove all data structure concerning a staker/stash once its balance is zero.",
+                " This is essentially equivalent to `withdraw_unbonded` except it can be called by anyone",
+                " and the target `stash` must have no funds left.",
+                "",
+                " This can be called from any origin.",
+                "",
+                " - `stash`: The stash account to reap. Its balance must be zero."
+              ]
             }
           ],
           "events": [
@@ -2612,7 +2646,8 @@
             { "name": "InvalidSlashIndex", "documentation": [" Slash record index out of bounds."] },
             { "name": "InsufficientValue", "documentation": [" Can not bond with value less than minimum balance."] },
             { "name": "NoMoreChunks", "documentation": [" Can not schedule more unlock chunks."] },
-            { "name": "NoUnlockChunk", "documentation": [" Can not rebond without unlocking chunks."] }
+            { "name": "NoUnlockChunk", "documentation": [" Can not rebond without unlocking chunks."] },
+            { "name": "FundedTarget", "documentation": [" Attempting to target a stash that still has funds."] }
           ]
         },
         {
@@ -2724,6 +2759,24 @@
                 " # <weight>",
                 " - O(log n) in number of accounts.",
                 " - One extra DB entry.",
+                " - Increases system account refs by one on success iff there were previously no keys set.",
+                "   In this case, purge_keys will need to be called before the account can be removed.",
+                " # </weight>"
+              ]
+            },
+            {
+              "name": "purge_keys",
+              "args": [],
+              "documentation": [
+                " Removes any session key(s) of the function caller.",
+                " This doesn't take effect until the next session.",
+                "",
+                " The dispatch origin of this function must be signed.",
+                "",
+                " # <weight>",
+                " - O(N) in number of key types.",
+                " - Removes N + 1 DB entries.",
+                " - Reduces system account refs by one on success.",
                 " # </weight>"
               ]
             }
@@ -2752,7 +2805,8 @@
           "errors": [
             { "name": "InvalidProof", "documentation": [" Invalid ownership proof."] },
             { "name": "NoAssociatedValidatorId", "documentation": [" No associated validator ID for account."] },
-            { "name": "DuplicatedKey", "documentation": [" Registered duplicate key."] }
+            { "name": "DuplicatedKey", "documentation": [" Registered duplicate key."] },
+            { "name": "NoKeys", "documentation": [" No keys are associated with this account."] }
           ]
         },
         {
@@ -2763,7 +2817,9 @@
               {
                 "name": "TotalIssuance",
                 "modifier": "Default",
-                "type": { "Map": { "hasher": "Blake2_256", "key": "CurrencyId", "value": "Balance", "linked": false } },
+                "type": {
+                  "Map": { "hasher": "Twox64Concat", "key": "CurrencyId", "value": "Balance", "linked": false }
+                },
                 "fallback": "0x00000000000000000000000000000000",
                 "documentation": [" The total issuance of a token type."]
               },
@@ -2772,11 +2828,11 @@
                 "modifier": "Default",
                 "type": {
                   "DoubleMap": {
-                    "hasher": "Blake2_256",
+                    "hasher": "Twox64Concat",
                     "key1": "CurrencyId",
                     "key2": "AccountId",
                     "value": "Balance",
-                    "key2Hasher": "Blake2_256"
+                    "key2Hasher": "Blake2_128Concat"
                   }
                 },
                 "fallback": "0x00000000000000000000000000000000",
@@ -2859,6 +2915,16 @@
               "name": "BalanceUpdated",
               "args": ["CurrencyId", "AccountId", "Amount"],
               "documentation": [" Update balance success (currency_id, who, amount)"]
+            },
+            {
+              "name": "Deposited",
+              "args": ["CurrencyId", "AccountId", "Balance"],
+              "documentation": [" Deposit success (currency_id, who, amount)"]
+            },
+            {
+              "name": "Withdrawn",
+              "args": ["CurrencyId", "AccountId", "Balance"],
+              "documentation": [" Withdraw success (currency_id, who, amount)"]
             }
           ],
           "constants": [{ "name": "NativeCurrencyId", "type": "CurrencyIdOf", "value": "0x00", "documentation": [] }],
