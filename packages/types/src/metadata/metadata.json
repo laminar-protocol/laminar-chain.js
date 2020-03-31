@@ -12,7 +12,7 @@
                 "name": "Account",
                 "modifier": "Default",
                 "type": {
-                  "Map": { "hasher": "Blake2_256", "key": "AccountId", "value": "AccountInfo", "linked": false }
+                  "Map": { "hasher": "Blake2_128Concat", "key": "AccountId", "value": "AccountInfo", "linked": false }
                 },
                 "fallback": "0x000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
                 "documentation": [" The full account information for a particular account ID."]
@@ -41,7 +41,7 @@
               {
                 "name": "BlockHash",
                 "modifier": "Default",
-                "type": { "Map": { "hasher": "Blake2_256", "key": "BlockNumber", "value": "Hash", "linked": false } },
+                "type": { "Map": { "hasher": "Twox64Concat", "key": "BlockNumber", "value": "Hash", "linked": false } },
                 "fallback": "0x0000000000000000000000000000000000000000000000000000000000000000",
                 "documentation": [" Map of block numbers to block hashes."]
               },
@@ -99,7 +99,7 @@
                 "modifier": "Default",
                 "type": {
                   "Map": {
-                    "hasher": "Blake2_256",
+                    "hasher": "Blake2_128Concat",
                     "key": "Hash",
                     "value": "Vec<(BlockNumber,EventIndex)>",
                     "linked": false
@@ -118,6 +118,22 @@
                   " the `EventIndex` then in case if the topic has the same contents on the next block",
                   " no notification will be triggered thus the event might be lost."
                 ]
+              },
+              {
+                "name": "LastRuntimeUpgrade",
+                "modifier": "Optional",
+                "type": { "Plain": "LastRuntimeUpgradeInfo" },
+                "fallback": "0x00",
+                "documentation": [
+                  " Stores the `spec_version` and `spec_name` of when the last runtime upgrade happened."
+                ]
+              },
+              {
+                "name": "ExecutionPhase",
+                "modifier": "Optional",
+                "type": { "Plain": "Phase" },
+                "fallback": "0x00",
+                "documentation": [" The execution phase of the block."]
               }
             ]
           },
@@ -201,24 +217,10 @@
               ]
             },
             {
-              "name": "SpecVersionNotAllowedToDecrease",
+              "name": "SpecVersionNeedsToIncrease",
               "documentation": [
                 " The specification version is not allowed to decrease between the current runtime",
                 " and the new runtime."
-              ]
-            },
-            {
-              "name": "ImplVersionNotAllowedToDecrease",
-              "documentation": [
-                " The implementation version is not allowed to decrease between the current runtime",
-                " and the new runtime."
-              ]
-            },
-            {
-              "name": "SpecOrImplVersionNeedToIncrease",
-              "documentation": [
-                " The specification or the implementation version need to increase between the",
-                " current runtime and the new runtime."
               ]
             },
             {
@@ -332,7 +334,7 @@
               {
                 "name": "Randomness",
                 "modifier": "Default",
-                "type": { "Plain": "[u8;32]" },
+                "type": { "Plain": "Randomness" },
                 "fallback": "0x0000000000000000000000000000000000000000000000000000000000000000",
                 "documentation": [
                   " The epoch randomness for the *current* epoch.",
@@ -350,7 +352,7 @@
               {
                 "name": "NextRandomness",
                 "modifier": "Default",
-                "type": { "Plain": "[u8;32]" },
+                "type": { "Plain": "Randomness" },
                 "fallback": "0x0000000000000000000000000000000000000000000000000000000000000000",
                 "documentation": [" Next epoch randomness."]
               },
@@ -374,7 +376,9 @@
               {
                 "name": "UnderConstruction",
                 "modifier": "Default",
-                "type": { "Map": { "hasher": "Blake2_256", "key": "u32", "value": "Vec<[u8;32]>", "linked": false } },
+                "type": {
+                  "Map": { "hasher": "Twox64Concat", "key": "u32", "value": "Vec<RawVRFOutput>", "linked": false }
+                },
                 "fallback": "0x00",
                 "documentation": []
               },
@@ -423,18 +427,6 @@
             "prefix": "GrandpaFinality",
             "items": [
               {
-                "name": "Authorities",
-                "modifier": "Default",
-                "type": { "Plain": "AuthorityList" },
-                "fallback": "0x00",
-                "documentation": [
-                  " DEPRECATED",
-                  "",
-                  " This used to store the current authority set, which has been migrated to the well-known",
-                  " GRANDPA_AUTHORITIES_KEY unhashed key."
-                ]
-              },
-              {
                 "name": "State",
                 "modifier": "Default",
                 "type": { "Plain": "StoredState" },
@@ -475,10 +467,13 @@
               {
                 "name": "SetIdSession",
                 "modifier": "Optional",
-                "type": { "Map": { "hasher": "Blake2_256", "key": "SetId", "value": "SessionIndex", "linked": false } },
+                "type": {
+                  "Map": { "hasher": "Twox64Concat", "key": "SetId", "value": "SessionIndex", "linked": false }
+                },
                 "fallback": "0x00",
                 "documentation": [
-                  " A mapping from grandpa set ID to the index of the *most recent* session for which its members were responsible."
+                  " A mapping from grandpa set ID to the index of the *most recent* session for which its",
+                  " members were responsible."
                 ]
               }
             ]
@@ -670,7 +665,7 @@
                 "name": "Account",
                 "modifier": "Default",
                 "type": {
-                  "Map": { "hasher": "Blake2_256", "key": "AccountId", "value": "AccountData", "linked": false }
+                  "Map": { "hasher": "Blake2_128Concat", "key": "AccountId", "value": "AccountData", "linked": false }
                 },
                 "fallback": "0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
                 "documentation": [
@@ -686,7 +681,12 @@
                 "name": "Locks",
                 "modifier": "Default",
                 "type": {
-                  "Map": { "hasher": "Blake2_256", "key": "AccountId", "value": "Vec<BalanceLock>", "linked": false }
+                  "Map": {
+                    "hasher": "Blake2_128Concat",
+                    "key": "AccountId",
+                    "value": "Vec<BalanceLock>",
+                    "linked": false
+                  }
                 },
                 "fallback": "0x00",
                 "documentation": [
@@ -695,11 +695,11 @@
                 ]
               },
               {
-                "name": "IsUpgraded",
+                "name": "StorageVersion",
                 "modifier": "Default",
-                "type": { "Plain": "bool" },
+                "type": { "Plain": "ReleasesBalances" },
                 "fallback": "0x00",
-                "documentation": [" True if network has been upgraded to this version.", "", " True for new networks."]
+                "documentation": [" Storage version of the pallet.", "", " This is set to v2.0.0 for new networks."]
               }
             ]
           },
@@ -849,7 +849,7 @@
         {
           "name": "TransactionPayment",
           "storage": {
-            "prefix": "Balances",
+            "prefix": "TransactionPayment",
             "items": [
               {
                 "name": "NextFeeMultiplier",
@@ -995,14 +995,14 @@
               {
                 "name": "ProposalOf",
                 "modifier": "Optional",
-                "type": { "Map": { "hasher": "Blake2_256", "key": "Hash", "value": "Proposal", "linked": false } },
+                "type": { "Map": { "hasher": "Identity", "key": "Hash", "value": "Proposal", "linked": false } },
                 "fallback": "0x00",
                 "documentation": [" Actual proposal for a given hash, if it's current."]
               },
               {
                 "name": "Voting",
                 "modifier": "Optional",
-                "type": { "Map": { "hasher": "Blake2_256", "key": "Hash", "value": "Votes", "linked": false } },
+                "type": { "Map": { "hasher": "Identity", "key": "Hash", "value": "Votes", "linked": false } },
                 "fallback": "0x00",
                 "documentation": [" Votes on a given proposal, if it is ongoing."]
               },
@@ -1019,16 +1019,31 @@
                 "type": { "Plain": "Vec<AccountId>" },
                 "fallback": "0x00",
                 "documentation": [" The current members of the collective. This is stored sorted (just by value)."]
+              },
+              {
+                "name": "Prime",
+                "modifier": "Optional",
+                "type": { "Plain": "AccountId" },
+                "fallback": "0x00",
+                "documentation": [
+                  " The member who provides the default vote for any other members that do not vote before",
+                  " the timeout. If None, then no member has that privilege."
+                ]
               }
             ]
           },
           "calls": [
             {
               "name": "set_members",
-              "args": [{ "name": "new_members", "type": "Vec<AccountId>" }],
+              "args": [
+                { "name": "new_members", "type": "Vec<AccountId>" },
+                { "name": "prime", "type": "Option<AccountId>" }
+              ],
               "documentation": [
-                " Set the collective's membership manually to `new_members`. Be nice to the chain and",
-                " provide it pre-sorted.",
+                " Set the collective's membership.",
+                "",
+                " - `new_members`: The new member list. Be nice to the chain and",
+                " - `prime`: The prime member whose vote sets the default.",
                 "",
                 " Requires root origin."
               ]
@@ -1068,6 +1083,28 @@
                 " - Will be slightly heavier if the proposal is approved / disapproved after the vote.",
                 " # </weight>"
               ]
+            },
+            {
+              "name": "close",
+              "args": [
+                { "name": "proposal", "type": "Hash" },
+                { "name": "index", "type": "Compact<ProposalIndex>" }
+              ],
+              "documentation": [
+                " May be called by any signed account after the voting duration has ended in order to",
+                " finish voting and close the proposal.",
+                "",
+                " Abstentions are counted as rejections unless there is a prime member set and the prime",
+                " member cast an approval.",
+                "",
+                " - the weight of `proposal` preimage.",
+                " - up to three events deposited.",
+                " - one read, two removals, one mutation. (plus three static reads.)",
+                " - computation and i/o `O(P + L + M)` where:",
+                "   - `M` is number of members,",
+                "   - `P` is number of active proposals,",
+                "   - `L` is the encoded length of `proposal` preimage."
+              ]
             }
           ],
           "events": [
@@ -1106,6 +1143,11 @@
               "name": "MemberExecuted",
               "args": ["Hash", "bool"],
               "documentation": [" A single member did some action; `bool` is true if returned without error."]
+            },
+            {
+              "name": "Closed",
+              "args": ["Hash", "MemberCount", "MemberCount"],
+              "documentation": [" A proposal was closed after its duration was up."]
             }
           ],
           "constants": [],
@@ -1115,7 +1157,11 @@
             { "name": "ProposalMissing", "documentation": [" Proposal must exist"] },
             { "name": "WrongIndex", "documentation": [" Mismatched index"] },
             { "name": "DuplicateVote", "documentation": [" Duplicate vote ignored"] },
-            { "name": "AlreadyInitialized", "documentation": [" Members are already initialized!"] }
+            { "name": "AlreadyInitialized", "documentation": [" Members are already initialized!"] },
+            {
+              "name": "TooEarly",
+              "documentation": [" The close call is made too early, before the end of the voting."]
+            }
           ]
         },
         {
@@ -1129,6 +1175,13 @@
                 "type": { "Plain": "Vec<AccountId>" },
                 "fallback": "0x00",
                 "documentation": [" The current membership, stored as an ordered Vec."]
+              },
+              {
+                "name": "Prime",
+                "modifier": "Optional",
+                "type": { "Plain": "AccountId" },
+                "fallback": "0x00",
+                "documentation": [" The current prime member, if one exists."]
               }
             ]
           },
@@ -1156,7 +1209,9 @@
               "documentation": [
                 " Swap out one member `remove` for another `add`.",
                 "",
-                " May only be called from `SwapOrigin` or root."
+                " May only be called from `SwapOrigin` or root.",
+                "",
+                " Prime membership is *not* passed from `remove` to `add`, if extant."
               ]
             },
             {
@@ -1175,9 +1230,17 @@
               "documentation": [
                 " Swap out the sending member for some other key `new`.",
                 "",
-                " May only be called from `Signed` origin of a current member."
+                " May only be called from `Signed` origin of a current member.",
+                "",
+                " Prime membership is passed from the origin account to `new`, if extant."
               ]
-            }
+            },
+            {
+              "name": "set_prime",
+              "args": [{ "name": "who", "type": "AccountId" }],
+              "documentation": [" Set the prime member. Must be a current member."]
+            },
+            { "name": "clear_prime", "args": [], "documentation": [" Remove the prime member if it exists."] }
           ],
           "events": [
             {
@@ -1221,14 +1284,14 @@
               {
                 "name": "ProposalOf",
                 "modifier": "Optional",
-                "type": { "Map": { "hasher": "Blake2_256", "key": "Hash", "value": "Proposal", "linked": false } },
+                "type": { "Map": { "hasher": "Identity", "key": "Hash", "value": "Proposal", "linked": false } },
                 "fallback": "0x00",
                 "documentation": [" Actual proposal for a given hash, if it's current."]
               },
               {
                 "name": "Voting",
                 "modifier": "Optional",
-                "type": { "Map": { "hasher": "Blake2_256", "key": "Hash", "value": "Votes", "linked": false } },
+                "type": { "Map": { "hasher": "Identity", "key": "Hash", "value": "Votes", "linked": false } },
                 "fallback": "0x00",
                 "documentation": [" Votes on a given proposal, if it is ongoing."]
               },
@@ -1245,16 +1308,31 @@
                 "type": { "Plain": "Vec<AccountId>" },
                 "fallback": "0x00",
                 "documentation": [" The current members of the collective. This is stored sorted (just by value)."]
+              },
+              {
+                "name": "Prime",
+                "modifier": "Optional",
+                "type": { "Plain": "AccountId" },
+                "fallback": "0x00",
+                "documentation": [
+                  " The member who provides the default vote for any other members that do not vote before",
+                  " the timeout. If None, then no member has that privilege."
+                ]
               }
             ]
           },
           "calls": [
             {
               "name": "set_members",
-              "args": [{ "name": "new_members", "type": "Vec<AccountId>" }],
+              "args": [
+                { "name": "new_members", "type": "Vec<AccountId>" },
+                { "name": "prime", "type": "Option<AccountId>" }
+              ],
               "documentation": [
-                " Set the collective's membership manually to `new_members`. Be nice to the chain and",
-                " provide it pre-sorted.",
+                " Set the collective's membership.",
+                "",
+                " - `new_members`: The new member list. Be nice to the chain and",
+                " - `prime`: The prime member whose vote sets the default.",
                 "",
                 " Requires root origin."
               ]
@@ -1294,6 +1372,28 @@
                 " - Will be slightly heavier if the proposal is approved / disapproved after the vote.",
                 " # </weight>"
               ]
+            },
+            {
+              "name": "close",
+              "args": [
+                { "name": "proposal", "type": "Hash" },
+                { "name": "index", "type": "Compact<ProposalIndex>" }
+              ],
+              "documentation": [
+                " May be called by any signed account after the voting duration has ended in order to",
+                " finish voting and close the proposal.",
+                "",
+                " Abstentions are counted as rejections unless there is a prime member set and the prime",
+                " member cast an approval.",
+                "",
+                " - the weight of `proposal` preimage.",
+                " - up to three events deposited.",
+                " - one read, two removals, one mutation. (plus three static reads.)",
+                " - computation and i/o `O(P + L + M)` where:",
+                "   - `M` is number of members,",
+                "   - `P` is number of active proposals,",
+                "   - `L` is the encoded length of `proposal` preimage."
+              ]
             }
           ],
           "events": [
@@ -1332,6 +1432,11 @@
               "name": "MemberExecuted",
               "args": ["Hash", "bool"],
               "documentation": [" A single member did some action; `bool` is true if returned without error."]
+            },
+            {
+              "name": "Closed",
+              "args": ["Hash", "MemberCount", "MemberCount"],
+              "documentation": [" A proposal was closed after its duration was up."]
             }
           ],
           "constants": [],
@@ -1341,7 +1446,11 @@
             { "name": "ProposalMissing", "documentation": [" Proposal must exist"] },
             { "name": "WrongIndex", "documentation": [" Mismatched index"] },
             { "name": "DuplicateVote", "documentation": [" Duplicate vote ignored"] },
-            { "name": "AlreadyInitialized", "documentation": [" Members are already initialized!"] }
+            { "name": "AlreadyInitialized", "documentation": [" Members are already initialized!"] },
+            {
+              "name": "TooEarly",
+              "documentation": [" The close call is made too early, before the end of the voting."]
+            }
           ]
         },
         {
@@ -1355,6 +1464,13 @@
                 "type": { "Plain": "Vec<AccountId>" },
                 "fallback": "0x00",
                 "documentation": [" The current membership, stored as an ordered Vec."]
+              },
+              {
+                "name": "Prime",
+                "modifier": "Optional",
+                "type": { "Plain": "AccountId" },
+                "fallback": "0x00",
+                "documentation": [" The current prime member, if one exists."]
               }
             ]
           },
@@ -1382,7 +1498,9 @@
               "documentation": [
                 " Swap out one member `remove` for another `add`.",
                 "",
-                " May only be called from `SwapOrigin` or root."
+                " May only be called from `SwapOrigin` or root.",
+                "",
+                " Prime membership is *not* passed from `remove` to `add`, if extant."
               ]
             },
             {
@@ -1401,9 +1519,17 @@
               "documentation": [
                 " Swap out the sending member for some other key `new`.",
                 "",
-                " May only be called from `Signed` origin of a current member."
+                " May only be called from `Signed` origin of a current member.",
+                "",
+                " Prime membership is passed from the origin account to `new`, if extant."
               ]
-            }
+            },
+            {
+              "name": "set_prime",
+              "args": [{ "name": "who", "type": "AccountId" }],
+              "documentation": [" Set the prime member. Must be a current member."]
+            },
+            { "name": "clear_prime", "args": [], "documentation": [" Remove the prime member if it exists."] }
           ],
           "events": [
             {
@@ -1447,14 +1573,14 @@
               {
                 "name": "ProposalOf",
                 "modifier": "Optional",
-                "type": { "Map": { "hasher": "Blake2_256", "key": "Hash", "value": "Proposal", "linked": false } },
+                "type": { "Map": { "hasher": "Identity", "key": "Hash", "value": "Proposal", "linked": false } },
                 "fallback": "0x00",
                 "documentation": [" Actual proposal for a given hash, if it's current."]
               },
               {
                 "name": "Voting",
                 "modifier": "Optional",
-                "type": { "Map": { "hasher": "Blake2_256", "key": "Hash", "value": "Votes", "linked": false } },
+                "type": { "Map": { "hasher": "Identity", "key": "Hash", "value": "Votes", "linked": false } },
                 "fallback": "0x00",
                 "documentation": [" Votes on a given proposal, if it is ongoing."]
               },
@@ -1471,16 +1597,31 @@
                 "type": { "Plain": "Vec<AccountId>" },
                 "fallback": "0x00",
                 "documentation": [" The current members of the collective. This is stored sorted (just by value)."]
+              },
+              {
+                "name": "Prime",
+                "modifier": "Optional",
+                "type": { "Plain": "AccountId" },
+                "fallback": "0x00",
+                "documentation": [
+                  " The member who provides the default vote for any other members that do not vote before",
+                  " the timeout. If None, then no member has that privilege."
+                ]
               }
             ]
           },
           "calls": [
             {
               "name": "set_members",
-              "args": [{ "name": "new_members", "type": "Vec<AccountId>" }],
+              "args": [
+                { "name": "new_members", "type": "Vec<AccountId>" },
+                { "name": "prime", "type": "Option<AccountId>" }
+              ],
               "documentation": [
-                " Set the collective's membership manually to `new_members`. Be nice to the chain and",
-                " provide it pre-sorted.",
+                " Set the collective's membership.",
+                "",
+                " - `new_members`: The new member list. Be nice to the chain and",
+                " - `prime`: The prime member whose vote sets the default.",
                 "",
                 " Requires root origin."
               ]
@@ -1520,6 +1661,28 @@
                 " - Will be slightly heavier if the proposal is approved / disapproved after the vote.",
                 " # </weight>"
               ]
+            },
+            {
+              "name": "close",
+              "args": [
+                { "name": "proposal", "type": "Hash" },
+                { "name": "index", "type": "Compact<ProposalIndex>" }
+              ],
+              "documentation": [
+                " May be called by any signed account after the voting duration has ended in order to",
+                " finish voting and close the proposal.",
+                "",
+                " Abstentions are counted as rejections unless there is a prime member set and the prime",
+                " member cast an approval.",
+                "",
+                " - the weight of `proposal` preimage.",
+                " - up to three events deposited.",
+                " - one read, two removals, one mutation. (plus three static reads.)",
+                " - computation and i/o `O(P + L + M)` where:",
+                "   - `M` is number of members,",
+                "   - `P` is number of active proposals,",
+                "   - `L` is the encoded length of `proposal` preimage."
+              ]
             }
           ],
           "events": [
@@ -1558,6 +1721,11 @@
               "name": "MemberExecuted",
               "args": ["Hash", "bool"],
               "documentation": [" A single member did some action; `bool` is true if returned without error."]
+            },
+            {
+              "name": "Closed",
+              "args": ["Hash", "MemberCount", "MemberCount"],
+              "documentation": [" A proposal was closed after its duration was up."]
             }
           ],
           "constants": [],
@@ -1567,7 +1735,11 @@
             { "name": "ProposalMissing", "documentation": [" Proposal must exist"] },
             { "name": "WrongIndex", "documentation": [" Mismatched index"] },
             { "name": "DuplicateVote", "documentation": [" Duplicate vote ignored"] },
-            { "name": "AlreadyInitialized", "documentation": [" Members are already initialized!"] }
+            { "name": "AlreadyInitialized", "documentation": [" Members are already initialized!"] },
+            {
+              "name": "TooEarly",
+              "documentation": [" The close call is made too early, before the end of the voting."]
+            }
           ]
         },
         {
@@ -1581,6 +1753,13 @@
                 "type": { "Plain": "Vec<AccountId>" },
                 "fallback": "0x00",
                 "documentation": [" The current membership, stored as an ordered Vec."]
+              },
+              {
+                "name": "Prime",
+                "modifier": "Optional",
+                "type": { "Plain": "AccountId" },
+                "fallback": "0x00",
+                "documentation": [" The current prime member, if one exists."]
               }
             ]
           },
@@ -1608,7 +1787,9 @@
               "documentation": [
                 " Swap out one member `remove` for another `add`.",
                 "",
-                " May only be called from `SwapOrigin` or root."
+                " May only be called from `SwapOrigin` or root.",
+                "",
+                " Prime membership is *not* passed from `remove` to `add`, if extant."
               ]
             },
             {
@@ -1627,9 +1808,17 @@
               "documentation": [
                 " Swap out the sending member for some other key `new`.",
                 "",
-                " May only be called from `Signed` origin of a current member."
+                " May only be called from `Signed` origin of a current member.",
+                "",
+                " Prime membership is passed from the origin account to `new`, if extant."
               ]
-            }
+            },
+            {
+              "name": "set_prime",
+              "args": [{ "name": "who", "type": "AccountId" }],
+              "documentation": [" Set the prime member. Must be a current member."]
+            },
+            { "name": "clear_prime", "args": [], "documentation": [" Remove the prime member if it exists."] }
           ],
           "events": [
             {
@@ -1752,7 +1941,7 @@
                 "name": "Proposals",
                 "modifier": "Optional",
                 "type": {
-                  "Map": { "hasher": "Blake2_256", "key": "ProposalIndex", "value": "Proposal", "linked": false }
+                  "Map": { "hasher": "Twox64Concat", "key": "ProposalIndex", "value": "Proposal", "linked": false }
                 },
                 "fallback": "0x00",
                 "documentation": [" Proposals that have been made."]
@@ -1778,7 +1967,7 @@
               {
                 "name": "Reasons",
                 "modifier": "Optional",
-                "type": { "Map": { "hasher": "Twox64Concat", "key": "Hash", "value": "Bytes", "linked": false } },
+                "type": { "Map": { "hasher": "Identity", "key": "Hash", "value": "Bytes", "linked": false } },
                 "fallback": "0x00",
                 "documentation": [
                   " Simple preimage lookup from the reason's hash to the original data. Again, has an",
@@ -2080,6 +2269,21 @@
             "prefix": "Staking",
             "items": [
               {
+                "name": "HistoryDepth",
+                "modifier": "Default",
+                "type": { "Plain": "u32" },
+                "fallback": "0x54000000",
+                "documentation": [
+                  " Number of era to keep in history.",
+                  "",
+                  " Information is kept for eras in `[current_era - history_depth; current_era]",
+                  "",
+                  " Must be more than the number of era delayed by session otherwise.",
+                  " i.e. active era must always be in history.",
+                  " i.e. `active_era > current_era - history_depth` must be guaranteed."
+                ]
+              },
+              {
                 "name": "ValidatorCount",
                 "modifier": "Default",
                 "type": { "Plain": "u32" },
@@ -2108,7 +2312,7 @@
                 "name": "Bonded",
                 "modifier": "Optional",
                 "type": {
-                  "Map": { "hasher": "Blake2_256", "key": "AccountId", "value": "AccountId", "linked": false }
+                  "Map": { "hasher": "Twox64Concat", "key": "AccountId", "value": "AccountId", "linked": false }
                 },
                 "fallback": "0x00",
                 "documentation": [" Map from all locked \"stash\" accounts to the controller account."]
@@ -2117,7 +2321,7 @@
                 "name": "Ledger",
                 "modifier": "Optional",
                 "type": {
-                  "Map": { "hasher": "Blake2_256", "key": "AccountId", "value": "StakingLedger", "linked": false }
+                  "Map": { "hasher": "Blake2_128Concat", "key": "AccountId", "value": "StakingLedger", "linked": false }
                 },
                 "fallback": "0x00",
                 "documentation": [" Map from all (unlocked) \"controller\" accounts to the info regarding the staking."]
@@ -2126,7 +2330,7 @@
                 "name": "Payee",
                 "modifier": "Default",
                 "type": {
-                  "Map": { "hasher": "Blake2_256", "key": "AccountId", "value": "RewardDestination", "linked": false }
+                  "Map": { "hasher": "Twox64Concat", "key": "AccountId", "value": "RewardDestination", "linked": false }
                 },
                 "fallback": "0x00",
                 "documentation": [" Where the reward payment should be made. Keyed by stash."]
@@ -2135,7 +2339,7 @@
                 "name": "Validators",
                 "modifier": "Default",
                 "type": {
-                  "Map": { "hasher": "Blake2_256", "key": "AccountId", "value": "ValidatorPrefs", "linked": true }
+                  "Map": { "hasher": "Twox64Concat", "key": "AccountId", "value": "ValidatorPrefs", "linked": false }
                 },
                 "fallback": "0x00",
                 "documentation": [" The map from (wannabe) validator stash key to the preferences of that validator."]
@@ -2144,72 +2348,151 @@
                 "name": "Nominators",
                 "modifier": "Optional",
                 "type": {
-                  "Map": { "hasher": "Blake2_256", "key": "AccountId", "value": "Nominations", "linked": true }
+                  "Map": { "hasher": "Twox64Concat", "key": "AccountId", "value": "Nominations", "linked": false }
                 },
                 "fallback": "0x00",
                 "documentation": [
-                  " The map from nominator stash key to the set of stash keys of all validators to nominate.",
-                  "",
-                  " NOTE: is private so that we can ensure upgraded before all typical accesses.",
-                  " Direct storage APIs can still bypass this protection."
+                  " The map from nominator stash key to the set of stash keys of all validators to nominate."
                 ]
-              },
-              {
-                "name": "Stakers",
-                "modifier": "Default",
-                "type": { "Map": { "hasher": "Blake2_256", "key": "AccountId", "value": "Exposure", "linked": false } },
-                "fallback": "0x000000",
-                "documentation": [
-                  " Nominators for a particular account that is in action right now. You can't iterate",
-                  " through validators here, but you can find them in the Session module.",
-                  "",
-                  " This is keyed by the stash account."
-                ]
-              },
-              {
-                "name": "CurrentElected",
-                "modifier": "Default",
-                "type": { "Plain": "Vec<AccountId>" },
-                "fallback": "0x00",
-                "documentation": [" The currently elected validator set keyed by stash account ID."]
               },
               {
                 "name": "CurrentEra",
-                "modifier": "Default",
+                "modifier": "Optional",
                 "type": { "Plain": "EraIndex" },
-                "fallback": "0x00000000",
-                "documentation": [" The current era index."]
+                "fallback": "0x00",
+                "documentation": [
+                  " The current era index.",
+                  "",
+                  " This is the latest planned era, depending on how session module queues the validator",
+                  " set, it might be active or not."
+                ]
               },
               {
-                "name": "CurrentEraStart",
-                "modifier": "Default",
-                "type": { "Plain": "MomentOf" },
-                "fallback": "0x0000000000000000",
-                "documentation": [" The start of the current era."]
+                "name": "ActiveEra",
+                "modifier": "Optional",
+                "type": { "Plain": "ActiveEraInfo" },
+                "fallback": "0x00",
+                "documentation": [
+                  " The active era information, it holds index and start.",
+                  "",
+                  " The active era is the era currently rewarded.",
+                  " Validator set of this era must be equal to `SessionInterface::validators`."
+                ]
               },
               {
-                "name": "CurrentEraStartSessionIndex",
-                "modifier": "Default",
-                "type": { "Plain": "SessionIndex" },
-                "fallback": "0x00000000",
-                "documentation": [" The session index at which the current era started."]
+                "name": "ErasStartSessionIndex",
+                "modifier": "Optional",
+                "type": {
+                  "Map": { "hasher": "Twox64Concat", "key": "EraIndex", "value": "SessionIndex", "linked": false }
+                },
+                "fallback": "0x00",
+                "documentation": [" The session index at which the era start for the last `HISTORY_DEPTH` eras"]
               },
               {
-                "name": "CurrentEraPointsEarned",
+                "name": "ErasStakers",
                 "modifier": "Default",
-                "type": { "Plain": "EraPoints" },
+                "type": {
+                  "DoubleMap": {
+                    "hasher": "Twox64Concat",
+                    "key1": "EraIndex",
+                    "key2": "AccountId",
+                    "value": "Exposure",
+                    "key2Hasher": "Twox64Concat"
+                  }
+                },
+                "fallback": "0x000000",
+                "documentation": [
+                  " Exposure of validator at era.",
+                  "",
+                  " This is keyed first by the era index to allow bulk deletion and then the stash account.",
+                  "",
+                  " Is it removed after `HISTORY_DEPTH` eras.",
+                  " If stakers hasn't been set or has been removed then empty exposure is returned."
+                ]
+              },
+              {
+                "name": "ErasStakersClipped",
+                "modifier": "Default",
+                "type": {
+                  "DoubleMap": {
+                    "hasher": "Twox64Concat",
+                    "key1": "EraIndex",
+                    "key2": "AccountId",
+                    "value": "Exposure",
+                    "key2Hasher": "Twox64Concat"
+                  }
+                },
+                "fallback": "0x000000",
+                "documentation": [
+                  " Clipped Exposure of validator at era.",
+                  "",
+                  " This is similar to [`ErasStakers`] but number of nominators exposed is reduce to the",
+                  " `T::MaxNominatorRewardedPerValidator` biggest stakers.",
+                  " (Note: the field `total` and `own` of the exposure remains unchanged).",
+                  " This is used to limit the i/o cost for the nominator payout.",
+                  "",
+                  " This is keyed fist by the era index to allow bulk deletion and then the stash account.",
+                  "",
+                  " Is it removed after `HISTORY_DEPTH` eras.",
+                  " If stakers hasn't been set or has been removed then empty exposure is returned."
+                ]
+              },
+              {
+                "name": "ErasValidatorPrefs",
+                "modifier": "Default",
+                "type": {
+                  "DoubleMap": {
+                    "hasher": "Twox64Concat",
+                    "key1": "EraIndex",
+                    "key2": "AccountId",
+                    "value": "ValidatorPrefs",
+                    "key2Hasher": "Twox64Concat"
+                  }
+                },
+                "fallback": "0x00",
+                "documentation": [
+                  " Similarly to `ErasStakers` this holds the preferences of validators.",
+                  "",
+                  " This is keyed first by the era index to allow bulk deletion and then the stash account.",
+                  "",
+                  " Is it removed after `HISTORY_DEPTH` eras."
+                ]
+              },
+              {
+                "name": "ErasValidatorReward",
+                "modifier": "Optional",
+                "type": {
+                  "Map": { "hasher": "Twox64Concat", "key": "EraIndex", "value": "BalanceOf", "linked": false }
+                },
+                "fallback": "0x00",
+                "documentation": [
+                  " The total validator era payout for the last `HISTORY_DEPTH` eras.",
+                  "",
+                  " Eras that haven't finished yet or has been removed doesn't have reward."
+                ]
+              },
+              {
+                "name": "ErasRewardPoints",
+                "modifier": "Default",
+                "type": {
+                  "Map": { "hasher": "Twox64Concat", "key": "EraIndex", "value": "EraRewardPoints", "linked": false }
+                },
                 "fallback": "0x0000000000",
-                "documentation": [" Rewards for the current era. Using indices of current elected set."]
+                "documentation": [
+                  " Rewards for the last `HISTORY_DEPTH` eras.",
+                  " If reward hasn't been set or has been removed then 0 reward is returned."
+                ]
               },
               {
-                "name": "SlotStake",
+                "name": "ErasTotalStake",
                 "modifier": "Default",
-                "type": { "Plain": "BalanceOf" },
+                "type": {
+                  "Map": { "hasher": "Twox64Concat", "key": "EraIndex", "value": "BalanceOf", "linked": false }
+                },
                 "fallback": "0x00000000000000000000000000000000",
                 "documentation": [
-                  " The amount of balance actively at stake for each validator slot, currently.",
-                  "",
-                  " This is used to derive rewards and punishments."
+                  " The total amount staked for the last `HISTORY_DEPTH` eras.",
+                  " If total hasn't been set or has been removed then 0 stake is returned."
                 ]
               },
               {
@@ -2244,7 +2527,12 @@
                 "name": "UnappliedSlashes",
                 "modifier": "Default",
                 "type": {
-                  "Map": { "hasher": "Blake2_256", "key": "EraIndex", "value": "Vec<UnappliedSlash>", "linked": false }
+                  "Map": {
+                    "hasher": "Twox64Concat",
+                    "key": "EraIndex",
+                    "value": "Vec<UnappliedSlash>",
+                    "linked": false
+                  }
                 },
                 "fallback": "0x00",
                 "documentation": [" All unapplied slashes that are queued for later."]
@@ -2254,18 +2542,23 @@
                 "modifier": "Default",
                 "type": { "Plain": "Vec<(EraIndex,SessionIndex)>" },
                 "fallback": "0x00",
-                "documentation": [" A mapping from still-bonded eras to the first session index of that era."]
+                "documentation": [
+                  " A mapping from still-bonded eras to the first session index of that era.",
+                  "",
+                  " Must contains information for eras for the range:",
+                  " `[active_era - bounding_duration; active_era]`"
+                ]
               },
               {
                 "name": "ValidatorSlashInEra",
                 "modifier": "Optional",
                 "type": {
                   "DoubleMap": {
-                    "hasher": "Blake2_256",
+                    "hasher": "Twox64Concat",
                     "key1": "EraIndex",
                     "key2": "AccountId",
                     "value": "(Perbill,BalanceOf)",
-                    "key2Hasher": "Twox128"
+                    "key2Hasher": "Twox64Concat"
                   }
                 },
                 "fallback": "0x00",
@@ -2279,11 +2572,11 @@
                 "modifier": "Optional",
                 "type": {
                   "DoubleMap": {
-                    "hasher": "Blake2_256",
+                    "hasher": "Twox64Concat",
                     "key1": "EraIndex",
                     "key2": "AccountId",
                     "value": "BalanceOf",
-                    "key2Hasher": "Twox128"
+                    "key2Hasher": "Twox64Concat"
                   }
                 },
                 "fallback": "0x00",
@@ -2295,7 +2588,7 @@
                 "name": "SlashingSpans",
                 "modifier": "Optional",
                 "type": {
-                  "Map": { "hasher": "Blake2_256", "key": "AccountId", "value": "SlashingSpans", "linked": false }
+                  "Map": { "hasher": "Twox64Concat", "key": "AccountId", "value": "SlashingSpans", "linked": false }
                 },
                 "fallback": "0x00",
                 "documentation": [" Slashing spans for stash accounts."]
@@ -2305,7 +2598,7 @@
                 "modifier": "Default",
                 "type": {
                   "Map": {
-                    "hasher": "Blake2_256",
+                    "hasher": "Twox64Concat",
                     "key": "(AccountId,SpanIndex)",
                     "value": "SpanRecord",
                     "linked": false
@@ -2323,6 +2616,13 @@
                 "type": { "Plain": "EraIndex" },
                 "fallback": "0x00",
                 "documentation": [" The earliest era for which we have a pending, unapplied slash."]
+              },
+              {
+                "name": "StorageVersion",
+                "modifier": "Default",
+                "type": { "Plain": "ReleasesStaking" },
+                "fallback": "0x01",
+                "documentation": [" Storage version of the pallet.", "", " This is set to v2.0.0 for new networks."]
               }
             ]
           },
@@ -2341,6 +2641,8 @@
                 " `value` must be more than the `minimum_balance` specified by `T::Currency`.",
                 "",
                 " The dispatch origin for this call must be _Signed_ by the stash account.",
+                "",
+                " Emits `Bonded`.",
                 "",
                 " # <weight>",
                 " - Independent of the arguments. Moderate complexity.",
@@ -2364,6 +2666,8 @@
                 " that can be added.",
                 "",
                 " The dispatch origin for this call must be _Signed_ by the stash, not the controller.",
+                "",
+                " Emits `Bonded`.",
                 "",
                 " # <weight>",
                 " - Independent of the arguments. Insignificant complexity.",
@@ -2389,6 +2693,8 @@
                 "",
                 " The dispatch origin for this call must be _Signed_ by the controller, not the stash.",
                 "",
+                " Emits `Unbonded`.",
+                "",
                 " See also [`Call::withdraw_unbonded`].",
                 "",
                 " # <weight>",
@@ -2396,7 +2702,8 @@
                 " - Contains a limited number of reads.",
                 " - Each call (requires the remainder of the bonded balance to be above `minimum_balance`)",
                 "   will cause a new entry to be inserted into a vector (`Ledger.unlocking`) kept in storage.",
-                "   The only way to clean the aforementioned storage item is also user-controlled via `withdraw_unbonded`.",
+                "   The only way to clean the aforementioned storage item is also user-controlled via",
+                "   `withdraw_unbonded`.",
                 " - One DB entry.",
                 " </weight>"
               ]
@@ -2411,6 +2718,8 @@
                 " whatever it wants.",
                 "",
                 " The dispatch origin for this call must be _Signed_ by the controller, not the stash.",
+                "",
+                " Emits `Withdrawn`.",
                 "",
                 " See also [`Call::unbond`].",
                 "",
@@ -2574,6 +2883,62 @@
               ]
             },
             {
+              "name": "payout_nominator",
+              "args": [
+                { "name": "era", "type": "EraIndex" },
+                { "name": "validators", "type": "Vec<(AccountId,u32)>" }
+              ],
+              "documentation": [
+                " Make one nominator's payout for one era.",
+                "",
+                " - `who` is the controller account of the nominator to pay out.",
+                " - `era` may not be lower than one following the most recently paid era. If it is higher,",
+                "   then it indicates an instruction to skip the payout of all previous eras.",
+                " - `validators` is the list of all validators that `who` had exposure to during `era`,",
+                "   alongside the index of `who` in the clipped exposure of the validator.",
+                "   I.e. each element is a tuple of",
+                "   `(validator, index of `who` in clipped exposure of validator)`.",
+                "   If it is incomplete, then less than the full reward will be paid out.",
+                "   It must not exceed `MAX_NOMINATIONS`.",
+                "",
+                " WARNING: once an era is payed for a validator such validator can't claim the payout of",
+                " previous era.",
+                "",
+                " WARNING: Incorrect arguments here can result in loss of payout. Be very careful.",
+                "",
+                " # <weight>",
+                " - Number of storage read of `O(validators)`; `validators` is the argument of the call,",
+                "   and is bounded by `MAX_NOMINATIONS`.",
+                " - Each storage read is `O(N)` size and decode complexity; `N` is the  maximum",
+                "   nominations that can be given to a single validator.",
+                " - Computation complexity: `O(MAX_NOMINATIONS * logN)`; `MAX_NOMINATIONS` is the",
+                "   maximum number of validators that may be nominated by a single nominator, it is",
+                "   bounded only economically (all nominators are required to place a minimum stake).",
+                " # </weight>"
+              ]
+            },
+            {
+              "name": "payout_validator",
+              "args": [{ "name": "era", "type": "EraIndex" }],
+              "documentation": [
+                " Make one validator's payout for one era.",
+                "",
+                " - `who` is the controller account of the validator to pay out.",
+                " - `era` may not be lower than one following the most recently paid era. If it is higher,",
+                "   then it indicates an instruction to skip the payout of all previous eras.",
+                "",
+                " WARNING: once an era is payed for a validator such validator can't claim the payout of",
+                " previous era.",
+                "",
+                " WARNING: Incorrect arguments here can result in loss of payout. Be very careful.",
+                "",
+                " # <weight>",
+                " - Time complexity: O(1).",
+                " - Contains a limited number of reads and writes.",
+                " # </weight>"
+              ]
+            },
+            {
               "name": "rebond",
               "args": [{ "name": "value", "type": "Compact<BalanceOf>" }],
               "documentation": [
@@ -2584,6 +2949,11 @@
                 " - Storage changes: Can't increase storage, only decrease it.",
                 " # </weight>"
               ]
+            },
+            {
+              "name": "set_history_depth",
+              "args": [{ "name": "new_history_depth", "type": "Compact<EraIndex>" }],
+              "documentation": [" Set history_depth value.", "", " Origin must be root."]
             },
             {
               "name": "reap_stash",
@@ -2602,11 +2972,8 @@
           "events": [
             {
               "name": "Reward",
-              "args": ["Balance", "Balance"],
-              "documentation": [
-                " All validators have been rewarded by the first balance; the second is the remainder",
-                " from the maximum amount of reward."
-              ]
+              "args": ["AccountId", "Balance"],
+              "documentation": [" The staker has been rewarded by this amount. AccountId is controller account."]
             },
             {
               "name": "Slash",
@@ -2619,6 +2986,29 @@
               "documentation": [
                 " An old slashing report from a prior era was discarded because it could",
                 " not be processed."
+              ]
+            },
+            {
+              "name": "Bonded",
+              "args": ["AccountId", "Balance"],
+              "documentation": [
+                " An account has bonded this amount.",
+                "",
+                " NOTE: This event is only emitted when funds are bonded via a dispatchable. Notably,",
+                " it will not be emitted for staking rewards when they are added to stake."
+              ]
+            },
+            {
+              "name": "Unbonded",
+              "args": ["AccountId", "Balance"],
+              "documentation": [" An account has unbonded this amount."]
+            },
+            {
+              "name": "Withdrawn",
+              "args": ["AccountId", "Balance"],
+              "documentation": [
+                " An account has called `withdraw_unbonded` and removed unbonding chunks worth `Balance`",
+                " from the unlocking queue."
               ]
             }
           ],
@@ -2647,7 +3037,10 @@
             { "name": "InsufficientValue", "documentation": [" Can not bond with value less than minimum balance."] },
             { "name": "NoMoreChunks", "documentation": [" Can not schedule more unlock chunks."] },
             { "name": "NoUnlockChunk", "documentation": [" Can not rebond without unlocking chunks."] },
-            { "name": "FundedTarget", "documentation": [" Attempting to target a stash that still has funds."] }
+            { "name": "FundedTarget", "documentation": [" Attempting to target a stash that still has funds."] },
+            { "name": "InvalidEraToReward", "documentation": [" Invalid era to reward."] },
+            { "name": "InvalidNumberOfNominations", "documentation": [" Invalid number of nominations."] },
+            { "name": "NotSortedAndUnique", "documentation": [" Items are not sorted and unique."] }
           ]
         },
         {
@@ -2703,42 +3096,23 @@
               {
                 "name": "NextKeys",
                 "modifier": "Optional",
-                "type": {
-                  "DoubleMap": {
-                    "hasher": "Twox64Concat",
-                    "key1": "Bytes",
-                    "key2": "ValidatorId",
-                    "value": "Keys",
-                    "key2Hasher": "Blake2_256"
-                  }
-                },
+                "type": { "Map": { "hasher": "Twox64Concat", "key": "ValidatorId", "value": "Keys", "linked": false } },
                 "fallback": "0x00",
-                "documentation": [
-                  " The next session keys for a validator.",
-                  "",
-                  " The first key is always `DEDUP_KEY_PREFIX` to have all the data in the same branch of",
-                  " the trie. Having all data in the same branch should prevent slowing down other queries."
-                ]
+                "documentation": [" The next session keys for a validator."]
               },
               {
                 "name": "KeyOwner",
                 "modifier": "Optional",
                 "type": {
-                  "DoubleMap": {
+                  "Map": {
                     "hasher": "Twox64Concat",
-                    "key1": "Bytes",
-                    "key2": "(KeyTypeId,Bytes)",
+                    "key": "(KeyTypeId,Bytes)",
                     "value": "ValidatorId",
-                    "key2Hasher": "Blake2_256"
+                    "linked": false
                   }
                 },
                 "fallback": "0x00",
-                "documentation": [
-                  " The owner of a key. The second key is the `KeyTypeId` + the encoded key.",
-                  "",
-                  " The first key is always `DEDUP_KEY_PREFIX` to have all the data in the same branch of",
-                  " the trie. Having all data in the same branch should prevent slowing down other queries."
-                ]
+                "documentation": [" The owner of a key. The key is the `KeyTypeId` + the encoded key."]
               }
             ]
           },
@@ -2791,17 +3165,7 @@
               ]
             }
           ],
-          "constants": [
-            {
-              "name": "DEDUP_KEY_PREFIX",
-              "type": "Bytes",
-              "value": "0x343a73657373696f6e3a6b657973",
-              "documentation": [
-                " Used as first key for `NextKeys` and `KeyOwner` to put all the data into the same branch",
-                " of the trie."
-              ]
-            }
-          ],
+          "constants": [],
           "errors": [
             { "name": "InvalidProof", "documentation": [" Invalid ownership proof."] },
             { "name": "NoAssociatedValidatorId", "documentation": [" No associated validator ID for account."] },
@@ -2824,19 +3188,43 @@
                 "documentation": [" The total issuance of a token type."]
               },
               {
-                "name": "Balance",
+                "name": "Locks",
                 "modifier": "Default",
                 "type": {
                   "DoubleMap": {
                     "hasher": "Twox64Concat",
                     "key1": "CurrencyId",
                     "key2": "AccountId",
-                    "value": "Balance",
+                    "value": "Vec<BalanceLock>",
                     "key2Hasher": "Blake2_128Concat"
                   }
                 },
-                "fallback": "0x00000000000000000000000000000000",
-                "documentation": [" The balance of a token type under an account."]
+                "fallback": "0x00",
+                "documentation": [
+                  " Any liquidity locks of a token type under an account.",
+                  " NOTE: Should only be accessed when setting, changing and freeing a lock."
+                ]
+              },
+              {
+                "name": "Accounts",
+                "modifier": "Default",
+                "type": {
+                  "DoubleMap": {
+                    "hasher": "Twox64Concat",
+                    "key1": "CurrencyId",
+                    "key2": "AccountId",
+                    "value": "AccountData",
+                    "key2Hasher": "Blake2_128Concat"
+                  }
+                },
+                "fallback": "0x000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+                "documentation": [
+                  " The balance of a token type under an account.",
+                  "",
+                  " NOTE: If the total is ever zero, decrease account ref account.",
+                  "",
+                  " NOTE: This is only used in the case that this module is used to store balances."
+                ]
               }
             ]
           },
@@ -2871,7 +3259,8 @@
             { "name": "BalanceTooLow", "documentation": [] },
             { "name": "TotalIssuanceOverflow", "documentation": [] },
             { "name": "AmountIntoBalanceFailed", "documentation": [] },
-            { "name": "ExistentialDeposit", "documentation": [] }
+            { "name": "ExistentialDeposit", "documentation": [] },
+            { "name": "LiquidityRestrictions", "documentation": [] }
           ]
         },
         {
@@ -2949,21 +3338,27 @@
               {
                 "name": "ExtremeRatio",
                 "modifier": "Optional",
-                "type": { "Map": { "hasher": "Blake2_256", "key": "CurrencyId", "value": "Permill", "linked": false } },
+                "type": {
+                  "Map": { "hasher": "Blake2_128Concat", "key": "CurrencyId", "value": "Permill", "linked": false }
+                },
                 "fallback": "0x00",
                 "documentation": []
               },
               {
                 "name": "LiquidationRatio",
                 "modifier": "Optional",
-                "type": { "Map": { "hasher": "Blake2_256", "key": "CurrencyId", "value": "Permill", "linked": false } },
+                "type": {
+                  "Map": { "hasher": "Blake2_128Concat", "key": "CurrencyId", "value": "Permill", "linked": false }
+                },
                 "fallback": "0x00",
                 "documentation": []
               },
               {
                 "name": "CollateralRatio",
                 "modifier": "Optional",
-                "type": { "Map": { "hasher": "Blake2_256", "key": "CurrencyId", "value": "Permill", "linked": false } },
+                "type": {
+                  "Map": { "hasher": "Blake2_128Concat", "key": "CurrencyId", "value": "Permill", "linked": false }
+                },
                 "fallback": "0x00",
                 "documentation": []
               },
@@ -2972,7 +3367,7 @@
                 "modifier": "Default",
                 "type": {
                   "Map": {
-                    "hasher": "Blake2_256",
+                    "hasher": "Blake2_128Concat",
                     "key": "(LiquidityPoolId,CurrencyId)",
                     "value": "Position",
                     "linked": false
@@ -3150,9 +3545,218 @@
           ]
         },
         {
-          "name": "LiquidityPools",
+          "name": "MarginProtocol",
           "storage": {
-            "prefix": "LiquidityPools",
+            "prefix": "MarginProtocol",
+            "items": [
+              {
+                "name": "NextPositionId",
+                "modifier": "Default",
+                "type": { "Plain": "PositionId" },
+                "fallback": "0x0000000000000000",
+                "documentation": []
+              },
+              {
+                "name": "Positions",
+                "modifier": "Optional",
+                "type": {
+                  "Map": { "hasher": "Blake2_128Concat", "key": "PositionId", "value": "Position", "linked": false }
+                },
+                "fallback": "0x00",
+                "documentation": []
+              },
+              {
+                "name": "PositionsByTrader",
+                "modifier": "Default",
+                "type": {
+                  "DoubleMap": {
+                    "hasher": "Twox64Concat",
+                    "key1": "AccountId",
+                    "key2": "LiquidityPoolId",
+                    "value": "Vec<PositionId>",
+                    "key2Hasher": "Twox64Concat"
+                  }
+                },
+                "fallback": "0x00",
+                "documentation": []
+              },
+              {
+                "name": "PositionsByPool",
+                "modifier": "Default",
+                "type": {
+                  "DoubleMap": {
+                    "hasher": "Twox64Concat",
+                    "key1": "LiquidityPoolId",
+                    "key2": "TradingPair",
+                    "value": "Vec<PositionId>",
+                    "key2Hasher": "Twox64Concat"
+                  }
+                },
+                "fallback": "0x00",
+                "documentation": []
+              },
+              {
+                "name": "Balances",
+                "modifier": "Default",
+                "type": {
+                  "Map": { "hasher": "Blake2_128Concat", "key": "AccountId", "value": "Balance", "linked": false }
+                },
+                "fallback": "0x00000000000000000000000000000000",
+                "documentation": []
+              },
+              {
+                "name": "MinLiquidationPercent",
+                "modifier": "Default",
+                "type": {
+                  "Map": { "hasher": "Blake2_128Concat", "key": "TradingPair", "value": "Fixed128", "linked": false }
+                },
+                "fallback": "0x00000000000000000000000000000000",
+                "documentation": []
+              },
+              {
+                "name": "MarginCalledTraders",
+                "modifier": "Optional",
+                "type": { "Map": { "hasher": "Blake2_128Concat", "key": "AccountId", "value": "()", "linked": false } },
+                "fallback": "0x00",
+                "documentation": []
+              },
+              {
+                "name": "MarginCalledPools",
+                "modifier": "Optional",
+                "type": {
+                  "Map": { "hasher": "Blake2_128Concat", "key": "LiquidityPoolId", "value": "()", "linked": false }
+                },
+                "fallback": "0x00",
+                "documentation": []
+              },
+              {
+                "name": "TraderRiskThreshold",
+                "modifier": "Default",
+                "type": { "Plain": "RiskThreshold" },
+                "fallback": "0x0000000000000000",
+                "documentation": []
+              },
+              {
+                "name": "LiquidityPoolENPThreshold",
+                "modifier": "Default",
+                "type": { "Plain": "RiskThreshold" },
+                "fallback": "0x0000000000000000",
+                "documentation": []
+              },
+              {
+                "name": "LiquidityPoolELLThreshold",
+                "modifier": "Default",
+                "type": { "Plain": "RiskThreshold" },
+                "fallback": "0x0000000000000000",
+                "documentation": []
+              }
+            ]
+          },
+          "calls": [
+            {
+              "name": "open_position",
+              "args": [
+                { "name": "pool", "type": "LiquidityPoolId" },
+                { "name": "pair", "type": "TradingPair" },
+                { "name": "leverage", "type": "Leverage" },
+                { "name": "leveraged_amount", "type": "Compact<Balance>" },
+                { "name": "price", "type": "Price" }
+              ],
+              "documentation": []
+            },
+            {
+              "name": "close_position",
+              "args": [
+                { "name": "position_id", "type": "PositionId" },
+                { "name": "price", "type": "Price" }
+              ],
+              "documentation": []
+            },
+            { "name": "deposit", "args": [{ "name": "amount", "type": "Compact<Balance>" }], "documentation": [] },
+            { "name": "withdraw", "args": [{ "name": "amount", "type": "Compact<Balance>" }], "documentation": [] },
+            { "name": "trader_margin_call", "args": [{ "name": "who", "type": "LookupSource" }], "documentation": [] },
+            { "name": "trader_become_safe", "args": [{ "name": "who", "type": "LookupSource" }], "documentation": [] },
+            { "name": "trader_liquidate", "args": [{ "name": "who", "type": "LookupSource" }], "documentation": [] },
+            {
+              "name": "liquidity_pool_margin_call",
+              "args": [{ "name": "pool", "type": "LiquidityPoolId" }],
+              "documentation": []
+            },
+            {
+              "name": "liquidity_pool_become_safe",
+              "args": [{ "name": "pool", "type": "LiquidityPoolId" }],
+              "documentation": []
+            },
+            {
+              "name": "liquidity_pool_liquidate",
+              "args": [{ "name": "pool", "type": "LiquidityPoolId" }],
+              "documentation": []
+            }
+          ],
+          "events": [
+            {
+              "name": "PositionOpened",
+              "args": ["AccountId", "LiquidityPoolId", "TradingPair", "Leverage", "Amount", "Price"],
+              "documentation": [
+                " Position opened: (who, pool_id, trading_pair, leverage, leveraged_amount, market_price)"
+              ]
+            },
+            {
+              "name": "PositionClosed",
+              "args": ["AccountId", "PositionId", "Price"],
+              "documentation": [" Position closed: (who, position_id, market_price)"]
+            },
+            { "name": "Deposited", "args": ["AccountId", "Amount"], "documentation": [" Deposited: (who, amount)"] },
+            { "name": "Withdrew", "args": ["AccountId", "Amount"], "documentation": [" Withdrew: (who, amount)"] },
+            { "name": "TraderMarginCalled", "args": ["AccountId"], "documentation": [" TraderMarginCalled: (who)"] },
+            { "name": "TraderBecameSafe", "args": ["AccountId"], "documentation": [" TraderBecameSafe: (who)"] },
+            { "name": "TraderLiquidated", "args": ["AccountId"], "documentation": [" TraderLiquidated: (who)"] },
+            {
+              "name": "LiquidityPoolMarginCalled",
+              "args": ["LiquidityPoolId"],
+              "documentation": [" LiquidityPoolMarginCalled: (pool_id)"]
+            },
+            {
+              "name": "LiquidityPoolBecameSafe",
+              "args": ["LiquidityPoolId"],
+              "documentation": [" LiquidityPoolBecameSafe: (pool_id)"]
+            },
+            {
+              "name": "LiquidityPoolLiquidated",
+              "args": ["LiquidityPoolId"],
+              "documentation": [" LiquidityPoolLiquidated: (pool_id)"]
+            }
+          ],
+          "constants": [],
+          "errors": [
+            { "name": "NoPrice", "documentation": [] },
+            { "name": "NoAskSpread", "documentation": [] },
+            { "name": "NoBidSpread", "documentation": [] },
+            { "name": "MarketPriceTooHigh", "documentation": [] },
+            { "name": "MarketPriceTooLow", "documentation": [] },
+            { "name": "NumOutOfBound", "documentation": [] },
+            { "name": "UnsafeTrader", "documentation": [] },
+            { "name": "TraderWouldBeUnsafe", "documentation": [] },
+            { "name": "UnsafePool", "documentation": [] },
+            { "name": "PoolWouldBeUnsafe", "documentation": [] },
+            { "name": "SafeTrader", "documentation": [] },
+            { "name": "SafePool", "documentation": [] },
+            { "name": "NotReachedRiskThreshold", "documentation": [] },
+            { "name": "MarginCalledTrader", "documentation": [] },
+            { "name": "MarginCalledPool", "documentation": [] },
+            { "name": "NoAvailablePositionId", "documentation": [] },
+            { "name": "PositionNotFound", "documentation": [] },
+            { "name": "PositionNotOpenedByTrader", "documentation": [] },
+            { "name": "BalanceTooLow", "documentation": [] },
+            { "name": "PositionNotAllowed", "documentation": [] },
+            { "name": "CannotOpenPosition", "documentation": [] },
+            { "name": "CannotOpenMorePosition", "documentation": [] }
+          ]
+        },
+        {
+          "name": "MarginLiquidityPools",
+          "storage": {
+            "prefix": "MarginLiquidityPools",
             "items": [
               {
                 "name": "NextPoolId",
@@ -3165,7 +3769,12 @@
                 "name": "Owners",
                 "modifier": "Optional",
                 "type": {
-                  "Map": { "hasher": "Blake2_256", "key": "LiquidityPoolId", "value": "AccountId", "linked": false }
+                  "Map": {
+                    "hasher": "Blake2_128Concat",
+                    "key": "LiquidityPoolId",
+                    "value": "(AccountId,LiquidityPoolId)",
+                    "linked": false
+                  }
                 },
                 "fallback": "0x00",
                 "documentation": []
@@ -3175,11 +3784,11 @@
                 "modifier": "Optional",
                 "type": {
                   "DoubleMap": {
-                    "hasher": "Blake2_256",
+                    "hasher": "Blake2_128Concat",
                     "key1": "LiquidityPoolId",
-                    "key2": "CurrencyId",
-                    "value": "LiquidityPoolOption",
-                    "key2Hasher": "Blake2_256"
+                    "key2": "TradingPair",
+                    "value": "MarginLiquidityPoolOption",
+                    "key2Hasher": "Blake2_128Concat"
                   }
                 },
                 "fallback": "0x00",
@@ -3189,7 +3798,361 @@
                 "name": "Balances",
                 "modifier": "Default",
                 "type": {
-                  "Map": { "hasher": "Blake2_256", "key": "LiquidityPoolId", "value": "Balance", "linked": false }
+                  "Map": { "hasher": "Blake2_128Concat", "key": "LiquidityPoolId", "value": "Balance", "linked": false }
+                },
+                "fallback": "0x00000000000000000000000000000000",
+                "documentation": []
+              },
+              {
+                "name": "SwapRates",
+                "modifier": "Default",
+                "type": {
+                  "DoubleMap": {
+                    "hasher": "Blake2_128Concat",
+                    "key1": "LiquidityPoolId",
+                    "key2": "TradingPair",
+                    "value": "Fixed128",
+                    "key2Hasher": "Blake2_128Concat"
+                  }
+                },
+                "fallback": "0x00000000000000000000000000000000",
+                "documentation": []
+              },
+              {
+                "name": "AccumulatedSwapRates",
+                "modifier": "Default",
+                "type": {
+                  "DoubleMap": {
+                    "hasher": "Blake2_128Concat",
+                    "key1": "LiquidityPoolId",
+                    "key2": "TradingPair",
+                    "value": "Fixed128",
+                    "key2Hasher": "Blake2_128Concat"
+                  }
+                },
+                "fallback": "0x00000000000000000000000000000000",
+                "documentation": []
+              },
+              {
+                "name": "MaxSpread",
+                "modifier": "Default",
+                "type": {
+                  "Map": { "hasher": "Blake2_128Concat", "key": "TradingPair", "value": "Permill", "linked": false }
+                },
+                "fallback": "0x00000000",
+                "documentation": []
+              },
+              {
+                "name": "Accumulates",
+                "modifier": "Optional",
+                "type": {
+                  "Map": {
+                    "hasher": "Blake2_128Concat",
+                    "key": "TradingPair",
+                    "value": "(AccumulateConfig,TradingPair)",
+                    "linked": false
+                  }
+                },
+                "fallback": "0x00",
+                "documentation": []
+              },
+              {
+                "name": "EnabledTradingPairs",
+                "modifier": "Optional",
+                "type": {
+                  "Map": { "hasher": "Blake2_128Concat", "key": "TradingPair", "value": "TradingPair", "linked": false }
+                },
+                "fallback": "0x00",
+                "documentation": []
+              },
+              {
+                "name": "LiquidityPoolEnabledTradingPairs",
+                "modifier": "Optional",
+                "type": {
+                  "DoubleMap": {
+                    "hasher": "Blake2_128Concat",
+                    "key1": "LiquidityPoolId",
+                    "key2": "TradingPair",
+                    "value": "TradingPair",
+                    "key2Hasher": "Blake2_128Concat"
+                  }
+                },
+                "fallback": "0x00",
+                "documentation": []
+              },
+              {
+                "name": "DefaultMinLeveragedAmount",
+                "modifier": "Default",
+                "type": { "Plain": "Balance" },
+                "fallback": "0x00000000000000000000000000000000",
+                "documentation": []
+              },
+              {
+                "name": "MinLeveragedAmount",
+                "modifier": "Optional",
+                "type": {
+                  "Map": { "hasher": "Blake2_128Concat", "key": "LiquidityPoolId", "value": "Balance", "linked": false }
+                },
+                "fallback": "0x00",
+                "documentation": []
+              }
+            ]
+          },
+          "calls": [
+            { "name": "create_pool", "args": [], "documentation": [] },
+            { "name": "disable_pool", "args": [{ "name": "pool_id", "type": "LiquidityPoolId" }], "documentation": [] },
+            { "name": "remove_pool", "args": [{ "name": "pool_id", "type": "LiquidityPoolId" }], "documentation": [] },
+            {
+              "name": "deposit_liquidity",
+              "args": [
+                { "name": "pool_id", "type": "LiquidityPoolId" },
+                { "name": "amount", "type": "Balance" }
+              ],
+              "documentation": []
+            },
+            {
+              "name": "withdraw_liquidity",
+              "args": [
+                { "name": "pool_id", "type": "LiquidityPoolId" },
+                { "name": "amount", "type": "Balance" }
+              ],
+              "documentation": []
+            },
+            {
+              "name": "set_spread",
+              "args": [
+                { "name": "pool_id", "type": "LiquidityPoolId" },
+                { "name": "pair", "type": "TradingPair" },
+                { "name": "bid", "type": "Permill" },
+                { "name": "ask", "type": "Permill" }
+              ],
+              "documentation": []
+            },
+            {
+              "name": "set_enabled_trades",
+              "args": [
+                { "name": "pool_id", "type": "LiquidityPoolId" },
+                { "name": "pair", "type": "TradingPair" },
+                { "name": "enabled", "type": "Leverages" }
+              ],
+              "documentation": []
+            },
+            {
+              "name": "update_swap",
+              "args": [
+                { "name": "pool_id", "type": "LiquidityPoolId" },
+                { "name": "pair", "type": "TradingPair" },
+                { "name": "rate", "type": "Fixed128" }
+              ],
+              "documentation": []
+            },
+            {
+              "name": "set_max_spread",
+              "args": [
+                { "name": "pair", "type": "TradingPair" },
+                { "name": "max_spread", "type": "Permill" }
+              ],
+              "documentation": []
+            },
+            {
+              "name": "set_accumulate",
+              "args": [
+                { "name": "pair", "type": "TradingPair" },
+                { "name": "frequency", "type": "BlockNumber" },
+                { "name": "offset", "type": "BlockNumber" }
+              ],
+              "documentation": []
+            },
+            { "name": "enable_trading_pair", "args": [{ "name": "pair", "type": "TradingPair" }], "documentation": [] },
+            {
+              "name": "disable_trading_pair",
+              "args": [{ "name": "pair", "type": "TradingPair" }],
+              "documentation": []
+            },
+            {
+              "name": "liquidity_pool_enable_trading_pair",
+              "args": [
+                { "name": "pool_id", "type": "LiquidityPoolId" },
+                { "name": "pair", "type": "TradingPair" }
+              ],
+              "documentation": []
+            },
+            {
+              "name": "liquidity_pool_disable_trading_pair",
+              "args": [
+                { "name": "pool_id", "type": "LiquidityPoolId" },
+                { "name": "pair", "type": "TradingPair" }
+              ],
+              "documentation": []
+            },
+            {
+              "name": "set_default_min_leveraged_amount",
+              "args": [{ "name": "amount", "type": "Balance" }],
+              "documentation": []
+            },
+            {
+              "name": "set_min_leveraged_amount",
+              "args": [
+                { "name": "pool_id", "type": "LiquidityPoolId" },
+                { "name": "amount", "type": "Balance" }
+              ],
+              "documentation": []
+            }
+          ],
+          "events": [
+            {
+              "name": "LiquidityPoolCreated",
+              "args": ["AccountId", "LiquidityPoolId"],
+              "documentation": [" Liquidity pool created (who, pool_id)"]
+            },
+            {
+              "name": "LiquidityPoolDisabled",
+              "args": ["AccountId", "LiquidityPoolId"],
+              "documentation": [" Liquidity pool disabled (who, pool_id)"]
+            },
+            {
+              "name": "LiquidityPoolRemoved",
+              "args": ["AccountId", "LiquidityPoolId"],
+              "documentation": [" Liquidity pool removed (who, pool_id)"]
+            },
+            {
+              "name": "DepositLiquidity",
+              "args": ["AccountId", "LiquidityPoolId", "Balance"],
+              "documentation": [" Deposit liquidity (who, pool_id, amount)"]
+            },
+            {
+              "name": "WithdrawLiquidity",
+              "args": ["AccountId", "LiquidityPoolId", "Balance"],
+              "documentation": [" Withdraw liquidity (who, pool_id, amount)"]
+            },
+            {
+              "name": "SetSpread",
+              "args": ["AccountId", "LiquidityPoolId", "TradingPair", "Permill", "Permill"],
+              "documentation": [" Set spread (who, pool_id, pair, bid, ask)"]
+            },
+            {
+              "name": "SetEnabledTrades",
+              "args": ["AccountId", "LiquidityPoolId", "TradingPair", "Leverages"],
+              "documentation": [" Set enabled trades (who, pool_id, pair, enabled)"]
+            },
+            {
+              "name": "SwapRateUpdated",
+              "args": ["AccountId", "LiquidityPoolId", "TradingPair", "Fixed128"],
+              "documentation": [" Swap rate updated (who, pool_id, pair, swap_rate)"]
+            },
+            {
+              "name": "AccumulatedSwapRateUpdated",
+              "args": ["LiquidityPoolId", "TradingPair", "Fixed128"],
+              "documentation": [" Accumulated swap rate updated (pool_id, pair, accumulated_swap_rate)"]
+            },
+            {
+              "name": "MaxSpreadUpdated",
+              "args": ["TradingPair", "Permill"],
+              "documentation": [" Max spread updated (pair, spread)"]
+            },
+            {
+              "name": "SetAccumulate",
+              "args": ["TradingPair", "BlockNumber", "BlockNumber"],
+              "documentation": [" Set accumulate (pair, frequency, offset)"]
+            },
+            {
+              "name": "TradingPairEnabled",
+              "args": ["TradingPair"],
+              "documentation": [" Trading pair enabled (pair)"]
+            },
+            {
+              "name": "TradingPairDisabled",
+              "args": ["TradingPair"],
+              "documentation": [" Trading pair disabled (pair)"]
+            },
+            {
+              "name": "LiquidityPoolTradingPairEnabled",
+              "args": ["TradingPair"],
+              "documentation": [" LiquidityPool trading pair enabled (pair)"]
+            },
+            {
+              "name": "LiquidityPoolTradingPairDisabled",
+              "args": ["TradingPair"],
+              "documentation": [" LiquidityPool trading pair disabled (pair)"]
+            },
+            {
+              "name": "SetDefaultMinLeveragedAmount",
+              "args": ["Balance"],
+              "documentation": [" Set default min leveraged amount (default_min_leveraged_amount)"]
+            },
+            {
+              "name": "SetMinLeveragedAmount",
+              "args": ["LiquidityPoolId", "Balance"],
+              "documentation": [" Set min leveraged amount (pool_id, min_leveraged_amount)"]
+            }
+          ],
+          "constants": [
+            {
+              "name": "ExistentialDeposit",
+              "type": "Balance",
+              "value": "0xf4010000000000000000000000000000",
+              "documentation": []
+            }
+          ],
+          "errors": [
+            { "name": "NoPermission", "documentation": [] },
+            { "name": "CannotCreateMorePool", "documentation": [] },
+            { "name": "CannotRemovePool", "documentation": [] },
+            { "name": "CannotDepositAmount", "documentation": [] },
+            { "name": "CannotWithdrawAmount", "documentation": [] },
+            { "name": "CannotWithdrawExistentialDeposit", "documentation": [] },
+            { "name": "SwapRateTooHigh", "documentation": [] },
+            { "name": "SpreadTooHigh", "documentation": [] },
+            { "name": "PoolNotFound", "documentation": [] },
+            { "name": "TradingPairNotEnabled", "documentation": [] }
+          ]
+        },
+        {
+          "name": "SyntheticLiquidityPools",
+          "storage": {
+            "prefix": "SyntheticLiquidityPools",
+            "items": [
+              {
+                "name": "NextPoolId",
+                "modifier": "Default",
+                "type": { "Plain": "LiquidityPoolId" },
+                "fallback": "0x00000000",
+                "documentation": []
+              },
+              {
+                "name": "Owners",
+                "modifier": "Optional",
+                "type": {
+                  "Map": {
+                    "hasher": "Blake2_128Concat",
+                    "key": "LiquidityPoolId",
+                    "value": "(AccountId,LiquidityPoolId)",
+                    "linked": false
+                  }
+                },
+                "fallback": "0x00",
+                "documentation": []
+              },
+              {
+                "name": "LiquidityPoolOptions",
+                "modifier": "Optional",
+                "type": {
+                  "DoubleMap": {
+                    "hasher": "Blake2_128Concat",
+                    "key1": "LiquidityPoolId",
+                    "key2": "CurrencyId",
+                    "value": "SyntheticLiquidityPoolOption",
+                    "key2Hasher": "Blake2_128Concat"
+                  }
+                },
+                "fallback": "0x00",
+                "documentation": []
+              },
+              {
+                "name": "Balances",
+                "modifier": "Default",
+                "type": {
+                  "Map": { "hasher": "Blake2_128Concat", "key": "LiquidityPoolId", "value": "Balance", "linked": false }
                 },
                 "fallback": "0x00000000000000000000000000000000",
                 "documentation": []
@@ -3198,6 +4161,15 @@
                 "name": "MinAdditionalCollateralRatio",
                 "modifier": "Default",
                 "type": { "Plain": "Permill" },
+                "fallback": "0x00000000",
+                "documentation": []
+              },
+              {
+                "name": "MaxSpread",
+                "modifier": "Default",
+                "type": {
+                  "Map": { "hasher": "Blake2_128Concat", "key": "CurrencyId", "value": "Permill", "linked": false }
+                },
                 "fallback": "0x00000000",
                 "documentation": []
               }
@@ -3228,8 +4200,8 @@
               "args": [
                 { "name": "pool_id", "type": "LiquidityPoolId" },
                 { "name": "currency_id", "type": "CurrencyId" },
-                { "name": "ask", "type": "Permill" },
-                { "name": "bid", "type": "Permill" }
+                { "name": "bid", "type": "Permill" },
+                { "name": "ask", "type": "Permill" }
               ],
               "documentation": []
             },
@@ -3239,15 +4211,6 @@
                 { "name": "pool_id", "type": "LiquidityPoolId" },
                 { "name": "currency_id", "type": "CurrencyId" },
                 { "name": "ratio", "type": "Option<Permill>" }
-              ],
-              "documentation": []
-            },
-            {
-              "name": "set_enabled_trades",
-              "args": [
-                { "name": "pool_id", "type": "LiquidityPoolId" },
-                { "name": "currency_id", "type": "CurrencyId" },
-                { "name": "enabled", "type": "Leverages" }
               ],
               "documentation": []
             },
@@ -3262,6 +4225,14 @@
                 { "name": "pool_id", "type": "LiquidityPoolId" },
                 { "name": "currency_id", "type": "CurrencyId" },
                 { "name": "enabled", "type": "bool" }
+              ],
+              "documentation": []
+            },
+            {
+              "name": "set_max_spread",
+              "args": [
+                { "name": "currency_id", "type": "CurrencyId" },
+                { "name": "max_spread", "type": "Permill" }
               ],
               "documentation": []
             }
@@ -3295,17 +4266,12 @@
             {
               "name": "SetSpread",
               "args": ["AccountId", "LiquidityPoolId", "CurrencyId", "Permill", "Permill"],
-              "documentation": [" Set spread (who, pool_id, currency_id, ask, bid)"]
+              "documentation": [" Set spread (who, pool_id, currency_id, bid, ask)"]
             },
             {
               "name": "SetAdditionalCollateralRatio",
               "args": ["AccountId", "LiquidityPoolId", "CurrencyId", "Option<Permill>"],
               "documentation": [" Set additional collateral ratio (who, pool_id, currency_id, ratio)"]
-            },
-            {
-              "name": "SetEnabledTrades",
-              "args": ["AccountId", "LiquidityPoolId", "CurrencyId", "Leverages"],
-              "documentation": [" Set enabled trades (who, pool_id, currency_id, enabled)"]
             },
             {
               "name": "SetMinAdditionalCollateralRatio",
@@ -3316,6 +4282,11 @@
               "name": "SetSyntheticEnabled",
               "args": ["AccountId", "LiquidityPoolId", "CurrencyId", "bool"],
               "documentation": [" Set synthetic enabled (who, pool_id, currency_id, enabled)"]
+            },
+            {
+              "name": "MaxSpreadUpdated",
+              "args": ["CurrencyId", "Permill"],
+              "documentation": [" Max spread updated (currency_id, spread)"]
             }
           ],
           "constants": [
@@ -3332,7 +4303,9 @@
             { "name": "CannotRemovePool", "documentation": [] },
             { "name": "CannotDepositAmount", "documentation": [] },
             { "name": "CannotWithdrawAmount", "documentation": [] },
-            { "name": "CannotWithdrawExistentialDeposit", "documentation": [] }
+            { "name": "CannotWithdrawExistentialDeposit", "documentation": [] },
+            { "name": "SpreadTooHigh", "documentation": [] },
+            { "name": "PoolNotFound", "documentation": [] }
           ]
         }
       ],

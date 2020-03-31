@@ -2,8 +2,17 @@
 /* eslint-disable */
 
 import { ITuple } from '@polkadot/types/types';
-import { Compact, Enum, Int, Option, Struct, U8aFixed, Vec } from '@polkadot/types/codec';
-import { GenericAccountId, GenericAccountIndex, GenericAddress, GenericBlock, GenericCall, GenericConsensusEngineId, GenericDigest, GenericOrigin } from '@polkadot/types/generic';
+import { Compact, Enum, Int, Option, Set, Struct, U8aFixed, Vec } from '@polkadot/types/codec';
+import {
+  GenericAccountId,
+  GenericAccountIndex,
+  GenericAddress,
+  GenericBlock,
+  GenericCall,
+  GenericConsensusEngineId,
+  GenericDigest,
+  GenericOrigin
+} from '@polkadot/types/generic';
 import { Bytes, Null, StorageKey, bool, i128, u128, u16, u32, u64, u8 } from '@polkadot/types/primitive';
 import { Price } from '@orml/types/interfaces/prices';
 import { AuthorityId } from '@polkadot/types/interfaces/consensus';
@@ -17,6 +26,12 @@ export interface AccountIdOf extends AccountId {}
 
 /** @name AccountIndex */
 export interface AccountIndex extends GenericAccountIndex {}
+
+/** @name AccumulateConfig */
+export interface AccumulateConfig extends Struct {
+  readonly frequency: BlockNumber;
+  readonly offset: BlockNumber;
+}
 
 /** @name Address */
 export interface Address extends GenericAddress {}
@@ -110,6 +125,9 @@ export interface DispatchInfoTo190 extends Struct {
   readonly class: DispatchClass;
 }
 
+/** @name Fixed128 */
+export interface Fixed128 extends i128 {}
+
 /** @name Fixed64 */
 export interface Fixed64 extends Int {}
 
@@ -146,20 +164,29 @@ export interface KeyTypeId extends u32 {}
 /** @name KeyValue */
 export interface KeyValue extends ITuple<[StorageKey, StorageData]> {}
 
+/** @name Leverage */
+export interface Leverage extends u16 {}
+
 /** @name Leverages */
-export interface Leverages extends u16 {}
+export interface Leverages extends Set {
+  readonly isLongTwo: boolean;
+  readonly isLongThree: boolean;
+  readonly isLongFive: boolean;
+  readonly isLongTen: boolean;
+  readonly isLongTwenty: boolean;
+  readonly isLongThirty: boolean;
+  readonly isLongFifty: boolean;
+  readonly isShortTwo: boolean;
+  readonly isShortThree: boolean;
+  readonly isShortFive: boolean;
+  readonly isShortTen: boolean;
+  readonly isShortTwenty: boolean;
+  readonly isShortThirty: boolean;
+  readonly isShortFifty: boolean;
+}
 
 /** @name LiquidityPoolId */
 export interface LiquidityPoolId extends u32 {}
-
-/** @name LiquidityPoolOption */
-export interface LiquidityPoolOption extends Struct {
-  readonly bidSpread: Permill;
-  readonly askSpread: Permill;
-  readonly additionalCollateralRatio: Option<Permill>;
-  readonly tradeEnabled: Leverages;
-  readonly syntheticEnabled: bool;
-}
 
 /** @name LockIdentifier */
 export interface LockIdentifier extends U8aFixed {}
@@ -169,6 +196,13 @@ export interface LookupSource extends Address {}
 
 /** @name LookupTarget */
 export interface LookupTarget extends AccountId {}
+
+/** @name MarginLiquidityPoolOption */
+export interface MarginLiquidityPoolOption extends Struct {
+  readonly bidSpread: Permill;
+  readonly askSpread: Permill;
+  readonly enabledTrades: Leverages;
+}
 
 /** @name Moment */
 export interface Moment extends u64 {}
@@ -202,12 +236,28 @@ export interface PhantomData extends Null {}
 
 /** @name Position */
 export interface Position extends Struct {
-  readonly collateral: Balance;
-  readonly synthetic: Balance;
+  readonly owner: AccountId;
+  readonly pool: LiquidityPoolId;
+  readonly pair: TradingPair;
+  readonly leverage: Leverage;
+  readonly leveragedHeld: Fixed128;
+  readonly leveragedDebits: Fixed128;
+  readonly leveragedDebitsInUsd: Fixed128;
+  readonly openAccumulatedSwapRate: Fixed128;
+  readonly openMargin: Balance;
 }
+
+/** @name PositionId */
+export interface PositionId extends u64 {}
 
 /** @name PreRuntime */
 export interface PreRuntime extends ITuple<[ConsensusEngineId, Bytes]> {}
+
+/** @name RiskThreshold */
+export interface RiskThreshold extends Struct {
+  readonly marginCall: Permill;
+  readonly stopOut: Permill;
+}
 
 /** @name Seal */
 export interface Seal extends ITuple<[ConsensusEngineId, Bytes]> {}
@@ -223,6 +273,20 @@ export interface SignedBlock extends Struct {
 
 /** @name StorageData */
 export interface StorageData extends Bytes {}
+
+/** @name SyntheticLiquidityPoolOption */
+export interface SyntheticLiquidityPoolOption extends Struct {
+  readonly bidSpread: Permill;
+  readonly askSpread: Permill;
+  readonly additionalCollateralRatio: Option<Permill>;
+  readonly syntheticEnabled: bool;
+}
+
+/** @name TradingPair */
+export interface TradingPair extends Struct {
+  readonly base: CurrencyId;
+  readonly quote: CurrencyId;
+}
 
 /** @name ValidatorId */
 export interface ValidatorId extends AccountId {}

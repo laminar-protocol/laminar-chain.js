@@ -3,8 +3,17 @@
 
 import { Codec } from '@polkadot/types/types';
 import { Vec } from '@polkadot/types/codec';
-import { Bytes, u64 } from '@polkadot/types/primitive';
-import { Balance, BalanceOf, BlockNumber, CurrencyId, CurrencyIdOf, Moment, Percent, Permill } from '@laminar/types/interfaces/runtime';
+import { u64 } from '@polkadot/types/primitive';
+import {
+  Balance,
+  BalanceOf,
+  BlockNumber,
+  CurrencyId,
+  CurrencyIdOf,
+  Moment,
+  Percent,
+  Permill
+} from '@laminar/types/interfaces/runtime';
 import { SessionIndex } from '@polkadot/types/interfaces/session';
 import { EraIndex } from '@polkadot/types/interfaces/staking';
 
@@ -38,7 +47,7 @@ declare module '@polkadot/metadata/Decorated/consts/types' {
       [index: string]: AugmentedConst<object & Codec>;
       nativeCurrencyId: AugmentedConst<CurrencyIdOf>;
     };
-    liquidityPools: {
+    marginLiquidityPools: {
       [index: string]: AugmentedConst<object & Codec>;
       existentialDeposit: AugmentedConst<Balance>;
     };
@@ -78,14 +87,6 @@ declare module '@polkadot/metadata/Decorated/consts/types' {
        **/
       tipReportDepositPerByte: AugmentedConst<BalanceOf>;
     };
-    session: {
-      [index: string]: AugmentedConst<object & Codec>;
-      /**
-       * Used as first key for `NextKeys` and `KeyOwner` to put all the data into the same branch
-       * of the trie.
-       **/
-      dedupKeyPrefix: AugmentedConst<Bytes>;
-    };
     staking: {
       [index: string]: AugmentedConst<object & Codec>;
       /**
@@ -96,6 +97,10 @@ declare module '@polkadot/metadata/Decorated/consts/types' {
        * Number of sessions per era.
        **/
       sessionsPerEra: AugmentedConst<SessionIndex>;
+    };
+    syntheticLiquidityPools: {
+      [index: string]: AugmentedConst<object & Codec>;
+      existentialDeposit: AugmentedConst<Balance>;
     };
     syntheticProtocol: {
       [index: string]: AugmentedConst<object & Codec>;
