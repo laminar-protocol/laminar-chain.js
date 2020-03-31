@@ -2,7 +2,7 @@
 /* eslint-disable */
 
 import { ITuple } from '@polkadot/types/types';
-import { Compact, Enum, Int, Option, Struct, U8aFixed, Vec } from '@polkadot/types/codec';
+import { Compact, Enum, Int, Option, Set, Struct, U8aFixed, Vec } from '@polkadot/types/codec';
 import {
   GenericAccountId,
   GenericAccountIndex,
@@ -168,7 +168,22 @@ export interface KeyValue extends ITuple<[StorageKey, StorageData]> {}
 export interface Leverage extends u16 {}
 
 /** @name Leverages */
-export interface Leverages extends u16 {}
+export interface Leverages extends Set {
+  readonly isLongTwo: boolean;
+  readonly isLongThree: boolean;
+  readonly isLongFive: boolean;
+  readonly isLongTen: boolean;
+  readonly isLongTwenty: boolean;
+  readonly isLongThirty: boolean;
+  readonly isLongFifty: boolean;
+  readonly isShortTwo: boolean;
+  readonly isShortThree: boolean;
+  readonly isShortFive: boolean;
+  readonly isShortTen: boolean;
+  readonly isShortTwenty: boolean;
+  readonly isShortThirty: boolean;
+  readonly isShortFifty: boolean;
+}
 
 /** @name LiquidityPoolId */
 export interface LiquidityPoolId extends u32 {}
@@ -186,7 +201,7 @@ export interface LookupTarget extends AccountId {}
 export interface MarginLiquidityPoolOption extends Struct {
   readonly bidSpread: Permill;
   readonly askSpread: Permill;
-  readonly enabled_trades: Leverages;
+  readonly enabledTrades: Leverages;
 }
 
 /** @name Moment */

@@ -2190,7 +2190,6 @@ declare module '@polkadot/types/types/registry' {
     'Option<LiquidityPoolId>': Option<LiquidityPoolId>;
     'Vec<LiquidityPoolId>': Vec<LiquidityPoolId>;
     Leverages: Leverages;
-    'Compact<Leverages>': Compact<Leverages>;
     'Option<Leverages>': Option<Leverages>;
     'Vec<Leverages>': Vec<Leverages>;
     Leverage: Leverage;

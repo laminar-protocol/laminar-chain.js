@@ -3,7 +3,7 @@ import * as ormlDefinations from '@orml/types/interfaces/definitions';
 
 import * as laminarDefinations from './interfaces/definitions';
 
-import { Permill } from './generic';
+import { Permill, Leverages } from './generic';
 
 import './augment-api';
 import './augment-types';
@@ -16,6 +16,7 @@ export const allDefinitions = {
 export const types: RegistryTypes = Object.values(allDefinitions)
   .map(({ types }) => ({
     ...types,
-    Permill
+    Permill,
+    Leverages
   }))
   .reduce((all, types) => Object.assign(all, types), {});
