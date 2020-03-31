@@ -5,8 +5,8 @@ import Web3 from 'web3';
 describe('ethereum api', () => {
   jest.setTimeout(300000);
 
-  // const chain = 'ethereum';
-  const chain = 'laminar';
+  const chain = 'ethereum';
+  // const chain = 'laminar';
 
   const getConfig = key => {
     if (key === 'ethereum') {
@@ -19,7 +19,7 @@ describe('ethereum api', () => {
     } else if (key === 'laminar') {
       return {
         api: new LaminarApi({
-          provider: new WsProvider('wss://testnet-node-1.laminar-chain.laminar.one/ws')
+          provider: new WsProvider('wss://dev-node.laminar-chain.laminar.one/ws')
         }),
         address1: '5FBf5sTp3xZH7WhBMkTmMgrNQUyLmfTpGerwsEuAbC5fWVay'
       };
@@ -97,9 +97,9 @@ describe('ethereum api', () => {
   });
 
   it.skip('json rpc', async () => {
-    const laminarApi = api as LaminarApi
+    const laminarApi = api as LaminarApi;
     //@ts-ignore
-    const result = await laminarApi.api.rpc.oracle.getValue('lami')
-    expect(result).toBeTruthy()
+    const result = await laminarApi.api.rpc.oracle.getValue('lami');
+    expect(result).toBeTruthy();
   });
 });
