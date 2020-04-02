@@ -6,6 +6,24 @@ export default {
     CurrencyId: {
       _enum: ['LAMI', 'AUSD', 'FEUR', 'FJPY', 'FBTC', 'FETH']
     },
+    Leverage: {
+      _enum: [
+        'LongTwo',
+        'LongThree',
+        'LongFive',
+        'LongTen',
+        'LongTwenty',
+        'LongThirty',
+        'LongFifty',
+        'ShortTwo',
+        'ShortThree',
+        'ShortFive',
+        'ShortTen',
+        'ShortTwenty',
+        'ShortThirty',
+        'ShortFifty'
+      ]
+    },
     CurrencyIdOf: 'CurrencyId',
     Amount: 'i128',
     AmountOf: 'Amount',
@@ -31,7 +49,6 @@ export default {
         ShortFifty: 0b0100000000000000
       }
     },
-    Leverage: 'u16',
     TradingPair: {
       base: 'CurrencyId',
       quote: 'CurrencyId'
