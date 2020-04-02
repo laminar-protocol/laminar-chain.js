@@ -2170,6 +2170,9 @@ declare module '@polkadot/types/types/registry' {
     CurrencyId: CurrencyId;
     'Option<CurrencyId>': Option<CurrencyId>;
     'Vec<CurrencyId>': Vec<CurrencyId>;
+    Leverage: Leverage;
+    'Option<Leverage>': Option<Leverage>;
+    'Vec<Leverage>': Vec<Leverage>;
     CurrencyIdOf: CurrencyIdOf;
     'Option<CurrencyIdOf>': Option<CurrencyIdOf>;
     'Vec<CurrencyIdOf>': Vec<CurrencyIdOf>;
@@ -2192,10 +2195,6 @@ declare module '@polkadot/types/types/registry' {
     Leverages: Leverages;
     'Option<Leverages>': Option<Leverages>;
     'Vec<Leverages>': Vec<Leverages>;
-    Leverage: Leverage;
-    'Compact<Leverage>': Compact<Leverage>;
-    'Option<Leverage>': Option<Leverage>;
-    'Vec<Leverage>': Vec<Leverage>;
     TradingPair: TradingPair;
     'Option<TradingPair>': Option<TradingPair>;
     'Vec<TradingPair>': Vec<TradingPair>;
