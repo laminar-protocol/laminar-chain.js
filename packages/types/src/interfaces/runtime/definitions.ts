@@ -12,9 +12,9 @@ export default {
     OracleKey: 'CurrencyId',
     OracleValue: 'Price',
     LiquidityPoolId: 'u32',
-    // Will Be Overwritten
     Leverages: {
       _set: {
+        _bitLength: 16,
         LongTwo: 0b0000000000000001,
         LongThree: 0b0000000000000010,
         LongFive: 0b0000000000000100,
