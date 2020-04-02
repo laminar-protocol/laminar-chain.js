@@ -13,7 +13,7 @@ import {
   GenericDigest,
   GenericOrigin
 } from '@polkadot/types/generic';
-import { Bytes, Null, StorageKey, bool, i128, u128, u16, u32, u64, u8 } from '@polkadot/types/primitive';
+import { Bytes, Null, StorageKey, bool, i128, u128, u32, u64, u8 } from '@polkadot/types/primitive';
 import { Price } from '@orml/types/interfaces/prices';
 import { AuthorityId } from '@polkadot/types/interfaces/consensus';
 import { Signature } from '@polkadot/types/interfaces/extrinsics';
@@ -165,7 +165,22 @@ export interface KeyTypeId extends u32 {}
 export interface KeyValue extends ITuple<[StorageKey, StorageData]> {}
 
 /** @name Leverage */
-export interface Leverage extends u16 {}
+export interface Leverage extends Enum {
+  readonly isLongTwo: boolean;
+  readonly isLongThree: boolean;
+  readonly isLongFive: boolean;
+  readonly isLongTen: boolean;
+  readonly isLongTwenty: boolean;
+  readonly isLongThirty: boolean;
+  readonly isLongFifty: boolean;
+  readonly isShortTwo: boolean;
+  readonly isShortThree: boolean;
+  readonly isShortFive: boolean;
+  readonly isShortTen: boolean;
+  readonly isShortTwenty: boolean;
+  readonly isShortThirty: boolean;
+  readonly isShortFifty: boolean;
+}
 
 /** @name Leverages */
 export interface Leverages extends Set {
