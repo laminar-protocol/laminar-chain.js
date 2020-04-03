@@ -15,13 +15,15 @@ export default {
         'LongTwenty',
         'LongThirty',
         'LongFifty',
+        '_LongOneHundred',
         'ShortTwo',
         'ShortThree',
         'ShortFive',
         'ShortTen',
         'ShortTwenty',
         'ShortThirty',
-        'ShortFifty'
+        'ShortFifty',
+        '_ShortOneHundred'
       ]
     },
     CurrencyIdOf: 'CurrencyId',
