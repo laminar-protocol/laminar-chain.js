@@ -173,6 +173,7 @@ export interface Leverage extends Enum {
   readonly isLongTwenty: boolean;
   readonly isLongThirty: boolean;
   readonly isLongFifty: boolean;
+  readonly isLongOneHundred: boolean;
   readonly isShortTwo: boolean;
   readonly isShortThree: boolean;
   readonly isShortFive: boolean;
@@ -180,6 +181,7 @@ export interface Leverage extends Enum {
   readonly isShortTwenty: boolean;
   readonly isShortThirty: boolean;
   readonly isShortFifty: boolean;
+  readonly isShortOneHundred: boolean;
 }
 
 /** @name Leverages */
