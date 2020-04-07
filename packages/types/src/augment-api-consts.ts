@@ -4,16 +4,7 @@
 import { Codec } from '@polkadot/types/types';
 import { Vec } from '@polkadot/types/codec';
 import { u64 } from '@polkadot/types/primitive';
-import {
-  Balance,
-  BalanceOf,
-  BlockNumber,
-  CurrencyId,
-  CurrencyIdOf,
-  Moment,
-  Percent,
-  Permill
-} from '@laminar/types/interfaces/runtime';
+import { Balance, BalanceOf, BlockNumber, CurrencyId, CurrencyIdOf, Moment, Percent, Permill } from '@laminar/types/interfaces/runtime';
 import { SessionIndex } from '@polkadot/types/interfaces/session';
 import { EraIndex } from '@polkadot/types/interfaces/staking';
 

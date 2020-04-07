@@ -3,16 +3,7 @@
 
 import { ITuple } from '@polkadot/types/types';
 import { Compact, Enum, Int, Option, Set, Struct, U8aFixed, Vec } from '@polkadot/types/codec';
-import {
-  GenericAccountId,
-  GenericAccountIndex,
-  GenericAddress,
-  GenericBlock,
-  GenericCall,
-  GenericConsensusEngineId,
-  GenericDigest,
-  GenericOrigin
-} from '@polkadot/types/generic';
+import { GenericAccountId, GenericAccountIndex, GenericAddress, GenericBlock, GenericCall, GenericConsensusEngineId, GenericDigest, GenericOrigin } from '@polkadot/types/generic';
 import { Bytes, Null, StorageKey, bool, i128, u128, u32, u64, u8 } from '@polkadot/types/primitive';
 import { Price } from '@orml/types/interfaces/prices';
 import { AuthorityId } from '@polkadot/types/interfaces/consensus';
@@ -290,6 +281,12 @@ export interface SignedBlock extends Struct {
 
 /** @name StorageData */
 export interface StorageData extends Bytes {}
+
+/** @name SwapRate */
+export interface SwapRate extends Struct {
+  readonly long: Fixed128;
+  readonly short: Fixed128;
+}
 
 /** @name SyntheticLiquidityPoolOption */
 export interface SyntheticLiquidityPoolOption extends Struct {
