@@ -26,6 +26,10 @@ export default {
         '_ShortOneHundred'
       ]
     },
+    SwapRate: {
+      long: 'Fixed128',
+      short: 'Fixed128'
+    },
     CurrencyIdOf: 'CurrencyId',
     Amount: 'i128',
     AmountOf: 'Amount',
