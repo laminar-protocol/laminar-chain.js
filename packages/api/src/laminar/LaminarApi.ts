@@ -1,4 +1,5 @@
 import BN from 'bn.js';
+import { first } from 'rxjs/operators';
 import { ApiRx, WsProvider } from '@polkadot/api';
 import { ApiOptions } from '@polkadot/api/types';
 import { Option } from '@polkadot/types/codec';
@@ -97,7 +98,7 @@ class LaminarApi implements FlowApi {
   };
 
   public isReady = async () => {
-    await this.api.isReady.toPromise();
+    await this.api.isReady.pipe(first()).toPromise();
   };
 
   public getBalance = async (address: string, tokenId: TokenId) => {
@@ -108,12 +109,16 @@ class LaminarApi implements FlowApi {
   public getPoolOptions = async (poolId: string, tokenId: TokenId): Promise<PoolOptions> => {
     const data = await this.api.query.liquidityPools
       .liquidityPoolOptions<Option<MarginLiquidityPoolOption>>(poolId, tokenId)
+      .pipe(first())
       .toPromise();
     const json = data.toJSON() as any;
 
     if (!this.minAdditionalCollateralRatio) {
       this.minAdditionalCollateralRatio = (
-        await this.api.query.liquidityPools.minAdditionalCollateralRatio<Permill>().toPromise()
+        await this.api.query.liquidityPools
+          .minAdditionalCollateralRatio<Permill>()
+          .pipe(first())
+          .toPromise()
       ).toJSON() as number;
     }
 
@@ -137,7 +142,10 @@ class LaminarApi implements FlowApi {
   };
 
   public getPoolOwner = async (poolId: string) => {
-    const result = await this.api.query.liquidityPools.owners<Option<AccountId>>(poolId).toPromise();
+    const result = await this.api.query.liquidityPools
+      .owners<Option<AccountId>>(poolId)
+      .pipe(first())
+      .toPromise();
     if (result.isNone) return null;
     return (result.toJSON() && result.toJSON()) as string;
   };
@@ -148,7 +156,12 @@ class LaminarApi implements FlowApi {
   };
 
   public getLiquidity = async (poolId: string): Promise<string> => {
-    return (await this.api.query.liquidityPools.balances<Balance>(poolId).toPromise()).toString();
+    return (
+      await this.api.query.liquidityPools
+        .balances<Balance>(poolId)
+        .pipe(first())
+        .toPromise()
+    ).toString();
   };
 
   public createPool = async (account: string) => {
@@ -183,6 +196,7 @@ class LaminarApi implements FlowApi {
       ['0'].map(id => {
         return this.api.query.liquidityPools
           .owners(id)
+          .pipe(first())
           .toPromise()
           .then(result => {
             // @TODO fixme
