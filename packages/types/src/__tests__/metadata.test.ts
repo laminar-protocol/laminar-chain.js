@@ -8,7 +8,7 @@ describe('metadata', () => {
     const registry = new TypeRegistry();
     registry.register(types);
     const metadata = new Metadata(registry, metadataStatic);
-    console.log(JSON.stringify(metadata.toJSON()));
+    console.log(metadata.toString());
     metadata.getUniqTypes(true);
     expect(true).toBe(true);
   });

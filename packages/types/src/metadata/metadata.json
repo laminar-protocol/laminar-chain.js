@@ -3567,13 +3567,13 @@
               },
               {
                 "name": "PositionsByTrader",
-                "modifier": "Default",
+                "modifier": "Optional",
                 "type": {
                   "DoubleMap": {
                     "hasher": "Twox64Concat",
                     "key1": "AccountId",
-                    "key2": "LiquidityPoolId",
-                    "value": "Vec<PositionId>",
+                    "key2": "(LiquidityPoolId,PositionId)",
+                    "value": "()",
                     "key2Hasher": "Twox64Concat"
                   }
                 },
@@ -3582,13 +3582,13 @@
               },
               {
                 "name": "PositionsByPool",
-                "modifier": "Default",
+                "modifier": "Optional",
                 "type": {
                   "DoubleMap": {
                     "hasher": "Twox64Concat",
                     "key1": "LiquidityPoolId",
-                    "key2": "TradingPair",
-                    "value": "Vec<PositionId>",
+                    "key2": "(TradingPair,PositionId)",
+                    "value": "()",
                     "key2Hasher": "Twox64Concat"
                   }
                 },
@@ -3599,7 +3599,7 @@
                 "name": "Balances",
                 "modifier": "Default",
                 "type": {
-                  "Map": { "hasher": "Blake2_128Concat", "key": "AccountId", "value": "Balance", "linked": false }
+                  "Map": { "hasher": "Blake2_128Concat", "key": "AccountId", "value": "Fixed128", "linked": false }
                 },
                 "fallback": "0x00000000000000000000000000000000",
                 "documentation": []
@@ -3747,10 +3747,10 @@
             { "name": "NoAvailablePositionId", "documentation": [] },
             { "name": "PositionNotFound", "documentation": [] },
             { "name": "PositionNotOpenedByTrader", "documentation": [] },
-            { "name": "BalanceTooLow", "documentation": [] },
             { "name": "PositionNotAllowed", "documentation": [] },
             { "name": "CannotOpenPosition", "documentation": [] },
-            { "name": "CannotOpenMorePosition", "documentation": [] }
+            { "name": "CannotOpenMorePosition", "documentation": [] },
+            { "name": "InsufficientFreeMargin", "documentation": [] }
           ]
         },
         {
@@ -3805,17 +3805,11 @@
               },
               {
                 "name": "SwapRates",
-                "modifier": "Default",
+                "modifier": "Optional",
                 "type": {
-                  "DoubleMap": {
-                    "hasher": "Blake2_128Concat",
-                    "key1": "LiquidityPoolId",
-                    "key2": "TradingPair",
-                    "value": "Fixed128",
-                    "key2Hasher": "Blake2_128Concat"
-                  }
+                  "Map": { "hasher": "Blake2_128Concat", "key": "TradingPair", "value": "SwapRate", "linked": false }
                 },
-                "fallback": "0x00000000000000000000000000000000",
+                "fallback": "0x00",
                 "documentation": []
               },
               {
@@ -3826,11 +3820,25 @@
                     "hasher": "Blake2_128Concat",
                     "key1": "LiquidityPoolId",
                     "key2": "TradingPair",
-                    "value": "Fixed128",
+                    "value": "SwapRate",
                     "key2Hasher": "Blake2_128Concat"
                   }
                 },
-                "fallback": "0x00000000000000000000000000000000",
+                "fallback": "0x0000000000000000000000000000000000000000000000000000000000000000",
+                "documentation": []
+              },
+              {
+                "name": "AdditionalSwapRate",
+                "modifier": "Optional",
+                "type": {
+                  "Map": {
+                    "hasher": "Blake2_128Concat",
+                    "key": "LiquidityPoolId",
+                    "value": "Fixed128",
+                    "linked": false
+                  }
+                },
+                "fallback": "0x00",
                 "documentation": []
               },
               {
@@ -3938,10 +3946,17 @@
               "documentation": []
             },
             {
-              "name": "update_swap",
+              "name": "set_swap_rate",
+              "args": [
+                { "name": "pair", "type": "TradingPair" },
+                { "name": "rate", "type": "SwapRate" }
+              ],
+              "documentation": []
+            },
+            {
+              "name": "set_additional_swap",
               "args": [
                 { "name": "pool_id", "type": "LiquidityPoolId" },
-                { "name": "pair", "type": "TradingPair" },
                 { "name": "rate", "type": "Fixed128" }
               ],
               "documentation": []
@@ -4037,13 +4052,18 @@
             },
             {
               "name": "SwapRateUpdated",
-              "args": ["AccountId", "LiquidityPoolId", "TradingPair", "Fixed128"],
-              "documentation": [" Swap rate updated (who, pool_id, pair, swap_rate)"]
+              "args": ["TradingPair", "SwapRate"],
+              "documentation": [" Swap rate updated (pair, swap_rate)"]
             },
             {
               "name": "AccumulatedSwapRateUpdated",
-              "args": ["LiquidityPoolId", "TradingPair", "Fixed128"],
+              "args": ["LiquidityPoolId", "TradingPair", "SwapRate"],
               "documentation": [" Accumulated swap rate updated (pool_id, pair, accumulated_swap_rate)"]
+            },
+            {
+              "name": "AdditionalSwapRateUpdated",
+              "args": ["AccountId", "LiquidityPoolId", "Fixed128"],
+              "documentation": [" Additional swap rate updated (who, pool_id, additional_swap_rate)"]
             },
             {
               "name": "MaxSpreadUpdated",
@@ -4102,9 +4122,11 @@
             { "name": "CannotWithdrawAmount", "documentation": [] },
             { "name": "CannotWithdrawExistentialDeposit", "documentation": [] },
             { "name": "SwapRateTooHigh", "documentation": [] },
+            { "name": "SwapRateTooLow", "documentation": [] },
             { "name": "SpreadTooHigh", "documentation": [] },
             { "name": "PoolNotFound", "documentation": [] },
-            { "name": "TradingPairNotEnabled", "documentation": [] }
+            { "name": "TradingPairNotEnabled", "documentation": [] },
+            { "name": "NumOutOfBound", "documentation": [] }
           ]
         },
         {

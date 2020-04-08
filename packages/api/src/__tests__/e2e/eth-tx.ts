@@ -1,7 +1,7 @@
-import { EthereumApi } from '..';
+import { EthereumApi } from '../..';
 import Web3 from 'web3';
-import { TokenId } from '../ethereum/protocols';
-import { PoolInfo } from '../types';
+import { TokenId } from '../../ethereum/protocols';
+import { PoolInfo } from '../../types';
 
 describe('ethereum api', () => {
   jest.setTimeout(300000);

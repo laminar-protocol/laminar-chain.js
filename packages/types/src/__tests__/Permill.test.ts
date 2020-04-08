@@ -9,13 +9,13 @@ describe('permill', () => {
   const Permill: any = registry.get('Permill');
 
   it('toJSON', () => {
-    expect(new Permill(registry, 0).toJSON()).toBe(0);
-    expect(new Permill(registry, 1).toJSON()).toBe(0.000001);
-    expect(new Permill(registry, 22).toJSON()).toBe(0.000022);
-    expect(new Permill(registry, 330).toJSON()).toBe(0.00033);
-    expect(new Permill(registry, 4404).toJSON()).toBe(0.004404);
-    expect(new Permill(registry, 50000).toJSON()).toBe(0.05);
-    expect(new Permill(registry, 660000).toJSON()).toBe(0.66);
+    expect(new Permill(registry, 0).toHuman()).toBe(0);
+    expect(new Permill(registry, 1).toHuman()).toBe(0.000001);
+    expect(new Permill(registry, 22).toHuman()).toBe(0.000022);
+    expect(new Permill(registry, 330).toHuman()).toBe(0.00033);
+    expect(new Permill(registry, 4404).toHuman()).toBe(0.004404);
+    expect(new Permill(registry, 50000).toHuman()).toBe(0.05);
+    expect(new Permill(registry, 660000).toHuman()).toBe(0.66);
     // console.log(new Permill(registry, 1).toJSON());
     // console.log(new Permill(registry, 111111).toJSON());
     // console.log(new Permill(registry, 1111111).toJSON());
