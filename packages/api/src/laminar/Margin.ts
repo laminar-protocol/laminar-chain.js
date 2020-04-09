@@ -107,7 +107,7 @@ class Margin {
       .entries<Option<TradingPair>>(poolId)
       .pipe(
         map(allResult => {
-          return allResult.map(([_, result]) => result.toJSON());
+          return allResult.map(([, result]) => result.toJSON());
         })
       );
   };
@@ -128,7 +128,7 @@ class Margin {
     return this.apiProvider.extrinsicHelper(extrinsic, account, { action: 'Open Position' });
   };
 
-  public closePosition = async (account: string, positionId: string, price: string = '0') => {
+  public closePosition = async (account: string, positionId: string, price = '0') => {
     const extrinsic = this.api.tx.marginProtocol.closePosition(positionId, price);
     return this.apiProvider.extrinsicHelper(extrinsic, account, { action: 'Close Position' });
   };

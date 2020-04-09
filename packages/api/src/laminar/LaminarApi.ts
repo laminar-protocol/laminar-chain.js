@@ -13,8 +13,6 @@ interface LaminarApiOptions extends ApiOptions {
   provider: WsProvider;
 }
 
-export type LaminarTokenId = typeof LaminarApi.TokenIds[number];
-
 class LaminarApi implements FlowApi {
   private minAdditionalCollateralRatio?: number;
 
@@ -268,5 +266,7 @@ class LaminarApi implements FlowApi {
     return [];
   };
 }
+
+export type LaminarTokenId = typeof LaminarApi.TokenIds[number];
 
 export default LaminarApi;
