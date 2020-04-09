@@ -1,4 +1,4 @@
-import { EthereumApi, LaminarApi } from '..';
+import { EthereumApi, LaminarApi } from '../..';
 import { WsProvider } from '@polkadot/api';
 import Web3 from 'web3';
 

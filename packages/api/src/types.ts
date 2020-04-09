@@ -5,8 +5,7 @@ import {
   TradingPairSymbol as EthTradingPairSymbol,
   TradingPair as EthTradingPair
 } from './ethereum/protocols';
-
-export type LaminarTokenId = 'LAMI' | 'AUSD' | 'FEUR' | 'FJPY' | 'FBTC' | 'FETH';
+import { LaminarTokenId } from './laminar/LaminarApi';
 
 export type TokenId = EthTokenId | LaminarTokenId;
 export type TradingPairSymbol = EthTradingPairSymbol;

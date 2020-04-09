@@ -1,11 +1,13 @@
 import BN from 'bn.js';
-import { ApiPromise, WsProvider } from '@polkadot/api';
+import { first } from 'rxjs/operators';
+import { ApiRx, WsProvider } from '@polkadot/api';
 import { ApiOptions } from '@polkadot/api/types';
+import { Option } from '@polkadot/types/codec';
+import { Balance, MarginLiquidityPoolOption, Permill, AccountId } from '@laminar/types/interfaces';
 
 import { options as getOptions } from './options';
 import { FlowApi, TokenInfo, TokenId, PoolOptions, TradingPair, ChainType, ActionStatus } from '../types';
-import { Balance, MarginLiquidityPoolOption, Permill, AccountId } from '@laminar/types/interfaces';
-import { Option } from '@polkadot/types/codec';
+import Margin from './Margin';
 
 interface LaminarApiOptions extends ApiOptions {
   provider: WsProvider;
@@ -14,19 +16,24 @@ interface LaminarApiOptions extends ApiOptions {
 class LaminarApi implements FlowApi {
   private minAdditionalCollateralRatio?: number;
 
-  public api: ApiPromise;
+  public api: ApiRx;
   public chainType: ChainType = 'laminar';
+  public margin: Margin;
+
+  static TokenIds = ['LAMI', 'AUSD', 'FEUR', 'FJPY', 'FBTC', 'FETH'] as const;
 
   constructor(options: LaminarApiOptions) {
-    this.api = new ApiPromise(
+    this.api = new ApiRx(
       getOptions({
         ...options,
         provider: options.provider
       })
     );
+
+    this.margin = new Margin(this);
   }
 
-  private extrinsicHelper = (
+  public extrinsicHelper = (
     extrinsic: any,
     signOption: any,
     { action }: { action?: string } = {}
@@ -89,7 +96,7 @@ class LaminarApi implements FlowApi {
   };
 
   public isReady = async () => {
-    await this.api.isReady;
+    await this.api.isReady.pipe(first()).toPromise();
   };
 
   public getBalance = async (address: string, tokenId: TokenId) => {
@@ -98,15 +105,18 @@ class LaminarApi implements FlowApi {
   };
 
   public getPoolOptions = async (poolId: string, tokenId: TokenId): Promise<PoolOptions> => {
-    const data = await this.api.query.liquidityPools.liquidityPoolOptions<Option<MarginLiquidityPoolOption>>(
-      poolId,
-      tokenId
-    );
+    const data = await this.api.query.liquidityPools
+      .liquidityPoolOptions<Option<MarginLiquidityPoolOption>>(poolId, tokenId)
+      .pipe(first())
+      .toPromise();
     const json = data.toJSON() as any;
 
     if (!this.minAdditionalCollateralRatio) {
       this.minAdditionalCollateralRatio = (
-        await this.api.query.liquidityPools.minAdditionalCollateralRatio<Permill>()
+        await this.api.query.liquidityPools
+          .minAdditionalCollateralRatio<Permill>()
+          .pipe(first())
+          .toPromise()
       ).toJSON() as number;
     }
 
@@ -130,7 +140,10 @@ class LaminarApi implements FlowApi {
   };
 
   public getPoolOwner = async (poolId: string) => {
-    const result = await this.api.query.liquidityPools.owners<Option<AccountId>>(poolId);
+    const result = await this.api.query.liquidityPools
+      .owners<Option<AccountId>>(poolId)
+      .pipe(first())
+      .toPromise();
     if (result.isNone) return null;
     return (result.toJSON() && result.toJSON()) as string;
   };
@@ -141,7 +154,12 @@ class LaminarApi implements FlowApi {
   };
 
   public getLiquidity = async (poolId: string): Promise<string> => {
-    return (await this.api.query.liquidityPools.balances<Balance>(poolId)).toString();
+    return (
+      await this.api.query.liquidityPools
+        .balances<Balance>(poolId)
+        .pipe(first())
+        .toPromise()
+    ).toString();
   };
 
   public createPool = async (account: string) => {
@@ -174,17 +192,21 @@ class LaminarApi implements FlowApi {
 
     return Promise.all(
       ['0'].map(id => {
-        return this.api.query.liquidityPools.owners(id).then(result => {
-          // @TODO fixme
-          const address = (result.toJSON() && result.toJSON()) as string;
+        return this.api.query.liquidityPools
+          .owners(id)
+          .pipe(first())
+          .toPromise()
+          .then(result => {
+            // @TODO fixme
+            const address = (result.toJSON() && result.toJSON()) as string;
 
-          return {
-            id: `${id}`,
-            owner: address,
-            isDefault: true,
-            name: `${id}//${address.slice(0, 12)}`
-          };
-        });
+            return {
+              id: `${id}`,
+              owner: address,
+              isDefault: true,
+              name: `${id}//${address.slice(0, 12)}`
+            };
+          });
       })
     );
   };
@@ -244,5 +266,7 @@ class LaminarApi implements FlowApi {
     return [];
   };
 }
+
+export type LaminarTokenId = typeof LaminarApi.TokenIds[number];
 
 export default LaminarApi;
