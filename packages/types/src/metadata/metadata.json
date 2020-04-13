@@ -3339,7 +3339,7 @@
                 "name": "ExtremeRatio",
                 "modifier": "Optional",
                 "type": {
-                  "Map": { "hasher": "Blake2_128Concat", "key": "CurrencyId", "value": "Permill", "linked": false }
+                  "Map": { "hasher": "Twox64Concat", "key": "CurrencyId", "value": "Permill", "linked": false }
                 },
                 "fallback": "0x00",
                 "documentation": []
@@ -3348,7 +3348,7 @@
                 "name": "LiquidationRatio",
                 "modifier": "Optional",
                 "type": {
-                  "Map": { "hasher": "Blake2_128Concat", "key": "CurrencyId", "value": "Permill", "linked": false }
+                  "Map": { "hasher": "Twox64Concat", "key": "CurrencyId", "value": "Permill", "linked": false }
                 },
                 "fallback": "0x00",
                 "documentation": []
@@ -3357,7 +3357,7 @@
                 "name": "CollateralRatio",
                 "modifier": "Optional",
                 "type": {
-                  "Map": { "hasher": "Blake2_128Concat", "key": "CurrencyId", "value": "Permill", "linked": false }
+                  "Map": { "hasher": "Twox64Concat", "key": "CurrencyId", "value": "Permill", "linked": false }
                 },
                 "fallback": "0x00",
                 "documentation": []
@@ -3366,11 +3366,12 @@
                 "name": "Positions",
                 "modifier": "Default",
                 "type": {
-                  "Map": {
-                    "hasher": "Blake2_128Concat",
-                    "key": "(LiquidityPoolId,CurrencyId)",
+                  "DoubleMap": {
+                    "hasher": "Twox64Concat",
+                    "key1": "LiquidityPoolId",
+                    "key2": "CurrencyId",
                     "value": "Position",
-                    "linked": false
+                    "key2Hasher": "Twox64Concat"
                   }
                 },
                 "fallback": "0x0000000000000000000000000000000000000000000000000000000000000000",
@@ -3438,8 +3439,8 @@
               "args": [
                 { "name": "pool_id", "type": "LiquidityPoolId" },
                 { "name": "currency_id", "type": "CurrencyId" },
-                { "name": "collateral_amount", "type": "Balance" },
-                { "name": "max_slippage", "type": "Permill" }
+                { "name": "collateral_amount", "type": "Compact<Balance>" },
+                { "name": "max_price", "type": "Price" }
               ],
               "documentation": []
             },
@@ -3448,8 +3449,8 @@
               "args": [
                 { "name": "pool_id", "type": "LiquidityPoolId" },
                 { "name": "currency_id", "type": "CurrencyId" },
-                { "name": "synthetic_amount", "type": "Balance" },
-                { "name": "max_slippage", "type": "Permill" }
+                { "name": "synthetic_amount", "type": "Compact<Balance>" },
+                { "name": "min_price", "type": "Price" }
               ],
               "documentation": []
             },
@@ -3458,7 +3459,7 @@
               "args": [
                 { "name": "pool_id", "type": "LiquidityPoolId" },
                 { "name": "currency_id", "type": "CurrencyId" },
-                { "name": "synthetic_amount", "type": "Balance" }
+                { "name": "synthetic_amount", "type": "Compact<Balance>" }
               ],
               "documentation": []
             },
@@ -3467,7 +3468,7 @@
               "args": [
                 { "name": "pool_id", "type": "LiquidityPoolId" },
                 { "name": "currency_id", "type": "CurrencyId" },
-                { "name": "collateral_amount", "type": "Balance" }
+                { "name": "collateral_amount", "type": "Compact<Balance>" }
               ],
               "documentation": []
             },
@@ -3529,7 +3530,8 @@
             { "name": "BalanceTooLow", "documentation": [] },
             { "name": "LiquidityProviderBalanceTooLow", "documentation": [] },
             { "name": "NotSupportedByLiquidityPool", "documentation": [] },
-            { "name": "SlippageTooHigh", "documentation": [] },
+            { "name": "AskPriceTooHigh", "documentation": [] },
+            { "name": "BidPriceTooLow", "documentation": [] },
             { "name": "NumOverflow", "documentation": [] },
             { "name": "NoPrice", "documentation": [] },
             { "name": "NegativeAdditionalCollateralAmount", "documentation": [] },
@@ -3560,7 +3562,7 @@
                 "name": "Positions",
                 "modifier": "Optional",
                 "type": {
-                  "Map": { "hasher": "Blake2_128Concat", "key": "PositionId", "value": "Position", "linked": false }
+                  "Map": { "hasher": "Twox64Concat", "key": "PositionId", "value": "Position", "linked": false }
                 },
                 "fallback": "0x00",
                 "documentation": []
@@ -3599,16 +3601,7 @@
                 "name": "Balances",
                 "modifier": "Default",
                 "type": {
-                  "Map": { "hasher": "Blake2_128Concat", "key": "AccountId", "value": "Fixed128", "linked": false }
-                },
-                "fallback": "0x00000000000000000000000000000000",
-                "documentation": []
-              },
-              {
-                "name": "MinLiquidationPercent",
-                "modifier": "Default",
-                "type": {
-                  "Map": { "hasher": "Blake2_128Concat", "key": "TradingPair", "value": "Fixed128", "linked": false }
+                  "Map": { "hasher": "Twox64Concat", "key": "AccountId", "value": "Fixed128", "linked": false }
                 },
                 "fallback": "0x00000000000000000000000000000000",
                 "documentation": []
@@ -3616,7 +3609,7 @@
               {
                 "name": "MarginCalledTraders",
                 "modifier": "Optional",
-                "type": { "Map": { "hasher": "Blake2_128Concat", "key": "AccountId", "value": "()", "linked": false } },
+                "type": { "Map": { "hasher": "Twox64Concat", "key": "AccountId", "value": "()", "linked": false } },
                 "fallback": "0x00",
                 "documentation": []
               },
@@ -3624,7 +3617,7 @@
                 "name": "MarginCalledPools",
                 "modifier": "Optional",
                 "type": {
-                  "Map": { "hasher": "Blake2_128Concat", "key": "LiquidityPoolId", "value": "()", "linked": false }
+                  "Map": { "hasher": "Twox64Concat", "key": "LiquidityPoolId", "value": "()", "linked": false }
                 },
                 "fallback": "0x00",
                 "documentation": []
@@ -3676,7 +3669,7 @@
             { "name": "withdraw", "args": [{ "name": "amount", "type": "Compact<Balance>" }], "documentation": [] },
             { "name": "trader_margin_call", "args": [{ "name": "who", "type": "LookupSource" }], "documentation": [] },
             { "name": "trader_become_safe", "args": [{ "name": "who", "type": "LookupSource" }], "documentation": [] },
-            { "name": "trader_liquidate", "args": [{ "name": "who", "type": "LookupSource" }], "documentation": [] },
+            { "name": "trader_stop_out", "args": [{ "name": "who", "type": "LookupSource" }], "documentation": [] },
             {
               "name": "liquidity_pool_margin_call",
               "args": [{ "name": "pool", "type": "LiquidityPoolId" }],
@@ -3688,7 +3681,7 @@
               "documentation": []
             },
             {
-              "name": "liquidity_pool_liquidate",
+              "name": "liquidity_pool_force_close",
               "args": [{ "name": "pool", "type": "LiquidityPoolId" }],
               "documentation": []
             }
@@ -3696,9 +3689,9 @@
           "events": [
             {
               "name": "PositionOpened",
-              "args": ["AccountId", "LiquidityPoolId", "TradingPair", "Leverage", "Amount", "Price"],
+              "args": ["AccountId", "PositionId", "LiquidityPoolId", "TradingPair", "Leverage", "Amount", "Price"],
               "documentation": [
-                " Position opened: (who, pool_id, trading_pair, leverage, leveraged_amount, market_price)"
+                " Position opened: (who, position_id, pool_id, trading_pair, leverage, leveraged_amount, market_price)"
               ]
             },
             {
@@ -3710,7 +3703,7 @@
             { "name": "Withdrew", "args": ["AccountId", "Amount"], "documentation": [" Withdrew: (who, amount)"] },
             { "name": "TraderMarginCalled", "args": ["AccountId"], "documentation": [" TraderMarginCalled: (who)"] },
             { "name": "TraderBecameSafe", "args": ["AccountId"], "documentation": [" TraderBecameSafe: (who)"] },
-            { "name": "TraderLiquidated", "args": ["AccountId"], "documentation": [" TraderLiquidated: (who)"] },
+            { "name": "TraderStoppedOut", "args": ["AccountId"], "documentation": [" TraderStoppedOut: (who)"] },
             {
               "name": "LiquidityPoolMarginCalled",
               "args": ["LiquidityPoolId"],
@@ -3722,9 +3715,9 @@
               "documentation": [" LiquidityPoolBecameSafe: (pool_id)"]
             },
             {
-              "name": "LiquidityPoolLiquidated",
+              "name": "LiquidityPoolForceClosed",
               "args": ["LiquidityPoolId"],
-              "documentation": [" LiquidityPoolLiquidated: (pool_id)"]
+              "documentation": [" LiquidityPoolForceClosed: (pool_id)"]
             }
           ],
           "constants": [],
@@ -3754,9 +3747,9 @@
           ]
         },
         {
-          "name": "MarginLiquidityPools",
+          "name": "BaseLiquidityPoolsForMargin",
           "storage": {
-            "prefix": "MarginLiquidityPools",
+            "prefix": "Instance1BaseLiquidityPools",
             "items": [
               {
                 "name": "NextPoolId",
@@ -3770,7 +3763,7 @@
                 "modifier": "Optional",
                 "type": {
                   "Map": {
-                    "hasher": "Blake2_128Concat",
+                    "hasher": "Twox64Concat",
                     "key": "LiquidityPoolId",
                     "value": "(AccountId,LiquidityPoolId)",
                     "linked": false
@@ -3780,34 +3773,107 @@
                 "documentation": []
               },
               {
+                "name": "Balances",
+                "modifier": "Default",
+                "type": {
+                  "Map": { "hasher": "Twox64Concat", "key": "LiquidityPoolId", "value": "Balance", "linked": false }
+                },
+                "fallback": "0x00000000000000000000000000000000",
+                "documentation": []
+              }
+            ]
+          },
+          "calls": [
+            { "name": "create_pool", "args": [], "documentation": [] },
+            { "name": "disable_pool", "args": [{ "name": "pool_id", "type": "LiquidityPoolId" }], "documentation": [] },
+            { "name": "remove_pool", "args": [{ "name": "pool_id", "type": "LiquidityPoolId" }], "documentation": [] },
+            {
+              "name": "deposit_liquidity",
+              "args": [
+                { "name": "pool_id", "type": "LiquidityPoolId" },
+                { "name": "amount", "type": "Compact<Balance>" }
+              ],
+              "documentation": []
+            },
+            {
+              "name": "withdraw_liquidity",
+              "args": [
+                { "name": "pool_id", "type": "LiquidityPoolId" },
+                { "name": "amount", "type": "Compact<Balance>" }
+              ],
+              "documentation": []
+            }
+          ],
+          "events": [
+            {
+              "name": "LiquidityPoolCreated",
+              "args": ["AccountId", "LiquidityPoolId"],
+              "documentation": [" Liquidity pool created (who, pool_id)"]
+            },
+            {
+              "name": "LiquidityPoolDisabled",
+              "args": ["AccountId", "LiquidityPoolId"],
+              "documentation": [" Liquidity pool disabled (who, pool_id)"]
+            },
+            {
+              "name": "LiquidityPoolRemoved",
+              "args": ["AccountId", "LiquidityPoolId"],
+              "documentation": [" Liquidity pool removed (who, pool_id)"]
+            },
+            {
+              "name": "DepositLiquidity",
+              "args": ["AccountId", "LiquidityPoolId", "Balance"],
+              "documentation": [" Deposit liquidity (who, pool_id, amount)"]
+            },
+            {
+              "name": "WithdrawLiquidity",
+              "args": ["AccountId", "LiquidityPoolId", "Balance"],
+              "documentation": [" Withdraw liquidity (who, pool_id, amount)"]
+            }
+          ],
+          "constants": [
+            {
+              "name": "ExistentialDeposit",
+              "type": "Balance",
+              "value": "0xf4010000000000000000000000000000",
+              "documentation": []
+            }
+          ],
+          "errors": [
+            { "name": "NoPermission", "documentation": [] },
+            { "name": "CannotCreateMorePool", "documentation": [] },
+            { "name": "CannotRemovePool", "documentation": [] },
+            { "name": "CannotDepositAmount", "documentation": [] },
+            { "name": "CannotWithdrawAmount", "documentation": [] },
+            { "name": "CannotWithdrawExistentialDeposit", "documentation": [] },
+            { "name": "PoolNotFound", "documentation": [] }
+          ]
+        },
+        {
+          "name": "MarginLiquidityPools",
+          "storage": {
+            "prefix": "MarginLiquidityPools",
+            "items": [
+              {
                 "name": "LiquidityPoolOptions",
                 "modifier": "Optional",
                 "type": {
                   "DoubleMap": {
-                    "hasher": "Blake2_128Concat",
+                    "hasher": "Twox64Concat",
                     "key1": "LiquidityPoolId",
                     "key2": "TradingPair",
                     "value": "MarginLiquidityPoolOption",
-                    "key2Hasher": "Blake2_128Concat"
+                    "key2Hasher": "Twox64Concat"
                   }
                 },
                 "fallback": "0x00",
                 "documentation": []
               },
               {
-                "name": "Balances",
-                "modifier": "Default",
-                "type": {
-                  "Map": { "hasher": "Blake2_128Concat", "key": "LiquidityPoolId", "value": "Balance", "linked": false }
-                },
-                "fallback": "0x00000000000000000000000000000000",
-                "documentation": []
-              },
-              {
                 "name": "SwapRates",
                 "modifier": "Optional",
                 "type": {
-                  "Map": { "hasher": "Blake2_128Concat", "key": "TradingPair", "value": "SwapRate", "linked": false }
+                  "Map": { "hasher": "Twox64Concat", "key": "TradingPair", "value": "SwapRate", "linked": false }
                 },
                 "fallback": "0x00",
                 "documentation": []
@@ -3817,11 +3883,11 @@
                 "modifier": "Default",
                 "type": {
                   "DoubleMap": {
-                    "hasher": "Blake2_128Concat",
+                    "hasher": "Twox64Concat",
                     "key1": "LiquidityPoolId",
                     "key2": "TradingPair",
                     "value": "SwapRate",
-                    "key2Hasher": "Blake2_128Concat"
+                    "key2Hasher": "Twox64Concat"
                   }
                 },
                 "fallback": "0x0000000000000000000000000000000000000000000000000000000000000000",
@@ -3831,23 +3897,18 @@
                 "name": "AdditionalSwapRate",
                 "modifier": "Optional",
                 "type": {
-                  "Map": {
-                    "hasher": "Blake2_128Concat",
-                    "key": "LiquidityPoolId",
-                    "value": "Fixed128",
-                    "linked": false
-                  }
+                  "Map": { "hasher": "Twox64Concat", "key": "LiquidityPoolId", "value": "Fixed128", "linked": false }
                 },
                 "fallback": "0x00",
                 "documentation": []
               },
               {
                 "name": "MaxSpread",
-                "modifier": "Default",
+                "modifier": "Optional",
                 "type": {
-                  "Map": { "hasher": "Blake2_128Concat", "key": "TradingPair", "value": "Permill", "linked": false }
+                  "Map": { "hasher": "Twox64Concat", "key": "TradingPair", "value": "Permill", "linked": false }
                 },
-                "fallback": "0x00000000",
+                "fallback": "0x00",
                 "documentation": []
               },
               {
@@ -3855,7 +3916,7 @@
                 "modifier": "Optional",
                 "type": {
                   "Map": {
-                    "hasher": "Blake2_128Concat",
+                    "hasher": "Twox64Concat",
                     "key": "TradingPair",
                     "value": "(AccumulateConfig,TradingPair)",
                     "linked": false
@@ -3868,7 +3929,7 @@
                 "name": "EnabledTradingPairs",
                 "modifier": "Optional",
                 "type": {
-                  "Map": { "hasher": "Blake2_128Concat", "key": "TradingPair", "value": "TradingPair", "linked": false }
+                  "Map": { "hasher": "Twox64Concat", "key": "TradingPair", "value": "TradingPair", "linked": false }
                 },
                 "fallback": "0x00",
                 "documentation": []
@@ -3878,11 +3939,11 @@
                 "modifier": "Optional",
                 "type": {
                   "DoubleMap": {
-                    "hasher": "Blake2_128Concat",
+                    "hasher": "Twox64Concat",
                     "key1": "LiquidityPoolId",
                     "key2": "TradingPair",
                     "value": "TradingPair",
-                    "key2Hasher": "Blake2_128Concat"
+                    "key2Hasher": "Twox64Concat"
                   }
                 },
                 "fallback": "0x00",
@@ -3899,7 +3960,7 @@
                 "name": "MinLeveragedAmount",
                 "modifier": "Optional",
                 "type": {
-                  "Map": { "hasher": "Blake2_128Concat", "key": "LiquidityPoolId", "value": "Balance", "linked": false }
+                  "Map": { "hasher": "Twox64Concat", "key": "LiquidityPoolId", "value": "Balance", "linked": false }
                 },
                 "fallback": "0x00",
                 "documentation": []
@@ -3907,25 +3968,6 @@
             ]
           },
           "calls": [
-            { "name": "create_pool", "args": [], "documentation": [] },
-            { "name": "disable_pool", "args": [{ "name": "pool_id", "type": "LiquidityPoolId" }], "documentation": [] },
-            { "name": "remove_pool", "args": [{ "name": "pool_id", "type": "LiquidityPoolId" }], "documentation": [] },
-            {
-              "name": "deposit_liquidity",
-              "args": [
-                { "name": "pool_id", "type": "LiquidityPoolId" },
-                { "name": "amount", "type": "Balance" }
-              ],
-              "documentation": []
-            },
-            {
-              "name": "withdraw_liquidity",
-              "args": [
-                { "name": "pool_id", "type": "LiquidityPoolId" },
-                { "name": "amount", "type": "Balance" }
-              ],
-              "documentation": []
-            },
             {
               "name": "set_spread",
               "args": [
@@ -4002,44 +4044,19 @@
             },
             {
               "name": "set_default_min_leveraged_amount",
-              "args": [{ "name": "amount", "type": "Balance" }],
+              "args": [{ "name": "amount", "type": "Compact<Balance>" }],
               "documentation": []
             },
             {
               "name": "set_min_leveraged_amount",
               "args": [
                 { "name": "pool_id", "type": "LiquidityPoolId" },
-                { "name": "amount", "type": "Balance" }
+                { "name": "amount", "type": "Compact<Balance>" }
               ],
               "documentation": []
             }
           ],
           "events": [
-            {
-              "name": "LiquidityPoolCreated",
-              "args": ["AccountId", "LiquidityPoolId"],
-              "documentation": [" Liquidity pool created (who, pool_id)"]
-            },
-            {
-              "name": "LiquidityPoolDisabled",
-              "args": ["AccountId", "LiquidityPoolId"],
-              "documentation": [" Liquidity pool disabled (who, pool_id)"]
-            },
-            {
-              "name": "LiquidityPoolRemoved",
-              "args": ["AccountId", "LiquidityPoolId"],
-              "documentation": [" Liquidity pool removed (who, pool_id)"]
-            },
-            {
-              "name": "DepositLiquidity",
-              "args": ["AccountId", "LiquidityPoolId", "Balance"],
-              "documentation": [" Deposit liquidity (who, pool_id, amount)"]
-            },
-            {
-              "name": "WithdrawLiquidity",
-              "args": ["AccountId", "LiquidityPoolId", "Balance"],
-              "documentation": [" Withdraw liquidity (who, pool_id, amount)"]
-            },
             {
               "name": "SetSpread",
               "args": ["AccountId", "LiquidityPoolId", "TradingPair", "Permill", "Permill"],
@@ -4106,6 +4123,101 @@
               "documentation": [" Set min leveraged amount (pool_id, min_leveraged_amount)"]
             }
           ],
+          "constants": [],
+          "errors": [
+            { "name": "NoPermission", "documentation": [] },
+            { "name": "SwapRateTooHigh", "documentation": [] },
+            { "name": "SwapRateTooLow", "documentation": [] },
+            { "name": "SpreadTooHigh", "documentation": [] },
+            { "name": "TradingPairNotEnabled", "documentation": [] },
+            { "name": "NumOutOfBound", "documentation": [] }
+          ]
+        },
+        {
+          "name": "BaseLiquidityPoolsForSynthetic",
+          "storage": {
+            "prefix": "Instance2BaseLiquidityPools",
+            "items": [
+              {
+                "name": "NextPoolId",
+                "modifier": "Default",
+                "type": { "Plain": "LiquidityPoolId" },
+                "fallback": "0x00000000",
+                "documentation": []
+              },
+              {
+                "name": "Owners",
+                "modifier": "Optional",
+                "type": {
+                  "Map": {
+                    "hasher": "Twox64Concat",
+                    "key": "LiquidityPoolId",
+                    "value": "(AccountId,LiquidityPoolId)",
+                    "linked": false
+                  }
+                },
+                "fallback": "0x00",
+                "documentation": []
+              },
+              {
+                "name": "Balances",
+                "modifier": "Default",
+                "type": {
+                  "Map": { "hasher": "Twox64Concat", "key": "LiquidityPoolId", "value": "Balance", "linked": false }
+                },
+                "fallback": "0x00000000000000000000000000000000",
+                "documentation": []
+              }
+            ]
+          },
+          "calls": [
+            { "name": "create_pool", "args": [], "documentation": [] },
+            { "name": "disable_pool", "args": [{ "name": "pool_id", "type": "LiquidityPoolId" }], "documentation": [] },
+            { "name": "remove_pool", "args": [{ "name": "pool_id", "type": "LiquidityPoolId" }], "documentation": [] },
+            {
+              "name": "deposit_liquidity",
+              "args": [
+                { "name": "pool_id", "type": "LiquidityPoolId" },
+                { "name": "amount", "type": "Compact<Balance>" }
+              ],
+              "documentation": []
+            },
+            {
+              "name": "withdraw_liquidity",
+              "args": [
+                { "name": "pool_id", "type": "LiquidityPoolId" },
+                { "name": "amount", "type": "Compact<Balance>" }
+              ],
+              "documentation": []
+            }
+          ],
+          "events": [
+            {
+              "name": "LiquidityPoolCreated",
+              "args": ["AccountId", "LiquidityPoolId"],
+              "documentation": [" Liquidity pool created (who, pool_id)"]
+            },
+            {
+              "name": "LiquidityPoolDisabled",
+              "args": ["AccountId", "LiquidityPoolId"],
+              "documentation": [" Liquidity pool disabled (who, pool_id)"]
+            },
+            {
+              "name": "LiquidityPoolRemoved",
+              "args": ["AccountId", "LiquidityPoolId"],
+              "documentation": [" Liquidity pool removed (who, pool_id)"]
+            },
+            {
+              "name": "DepositLiquidity",
+              "args": ["AccountId", "LiquidityPoolId", "Balance"],
+              "documentation": [" Deposit liquidity (who, pool_id, amount)"]
+            },
+            {
+              "name": "WithdrawLiquidity",
+              "args": ["AccountId", "LiquidityPoolId", "Balance"],
+              "documentation": [" Withdraw liquidity (who, pool_id, amount)"]
+            }
+          ],
           "constants": [
             {
               "name": "ExistentialDeposit",
@@ -4121,12 +4233,7 @@
             { "name": "CannotDepositAmount", "documentation": [] },
             { "name": "CannotWithdrawAmount", "documentation": [] },
             { "name": "CannotWithdrawExistentialDeposit", "documentation": [] },
-            { "name": "SwapRateTooHigh", "documentation": [] },
-            { "name": "SwapRateTooLow", "documentation": [] },
-            { "name": "SpreadTooHigh", "documentation": [] },
-            { "name": "PoolNotFound", "documentation": [] },
-            { "name": "TradingPairNotEnabled", "documentation": [] },
-            { "name": "NumOutOfBound", "documentation": [] }
+            { "name": "PoolNotFound", "documentation": [] }
           ]
         },
         {
@@ -4135,48 +4242,18 @@
             "prefix": "SyntheticLiquidityPools",
             "items": [
               {
-                "name": "NextPoolId",
-                "modifier": "Default",
-                "type": { "Plain": "LiquidityPoolId" },
-                "fallback": "0x00000000",
-                "documentation": []
-              },
-              {
-                "name": "Owners",
-                "modifier": "Optional",
-                "type": {
-                  "Map": {
-                    "hasher": "Blake2_128Concat",
-                    "key": "LiquidityPoolId",
-                    "value": "(AccountId,LiquidityPoolId)",
-                    "linked": false
-                  }
-                },
-                "fallback": "0x00",
-                "documentation": []
-              },
-              {
                 "name": "LiquidityPoolOptions",
                 "modifier": "Optional",
                 "type": {
                   "DoubleMap": {
-                    "hasher": "Blake2_128Concat",
+                    "hasher": "Twox64Concat",
                     "key1": "LiquidityPoolId",
                     "key2": "CurrencyId",
                     "value": "SyntheticLiquidityPoolOption",
-                    "key2Hasher": "Blake2_128Concat"
+                    "key2Hasher": "Twox64Concat"
                   }
                 },
                 "fallback": "0x00",
-                "documentation": []
-              },
-              {
-                "name": "Balances",
-                "modifier": "Default",
-                "type": {
-                  "Map": { "hasher": "Blake2_128Concat", "key": "LiquidityPoolId", "value": "Balance", "linked": false }
-                },
-                "fallback": "0x00000000000000000000000000000000",
                 "documentation": []
               },
               {
@@ -4190,7 +4267,7 @@
                 "name": "MaxSpread",
                 "modifier": "Default",
                 "type": {
-                  "Map": { "hasher": "Blake2_128Concat", "key": "CurrencyId", "value": "Permill", "linked": false }
+                  "Map": { "hasher": "Twox64Concat", "key": "CurrencyId", "value": "Permill", "linked": false }
                 },
                 "fallback": "0x00000000",
                 "documentation": []
@@ -4198,25 +4275,6 @@
             ]
           },
           "calls": [
-            { "name": "create_pool", "args": [], "documentation": [] },
-            { "name": "disable_pool", "args": [{ "name": "pool_id", "type": "LiquidityPoolId" }], "documentation": [] },
-            { "name": "remove_pool", "args": [{ "name": "pool_id", "type": "LiquidityPoolId" }], "documentation": [] },
-            {
-              "name": "deposit_liquidity",
-              "args": [
-                { "name": "pool_id", "type": "LiquidityPoolId" },
-                { "name": "amount", "type": "Balance" }
-              ],
-              "documentation": []
-            },
-            {
-              "name": "withdraw_liquidity",
-              "args": [
-                { "name": "pool_id", "type": "LiquidityPoolId" },
-                { "name": "amount", "type": "Balance" }
-              ],
-              "documentation": []
-            },
             {
               "name": "set_spread",
               "args": [
@@ -4261,31 +4319,6 @@
           ],
           "events": [
             {
-              "name": "LiquidityPoolCreated",
-              "args": ["AccountId", "LiquidityPoolId"],
-              "documentation": [" Liquidity pool created (who, pool_id)"]
-            },
-            {
-              "name": "LiquidityPoolDisabled",
-              "args": ["AccountId", "LiquidityPoolId"],
-              "documentation": [" Liquidity pool disabled (who, pool_id)"]
-            },
-            {
-              "name": "LiquidityPoolRemoved",
-              "args": ["AccountId", "LiquidityPoolId"],
-              "documentation": [" Liquidity pool removed (who, pool_id)"]
-            },
-            {
-              "name": "DepositLiquidity",
-              "args": ["AccountId", "LiquidityPoolId", "Balance"],
-              "documentation": [" Deposit liquidity (who, pool_id, amount)"]
-            },
-            {
-              "name": "WithdrawLiquidity",
-              "args": ["AccountId", "LiquidityPoolId", "Balance"],
-              "documentation": [" Withdraw liquidity (who, pool_id, amount)"]
-            },
-            {
               "name": "SetSpread",
               "args": ["AccountId", "LiquidityPoolId", "CurrencyId", "Permill", "Permill"],
               "documentation": [" Set spread (who, pool_id, currency_id, bid, ask)"]
@@ -4311,23 +4344,10 @@
               "documentation": [" Max spread updated (currency_id, spread)"]
             }
           ],
-          "constants": [
-            {
-              "name": "ExistentialDeposit",
-              "type": "Balance",
-              "value": "0xf4010000000000000000000000000000",
-              "documentation": []
-            }
-          ],
+          "constants": [],
           "errors": [
             { "name": "NoPermission", "documentation": [] },
-            { "name": "CannotCreateMorePool", "documentation": [] },
-            { "name": "CannotRemovePool", "documentation": [] },
-            { "name": "CannotDepositAmount", "documentation": [] },
-            { "name": "CannotWithdrawAmount", "documentation": [] },
-            { "name": "CannotWithdrawExistentialDeposit", "documentation": [] },
-            { "name": "SpreadTooHigh", "documentation": [] },
-            { "name": "PoolNotFound", "documentation": [] }
+            { "name": "SpreadTooHigh", "documentation": [] }
           ]
         }
       ],

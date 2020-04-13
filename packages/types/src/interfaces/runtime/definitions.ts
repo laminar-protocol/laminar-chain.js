@@ -15,7 +15,7 @@ export default {
         'LongTwenty',
         'LongThirty',
         'LongFifty',
-        '_LongOneHundred',
+        'LongOneHundred',
         'ShortTwo',
         'ShortThree',
         'ShortFive',
@@ -23,7 +23,7 @@ export default {
         'ShortTwenty',
         'ShortThirty',
         'ShortFifty',
-        '_ShortOneHundred'
+        'ShortOneHundred'
       ]
     },
     SwapRate: {
@@ -46,13 +46,15 @@ export default {
         LongTwenty: 0b0000000000010000,
         LongThirty: 0b0000000000100000,
         LongFifty: 0b0000000001000000,
+        LongOneHundred: 0b0000000010000000,
         ShortTwo: 0b0000000100000000,
         ShortThree: 0b0000001000000000,
         ShortFive: 0b0000010000000000,
         ShortTen: 0b0000100000000000,
         ShortTwenty: 0b0001000000000000,
         ShortThirty: 0b0010000000000000,
-        ShortFifty: 0b0100000000000000
+        ShortFifty: 0b0100000000000000,
+        ShortOneHundred: 0b1000000000000000
       }
     },
     TradingPair: {
