@@ -34,13 +34,17 @@ declare module '@polkadot/metadata/Decorated/consts/types' {
        **/
       existentialDeposit: AugmentedConst<Balance>;
     };
+    baseLiquidityPoolsForMargin: {
+      [index: string]: AugmentedConst<object & Codec>;
+      existentialDeposit: AugmentedConst<Balance>;
+    };
+    baseLiquidityPoolsForSynthetic: {
+      [index: string]: AugmentedConst<object & Codec>;
+      existentialDeposit: AugmentedConst<Balance>;
+    };
     currencies: {
       [index: string]: AugmentedConst<object & Codec>;
       nativeCurrencyId: AugmentedConst<CurrencyIdOf>;
-    };
-    marginLiquidityPools: {
-      [index: string]: AugmentedConst<object & Codec>;
-      existentialDeposit: AugmentedConst<Balance>;
     };
     palletTreasury: {
       [index: string]: AugmentedConst<object & Codec>;
@@ -88,10 +92,6 @@ declare module '@polkadot/metadata/Decorated/consts/types' {
        * Number of sessions per era.
        **/
       sessionsPerEra: AugmentedConst<SessionIndex>;
-    };
-    syntheticLiquidityPools: {
-      [index: string]: AugmentedConst<object & Codec>;
-      existentialDeposit: AugmentedConst<Balance>;
     };
     syntheticProtocol: {
       [index: string]: AugmentedConst<object & Codec>;
