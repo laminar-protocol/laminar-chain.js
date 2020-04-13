@@ -15,7 +15,7 @@ export default {
         'LongTwenty',
         'LongThirty',
         'LongFifty',
-        'LongOneHundred',
+        'LongReserved',
         'ShortTwo',
         'ShortThree',
         'ShortFive',
@@ -23,7 +23,7 @@ export default {
         'ShortTwenty',
         'ShortThirty',
         'ShortFifty',
-        'ShortOneHundred'
+        'ShortReserved'
       ]
     },
     SwapRate: {

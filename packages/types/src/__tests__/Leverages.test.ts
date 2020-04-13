@@ -49,13 +49,15 @@ describe('Leverages', (): void => {
       'LongTwenty',
       'LongThirty',
       'LongFifty',
+      'LongReserved',
       'ShortTwo',
       'ShortThree',
       'ShortFive',
       'ShortTen',
       'ShortTwenty',
       'ShortThirty',
-      'ShortFifty'
+      'ShortFifty',
+      'ShortReserved'
     ]);
 
     expect(leverages.toU8a()).toEqual(new Uint8Array([0, 19]));

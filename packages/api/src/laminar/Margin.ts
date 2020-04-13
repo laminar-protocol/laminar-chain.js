@@ -13,7 +13,7 @@ type LeverageEnum = [
   'LongTwenty',
   'LongThirty',
   'LongFifty',
-  '_LongOneHundred',
+  'LongReserved',
   'ShortTwo',
   'ShortThree',
   'ShortFive',
@@ -21,7 +21,7 @@ type LeverageEnum = [
   'ShortTwenty',
   'ShortThirty',
   'ShortFifty',
-  '_ShortOneHundred'
+  'ShortReserved'
 ][number];
 
 class Margin {
