@@ -57,13 +57,15 @@ describe('laminar margin', () => {
         'LongTwenty',
         'LongThirty',
         'LongFifty',
+        'LongReserved',
         'ShortTwo',
         'ShortThree',
         'ShortFive',
         'ShortTen',
         'ShortTwenty',
         'ShortThirty',
-        'ShortFifty'
+        'ShortFifty',
+        'ShortReserved'
       ]
     );
 
