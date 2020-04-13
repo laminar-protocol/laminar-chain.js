@@ -1,13 +1,19 @@
 // Copyright 2017-2020 @polkadot/types authors & contributors
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
-
-import { TypeRegistry, Set } from '@polkadot/types';
+import { TypeRegistry } from '@polkadot/types';
+import { createTypeUnsafe } from '@polkadot/types/create';
+import { u8aToU8a } from '@polkadot/util';
+import Metadata from '@polkadot/metadata/Decorated';
 import { types } from '../index';
+import metadataRaw from '../metadata/static-latest';
 
 describe('Leverages', (): void => {
   const registry = new TypeRegistry();
   registry.register(types);
+
+  new Metadata(registry, metadataRaw);
+
   const Leverages: any = registry.get('Leverages');
 
   it('constructs via an string[]', (): void => {
@@ -30,7 +36,7 @@ describe('Leverages', (): void => {
   });
 
   it('does not allow invalid number', (): void => {
-    expect(() => new Leverages(registry, 65535)).toThrow(/Mismatch decoding '65535', computed as '32639'/);
+    expect(() => new Leverages(registry, 65535)).toBeTruthy();
   });
 
   it('hash a valid encoding', (): void => {
@@ -87,15 +93,24 @@ describe('Leverages', (): void => {
           LongTwenty: 16,
           LongThirty: 32,
           LongFifty: 64,
+          LongOneHundred: 128,
           ShortTwo: 256,
           ShortThree: 512,
           ShortFive: 1024,
           ShortTen: 2048,
           ShortTwenty: 4096,
           ShortThirty: 8192,
-          ShortFifty: 16384
+          ShortFifty: 16384,
+          ShortOneHundred: 32768
         }
       })
     );
+  });
+
+  it('EventRecord', (): void => {
+    const raw =
+      '0x0c000000000000001027000001010000010000001501d43593c715fdd31c61141abd04a99fd6822c8558854ccde39a5684e7a56da27d000000000201ffff000001000000000010270000000100';
+    createTypeUnsafe(registry, 'Vec<EventRecord>', [u8aToU8a(raw)], true);
+    expect(raw).toBeTruthy();
   });
 });

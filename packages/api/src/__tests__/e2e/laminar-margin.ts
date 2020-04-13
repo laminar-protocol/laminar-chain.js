@@ -1,5 +1,6 @@
 import { LaminarApi } from '../..';
 import { WsProvider } from '@polkadot/api';
+import { Keyring } from '@polkadot/api';
 
 describe('laminar margin', () => {
   jest.setTimeout(300000);
@@ -8,8 +9,12 @@ describe('laminar margin', () => {
     provider: new WsProvider('wss://dev-node.laminar-chain.laminar.one/ws')
   });
 
+  let alice;
+
   beforeAll(async () => {
     await api.isReady();
+    const keyring = new Keyring({ type: 'sr25519' });
+    alice = keyring.addFromUri('//Alice');
   });
 
   it('marginInfo', async () => {
@@ -35,5 +40,36 @@ describe('laminar margin', () => {
   it('getPoolEnabledTradingPairs', async () => {
     const result = await api.margin.poolEnabledTradingPairs('0').toPromise();
     expect(Array.isArray(result)).toBeTruthy();
+  });
+
+  it.only('getPoolEnabledTradingPairs', done => {
+    const result = api.api.tx.marginLiquidityPools.setEnabledTrades(
+      '0',
+      {
+        base: 'AUSD',
+        quote: 'FEUR'
+      },
+      [
+        'LongTwo',
+        'LongThree',
+        'LongFive',
+        'LongTen',
+        'LongTwenty',
+        'LongThirty',
+        'LongFifty',
+        'ShortTwo',
+        'ShortThree',
+        'ShortFive',
+        'ShortTen',
+        'ShortTwenty',
+        'ShortThirty',
+        'ShortFifty'
+      ]
+    );
+
+    result.signAndSend(alice, r => {
+      console.log(r);
+      // expect()
+    });
   });
 });
