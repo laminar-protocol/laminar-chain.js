@@ -61,7 +61,7 @@ describe('Leverages', (): void => {
     ]);
 
     expect(leverages.toU8a()).toEqual(new Uint8Array([0, 19]));
-    expect(leverages1.toU8a()).toEqual(new Uint8Array([127, 127]));
+    expect(leverages1.toU8a()).toEqual(new Uint8Array([255, 255]));
   });
 
   describe('utils', (): void => {
