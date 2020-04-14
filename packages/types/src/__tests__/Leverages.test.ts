@@ -95,7 +95,7 @@ describe('Leverages', (): void => {
           LongTwenty: 16,
           LongThirty: 32,
           LongFifty: 64,
-          LongOneHundred: 128,
+          LongReserved: 128,
           ShortTwo: 256,
           ShortThree: 512,
           ShortFive: 1024,
@@ -103,7 +103,7 @@ describe('Leverages', (): void => {
           ShortTwenty: 4096,
           ShortThirty: 8192,
           ShortFifty: 16384,
-          ShortOneHundred: 32768
+          ShortReserved: 32768
         }
       })
     );
