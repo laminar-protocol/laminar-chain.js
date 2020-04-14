@@ -164,7 +164,7 @@ export interface Leverage extends Enum {
   readonly isLongTwenty: boolean;
   readonly isLongThirty: boolean;
   readonly isLongFifty: boolean;
-  readonly isLongOneHundred: boolean;
+  readonly isLongReserved: boolean;
   readonly isShortTwo: boolean;
   readonly isShortThree: boolean;
   readonly isShortFive: boolean;
@@ -172,7 +172,7 @@ export interface Leverage extends Enum {
   readonly isShortTwenty: boolean;
   readonly isShortThirty: boolean;
   readonly isShortFifty: boolean;
-  readonly isShortOneHundred: boolean;
+  readonly isShortReserved: boolean;
 }
 
 /** @name Leverages */
@@ -184,7 +184,7 @@ export interface Leverages extends Set {
   readonly isLongTwenty: boolean;
   readonly isLongThirty: boolean;
   readonly isLongFifty: boolean;
-  readonly isLongOneHundred: boolean;
+  readonly isLongReserved: boolean;
   readonly isShortTwo: boolean;
   readonly isShortThree: boolean;
   readonly isShortFive: boolean;
@@ -192,7 +192,7 @@ export interface Leverages extends Set {
   readonly isShortTwenty: boolean;
   readonly isShortThirty: boolean;
   readonly isShortFifty: boolean;
-  readonly isShortOneHundred: boolean;
+  readonly isShortReserved: boolean;
 }
 
 /** @name LiquidityPoolId */
