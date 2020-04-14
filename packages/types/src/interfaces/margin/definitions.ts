@@ -30,10 +30,10 @@ export default {
     },
     TraderInfo: {
       equity: 'Fixed128',
-      marginHeld: 'Fixed128',
-      marginLevel: 'Fixed128',
-      freeMargin: 'Fixed128',
-      unrealizedPl: 'Fixed128'
+      margin_held: 'Fixed128',
+      margin_level: 'Fixed128',
+      free_margin: 'Fixed128',
+      unrealized_pl: 'Fixed128'
     }
   }
 };

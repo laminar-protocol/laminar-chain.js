@@ -13,10 +13,10 @@ export interface PoolInfo extends Struct {
 /** @name TraderInfo */
 export interface TraderInfo extends Struct {
   readonly equity: Fixed128;
-  readonly marginHeld: Fixed128;
-  readonly marginLevel: Fixed128;
-  readonly freeMargin: Fixed128;
-  readonly unrealizedPl: Fixed128;
+  readonly margin_held: Fixed128;
+  readonly margin_level: Fixed128;
+  readonly free_margin: Fixed128;
+  readonly unrealized_pl: Fixed128;
 }
 
 export type PHANTOM_MARGIN = 'margin';

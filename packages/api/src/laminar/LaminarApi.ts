@@ -1,12 +1,21 @@
 import BN from 'bn.js';
-import { first } from 'rxjs/operators';
+import { first, map } from 'rxjs/operators';
 import { ApiRx, WsProvider } from '@polkadot/api';
 import { ApiOptions } from '@polkadot/api/types';
 import { Option } from '@polkadot/types/codec';
 import { Balance, MarginLiquidityPoolOption, Permill, AccountId } from '@laminar/types/interfaces';
 
 import { options as getOptions } from './options';
-import { FlowApi, TokenInfo, TokenId, PoolOptions, TradingPair, ChainType, ActionStatus } from '../types';
+import {
+  FlowApi,
+  TokenInfo,
+  TokenId,
+  PoolOptions,
+  TradingPair,
+  ChainType,
+  ActionStatus,
+  LaminarTokenIds
+} from '../types';
 import Margin from './Margin';
 
 interface LaminarApiOptions extends ApiOptions {
@@ -20,7 +29,7 @@ class LaminarApi implements FlowApi {
   public chainType: ChainType = 'laminar';
   public margin: Margin;
 
-  static TokenIds = ['LAMI', 'AUSD', 'FEUR', 'FJPY', 'FBTC', 'FETH'] as const;
+  static TokenIds: LaminarTokenIds = ['LAMI', 'AUSD', 'FEUR', 'FJPY', 'FBTC', 'FETH'];
 
   constructor(options: LaminarApiOptions) {
     this.api = new ApiRx(
@@ -44,7 +53,7 @@ class LaminarApi implements FlowApi {
         action
       } as Partial<ActionStatus>;
 
-      extrinsic.signAndSend(signOption, (result: any) => {
+      extrinsic.signAndSend(signOption).subscribe((result: any) => {
         if (result.status.isInBlock) {
           actionStatus.blockHash = result.status.asInBlock.toHex();
         }
@@ -99,8 +108,19 @@ class LaminarApi implements FlowApi {
     await this.api.isReady.pipe(first()).toPromise();
   };
 
+  public accountBalance = (address: string, tokenId: TokenId) => {
+    return (this.api.derive as any).currencies.balance(address, tokenId).pipe(
+      map((result: Balance) => {
+        return result.toString();
+      })
+    );
+  };
+
   public getBalance = async (address: string, tokenId: TokenId) => {
-    const result: Balance = await (this.api.derive as any).currencies.balance(address, tokenId);
+    const result: Balance = await (this.api.derive as any).currencies
+      .balance(address, tokenId)
+      .pipe(first())
+      .toPromise();
     return result.toString();
   };
 
@@ -266,7 +286,5 @@ class LaminarApi implements FlowApi {
     return [];
   };
 }
-
-export type LaminarTokenId = typeof LaminarApi.TokenIds[number];
 
 export default LaminarApi;
