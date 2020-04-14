@@ -1,28 +1,19 @@
-import { Balance, MarginLiquidityPoolOption, Position, RiskThreshold, TradingPair } from '@laminar/types/interfaces';
+import {
+  Balance,
+  MarginLiquidityPoolOption,
+  Position,
+  RiskThreshold,
+  TradingPair,
+  PositionId,
+  PoolInfo
+} from '@laminar/types/interfaces';
+import BN from 'bn.js';
 import { Option } from '@polkadot/types/codec';
-import { combineLatest } from 'rxjs';
+import { combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
+import { Threshold, LeverageEnum, MarginInfo, MarginPoolInfo } from '../types';
 import LaminarApi from './LaminarApi';
-
-type LeverageEnum = [
-  'LongTwo',
-  'LongThree',
-  'LongFive',
-  'LongTen',
-  'LongTwenty',
-  'LongThirty',
-  'LongFifty',
-  'LongReserved',
-  'ShortTwo',
-  'ShortThree',
-  'ShortFive',
-  'ShortTen',
-  'ShortTwenty',
-  'ShortThirty',
-  'ShortFifty',
-  'ShortReserved'
-][number];
 
 class Margin {
   private apiProvider: LaminarApi;
@@ -33,32 +24,50 @@ class Margin {
     this.api = provider.api;
   }
 
-  public poolInfo = (poolId: string) => {
-    return combineLatest([
-      this.api.query.marginLiquidityPools.owners(poolId),
-      this.api.query.marginLiquidityPools.balances<Option<Balance>>(poolId),
-      this.api.query.marginLiquidityPools.liquidityPoolOptions.entries<Option<MarginLiquidityPoolOption>>(poolId)
-    ]).pipe(
-      map(([owners, balances, liquidityPoolOptions]) => {
-        if (owners.isEmpty) return null;
+  public balance = (address: string) => {
+    return this.api.query.marginProtocol.balances<Balance>(address).pipe(map(result => result.toString()));
+  };
 
+  public poolInfo = (poolId: string): Observable<MarginPoolInfo | null> => {
+    return combineLatest([
+      this.api.query.baseLiquidityPoolsForMargin.owners(poolId),
+      this.api.query.baseLiquidityPoolsForMargin.balances<Option<Balance>>(poolId),
+      this.api.query.marginLiquidityPools.liquidityPoolOptions.entries<Option<MarginLiquidityPoolOption>>(poolId),
+      (this.api.rpc as any).margin.poolInfo(poolId)
+    ]).pipe(
+      map(([owners, balances, liquidityPoolOptions, poolInfo]) => {
+        if (owners.isEmpty) return null;
         return {
+          poolId: poolId,
           owners: owners.isEmpty ? null : (owners as any).value[0].toJSON(),
           balance: balances.toString(),
-          options: liquidityPoolOptions.map(([storageKey, options]) => {
-            const pair = storageKey.args[1] as TradingPair;
-            const data = options.toJSON() || {};
-            return {
-              pair: pair.toJSON(),
-              ...(data as any)
-            };
-          })
+          enp: (poolInfo as PoolInfo).enp.toString(),
+          ell: (poolInfo as PoolInfo).ell.toString(),
+          options: liquidityPoolOptions
+            .map(([storageKey, options]) => {
+              const pair = (storageKey.args[1] as TradingPair).toJSON() as {
+                base: string;
+                quote: string;
+              };
+
+              const data = options.toHuman() || {};
+
+              return {
+                pair: pair,
+                pairId: `${pair.base}${pair.quote}`,
+                ...(data as any)
+              };
+            })
+            .reduce((result, curr) => {
+              result[curr.pairId] = curr;
+              return result;
+            }, {} as Record<string, any>)
         };
       })
     );
   };
 
-  public marginInfo = () => {
+  public marginInfo = (): Observable<MarginInfo> => {
     return combineLatest([
       this.api.query.marginProtocol.liquidityPoolELLThreshold<RiskThreshold>(),
       this.api.query.marginProtocol.liquidityPoolENPThreshold<RiskThreshold>(),
@@ -66,12 +75,40 @@ class Margin {
     ]).pipe(
       map(([ellThreshold, enpThreshold, traderThreshold]) => {
         return {
-          ellThreshold: ellThreshold.toHuman(),
-          enpThreshold: enpThreshold.toHuman(),
-          traderThreshold: traderThreshold.toHuman()
+          ellThreshold: ellThreshold.toHuman() as Threshold,
+          enpThreshold: enpThreshold.toHuman() as Threshold,
+          traderThreshold: traderThreshold.toHuman() as Threshold
         };
       })
     );
+  };
+
+  public traderInfo = (
+    account: string
+  ): Observable<{
+    equity: string;
+    freeMargin: string;
+    marginHeld: string;
+    marginLevel: string;
+    unrealizedPl: string;
+  }> => {
+    return (this.api.rpc as any).margin.traderInfo(account).pipe(
+      map((result: any) => {
+        return {
+          equity: result.equity.toString(),
+          freeMargin: result.free_margin.toString(),
+          marginHeld: result.margin_held.toString(),
+          marginLevel: result.margin_level.toString(),
+          unrealizedPl: result.unrealized_pl.toString()
+        };
+      })
+    );
+  };
+
+  public allPoolIds = () => {
+    return this.api.query.baseLiquidityPoolsForMargin
+      .nextPoolId<PositionId>()
+      .pipe(map(result => [...new Array(result.toNumber())].map((_, i) => `${i}`)));
   };
 
   public positionsByPool = (poolId: string) => {
@@ -91,13 +128,18 @@ class Margin {
   public positionsByTrader = (address: string) => {
     return this.api.query.marginProtocol.positionsByTrader.entries(address).pipe(
       map(allResult => {
-        return allResult.map(([storageKey]) => {
-          const data: any = storageKey.args[1];
-          return {
-            tradingPair: data[0].toJSON(),
-            positionId: data[0].toString()
-          };
-        });
+        return allResult
+          .filter(([, value]) => {
+            return !value.isEmpty;
+          })
+          .map(([storageKey, value]) => {
+            const data: any = storageKey.args[1];
+            return {
+              poolId: data[0].toString(),
+              positionId: data[1].toString(),
+              isOpen: (value as any).value.isTrue
+            };
+          });
       })
     );
   };
@@ -121,24 +163,24 @@ class Margin {
     poolId: string,
     pair: TradingPair,
     leverage: LeverageEnum,
-    leveragedAmount: string,
-    price: string
+    leveragedAmount: string | BN,
+    price: string | BN
   ) => {
     const extrinsic = this.api.tx.marginProtocol.openPosition(poolId, pair, leverage, leveragedAmount, price);
     return this.apiProvider.extrinsicHelper(extrinsic, account, { action: 'Open Position' });
   };
 
-  public closePosition = async (account: string, positionId: string, price = '0') => {
+  public closePosition = async (account: string, positionId: string, price: string | BN = '0') => {
     const extrinsic = this.api.tx.marginProtocol.closePosition(positionId, price);
     return this.apiProvider.extrinsicHelper(extrinsic, account, { action: 'Close Position' });
   };
 
-  public deposit = async (account: string, amount: string) => {
+  public deposit = async (account: string, amount: string | BN) => {
     const extrinsic = this.api.tx.marginProtocol.deposit(amount);
     return this.apiProvider.extrinsicHelper(extrinsic, account, { action: 'Deposit' });
   };
 
-  public withdraw = async (account: string, amount: string) => {
+  public withdraw = async (account: string, amount: string | BN) => {
     const extrinsic = this.api.tx.marginProtocol.withdraw(amount);
     return this.apiProvider.extrinsicHelper(extrinsic, account, { action: 'Withdraw' });
   };

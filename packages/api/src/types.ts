@@ -5,17 +5,47 @@ import {
   TradingPairSymbol as EthTradingPairSymbol,
   TradingPair as EthTradingPair
 } from './ethereum/protocols';
-import { LaminarTokenId } from './laminar/LaminarApi';
 
-export type TokenId = EthTokenId | LaminarTokenId;
+export type LaminarTokenIds = ['LAMI', 'AUSD', 'FEUR', 'FJPY', 'FBTC', 'FETH'];
+
+export type TokenId = EthTokenId | LaminarTokenIds[number];
 export type TradingPairSymbol = EthTradingPairSymbol;
 export type TradingPair = EthTradingPair;
+export type LeverageEnum = [
+  'LongTwo',
+  'LongThree',
+  'LongFive',
+  'LongTen',
+  'LongTwenty',
+  'LongThirty',
+  'LongFifty',
+  'LongReserved',
+  'ShortTwo',
+  'ShortThree',
+  'ShortFive',
+  'ShortTen',
+  'ShortTwenty',
+  'ShortThirty',
+  'ShortFifty',
+  'ShortReserved'
+][number];
+
+export type Threshold = {
+  marginCall: number;
+  stopOut: number;
+};
 
 export interface PoolInfo {
   id: string;
   name: string;
   isDefault: boolean;
   owner: string;
+}
+
+export interface MarginInfo {
+  ellThreshold: Threshold;
+  enpThreshold: Threshold;
+  traderThreshold: Threshold;
 }
 
 export interface TokenInfo {
@@ -35,6 +65,27 @@ export interface PoolOptions {
   askSpread: number | null;
   bidSpread: number | null;
   syntheticEnabled: boolean;
+}
+
+export interface MarginPoolInfo {
+  poolId: string;
+  owners: string;
+  balance: string;
+  ell: string;
+  enp: string;
+  options: Record<
+    string,
+    {
+      bidSpread: number;
+      askSpread: number;
+      enabledTrades: string[];
+      pair: {
+        base: string;
+        quote: string;
+      };
+      pairId: string;
+    }
+  >;
 }
 
 export type ChainType = 'ethereum' | 'laminar';

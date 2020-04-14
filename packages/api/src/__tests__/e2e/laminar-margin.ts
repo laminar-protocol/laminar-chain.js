@@ -17,9 +17,10 @@ describe('laminar margin', () => {
     alice = keyring.addFromUri('//Alice');
   });
 
-  it('marginInfo', async () => {
-    const result = await api.margin.marginInfo().toPromise();
-    console.log(result);
+  it('marginInfo', done => {
+    const result = api.margin.marginInfo().subscribe(result => {
+      console.log(result);
+    });
   });
 
   it('poolInfo', async () => {
@@ -42,7 +43,7 @@ describe('laminar margin', () => {
     expect(Array.isArray(result)).toBeTruthy();
   });
 
-  it.only('getPoolEnabledTradingPairs', done => {
+  it('getPoolEnabledTradingPairs', done => {
     const result = api.api.tx.marginLiquidityPools.setEnabledTrades(
       '0',
       {
@@ -57,21 +58,21 @@ describe('laminar margin', () => {
         'LongTwenty',
         'LongThirty',
         'LongFifty',
-        'LongReserved',
+        // 'LongReserved',
         'ShortTwo',
         'ShortThree',
         'ShortFive',
         'ShortTen',
         'ShortTwenty',
         'ShortThirty',
-        'ShortFifty',
-        'ShortReserved'
+        'ShortFifty'
+        // 'ShortReserved'
       ]
     );
 
-    result.signAndSend(alice, r => {
-      console.log(r);
-      // expect()
+    console.error('哈哈哈哈哈哈');
+    result.signAndSend(alice).subscribe(results => {
+      console.log(results);
     });
   });
 });
