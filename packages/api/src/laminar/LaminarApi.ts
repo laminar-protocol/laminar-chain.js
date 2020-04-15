@@ -1,5 +1,6 @@
 import BN from 'bn.js';
-import { first, map } from 'rxjs/operators';
+import { first, map, switchMap } from 'rxjs/operators';
+import { timer, combineLatest, Observable } from 'rxjs';
 import { ApiRx, WsProvider } from '@polkadot/api';
 import { ApiOptions } from '@polkadot/api/types';
 import { Option } from '@polkadot/types/codec';
@@ -29,7 +30,7 @@ class LaminarApi implements FlowApi {
   public chainType: ChainType = 'laminar';
   public margin: Margin;
 
-  static TokenIds: LaminarTokenIds = ['LAMI', 'AUSD', 'FEUR', 'FJPY', 'FBTC', 'FETH'];
+  static tokenIds: LaminarTokenIds = ['LAMI', 'AUSD', 'FEUR', 'FJPY', 'FBTC', 'FETH'];
 
   constructor(options: LaminarApiOptions) {
     this.api = new ApiRx(
@@ -284,6 +285,43 @@ class LaminarApi implements FlowApi {
 
   public getTradingPairs = async (): Promise<TradingPair[]> => {
     return [];
+  };
+
+  public oracleValues = (): Observable<
+    Record<
+      TokenId,
+      {
+        timestamp: number;
+        value: string;
+      } | null
+    >
+  > => {
+    return timer(0, 30000).pipe(
+      switchMap(() => {
+        return combineLatest(
+          LaminarApi.tokenIds.map(token =>
+            (this.api.rpc as any).oracle.getValue(token).pipe(
+              map(result => {
+                return [token, result];
+              })
+            )
+          )
+        );
+      }),
+      map((values: any) => {
+        return values.reduce((result: any, [token, curr]: any) => {
+          if (curr.isEmpty) {
+            result[token] = null;
+          } else {
+            result[token] = {
+              timestamp: curr.value.timestamp.toJSON(),
+              value: curr.value.value.toString()
+            };
+          }
+          return result;
+        }, {});
+      })
+    );
   };
 }
 
