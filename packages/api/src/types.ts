@@ -80,8 +80,8 @@ export interface MarginPoolInfo {
       askSpread: number;
       enabledTrades: string[];
       pair: {
-        base: string;
-        quote: string;
+        base: TokenId;
+        quote: TokenId;
       };
       pairId: string;
     }
