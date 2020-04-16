@@ -17,14 +17,14 @@ describe('Leverages', (): void => {
   const Leverages: any = registry.get('Leverages');
 
   it('constructs via an string[]', (): void => {
-    const leverages = new Leverages(registry, ['LongTwo', 'ShortTwenty']);
+    const leverages = new Leverages(registry, ['ShortTwo', 'LongTwenty']);
 
     expect(leverages.isEmpty).toEqual(false);
-    expect(leverages.toString()).toEqual('[LongTwo, ShortTwenty]');
+    expect(leverages.toString()).toEqual('[ShortTwo, LongTwenty]');
   });
 
   it('throws with invalid values', (): void => {
-    expect(() => new Leverages(registry, ['LongTwo', 'LongThree', 'invalid'])).toThrow(/Invalid key 'invalid'/);
+    expect(() => new Leverages(registry, ['ShortTwo', 'ShortThree', 'invalid'])).toThrow(/Invalid key 'invalid'/);
   });
 
   it('throws with add on invalid', (): void => {
@@ -32,7 +32,9 @@ describe('Leverages', (): void => {
   });
 
   it('allows construction via number', (): void => {
-    expect(new Leverages(registry, 16399).eq(['LongTwo', 'LongThree', 'LongFive', 'LongTen', 'ShortFifty'])).toBe(true);
+    expect(new Leverages(registry, 16399).eq(['ShortTwo', 'ShortThree', 'ShortFive', 'ShortTen', 'LongFifty'])).toBe(
+      true
+    );
   });
 
   it('does not allow invalid number', (): void => {
@@ -40,16 +42,8 @@ describe('Leverages', (): void => {
   });
 
   it('hash a valid encoding', (): void => {
-    const leverages = new Leverages(registry, ['LongTwo', 'LongThree', 'LongTwenty']);
+    const leverages = new Leverages(registry, ['ShortTwo', 'ShortThree', 'ShortTwenty']);
     const leverages1 = new Leverages(registry, [
-      'LongTwo',
-      'LongThree',
-      'LongFive',
-      'LongTen',
-      'LongTwenty',
-      'LongThirty',
-      'LongFifty',
-      'LongReserved',
       'ShortTwo',
       'ShortThree',
       'ShortFive',
@@ -57,7 +51,15 @@ describe('Leverages', (): void => {
       'ShortTwenty',
       'ShortThirty',
       'ShortFifty',
-      'ShortReserved'
+      'ShortReserved',
+      'LongTwo',
+      'LongThree',
+      'LongFive',
+      'LongTen',
+      'LongTwenty',
+      'LongThirty',
+      'LongFifty',
+      'LongReserved'
     ]);
 
     expect(leverages.toU8a()).toEqual(new Uint8Array([0, 19]));
@@ -65,22 +67,22 @@ describe('Leverages', (): void => {
   });
 
   describe('utils', (): void => {
-    const leverages = new Leverages(registry, ['ShortThirty', 'ShortFifty']);
+    const leverages = new Leverages(registry, ['LongThirty', 'LongFifty']);
 
     it('compares against string array', (): void => {
-      expect(leverages.eq(['ShortThirty', 'ShortFifty'])).toBe(true);
+      expect(leverages.eq(['LongThirty', 'LongFifty'])).toBe(true);
     });
 
     // it('compares against number (encoded)', (): void => {
-    //   expect(leverages.eq(LEVERAGES_FIELDS.ShortThirty | LEVERAGES_FIELDS.ShortFifty)).toBe(true);
+    //   expect(leverages.eq(LEVERAGES_FIELDS.LongThirty | LEVERAGES_FIELDS.LongFifty)).toBe(true);
     // });
 
     it('compares against other sets', (): void => {
-      expect(leverages.eq(new Leverages(registry, ['ShortThirty', 'ShortFifty']))).toBe(true);
+      expect(leverages.eq(new Leverages(registry, ['LongThirty', 'LongFifty']))).toBe(true);
     });
 
     it('returns false on other values', (): void => {
-      expect(leverages.eq('ShortTwenty')).toBe(false);
+      expect(leverages.eq('LongTwenty')).toBe(false);
     });
   });
 
@@ -88,22 +90,22 @@ describe('Leverages', (): void => {
     expect(new Leverages(registry).toRawType()).toEqual(
       JSON.stringify({
         _set: {
-          LongTwo: 1,
-          LongThree: 2,
-          LongFive: 4,
-          LongTen: 8,
-          LongTwenty: 16,
-          LongThirty: 32,
-          LongFifty: 64,
-          LongReserved: 128,
-          ShortTwo: 256,
-          ShortThree: 512,
-          ShortFive: 1024,
-          ShortTen: 2048,
-          ShortTwenty: 4096,
-          ShortThirty: 8192,
-          ShortFifty: 16384,
-          ShortReserved: 32768
+          ShortTwo: 1,
+          ShortThree: 2,
+          ShortFive: 4,
+          ShortTen: 8,
+          ShortTwenty: 16,
+          ShortThirty: 32,
+          ShortFifty: 64,
+          ShortReserved: 128,
+          LongTwo: 256,
+          LongThree: 512,
+          LongFive: 1024,
+          LongTen: 2048,
+          LongTwenty: 4096,
+          LongThirty: 8192,
+          LongFifty: 16384,
+          LongReserved: 32768
         }
       })
     );
