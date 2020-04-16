@@ -43,6 +43,12 @@ describe('laminar margin', () => {
     expect(Array.isArray(result)).toBeTruthy();
   });
 
+  it('poolInfo111', done => {
+    const result = api.synthetic.poolInfo('0').subscribe(result => {
+      console.log(result);
+    });
+  });
+
   it('getPoolEnabledTradingPairs', done => {
     const result = api.api.tx.marginLiquidityPools.setEnabledTrades(
       '0',

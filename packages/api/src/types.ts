@@ -88,6 +88,22 @@ export interface MarginPoolInfo {
   >;
 }
 
+export interface SyntheticPoolInfo {
+  poolId: string;
+  owners: string;
+  balance: string;
+  options: Record<
+    string,
+    {
+      additionalCollateralRatio: number | null;
+      askSpread: number | null;
+      bidSpread: number | null;
+      syntheticEnabled: boolean;
+      tokenId: 'LAMI';
+    }
+  >;
+}
+
 export type ChainType = 'ethereum' | 'laminar';
 
 export interface ActionStatus {
