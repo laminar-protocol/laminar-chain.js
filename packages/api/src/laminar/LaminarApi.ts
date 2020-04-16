@@ -18,6 +18,7 @@ import {
   LaminarTokenIds
 } from '../types';
 import Margin from './Margin';
+import Synthetic from './Synthetic';
 
 interface LaminarApiOptions extends ApiOptions {
   provider: WsProvider;
@@ -29,6 +30,7 @@ class LaminarApi implements FlowApi {
   public api: ApiRx;
   public chainType: ChainType = 'laminar';
   public margin: Margin;
+  public synthetic: Synthetic;
 
   static tokenIds: LaminarTokenIds = ['LAMI', 'AUSD', 'FEUR', 'FJPY', 'FBTC', 'FETH'];
 
@@ -41,6 +43,7 @@ class LaminarApi implements FlowApi {
     );
 
     this.margin = new Margin(this);
+    this.synthetic = new Synthetic(this);
   }
 
   public extrinsicHelper = (
