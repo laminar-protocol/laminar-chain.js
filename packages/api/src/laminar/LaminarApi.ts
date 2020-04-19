@@ -1,6 +1,6 @@
 import BN from 'bn.js';
 import { first, map, switchMap } from 'rxjs/operators';
-import { timer, combineLatest, Observable } from 'rxjs';
+import { timer, combineLatest, Observable, of } from 'rxjs';
 import { ApiRx, WsProvider } from '@polkadot/api';
 import { ApiOptions } from '@polkadot/api/types';
 import { Option } from '@polkadot/types/codec';
@@ -15,7 +15,9 @@ import {
   TradingPair,
   ChainType,
   ActionStatus,
-  LaminarTokenIds
+  LaminarTokenIds,
+  OracleValue,
+  TokenBalance
 } from '../types';
 import Margin from './Margin';
 import Synthetic from './Synthetic';
@@ -290,39 +292,107 @@ class LaminarApi implements FlowApi {
     return [];
   };
 
-  public oracleValues = (): Observable<
-    Record<
-      TokenId,
+  public tokens = (): Observable<TokenInfo[]> => {
+    return of([
       {
-        timestamp: number;
-        value: string;
-      } | null
-    >
-  > => {
-    return timer(0, 30000).pipe(
-      switchMap(() => {
+        name: 'LAMI',
+        displayName: 'LAMI',
+        precision: 18,
+        isBaseToken: false,
+        isNetworkToken: true,
+        id: 'LAMI'
+      },
+      {
+        name: 'AUSD',
+        displayName: 'AUSD',
+        precision: 18,
+        isBaseToken: true,
+        isNetworkToken: false,
+        id: 'AUSD'
+      },
+      {
+        name: 'EUR',
+        displayName: 'Euro',
+        precision: 18,
+        isBaseToken: false,
+        isNetworkToken: false,
+        id: 'FEUR'
+      },
+      {
+        name: 'JPY',
+        displayName: 'Yen',
+        precision: 18,
+        isBaseToken: false,
+        isNetworkToken: false,
+        id: 'FJPY'
+      },
+      {
+        name: 'BTC',
+        displayName: 'BTC',
+        precision: 18,
+        isBaseToken: false,
+        isNetworkToken: false,
+        id: 'FBTC'
+      },
+      {
+        name: 'ETH',
+        displayName: 'ETH',
+        precision: 18,
+        isBaseToken: false,
+        isNetworkToken: false,
+        id: 'FETH'
+      }
+    ]);
+  };
+
+  public balances = (address: string): Observable<TokenBalance[]> => {
+    return this.tokens().pipe(
+      switchMap(tokens => {
         return combineLatest(
-          LaminarApi.tokenIds.map(token =>
-            (this.api.rpc as any).oracle.getValue(token).pipe(
-              map(result => {
-                return [token, result];
+          ...tokens.map(({ id }) =>
+            (this.api.derive as any).currencies.balance(address, id).pipe(
+              map((result: any) => {
+                return {
+                  tokenId: id,
+                  free: result.toString()
+                };
               })
             )
           )
         );
+      })
+    );
+  };
+
+  public oracleValues = (): Observable<OracleValue[]> => {
+    return timer(0, 30000).pipe(
+      switchMap(() => this.tokens()),
+      switchMap(tokens => {
+        return combineLatest(
+          tokens
+            .filter(token => !token.isNetworkToken)
+            .map(({ id }) =>
+              (this.api.rpc as any).oracle.getValue(id).pipe(
+                map(result => {
+                  return [id, result];
+                })
+              )
+            )
+        );
       }),
       map((values: any) => {
-        return values.reduce((result: any, [token, curr]: any) => {
-          if (curr.isEmpty) {
-            result[token] = null;
-          } else {
-            result[token] = {
-              timestamp: curr.value.timestamp.toJSON(),
-              value: curr.value.value.toString()
-            };
+        return values.map(([tokenId, curr]: any) => {
+          const result: Partial<OracleValue> = {
+            tokenId
+          };
+
+          if (!curr.isEmpty) {
+            result.timestamp = curr.value.timestamp.toJSON();
+            result.value = curr.value.value.toString();
           }
+
           return result;
-        }, {});
+        });
       })
     );
   };

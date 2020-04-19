@@ -92,16 +92,13 @@ export interface SyntheticPoolInfo {
   poolId: string;
   owners: string;
   balance: string;
-  options: Record<
-    string,
-    {
-      additionalCollateralRatio: number | null;
-      askSpread: number | null;
-      bidSpread: number | null;
-      syntheticEnabled: boolean;
-      tokenId: 'LAMI';
-    }
-  >;
+  options: {
+    additionalCollateralRatio: number | null;
+    askSpread: number | null;
+    bidSpread: number | null;
+    syntheticEnabled: boolean;
+    tokenId: TokenId;
+  }[];
 }
 
 export type ChainType = 'ethereum' | 'laminar';
@@ -114,6 +111,17 @@ export interface ActionStatus {
   message?: string;
   data?: any;
   status: 'error' | 'event' | 'queued' | 'success';
+}
+
+export interface OracleValue {
+  tokenId: Exclude<TokenId, 'LAMI'>;
+  timestamp: number;
+  value: string;
+}
+
+export interface TokenBalance {
+  tokenId: TokenId;
+  free: string;
 }
 
 export interface FlowApi {
