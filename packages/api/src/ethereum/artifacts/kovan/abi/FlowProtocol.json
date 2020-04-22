@@ -487,17 +487,17 @@
     "inputs": [
       {
         "internalType": "contract FlowToken",
-        "name": "token",
+        "name": "_token",
         "type": "address"
       },
       {
         "internalType": "contract LiquidityPoolInterface",
-        "name": "pool",
+        "name": "_pool",
         "type": "address"
       },
       {
         "internalType": "uint256",
-        "name": "baseTokenAmount",
+        "name": "_baseTokenAmount",
         "type": "uint256"
       }
     ],
@@ -517,17 +517,52 @@
     "inputs": [
       {
         "internalType": "contract FlowToken",
-        "name": "token",
+        "name": "_token",
         "type": "address"
       },
       {
         "internalType": "contract LiquidityPoolInterface",
-        "name": "pool",
+        "name": "_pool",
         "type": "address"
       },
       {
         "internalType": "uint256",
-        "name": "flowTokenAmount",
+        "name": "_baseTokenAmount",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_maxPrice",
+        "type": "uint256"
+      }
+    ],
+    "name": "mintWithMaxPrice",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function",
+    "signature": "0xefdcaa72"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "contract FlowToken",
+        "name": "_token",
+        "type": "address"
+      },
+      {
+        "internalType": "contract LiquidityPoolInterface",
+        "name": "_pool",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_flowTokenAmount",
         "type": "uint256"
       }
     ],
@@ -542,6 +577,41 @@
     "stateMutability": "nonpayable",
     "type": "function",
     "signature": "0x0e6dfcd5"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "contract FlowToken",
+        "name": "_token",
+        "type": "address"
+      },
+      {
+        "internalType": "contract LiquidityPoolInterface",
+        "name": "_pool",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_flowTokenAmount",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_minPrice",
+        "type": "uint256"
+      }
+    ],
+    "name": "redeemWithMinPrice",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function",
+    "signature": "0x5ed0231b"
   },
   {
     "inputs": [

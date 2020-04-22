@@ -45,6 +45,14 @@ export interface PoolInfo {
 export interface MarginInfo {
   ellThreshold: Threshold;
   enpThreshold: Threshold;
+}
+
+export interface TraderInfo {
+  equity: string;
+  freeMargin: string;
+  marginHeld: string;
+  marginLevel: string;
+  unrealizedPl: string;
   traderThreshold: Threshold;
 }
 
@@ -67,30 +75,29 @@ export interface PoolOptions {
   syntheticEnabled: boolean;
 }
 
+export interface TraderPairOptions {
+  bidSpread: number;
+  askSpread: number;
+  enabledTrades: string[];
+  pair: {
+    base: TokenId;
+    quote: TokenId;
+  };
+  pairId: string;
+}
+
 export interface MarginPoolInfo {
   poolId: string;
-  owners: string;
+  owner: string;
   balance: string;
   ell: string;
   enp: string;
-  options: Record<
-    string,
-    {
-      bidSpread: number;
-      askSpread: number;
-      enabledTrades: string[];
-      pair: {
-        base: TokenId;
-        quote: TokenId;
-      };
-      pairId: string;
-    }
-  >;
+  options: TraderPairOptions[];
 }
 
 export interface SyntheticPoolInfo {
   poolId: string;
-  owners: string;
+  owner: string;
   balance: string;
   options: {
     additionalCollateralRatio: number | null;

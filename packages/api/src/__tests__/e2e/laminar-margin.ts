@@ -33,20 +33,28 @@ describe('laminar margin', () => {
     console.log(result);
   });
 
-  it('positions', async () => {
-    const result = await api.margin.positions('10').toPromise();
-    console.log(result);
-  });
+  // it('positions', async () => {
+  //   const result = await api.margin.positions('10').toPromise();
+  //   console.log(result);
+  // });
 
-  it('getPoolEnabledTradingPairs', async () => {
-    const result = await api.margin.poolEnabledTradingPairs('0').toPromise();
-    expect(Array.isArray(result)).toBeTruthy();
-  });
+  // it('getPoolEnabledTradingPairs', async () => {
+  //   const result = await api.margin.poolEnabledTradingPairs('0').toPromise();
+  //   expect(Array.isArray(result)).toBeTruthy();
+  // });
 
   it('poolInfo111', done => {
     const result = api.synthetic.poolInfo('0').subscribe(result => {
       console.log(result);
     });
+  });
+
+  it('positionsByTrader', done => {
+    const result = api.margin
+      .positionsByTrader('5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY')
+      .subscribe(result => {
+        console.log(result);
+      });
   });
 
   it('getPoolEnabledTradingPairs', done => {

@@ -17,7 +17,6 @@ interface LaminarContract {
   protocol: Protocol;
   baseContracts: Record<'flowProtocol' | 'flowMarginProtocol' | 'oracle' | 'moneyMarket' | 'daiFaucet', Contract>;
   tokenContracts: Record<TokenId | 'iUSD', Contract>;
-  tradingPairContracts: Record<TradingPairSymbol, Contract>;
 }
 
 class LaminarContract implements LaminarContract {
@@ -47,27 +46,31 @@ class LaminarContract implements LaminarContract {
       fXAU: this.createContract(abis.ERC20, addresses.fXAU)
     };
 
-    this.tradingPairContracts = (Object.keys(tradingPairs) as (keyof LaminarContract['tradingPairContracts'])[]).reduce(
-      (r, name) => {
-        r[name] = this.createContract(abis.MarginTradingPair, tradingPairs[name].address);
-        return r;
-      },
-      {} as Partial<LaminarContract['tradingPairContracts']>
-    ) as LaminarContract['tradingPairContracts'];
+    // this.tradingPairContracts = tradingPairs.reduce((r, curr) => {
+    //   r[curr.pairId] = this.createContract(abis.MarginTradingPair, curr.address);
+    //   return r;
+    // }, {} as Partial<LaminarContract['tradingPairContracts']>) as LaminarContract['tradingPairContracts'];
   }
 
   private createContract(abi: AbiItem[] | AbiItem, address: string): Contract {
     return new this.web3.eth.Contract(abi, address);
   }
 
-  public getTradingPairInfo(pairSymbol: TradingPairSymbol): TradingPair {
-    return this.protocol.tradingPairs[pairSymbol];
+  public getTradingPairs(): TradingPair[] {
+    return this.protocol.tradingPairs;
   }
 
   public getTokenContract(tokenId: string): Contract {
     const contract = this.tokenContracts[tokenId as keyof LaminarContract['tokenContracts']];
     if (!contract) throw new Error(`token ${tokenId} is undefined`);
     return contract;
+  }
+
+  public getTradingPairContract(pairId: string, leverage: string) {
+    const tradingPairs = this.getTradingPairs();
+    const address = tradingPairs.find(({ pairId }) => pairId === pairId)?.addresses[leverage];
+    if (!address) throw new Error(`trading pair: ${pairId}/${leverage} is undefined`);
+    return this.createContract(this.protocol.abis.MarginTradingPair, address);
   }
 
   public getBaseContract(name: keyof LaminarContract['baseContracts']): Contract {

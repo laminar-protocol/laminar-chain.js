@@ -33,11 +33,11 @@ class Synthetic {
       this.api.query.syntheticLiquidityPools.liquidityPoolOptions.entries<Option<SyntheticLiquidityPoolOption>>(poolId),
       this.api.query.syntheticLiquidityPools.minAdditionalCollateralRatio<Permill>()
     ]).pipe(
-      map(([owners, balances, liquidityPoolOptions, minAdditionalCollateralRatio]) => {
-        if (owners.isEmpty) return null;
+      map(([owner, balances, liquidityPoolOptions, minAdditionalCollateralRatio]) => {
+        if (owner.isEmpty) return null;
         return {
           poolId: poolId,
-          owners: owners.isEmpty ? null : (owners as any).value[0].toJSON(),
+          owner: owner.isEmpty ? null : (owner as any).value[0].toJSON(),
           balance: balances.toString(),
           options: liquidityPoolOptions.map(([storageKey, options]) => {
             const tokenId = storageKey.args[1].toJSON();
