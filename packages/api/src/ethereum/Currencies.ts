@@ -1,4 +1,3 @@
-// import { Contract } from 'web3-eth-contract';
 import { Observable, of, combineLatest } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 
@@ -7,11 +6,9 @@ import EthereumApi from './EthereumApi';
 
 class Currencies {
   private apiProvider: EthereumApi;
-  // private protocol: EthereumApi['protocol'];
 
   constructor(provider: EthereumApi) {
     this.apiProvider = provider;
-    // this.protocol = provider.protocol;
   }
 
   public oracleValues: undefined;
@@ -24,7 +21,8 @@ class Currencies {
         precision: 18,
         isBaseToken: true,
         isNetworkToken: false,
-        id: 'DAI'
+        id: 'DAI',
+        address: this.apiProvider.tokenContracts.DAI.options.address
       },
       {
         name: 'EUR',
@@ -32,7 +30,8 @@ class Currencies {
         precision: 18,
         isBaseToken: false,
         isNetworkToken: false,
-        id: 'fEUR'
+        id: 'fEUR',
+        address: this.apiProvider.tokenContracts.fEUR.options.address
       },
       {
         name: 'JPY',
@@ -40,7 +39,8 @@ class Currencies {
         precision: 18,
         isBaseToken: false,
         isNetworkToken: false,
-        id: 'fJPY'
+        id: 'fJPY',
+        address: this.apiProvider.tokenContracts.fJPY.options.address
       },
       {
         name: 'XAU',
@@ -48,7 +48,8 @@ class Currencies {
         precision: 18,
         isBaseToken: false,
         isNetworkToken: false,
-        id: 'fXAU'
+        id: 'fXAU',
+        address: this.apiProvider.tokenContracts.fXAU.options.address
       },
       {
         name: 'AAPL',
@@ -56,7 +57,8 @@ class Currencies {
         precision: 18,
         isBaseToken: false,
         isNetworkToken: false,
-        id: 'fAAPL'
+        id: 'fAAPL',
+        address: this.apiProvider.tokenContracts.fAAPL.options.address
       }
     ]);
   };
