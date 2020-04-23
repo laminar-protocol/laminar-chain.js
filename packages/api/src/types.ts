@@ -3,14 +3,15 @@ import BN from 'bn.js';
 import {
   TokenId as EthTokenId,
   TradingPairSymbol as EthTradingPairSymbol,
-  TradingPair as EthTradingPair
+  TradingPairInfo as EthTradingPairInfo
 } from './ethereum/protocols';
 
 export type LaminarTokenIds = ['LAMI', 'AUSD', 'FEUR', 'FJPY', 'FBTC', 'FETH'];
 
 export type TokenId = EthTokenId | LaminarTokenIds[number];
 export type TradingPairSymbol = EthTradingPairSymbol;
-export type TradingPair = EthTradingPair;
+export type TradingPairInfo = EthTradingPairInfo;
+
 export type LeverageEnum = [
   'LongTwo',
   'LongThree',
@@ -159,6 +160,4 @@ export interface FlowApi {
   getDefaultPools(): Promise<PoolInfo[]>;
 
   getTokens(): Promise<TokenInfo[]>;
-
-  getTradingPairs(): Promise<TradingPair[]>;
 }

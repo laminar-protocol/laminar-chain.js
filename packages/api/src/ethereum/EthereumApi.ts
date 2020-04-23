@@ -21,7 +21,7 @@ class EthereumApi extends LaminarContract {
     this.currencies = new Currencies(this);
   }
 
-  private extrinsicHelper = (
+  public extrinsicHelper = (
     extrinsic: any,
     signOption: any,
     { action }: { action?: string } = {}

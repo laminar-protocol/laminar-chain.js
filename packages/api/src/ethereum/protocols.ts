@@ -46,7 +46,7 @@ export type TokenId = typeof tokenId[number];
 
 export type TradingPairSymbol = typeof tradingPairSymbols[number];
 
-export interface TradingPair {
+export interface TradingPairInfo {
   pair: {
     base: TokenId;
     quote: TokenId;
@@ -60,7 +60,7 @@ export interface Protocol {
   networkType: ProtocolType;
   abis: Record<AbiName, AbiItem[]>;
   addresses: typeof KovanAddresses;
-  tradingPairs: TradingPair[];
+  tradingPairs: TradingPairInfo[];
 }
 
 const getTradingPairs = (addresses: typeof KovanAddresses): Protocol['tradingPairs'] => [

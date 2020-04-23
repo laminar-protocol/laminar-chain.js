@@ -3,7 +3,7 @@ import { provider as Web3Provider } from 'web3-core';
 import { Contract } from 'web3-eth-contract';
 import { AbiItem } from 'web3-utils';
 
-import protocols, { Protocol, ProtocolType, TokenId, TradingPair } from './protocols';
+import protocols, { Protocol, ProtocolType, TokenId, TradingPairInfo } from './protocols';
 
 export interface LaminarContractOptions {
   provider: Web3Provider;
@@ -45,17 +45,17 @@ class LaminarContract implements LaminarContract {
       fXAU: this.createContract(abis.ERC20, addresses.fXAU)
     };
 
-    // this.tradingPairContracts = tradingPairs.reduce((r, curr) => {
-    //   r[curr.pairId] = this.createContract(abis.MarginTradingPair, curr.address);
+    // this.tradingPairInfoContracts = tradingPairInfos.reduce((r, curr) => {
+    //   r[curr.pairId] = this.createContract(abis.MarginTradingPairInfo, curr.address);
     //   return r;
-    // }, {} as Partial<LaminarContract['tradingPairContracts']>) as LaminarContract['tradingPairContracts'];
+    // }, {} as Partial<LaminarContract['tradingPairInfoContracts']>) as LaminarContract['tradingPairInfoContracts'];
   }
 
   private createContract(abi: AbiItem[] | AbiItem, address: string): Contract {
     return new this.web3.eth.Contract(abi, address);
   }
 
-  public getTradingPairs(): TradingPair[] {
+  public getTradingPairInfos(): TradingPairInfo[] {
     return this.protocol.tradingPairs;
   }
 
