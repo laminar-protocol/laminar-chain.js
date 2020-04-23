@@ -41,7 +41,7 @@ export const numberToString = (arg: string | number) => {
 
 export const fromPrecision = (
   input: string | number | BN,
-  precision: number,
+  precision = 18,
   options: { pad?: boolean; commify?: boolean; minDigits?: number } = {}
 ) => {
   let wei = typeof input === 'string' || typeof input === 'number' ? new BN(input) : input;
@@ -141,4 +141,8 @@ export const toPrecision = (input: number | string, precision: number) => {
   }
 
   return new BN(wei.toString(10), 10);
+};
+
+export const toNumber = (input: string | number | BN, precision = 18): number => {
+  return Number(fromPrecision(input, precision));
 };

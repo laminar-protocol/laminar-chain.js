@@ -1,18 +1,17 @@
 import {
   Balance,
   MarginLiquidityPoolOption,
-  Position,
-  RiskThreshold,
-  TradingPair,
+  PoolInfo,
   PositionId,
-  PoolInfo
+  RiskThreshold,
+  TradingPair
 } from '@laminar/types/interfaces';
-import BN from 'bn.js';
 import { Option } from '@polkadot/types/codec';
+import BN from 'bn.js';
 import { combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import { Threshold, LeverageEnum, MarginInfo, MarginPoolInfo, TraderInfo } from '../types';
+import { LeverageEnum, MarginInfo, MarginPoolInfo, Threshold, TraderInfo } from '../types';
 import LaminarApi from './LaminarApi';
 
 class Margin {

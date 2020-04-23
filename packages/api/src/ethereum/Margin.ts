@@ -1,5 +1,6 @@
 import { from, Observable, of } from 'rxjs';
 import { Contract } from 'web3-eth-contract';
+import { toNumber } from '@laminar/types/utils/precision';
 import { MarginInfo } from '../types';
 import EthereumApi from './EthereumApi';
 
@@ -15,7 +16,7 @@ class Margin {
   }
 
   public balance = (address: string) => {
-    // return this.api.query.marginProtocol.balances<Balance>(address).pipe(map(result => result.toString()));
+    return from(this.apiProvider.web3.eth.getBalance(address));
   };
 
   public allPoolIds = () => {
@@ -32,12 +33,12 @@ class Margin {
       ]).then(([ELLLiquidateThreshold, ELLMarginThreshold, ENPLiquidateThreshold, ENPMarginThreshold]) => {
         return {
           ellThreshold: {
-            marginCall: ELLMarginThreshold,
-            stopOut: ELLLiquidateThreshold
+            marginCall: toNumber(ELLMarginThreshold),
+            stopOut: toNumber(ELLLiquidateThreshold)
           },
           enpThreshold: {
-            marginCall: ENPMarginThreshold,
-            stopOut: ENPLiquidateThreshold
+            marginCall: toNumber(ENPMarginThreshold),
+            stopOut: toNumber(ENPLiquidateThreshold)
           }
         };
       })
@@ -47,7 +48,7 @@ class Margin {
   //Observable<MarginPoolInfo | null>
   public poolInfo = (poolId: string) => {
     const poolContract = this.apiProvider.createLiquidityPoolContract(poolId);
-    const tradingPairs = this.apiProvider.getTradingPairs();
+    const tradingPairs = this.protocol.tradingPairs;
     return from(
       Promise.all([
         this.apiProvider.tokenContracts.DAI.methods.balanceOf(poolId).call(),
@@ -66,6 +67,7 @@ class Margin {
       ]).then(([balance, owner, options]) => {
         return {
           poolId: poolContract.options.address,
+          balance,
           owner,
           enp: '0',
           ell: '0',
@@ -74,6 +76,12 @@ class Margin {
       })
     );
   };
+
+  public traderInfo: undefined;
+  public openPosition: undefined;
+  public closePosition: undefined;
+  public deposit: undefined;
+  public withdraw: undefined;
 }
 
 export default Margin;

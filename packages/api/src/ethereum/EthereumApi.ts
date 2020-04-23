@@ -1,19 +1,10 @@
 import BN from 'bn.js';
 import { fromWei } from 'web3-utils';
-import { from } from 'rxjs';
 
+import { ActionStatus, ChainType, PoolInfo, PoolOptions, TokenId, TokenInfo } from '../types';
 import LaminarContract, { LaminarContractOptions } from './LaminarContract';
-import {
-  PoolInfo,
-  TokenInfo,
-  TokenId,
-  TradingPairSymbol,
-  PoolOptions,
-  TradingPair,
-  ChainType,
-  ActionStatus
-} from '../types';
 import Margin from './Margin';
+import Currencies from './Currencies';
 
 export const UINT256_MAX = '115792089237316195423570985008687907853269984665640564039457584007913129639935';
 
@@ -21,11 +12,13 @@ class EthereumApi extends LaminarContract {
   public chainType: ChainType = 'ethereum';
   public gas?: string;
   public margin: Margin;
+  public currencies: Currencies;
 
   constructor(options: LaminarContractOptions & { gas?: string }) {
     super(options);
     this.gas = options.gas;
     this.margin = new Margin(this);
+    this.currencies = new Currencies(this);
   }
 
   private extrinsicHelper = (

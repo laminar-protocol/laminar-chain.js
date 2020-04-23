@@ -1,9 +1,9 @@
 import Web3 from 'web3';
+import { provider as Web3Provider } from 'web3-core';
 import { Contract } from 'web3-eth-contract';
 import { AbiItem } from 'web3-utils';
-import { provider as Web3Provider } from 'web3-core';
 
-import protocols, { TokenId, TradingPairSymbol, Protocol, ProtocolType, TradingPair } from './protocols';
+import protocols, { Protocol, ProtocolType, TokenId, TradingPair } from './protocols';
 
 export interface LaminarContractOptions {
   provider: Web3Provider;
@@ -27,7 +27,6 @@ class LaminarContract implements LaminarContract {
 
     const abis = this.protocol.abis;
     const addresses = this.protocol.addresses;
-    const tradingPairs = this.protocol.tradingPairs;
 
     this.baseContracts = {
       flowProtocol: this.createContract(abis.FlowProtocol, addresses.protocol),
@@ -67,7 +66,7 @@ class LaminarContract implements LaminarContract {
   }
 
   public getTradingPairContract(pairId: string, leverage: string) {
-    const tradingPairs = this.getTradingPairs();
+    const tradingPairs = this.protocol.tradingPairs;
     const address = tradingPairs.find(({ pairId }) => pairId === pairId)?.addresses[leverage];
     if (!address) throw new Error(`trading pair: ${pairId}/${leverage} is undefined`);
     return this.createContract(this.protocol.abis.MarginTradingPair, address);
