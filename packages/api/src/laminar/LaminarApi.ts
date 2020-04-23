@@ -1,38 +1,23 @@
-import BN from 'bn.js';
-import { first, map, switchMap } from 'rxjs/operators';
-import { timer, combineLatest, Observable, of } from 'rxjs';
 import { ApiRx, WsProvider } from '@polkadot/api';
 import { ApiOptions } from '@polkadot/api/types';
-import { Option } from '@polkadot/types/codec';
-import { Balance, MarginLiquidityPoolOption, Permill, AccountId } from '@laminar/types/interfaces';
+import { first } from 'rxjs/operators';
 
+import { ActionStatus, ChainType, LaminarTokenIds } from '../types';
 import { options as getOptions } from './options';
-import {
-  FlowApi,
-  TokenInfo,
-  TokenId,
-  PoolOptions,
-  TradingPair,
-  ChainType,
-  ActionStatus,
-  LaminarTokenIds,
-  OracleValue,
-  TokenBalance
-} from '../types';
 import Margin from './Margin';
 import Synthetic from './Synthetic';
+import Currencies from './Currencies';
 
 interface LaminarApiOptions extends ApiOptions {
   provider: WsProvider;
 }
 
-class LaminarApi implements FlowApi {
-  private minAdditionalCollateralRatio?: number;
-
+class LaminarApi {
   public api: ApiRx;
   public chainType: ChainType = 'laminar';
   public margin: Margin;
   public synthetic: Synthetic;
+  public currencies: Currencies;
 
   static tokenIds: LaminarTokenIds = ['LAMI', 'AUSD', 'FEUR', 'FJPY', 'FBTC', 'FETH'];
 
@@ -46,6 +31,7 @@ class LaminarApi implements FlowApi {
 
     this.margin = new Margin(this);
     this.synthetic = new Synthetic(this);
+    this.currencies = new Currencies(this);
   }
 
   public extrinsicHelper = (
@@ -112,289 +98,6 @@ class LaminarApi implements FlowApi {
 
   public isReady = async () => {
     await this.api.isReady.pipe(first()).toPromise();
-  };
-
-  public accountBalance = (address: string, tokenId: TokenId) => {
-    return (this.api.derive as any).currencies.balance(address, tokenId).pipe(
-      map((result: Balance) => {
-        return result.toString();
-      })
-    );
-  };
-
-  public getBalance = async (address: string, tokenId: TokenId) => {
-    const result: Balance = await (this.api.derive as any).currencies
-      .balance(address, tokenId)
-      .pipe(first())
-      .toPromise();
-    return result.toString();
-  };
-
-  public getPoolOptions = async (poolId: string, tokenId: TokenId): Promise<PoolOptions> => {
-    const data = await this.api.query.liquidityPools
-      .liquidityPoolOptions<Option<MarginLiquidityPoolOption>>(poolId, tokenId)
-      .pipe(first())
-      .toPromise();
-    const json = data.toJSON() as any;
-
-    if (!this.minAdditionalCollateralRatio) {
-      this.minAdditionalCollateralRatio = (
-        await this.api.query.liquidityPools
-          .minAdditionalCollateralRatio<Permill>()
-          .pipe(first())
-          .toPromise()
-      ).toJSON() as number;
-    }
-
-    if (!json) {
-      return {
-        poolId,
-        tokenId,
-        bidSpread: null,
-        askSpread: null,
-        additionalCollateralRatio: this.minAdditionalCollateralRatio,
-        syntheticEnabled: false
-      };
-    } else {
-      return {
-        ...json,
-        additionalCollateralRatio: Math.max(this.minAdditionalCollateralRatio, json.additionalCollateralRatio),
-        poolId,
-        tokenId
-      };
-    }
-  };
-
-  public getPoolOwner = async (poolId: string) => {
-    const result = await this.api.query.liquidityPools
-      .owners<Option<AccountId>>(poolId)
-      .pipe(first())
-      .toPromise();
-    if (result.isNone) return null;
-    return (result.toJSON() && result.toJSON()) as string;
-  };
-
-  public getOraclePrice = async (tokenId: TokenId) => {
-    const result = await (this.api.rpc as any).oracle.getValue(tokenId);
-    return result.value.get('value');
-  };
-
-  public getLiquidity = async (poolId: string): Promise<string> => {
-    return (
-      await this.api.query.liquidityPools
-        .balances<Balance>(poolId)
-        .pipe(first())
-        .toPromise()
-    ).toString();
-  };
-
-  public createPool = async (account: string) => {
-    const extrinsic = this.api.tx.liquidityPools.createPool();
-    return this.extrinsicHelper(extrinsic, account, { action: 'Create Pool' });
-  };
-
-  public redeem = async (account: string, poolId: string, fromToken: TokenId, fromAmount: string | BN) => {
-    const extrinsic = this.api.tx.syntheticProtocol.redeem(poolId, fromToken as any, fromAmount, '1000000');
-    return this.extrinsicHelper(extrinsic, account, { action: 'Swap' });
-  };
-
-  public mint = async (account: string, poolId: string, toToken: TokenId, fromAmount: string | BN) => {
-    const extrinsic = this.api.tx.syntheticProtocol.mint(poolId, toToken as any, fromAmount, '1000000');
-    return this.extrinsicHelper(extrinsic, account, { action: 'Swap' });
-  };
-
-  public depositLiquidity = async (account: string, poolId: string, amount: string | BN) => {
-    const extrinsic = this.api.tx.liquidityPools.depositLiquidity(poolId, amount);
-    return this.extrinsicHelper(extrinsic, account, { action: 'Deposit Liquidity' });
-  };
-
-  public withdrawLiquidity = async (account: string, poolId: string, amount: string | BN) => {
-    const extrinsic = this.api.tx.liquidityPools.withdrawLiquidity(poolId, amount);
-    return this.extrinsicHelper(extrinsic, account, { action: 'WithDraw Liquidity' });
-  };
-
-  public getDefaultPools = async () => {
-    // const nextPoolId = await this.api.query.liquidityPools.nextPoolId<LiquidityPoolId>();
-
-    return Promise.all(
-      ['0'].map(id => {
-        return this.api.query.liquidityPools
-          .owners(id)
-          .pipe(first())
-          .toPromise()
-          .then(result => {
-            // @TODO fixme
-            const address = (result.toJSON() && result.toJSON()) as string;
-
-            return {
-              id: `${id}`,
-              owner: address,
-              isDefault: true,
-              name: `${id}//${address.slice(0, 12)}`
-            };
-          });
-      })
-    );
-  };
-
-  public getTokens = async (): Promise<TokenInfo[]> => [
-    {
-      name: 'LAMI',
-      displayName: 'LAMI',
-      precision: 18,
-      isBaseToken: false,
-      isNetworkToken: true,
-      id: 'LAMI'
-    },
-    {
-      name: 'AUSD',
-      displayName: 'AUSD',
-      precision: 18,
-      isBaseToken: true,
-      isNetworkToken: false,
-      id: 'AUSD'
-    },
-    {
-      name: 'EUR',
-      displayName: 'Euro',
-      precision: 18,
-      isBaseToken: false,
-      isNetworkToken: false,
-      id: 'FEUR'
-    },
-    {
-      name: 'JPY',
-      displayName: 'Yen',
-      precision: 18,
-      isBaseToken: false,
-      isNetworkToken: false,
-      id: 'FJPY'
-    },
-    {
-      name: 'BTC',
-      displayName: 'BTC',
-      precision: 18,
-      isBaseToken: false,
-      isNetworkToken: false,
-      id: 'FBTC'
-    },
-    {
-      name: 'ETH',
-      displayName: 'ETH',
-      precision: 18,
-      isBaseToken: false,
-      isNetworkToken: false,
-      id: 'FETH'
-    }
-  ];
-
-  public getTradingPairs = async (): Promise<TradingPair[]> => {
-    return [];
-  };
-
-  public tokens = (): Observable<TokenInfo[]> => {
-    return of([
-      {
-        name: 'LAMI',
-        displayName: 'LAMI',
-        precision: 18,
-        isBaseToken: false,
-        isNetworkToken: true,
-        id: 'LAMI'
-      },
-      {
-        name: 'AUSD',
-        displayName: 'AUSD',
-        precision: 18,
-        isBaseToken: true,
-        isNetworkToken: false,
-        id: 'AUSD'
-      },
-      {
-        name: 'EUR',
-        displayName: 'Euro',
-        precision: 18,
-        isBaseToken: false,
-        isNetworkToken: false,
-        id: 'FEUR'
-      },
-      {
-        name: 'JPY',
-        displayName: 'Yen',
-        precision: 18,
-        isBaseToken: false,
-        isNetworkToken: false,
-        id: 'FJPY'
-      },
-      {
-        name: 'BTC',
-        displayName: 'BTC',
-        precision: 18,
-        isBaseToken: false,
-        isNetworkToken: false,
-        id: 'FBTC'
-      },
-      {
-        name: 'ETH',
-        displayName: 'ETH',
-        precision: 18,
-        isBaseToken: false,
-        isNetworkToken: false,
-        id: 'FETH'
-      }
-    ]);
-  };
-
-  public balances = (address: string): Observable<TokenBalance[]> => {
-    return this.tokens().pipe(
-      switchMap(tokens => {
-        return combineLatest(
-          ...tokens.map(({ id }) =>
-            (this.api.derive as any).currencies.balance(address, id).pipe(
-              map((result: any) => {
-                return {
-                  tokenId: id,
-                  free: result.toString()
-                };
-              })
-            )
-          )
-        );
-      })
-    );
-  };
-
-  public oracleValues = (): Observable<OracleValue[]> => {
-    return timer(0, 30000).pipe(
-      switchMap(() => this.tokens()),
-      switchMap(tokens => {
-        return combineLatest(
-          tokens
-            .filter(token => !token.isNetworkToken)
-            .map(({ id }) =>
-              (this.api.rpc as any).oracle.getValue(id).pipe(
-                map(result => {
-                  return [id, result];
-                })
-              )
-            )
-        );
-      }),
-      map((values: any) => {
-        return values.map(([tokenId, curr]: any) => {
-          const result: Partial<OracleValue> = {
-            tokenId
-          };
-
-          if (!curr.isEmpty) {
-            result.timestamp = curr.value.timestamp.toJSON();
-            result.value = curr.value.value.toString();
-          }
-
-          return result;
-        });
-      })
-    );
   };
 }
 

@@ -1,18 +1,17 @@
 import {
   Balance,
   MarginLiquidityPoolOption,
-  Position,
-  RiskThreshold,
-  TradingPair,
+  PoolInfo,
   PositionId,
-  PoolInfo
+  RiskThreshold,
+  TradingPair
 } from '@laminar/types/interfaces';
-import BN from 'bn.js';
 import { Option } from '@polkadot/types/codec';
+import BN from 'bn.js';
 import { combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import { Threshold, LeverageEnum, MarginInfo, MarginPoolInfo } from '../types';
+import { LeverageEnum, MarginInfo, MarginPoolInfo, Threshold, TraderInfo } from '../types';
 import LaminarApi from './LaminarApi';
 
 class Margin {
@@ -35,33 +34,28 @@ class Margin {
       this.api.query.marginLiquidityPools.liquidityPoolOptions.entries<Option<MarginLiquidityPoolOption>>(poolId),
       (this.api.rpc as any).margin.poolInfo(poolId)
     ]).pipe(
-      map(([owners, balances, liquidityPoolOptions, poolInfo]) => {
-        if (owners.isEmpty) return null;
+      map(([owner, balances, liquidityPoolOptions, poolInfo]) => {
+        if (owner.isEmpty) return null;
         return {
           poolId: poolId,
-          owners: owners.isEmpty ? null : (owners as any).value[0].toJSON(),
+          owner: owner.isEmpty ? null : (owner as any).value[0].toJSON(),
           balance: balances.toString(),
           enp: (poolInfo as PoolInfo).enp.toString(),
           ell: (poolInfo as PoolInfo).ell.toString(),
-          options: liquidityPoolOptions
-            .map(([storageKey, options]) => {
-              const pair = (storageKey.args[1] as TradingPair).toJSON() as {
-                base: string;
-                quote: string;
-              };
+          options: liquidityPoolOptions.map(([storageKey, options]) => {
+            const pair = (storageKey.args[1] as TradingPair).toJSON() as {
+              base: string;
+              quote: string;
+            };
 
-              const data = options.toHuman() || {};
+            const data = options.toHuman() || {};
 
-              return {
-                pair: pair,
-                pairId: `${pair.base}${pair.quote}`,
-                ...(data as any)
-              };
-            })
-            .reduce((result, curr) => {
-              result[curr.pairId] = curr;
-              return result;
-            }, {} as Record<string, any>)
+            return {
+              pair: pair,
+              pairId: `${pair.base}${pair.quote}`,
+              ...(data as any)
+            };
+          })
         };
       })
     );
@@ -70,36 +64,30 @@ class Margin {
   public marginInfo = (): Observable<MarginInfo> => {
     return combineLatest([
       this.api.query.marginProtocol.liquidityPoolELLThreshold<RiskThreshold>(),
-      this.api.query.marginProtocol.liquidityPoolENPThreshold<RiskThreshold>(),
-      this.api.query.marginProtocol.traderRiskThreshold<RiskThreshold>()
+      this.api.query.marginProtocol.liquidityPoolENPThreshold<RiskThreshold>()
     ]).pipe(
-      map(([ellThreshold, enpThreshold, traderThreshold]) => {
+      map(([ellThreshold, enpThreshold]) => {
         return {
           ellThreshold: ellThreshold.toHuman() as Threshold,
-          enpThreshold: enpThreshold.toHuman() as Threshold,
-          traderThreshold: traderThreshold.toHuman() as Threshold
+          enpThreshold: enpThreshold.toHuman() as Threshold
         };
       })
     );
   };
 
-  public traderInfo = (
-    account: string
-  ): Observable<{
-    equity: string;
-    freeMargin: string;
-    marginHeld: string;
-    marginLevel: string;
-    unrealizedPl: string;
-  }> => {
-    return (this.api.rpc as any).margin.traderInfo(account).pipe(
-      map((result: any) => {
+  public traderInfo = (account: string, poolId: string): Observable<TraderInfo> => {
+    return combineLatest([
+      (this.api.rpc as any).margin.traderInfo(account),
+      this.api.query.marginProtocol.traderRiskThreshold<RiskThreshold>()
+    ]).pipe(
+      map(([result, traderThreshold]: any) => {
         return {
           equity: result.equity.toString(),
           freeMargin: result.free_margin.toString(),
           marginHeld: result.margin_held.toString(),
           marginLevel: result.margin_level.toString(),
-          unrealizedPl: result.unrealized_pl.toString()
+          unrealizedPl: result.unrealized_pl.toString(),
+          traderThreshold: traderThreshold.toHuman()
         };
       })
     );
@@ -142,20 +130,6 @@ class Margin {
           });
       })
     );
-  };
-
-  public poolEnabledTradingPairs = (poolId: string) => {
-    return this.api.query.marginLiquidityPools.liquidityPoolEnabledTradingPairs
-      .entries<Option<TradingPair>>(poolId)
-      .pipe(
-        map(allResult => {
-          return allResult.map(([, result]) => result.toJSON());
-        })
-      );
-  };
-
-  public positions = (positionId: string) => {
-    return this.api.query.marginProtocol.positions<Option<Position>>(positionId).pipe(map(result => result.toHuman()));
   };
 
   public openPosition = async (

@@ -1,32 +1,27 @@
 import BN from 'bn.js';
 import { fromWei } from 'web3-utils';
 
+import { ActionStatus, ChainType, PoolInfo, PoolOptions, TokenId, TokenInfo } from '../types';
 import LaminarContract, { LaminarContractOptions } from './LaminarContract';
-
-import {
-  PoolInfo,
-  TokenInfo,
-  FlowApi,
-  TokenId,
-  TradingPairSymbol,
-  PoolOptions,
-  TradingPair,
-  ChainType,
-  ActionStatus
-} from '../types';
+import Margin from './Margin';
+import Currencies from './Currencies';
 
 export const UINT256_MAX = '115792089237316195423570985008687907853269984665640564039457584007913129639935';
 
-class EthereumApi extends LaminarContract implements FlowApi {
+class EthereumApi extends LaminarContract {
   public chainType: ChainType = 'ethereum';
   public gas?: string;
+  public margin: Margin;
+  public currencies: Currencies;
 
   constructor(options: LaminarContractOptions & { gas?: string }) {
     super(options);
     this.gas = options.gas;
+    this.margin = new Margin(this);
+    this.currencies = new Currencies(this);
   }
 
-  private extrinsicHelper = (
+  public extrinsicHelper = (
     extrinsic: any,
     signOption: any,
     { action }: { action?: string } = {}
@@ -142,18 +137,6 @@ class EthereumApi extends LaminarContract implements FlowApi {
 
   public getLiquidity = async (poolId: string): Promise<string> => {
     return this.tokenContracts.iUSD.methods.balanceOf(poolId).call();
-  };
-
-  public openPosition = async (account: string, name: TradingPairSymbol, poolId: string, amount: string | BN) => {
-    const pairAddress = this.getTradingPairInfo(name).address;
-    const extrinsic = this.baseContracts.flowMarginProtocol.methods.openPosition(pairAddress, poolId, amount);
-    return this.extrinsicHelper(extrinsic, { from: account }, { action: 'OpenPosition' });
-  };
-
-  public closePosition = async (account: string, name: TradingPairSymbol, positionId: number) => {
-    const pairAddress = this.getTradingPairInfo(name).address;
-    const extrinsic = this.baseContracts.flowMarginProtocol.methods.closePosition(pairAddress, positionId);
-    return this.extrinsicHelper(extrinsic, { from: account }, { action: 'ClosePosition' });
   };
 
   public daiFaucet = async (account: string, amount: number | string) => {
@@ -306,10 +289,6 @@ class EthereumApi extends LaminarContract implements FlowApi {
         address: this.tokenContracts.fAAPL.options.address
       }
     ];
-  };
-
-  public getTradingPairs = async (): Promise<TradingPair[]> => {
-    return Object.values(this.protocol.tradingPairs);
   };
 }
 

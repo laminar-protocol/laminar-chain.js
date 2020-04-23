@@ -5,11 +5,12 @@ import KovanFaucetInterface from 'flow-protocol-ethereum/artifacts/kovan/abi/Fau
 import KovanFlowMarginProtocol from 'flow-protocol-ethereum/artifacts/kovan/abi/FlowMarginProtocol.json';
 import KovanFlowProtocol from 'flow-protocol-ethereum/artifacts/kovan/abi/FlowProtocol.json';
 import KovanFlowToken from 'flow-protocol-ethereum/artifacts/kovan/abi/FlowToken.json';
-import KovanLiquidityPoolInterface from 'flow-protocol-ethereum/artifacts/kovan/abi/LiquidityPoolInterface.json';
 import KovanLiquidityPool from 'flow-protocol-ethereum/artifacts/kovan/abi/LiquidityPool.json';
+import KovanLiquidityPoolInterface from 'flow-protocol-ethereum/artifacts/kovan/abi/LiquidityPoolInterface.json';
 import KovanMarginTradingPair from 'flow-protocol-ethereum/artifacts/kovan/abi/MarginTradingPair.json';
 import KovanMoneyMarket from 'flow-protocol-ethereum/artifacts/kovan/abi/MoneyMarket.json';
 import KovanPriceOracleInterface from 'flow-protocol-ethereum/artifacts/kovan/abi/PriceOracleInterface.json';
+import KovanSimplePriceOracle from 'flow-protocol-ethereum/artifacts/kovan/abi/SimplePriceOracle.json';
 import KovanAddresses from 'flow-protocol-ethereum/artifacts/kovan/deployment.json';
 
 export const abis = [
@@ -22,7 +23,8 @@ export const abis = [
   'LiquidityPool',
   'MarginTradingPair',
   'MoneyMarket',
-  'PriceOracleInterface'
+  'PriceOracleInterface',
+  'SimplePriceOracle'
 ] as const;
 export const tokenId = ['DAI', 'fEUR', 'fJPY', 'fXAU', 'fAAPL'] as const;
 export const tradingPairSymbols = [
@@ -44,97 +46,73 @@ export type TokenId = typeof tokenId[number];
 
 export type TradingPairSymbol = typeof tradingPairSymbols[number];
 
-export interface TradingPair {
-  id: string;
-  symbol: TradingPairSymbol;
-  base: TokenId;
-  quote: TokenId;
-  leverage: number;
-  address: string;
-  name: string;
+export interface TradingPairInfo {
+  pair: {
+    base: TokenId;
+    quote: TokenId;
+  };
+  pairId: string;
+  enabledTrades: string[];
+  addresses: Record<string, string>;
 }
 
 export interface Protocol {
   networkType: ProtocolType;
   abis: Record<AbiName, AbiItem[]>;
   addresses: typeof KovanAddresses;
-  tradingPairs: Record<TradingPairSymbol, TradingPair>;
+  tradingPairs: TradingPairInfo[];
 }
 
-const getTradingPairs = (addresses: typeof KovanAddresses): Protocol['tradingPairs'] => ({
-  l10USDEUR: {
-    id: 'l10USDEUR',
-    symbol: 'l10USDEUR',
-    base: 'DAI',
-    quote: 'fEUR',
-    leverage: 10,
-    address: addresses.l10USDEUR,
-    name: 'USDEUR 10× Long'
+const getTradingPairs = (addresses: typeof KovanAddresses): Protocol['tradingPairs'] => [
+  {
+    pairId: 'USDEUR',
+    pair: {
+      base: 'DAI',
+      quote: 'fEUR'
+    },
+    enabledTrades: ['LongTen', 'ShortTen'],
+    addresses: {
+      LongTen: addresses.l10USDEUR,
+      ShortTen: addresses.s10USDEUR
+    }
   },
-  s10USDEUR: {
-    id: 's10USDEUR',
-    symbol: 's10USDEUR',
-    base: 'DAI',
-    quote: 'fEUR',
-    leverage: -10,
-    address: addresses.s10USDEUR,
-    name: 'USDEUR 10× Short'
+  {
+    pair: {
+      base: 'DAI',
+      quote: 'fJPY'
+    },
+    pairId: 'USDJPY',
+    enabledTrades: ['LongTwenty', 'ShortTwenty'],
+    addresses: {
+      LongTwenty: addresses.l20USDJPY,
+      ShortTwenty: addresses.s20USDJPY
+    }
   },
-  l20USDJPY: {
-    id: 'l20USDJPY',
-    symbol: 'l20USDJPY',
-    base: 'DAI',
-    quote: 'fJPY',
-    leverage: 20,
-    address: addresses.l20USDJPY,
-    name: 'USDJPY 20× Long'
+  {
+    pair: {
+      base: 'DAI',
+      quote: 'fXAU'
+    },
+    pairId: 'USDXAU',
+    enabledTrades: ['LongTwenty', 'ShortTwenty'],
+    addresses: {
+      LongTwenty: addresses.l20USDXAU,
+      ShortTwenty: addresses.s20USDXAU
+    }
   },
-  s20USDJPY: {
-    id: 's20USDJPY',
-    symbol: 's20USDJPY',
-    base: 'DAI',
-    quote: 'fJPY',
-    leverage: -20,
-    address: addresses.s20USDJPY,
-    name: 'USDJPY 20× Short'
-  },
-  l20USDXAU: {
-    id: 'l20USDXAU',
-    symbol: 'l20USDXAU',
-    base: 'DAI',
-    quote: 'fXAU',
-    leverage: 20,
-    address: addresses.l20USDXAU,
-    name: 'XAUUSD 20× Long'
-  },
-  s20USDXAU: {
-    id: 's20USDXAU',
-    symbol: 's20USDXAU',
-    base: 'DAI',
-    quote: 'fXAU',
-    leverage: -20,
-    address: addresses.s20USDXAU,
-    name: 'XAUUSD 20× Short'
-  },
-  l5USDAAPL: {
-    id: 'l5USDAAPL',
-    symbol: 'l5USDAAPL',
-    base: 'DAI',
-    quote: 'fAAPL',
-    leverage: 5,
-    address: addresses.l5USDAAPL,
-    name: 'AAPL 5× Long'
-  },
-  s5USDAAPL: {
-    id: 's5USDAAPL',
-    symbol: 's5USDAAPL',
-    base: 'DAI',
-    quote: 'fAAPL',
-    leverage: -5,
-    address: addresses.s5USDAAPL,
-    name: 'AAPL 5× Short'
+  {
+    pair: {
+      base: 'DAI',
+      quote: 'fAAPL'
+    },
+    pairId: 'USDAAPL',
+    enabledTrades: ['LongFive', 'ShortFive'],
+    addresses: {
+      LongFive: addresses.l5USDAAPL,
+      ShortFive: addresses.s5USDAAPL
+    }
   }
-});
+];
 
 const kovan: Readonly<Protocol> = {
   networkType: 'kovan',
@@ -148,7 +126,8 @@ const kovan: Readonly<Protocol> = {
     LiquidityPool: KovanLiquidityPool,
     MarginTradingPair: KovanMarginTradingPair,
     MoneyMarket: KovanMoneyMarket,
-    PriceOracleInterface: KovanPriceOracleInterface
+    PriceOracleInterface: KovanPriceOracleInterface,
+    SimplePriceOracle: KovanSimplePriceOracle
   } as Protocol['abis'],
   addresses: KovanAddresses,
   tradingPairs: getTradingPairs(KovanAddresses)
