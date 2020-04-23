@@ -7,7 +7,7 @@ import metaHex from '../src/metadata/static-latest';
 
 import * as defaultDefinations from '@polkadot/types/interfaces/definitions';
 
-import * as ormlDefinations from '@orml/types/interfaces/definitions';
+import * as ormlDefinations from '@open-web3/orml-types/interfaces/definitions';
 
 import * as laminarDefinations from '../src/interfaces/definitions';
 
@@ -19,7 +19,7 @@ const { runtime: _runtime, ...ormlModulesDefinations } = ormlDefinations;
 
 const definations = {
   '@polkadot/types/interfaces': substrateDefinations,
-  '@orml/types/interfaces': ormlModulesDefinations,
+  '@open-web3/orml-types/interfaces': ormlModulesDefinations,
   '@laminar/types/interfaces': laminarDefinations
 };
 
