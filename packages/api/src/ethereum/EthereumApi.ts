@@ -139,29 +139,6 @@ class EthereumApi extends LaminarContract {
     return this.tokenContracts.iUSD.methods.balanceOf(poolId).call();
   };
 
-  // public openPosition = async (
-  //   account: string,
-  //   poolId: string,
-  //   pairId: string,
-  //   leverage: string,
-  //   amount: string | BN
-  // ) => {
-  //   const pairAddress = this.getTradingPairContract(pairId, leverage).options.address;
-  //   const extrinsic = this.baseContracts.flowMarginProtocol.methods.openPosition(pairAddress, poolId, amount);
-  //   return this.extrinsicHelper(extrinsic, { from: account }, { action: 'OpenPosition' });
-  // };
-
-  // public closePosition = async (
-  //   account: string,
-  //   pairId: string,
-  //   leverage: string,
-  //   positionId: number
-  // ) => {
-  //   const pairAddress = this.getTradingPairContract(symbol).options.address;
-  //   const extrinsic = this.baseContracts.flowMarginProtocol.methods.closePosition(pairAddress, positionId);
-  //   return this.extrinsicHelper(extrinsic, { from: account }, { action: 'ClosePosition' });
-  // };
-
   public daiFaucet = async (account: string, amount: number | string) => {
     const extrinsic = this.baseContracts.daiFaucet.methods.allocateTo(account, amount);
     return this.extrinsicHelper(extrinsic, { from: account }, { action: 'Faucet' });

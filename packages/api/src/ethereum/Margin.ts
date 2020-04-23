@@ -61,7 +61,6 @@ class Margin {
     );
   };
 
-  //Observable<MarginPoolInfo | null>
   public poolInfo = (poolId: string) => {
     const poolContract = this.apiProvider.createLiquidityPoolContract(poolId);
     const tradingPairs = this.protocol.tradingPairs;
@@ -158,7 +157,6 @@ class Margin {
     const leverage =
       direction === 'Short' ? -1 * multipleMap[multiple] : direction === 'Long' ? multipleMap[multiple] : 0;
 
-    console.log(poolId, baseAddress, quoteAddress, leverage, leveragedAmount, price);
     const extrinsic = this.apiProvider.baseContracts.flowMarginProtocol.methods.openPosition(
       poolId,
       baseAddress,

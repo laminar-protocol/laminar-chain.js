@@ -44,11 +44,6 @@ class LaminarContract implements LaminarContract {
       fAAPL: this.createContract(abis.ERC20, addresses.fAAPL),
       fXAU: this.createContract(abis.ERC20, addresses.fXAU)
     };
-
-    // this.tradingPairInfoContracts = tradingPairInfos.reduce((r, curr) => {
-    //   r[curr.pairId] = this.createContract(abis.MarginTradingPairInfo, curr.address);
-    //   return r;
-    // }, {} as Partial<LaminarContract['tradingPairInfoContracts']>) as LaminarContract['tradingPairInfoContracts'];
   }
 
   private createContract(abi: AbiItem[] | AbiItem, address: string): Contract {
@@ -65,10 +60,10 @@ class LaminarContract implements LaminarContract {
     return contract;
   }
 
-  public getTradingPairContract(pairId: string, leverage: string) {
+  public getTradingPairContract(_pairId: string, leverage: string) {
     const tradingPairs = this.protocol.tradingPairs;
-    const address = tradingPairs.find(({ pairId }) => pairId === pairId)?.addresses[leverage];
-    if (!address) throw new Error(`trading pair: ${pairId}/${leverage} is undefined`);
+    const address = tradingPairs.find(({ pairId }) => pairId === _pairId)?.addresses[leverage];
+    if (!address) throw new Error(`trading pair: ${_pairId}/${leverage} is undefined`);
     return this.createContract(this.protocol.abis.MarginTradingPair, address);
   }
 
