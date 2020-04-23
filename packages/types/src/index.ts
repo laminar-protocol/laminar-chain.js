@@ -1,6 +1,6 @@
 import { RegistryTypes } from '@polkadot/types/types';
 import polkadotJSONRpc from '@polkadot/types/interfaces/jsonrpc';
-import * as ormlDefinations from '@orml/types/interfaces/definitions';
+import * as ormlDefinations from '@open-web3/orml-types/interfaces/definitions';
 
 import * as laminarDefinations from './interfaces/definitions';
 import jsonrpc from './interfaces/jsonrpc';

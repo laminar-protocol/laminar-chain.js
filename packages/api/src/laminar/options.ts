@@ -1,4 +1,4 @@
-import { derive as ormlDerives } from '@orml/api-derive';
+import { derive as ormlDerives } from '@open-web3/orml-api-derive';
 import { types as laminarTypes } from '@laminar/types';
 import { ApiOptions } from '@polkadot/api/types';
 import jsonrpc from '@laminar/types/interfaces/jsonrpc';
