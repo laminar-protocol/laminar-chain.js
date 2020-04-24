@@ -11,7 +11,7 @@ import BN from 'bn.js';
 import { combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import { LeverageEnum, MarginInfo, MarginPoolInfo, Threshold, TraderInfo } from '../types';
+import { LeverageEnum, MarginInfo, MarginPoolInfo, Threshold, TraderInfo, TokenId } from '../types';
 import LaminarApi from './LaminarApi';
 
 class Margin {
@@ -135,7 +135,10 @@ class Margin {
   public openPosition = async (
     account: string,
     poolId: string,
-    pair: TradingPair,
+    pair: {
+      base: TokenId;
+      quote: TokenId;
+    },
     leverage: LeverageEnum,
     leveragedAmount: string | BN,
     price: string | BN
