@@ -2,9 +2,8 @@ import BN from 'bn.js';
 import { from, Observable, of } from 'rxjs';
 import { Contract } from 'web3-eth-contract';
 import { toNumber } from '@laminar/types/utils/precision';
-import { MarginInfo, LeverageEnum } from '../types';
+import { MarginInfo, LeverageEnum, TokenId } from '../types';
 import EthereumApi, { UINT256_MAX } from './EthereumApi';
-import { TokenId } from './protocols';
 
 class Margin {
   private apiProvider: EthereumApi;
