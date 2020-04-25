@@ -1,8 +1,11 @@
+import { Metadata } from '@polkadot/types';
+import { TypeRegistry } from '@polkadot/types/create';
 import { generateInterfaceTypes } from '@polkadot/typegen/generate/interfaceRegistry';
 import { generateTsDef } from '@polkadot/typegen/generate/tsDef';
 import generateConst from '@polkadot/typegen/generate/consts';
-// import generateQuery from '@polkadot/typegen/generate/query';
-// import generateTx from '@polkadot/typegen/generate/tx';
+import generateQuery from '@polkadot/typegen/generate/query';
+import generateTx from '@polkadot/typegen/generate/tx';
+import { registerDefinitions } from '@polkadot/typegen/util';
 import metaHex from '../src/metadata/static-latest';
 
 import * as defaultDefinations from '@polkadot/types/interfaces/definitions';
@@ -10,6 +13,20 @@ import * as defaultDefinations from '@polkadot/types/interfaces/definitions';
 import * as ormlDefinations from '@open-web3/orml-types/interfaces/definitions';
 
 import * as laminarDefinations from '../src/interfaces/definitions';
+
+// Only keep our own modules to avoid confllicts with the one provided by polkadot.js
+// TODO: make an issue on polkadot.js
+function filterModules(names: string[], defs: any) {
+  const registry = new TypeRegistry();
+  registerDefinitions(registry, defs);
+  const metadata = new Metadata(registry, metaHex);
+
+  const filtered = metadata.toJSON() as any;
+
+  filtered.metadata.V11.modules = filtered.metadata.V11.modules.filter(({ name }: any) => names.includes(name));
+
+  return new Metadata(registry, filtered).toHex();
+}
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const { runtime, ...substrateDefinations } = defaultDefinations;
@@ -21,12 +38,28 @@ const definations = {
   '@polkadot/types/interfaces': substrateDefinations,
   '@open-web3/orml-types/interfaces': ormlModulesDefinations,
   '@laminar/types/interfaces': laminarDefinations
-};
+} as any;
+
+const metadata = filterModules(
+  [
+    'Oracle',
+    'BaseLiquidityPoolsForMargin',
+    'Tokens',
+    'Currencies',
+    'SyntheticTokens',
+    'SyntheticProtocol',
+    'MarginProtocol',
+    'BaseLiquidityPoolsForMargin',
+    'MarginLiquidityPools',
+    'BaseLiquidityPoolsForSynthetic',
+    'SyntheticLiquidityPools'
+  ],
+  definations
+);
 
 generateTsDef(definations, 'packages/types/src/interfaces', '@laminar/types/interfaces');
 generateInterfaceTypes(definations, 'packages/types/src/augment-types.ts');
-generateConst('packages/types/src/augment-api-consts.ts', metaHex, definations as any);
-// @TODO fix me
-// generateTx('packages/types/src/augment-api-tx.ts', metaHex, definations as any);
-// @TODO fix error
-// generateQuery('packages/types/src/augment-api-query.ts', metaHex, definations as any);
+generateConst('packages/types/src/augment-api-consts.ts', metadata, definations);
+
+generateTx('packages/types/src/augment-api-tx.ts', metadata, definations);
+generateQuery('packages/types/src/augment-api-query.ts', metadata, definations);

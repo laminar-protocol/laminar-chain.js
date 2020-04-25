@@ -3,9 +3,5 @@
 
 import '@polkadot/api/augment/rpc';
 import './augment-api-consts';
-
-// @TODO fix me
-// import './augment-api-tx';
-
-// @TODO fix generate query error
-// import './augment-api-query';
+import './augment-api-tx';
+import './augment-api-query';
