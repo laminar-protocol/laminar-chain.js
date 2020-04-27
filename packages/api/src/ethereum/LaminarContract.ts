@@ -3,7 +3,7 @@ import { provider as Web3Provider } from 'web3-core';
 import { Contract } from 'web3-eth-contract';
 import { AbiItem } from 'web3-utils';
 
-import protocols, { Protocol, ProtocolType, TokenId, TradingPairInfo } from './protocols';
+import protocols, { Protocol, ProtocolType } from './protocols';
 
 export interface LaminarContractOptions {
   provider: Web3Provider;
@@ -15,8 +15,8 @@ interface LaminarContract {
   provider: Web3Provider;
   web3: Web3;
   protocol: Protocol;
-  baseContracts: Record<'flowProtocol' | 'flowMarginProtocol' | 'oracle' | 'moneyMarket' | 'daiFaucet', Contract>;
-  tokenContracts: Record<TokenId | 'iUSD', Contract>;
+  baseContracts: Record<'marginFlowProtocol' | 'marginFlowProtocolSafety', Contract>;
+  tokenContracts: Record<string | 'iUSD', Contract>;
 }
 
 class LaminarContract implements LaminarContract {
@@ -29,11 +29,8 @@ class LaminarContract implements LaminarContract {
     const addresses = this.protocol.addresses;
 
     this.baseContracts = {
-      flowProtocol: this.createContract(abis.FlowProtocol, addresses.protocol),
-      flowMarginProtocol: this.createContract(abis.FlowMarginProtocol, addresses.marginProtocol),
-      oracle: this.createContract(abis.PriceOracleInterface, addresses.oracle),
-      moneyMarket: this.createContract(abis.MoneyMarket, addresses.moneyMarket),
-      daiFaucet: this.createContract(abis.FaucetInterface, addresses.baseToken)
+      marginFlowProtocol: this.createContract(abis.MarginFlowProtocol, addresses.marginProtocol),
+      marginFlowProtocolSafety: this.createContract(abis.MarginFlowProtocolSafety, addresses.marginProtocolSafety)
     };
 
     this.tokenContracts = {
@@ -50,29 +47,22 @@ class LaminarContract implements LaminarContract {
     return new this.web3.eth.Contract(abi, address);
   }
 
-  public getTradingPairInfos(): TradingPairInfo[] {
-    return this.protocol.tradingPairs;
-  }
-
   public getTokenContract(tokenId: string): Contract {
-    const contract = this.tokenContracts[tokenId as keyof LaminarContract['tokenContracts']];
+    const contract = this.tokenContracts[tokenId];
     if (!contract) throw new Error(`token ${tokenId} is undefined`);
     return contract;
-  }
-
-  public getTradingPairContract(_pairId: string, leverage: string) {
-    const tradingPairs = this.protocol.tradingPairs;
-    const address = tradingPairs.find(({ pairId }) => pairId === _pairId)?.addresses[leverage];
-    if (!address) throw new Error(`trading pair: ${_pairId}/${leverage} is undefined`);
-    return this.createContract(this.protocol.abis.MarginTradingPair, address);
   }
 
   public getBaseContract(name: keyof LaminarContract['baseContracts']): Contract {
     return this.baseContracts[name];
   }
 
-  public createLiquidityPoolContract(poolId: string): Contract {
-    return this.createContract(this.protocol.abis.LiquidityPool, poolId);
+  public getMarginPoolInterfaceContract(poolId: string): Contract {
+    return this.createContract(this.protocol.abis.MarginLiquidityPoolInterface, poolId);
+  }
+
+  public getMarginPoolRegistryContract(poolId: string): Contract {
+    return this.createContract(this.protocol.abis.MarginLiquidityPoolRegistry, poolId);
   }
 
   public getNetworkType = async (): Promise<string> => this.web3.eth.net.getNetworkType();

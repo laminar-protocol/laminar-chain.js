@@ -1,16 +1,13 @@
 import BN from 'bn.js';
 
-import {
-  TokenId as EthTokenId,
-  TradingPairSymbol as EthTradingPairSymbol,
-  TradingPairInfo as EthTradingPairInfo
-} from './ethereum/protocols';
-
 export type LaminarTokenIds = ['LAMI', 'AUSD', 'FEUR', 'FJPY', 'FBTC', 'FETH'];
 
-export type TokenId = EthTokenId | LaminarTokenIds[number];
-export type TradingPairSymbol = EthTradingPairSymbol;
-export type TradingPairInfo = EthTradingPairInfo;
+export type TokenId = string | LaminarTokenIds[number];
+
+export type TradingPair = {
+  base: TokenId;
+  quote: TokenId;
+};
 
 export type LeverageEnum = [
   'LongTwo',

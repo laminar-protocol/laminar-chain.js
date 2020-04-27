@@ -2,135 +2,65 @@ import { AbiItem } from 'web3-utils';
 
 import KovanERC20 from 'flow-protocol-ethereum/artifacts/kovan/abi/ERC20Detailed.json';
 import KovanFaucetInterface from 'flow-protocol-ethereum/artifacts/kovan/abi/FaucetInterface.json';
-import KovanFlowMarginProtocol from 'flow-protocol-ethereum/artifacts/kovan/abi/FlowMarginProtocol.json';
-import KovanFlowProtocol from 'flow-protocol-ethereum/artifacts/kovan/abi/FlowProtocol.json';
-import KovanFlowToken from 'flow-protocol-ethereum/artifacts/kovan/abi/FlowToken.json';
-import KovanLiquidityPool from 'flow-protocol-ethereum/artifacts/kovan/abi/LiquidityPool.json';
-import KovanLiquidityPoolInterface from 'flow-protocol-ethereum/artifacts/kovan/abi/LiquidityPoolInterface.json';
-import KovanMarginTradingPair from 'flow-protocol-ethereum/artifacts/kovan/abi/MarginTradingPair.json';
+import KovanMarginFlowProtocol from 'flow-protocol-ethereum/artifacts/kovan/abi/MarginFlowProtocol.json';
+import KovanMarginFlowProtocolSafety from 'flow-protocol-ethereum/artifacts/kovan/abi/MarginFlowProtocolSafety.json';
+import KovanMarginLiquidityPoolInterface from 'flow-protocol-ethereum/artifacts/kovan/abi/MarginLiquidityPoolInterface.json';
+import KovanMarginLiquidityPoolRegistry from 'flow-protocol-ethereum/artifacts/kovan/abi/MarginLiquidityPoolRegistry.json';
 import KovanMoneyMarket from 'flow-protocol-ethereum/artifacts/kovan/abi/MoneyMarket.json';
 import KovanPriceOracleInterface from 'flow-protocol-ethereum/artifacts/kovan/abi/PriceOracleInterface.json';
 import KovanSimplePriceOracle from 'flow-protocol-ethereum/artifacts/kovan/abi/SimplePriceOracle.json';
+import KovanSyntheticFlowProtocol from 'flow-protocol-ethereum/artifacts/kovan/abi/SyntheticFlowProtocol.json';
+import KovanSyntheticFlowToken from 'flow-protocol-ethereum/artifacts/kovan/abi/SyntheticFlowToken.json';
+import KovanSyntheticLiquidityPoolInterface from 'flow-protocol-ethereum/artifacts/kovan/abi/SyntheticLiquidityPoolInterface.json';
+
 import KovanAddresses from 'flow-protocol-ethereum/artifacts/kovan/deployment.json';
 
 export const abis = [
   'ERC20',
   'FaucetInterface',
-  'FlowMarginProtocol',
-  'FlowProtocol',
-  'FlowToken',
-  'LiquidityPoolInterface',
-  'LiquidityPool',
-  'MarginTradingPair',
+  'MarginFlowProtocol',
+  'MarginFlowProtocolSafety',
+  'MarginLiquidityPoolInterface',
+  'MarginLiquidityPoolRegistry',
   'MoneyMarket',
   'PriceOracleInterface',
-  'SimplePriceOracle'
+  'SimplePriceOracle',
+  'SyntheticFlowProtocol',
+  'SyntheticFlowToken',
+  'SyntheticLiquidityPoolInterface'
 ] as const;
-export const tokenId = ['DAI', 'fEUR', 'fJPY', 'fXAU', 'fAAPL'] as const;
-export const tradingPairSymbols = [
-  'l10USDEUR',
-  's10USDEUR',
-  'l20USDJPY',
-  's20USDJPY',
-  'l20USDXAU',
-  's20USDXAU',
-  'l5USDAAPL',
-  's5USDAAPL'
-] as const;
+
+export const tokenName = ['DAI', 'fEUR', 'fJPY', 'fXAU', 'fAAPL'] as const;
 
 export type ProtocolType = 'kovan';
 
 export type AbiName = typeof abis[number];
 
-export type TokenId = typeof tokenId[number];
-
-export type TradingPairSymbol = typeof tradingPairSymbols[number];
-
-export interface TradingPairInfo {
-  pair: {
-    base: TokenId;
-    quote: TokenId;
-  };
-  pairId: string;
-  enabledTrades: string[];
-  addresses: Record<string, string>;
-}
+export type TokenName = typeof tokenName[number];
 
 export interface Protocol {
   networkType: ProtocolType;
   abis: Record<AbiName, AbiItem[]>;
   addresses: typeof KovanAddresses;
-  tradingPairs: TradingPairInfo[];
 }
-
-const getTradingPairs = (addresses: typeof KovanAddresses): Protocol['tradingPairs'] => [
-  {
-    pairId: 'USDEUR',
-    pair: {
-      base: 'DAI',
-      quote: 'fEUR'
-    },
-    enabledTrades: ['LongTen', 'ShortTen'],
-    addresses: {
-      LongTen: addresses.l10USDEUR,
-      ShortTen: addresses.s10USDEUR
-    }
-  },
-  {
-    pair: {
-      base: 'DAI',
-      quote: 'fJPY'
-    },
-    pairId: 'USDJPY',
-    enabledTrades: ['LongTwenty', 'ShortTwenty'],
-    addresses: {
-      LongTwenty: addresses.l20USDJPY,
-      ShortTwenty: addresses.s20USDJPY
-    }
-  },
-  {
-    pair: {
-      base: 'DAI',
-      quote: 'fXAU'
-    },
-    pairId: 'USDXAU',
-    enabledTrades: ['LongTwenty', 'ShortTwenty'],
-    addresses: {
-      LongTwenty: addresses.l20USDXAU,
-      ShortTwenty: addresses.s20USDXAU
-    }
-  },
-  {
-    pair: {
-      base: 'DAI',
-      quote: 'fAAPL'
-    },
-    pairId: 'USDAAPL',
-    enabledTrades: ['LongFive', 'ShortFive'],
-    addresses: {
-      LongFive: addresses.l5USDAAPL,
-      ShortFive: addresses.s5USDAAPL
-    }
-  }
-];
 
 const kovan: Readonly<Protocol> = {
   networkType: 'kovan',
   abis: {
     ERC20: KovanERC20,
     FaucetInterface: KovanFaucetInterface,
-    FlowMarginProtocol: KovanFlowMarginProtocol,
-    FlowProtocol: KovanFlowProtocol,
-    FlowToken: KovanFlowToken,
-    LiquidityPoolInterface: KovanLiquidityPoolInterface,
-    LiquidityPool: KovanLiquidityPool,
-    MarginTradingPair: KovanMarginTradingPair,
+    MarginFlowProtocol: KovanMarginFlowProtocol,
+    MarginFlowProtocolSafety: KovanMarginFlowProtocolSafety,
+    MarginLiquidityPoolInterface: KovanMarginLiquidityPoolInterface,
+    MarginLiquidityPoolRegistry: KovanMarginLiquidityPoolRegistry,
     MoneyMarket: KovanMoneyMarket,
     PriceOracleInterface: KovanPriceOracleInterface,
-    SimplePriceOracle: KovanSimplePriceOracle
+    SimplePriceOracle: KovanSimplePriceOracle,
+    SyntheticFlowProtocol: KovanSyntheticFlowProtocol,
+    SyntheticFlowToken: KovanSyntheticFlowToken,
+    SyntheticLiquidityPoolInterface: KovanSyntheticLiquidityPoolInterface
   } as Protocol['abis'],
-  addresses: KovanAddresses,
-  tradingPairs: getTradingPairs(KovanAddresses)
+  addresses: KovanAddresses
 };
 
 const protocols: Record<ProtocolType, Protocol> = {
