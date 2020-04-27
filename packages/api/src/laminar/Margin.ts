@@ -1,12 +1,5 @@
-import {
-  Balance,
-  MarginLiquidityPoolOption,
-  PoolInfo,
-  PositionId,
-  RiskThreshold,
-  TradingPair
-} from '@laminar/types/interfaces';
-import { Option } from '@polkadot/types/codec';
+import { PoolInfo } from '@laminar/types/interfaces';
+
 import BN from 'bn.js';
 import { combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -24,14 +17,14 @@ class Margin {
   }
 
   public balance = (address: string) => {
-    return this.api.query.marginProtocol.balances<Balance>(address).pipe(map(result => result.toString()));
+    return this.api.query.marginProtocol.balances(address).pipe(map(result => result.toString()));
   };
 
   public poolInfo = (poolId: string): Observable<MarginPoolInfo | null> => {
     return combineLatest([
       this.api.query.baseLiquidityPoolsForMargin.owners(poolId),
-      this.api.query.baseLiquidityPoolsForMargin.balances<Option<Balance>>(poolId),
-      this.api.query.marginLiquidityPools.liquidityPoolOptions.entries<Option<MarginLiquidityPoolOption>>(poolId),
+      this.api.query.baseLiquidityPoolsForMargin.balances(poolId),
+      this.api.query.marginLiquidityPools.liquidityPoolOptions.entries(poolId),
       (this.api.rpc as any).margin.poolInfo(poolId)
     ]).pipe(
       map(([owner, balances, liquidityPoolOptions, poolInfo]) => {
@@ -43,7 +36,7 @@ class Margin {
           enp: (poolInfo as PoolInfo).enp.toString(),
           ell: (poolInfo as PoolInfo).ell.toString(),
           options: liquidityPoolOptions.map(([storageKey, options]) => {
-            const pair = (storageKey.args[1] as TradingPair).toJSON() as {
+            const pair = storageKey.args[1].toJSON() as {
               base: string;
               quote: string;
             };
@@ -63,8 +56,8 @@ class Margin {
 
   public marginInfo = (): Observable<MarginInfo> => {
     return combineLatest([
-      this.api.query.marginProtocol.liquidityPoolELLThreshold<RiskThreshold>(),
-      this.api.query.marginProtocol.liquidityPoolENPThreshold<RiskThreshold>()
+      this.api.query.marginProtocol.liquidityPoolELLThreshold(),
+      this.api.query.marginProtocol.liquidityPoolENPThreshold()
     ]).pipe(
       map(([ellThreshold, enpThreshold]) => {
         return {
@@ -78,7 +71,7 @@ class Margin {
   public traderInfo = (account: string, poolId: string): Observable<TraderInfo> => {
     return combineLatest([
       (this.api.rpc as any).margin.traderInfo(account),
-      this.api.query.marginProtocol.traderRiskThreshold<RiskThreshold>()
+      this.api.query.marginProtocol.traderRiskThreshold()
     ]).pipe(
       map(([result, traderThreshold]: any) => {
         return {
@@ -95,7 +88,7 @@ class Margin {
 
   public allPoolIds = () => {
     return this.api.query.baseLiquidityPoolsForMargin
-      .nextPoolId<PositionId>()
+      .nextPoolId()
       .pipe(map(result => [...new Array(result.toNumber())].map((_, i) => `${i}`)));
   };
 
