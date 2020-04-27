@@ -1,5 +1,3 @@
-import { Balance, Permill, SyntheticLiquidityPoolOption, PositionId } from '@laminar/types/interfaces';
-import { Option } from '@polkadot/types/codec';
 import BN from 'bn.js';
 import { combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -29,9 +27,9 @@ class Synthetic {
   poolInfo(poolId: string): Observable<SyntheticPoolInfo | null> {
     return combineLatest([
       this.api.query.baseLiquidityPoolsForSynthetic.owners(poolId),
-      this.api.query.baseLiquidityPoolsForSynthetic.balances<Option<Balance>>(poolId),
-      this.api.query.syntheticLiquidityPools.liquidityPoolOptions.entries<Option<SyntheticLiquidityPoolOption>>(poolId),
-      this.api.query.syntheticLiquidityPools.minAdditionalCollateralRatio<Permill>()
+      this.api.query.baseLiquidityPoolsForSynthetic.balances(poolId),
+      this.api.query.syntheticLiquidityPools.liquidityPoolOptions.entries(poolId),
+      this.api.query.syntheticLiquidityPools.minAdditionalCollateralRatio()
     ]).pipe(
       map(([owner, balances, liquidityPoolOptions, minAdditionalCollateralRatio]) => {
         if (owner.isEmpty) return null;
@@ -62,7 +60,7 @@ class Synthetic {
 
   public allPoolIds = () => {
     return this.api.query.baseLiquidityPoolsForSynthetic
-      .nextPoolId<PositionId>()
+      .nextPoolId()
       .pipe(map(result => [...new Array(result.toNumber())].map((_, i) => `${i}`)));
   };
 
