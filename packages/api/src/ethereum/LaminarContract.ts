@@ -15,8 +15,9 @@ interface LaminarContract {
   provider: Web3Provider;
   web3: Web3;
   protocol: Protocol;
-  baseContracts: Record<'marginFlowProtocol' | 'marginFlowProtocolSafety', Contract>;
+  baseContracts: Record<'marginFlowProtocol' | 'marginFlowProtocolSafety' | 'syntheticFlowProtocol', Contract>;
   tokenContracts: Record<string | 'iUSD', Contract>;
+  baseTokenContracts: Contract;
 }
 
 class LaminarContract implements LaminarContract {
@@ -30,7 +31,8 @@ class LaminarContract implements LaminarContract {
 
     this.baseContracts = {
       marginFlowProtocol: this.createContract(abis.MarginFlowProtocol, addresses.marginProtocol),
-      marginFlowProtocolSafety: this.createContract(abis.MarginFlowProtocolSafety, addresses.marginProtocolSafety)
+      marginFlowProtocolSafety: this.createContract(abis.MarginFlowProtocolSafety, addresses.marginProtocolSafety),
+      syntheticFlowProtocol: this.createContract(abis.SyntheticFlowProtocol, addresses.syntheticProtocol)
     };
 
     this.tokenContracts = {
@@ -41,6 +43,8 @@ class LaminarContract implements LaminarContract {
       fAAPL: this.createContract(abis.ERC20, addresses.fAAPL),
       fXAU: this.createContract(abis.ERC20, addresses.fXAU)
     };
+
+    this.baseTokenContracts = this.tokenContracts.DAI;
   }
 
   private createContract(abi: AbiItem[] | AbiItem, address: string): Contract {
@@ -61,6 +65,10 @@ class LaminarContract implements LaminarContract {
 
   public getMarginPoolRegistryContract(poolId: string): Contract {
     return this.createContract(this.protocol.abis.MarginLiquidityPoolRegistry, poolId);
+  }
+
+  public getSyntheticPoolInterfaceContract(poolId: string): Contract {
+    return this.createContract(this.protocol.abis.SyntheticLiquidityPoolInterface, poolId);
   }
 
   public getNetworkType = async (): Promise<string> => this.web3.eth.net.getNetworkType();

@@ -233,7 +233,6 @@ class Margin {
     const leverage =
       direction === 'Short' ? -1 * multipleMap[multiple] : direction === 'Long' ? multipleMap[multiple] : 0;
 
-    console.log(poolId, pair.base, pair.quote, leverage, leveragedAmount, price);
     const extrinsic = this.apiProvider.baseContracts.marginFlowProtocol.methods.openPosition(
       poolId,
       pair.base,
