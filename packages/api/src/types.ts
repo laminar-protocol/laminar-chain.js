@@ -102,7 +102,6 @@ export interface SyntheticPoolInfo {
     additionalCollateralRatio: number | null;
     askSpread: number | null;
     bidSpread: number | null;
-    syntheticEnabled: boolean;
     tokenId: TokenId;
   }[];
 }
