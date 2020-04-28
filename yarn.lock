@@ -6683,9 +6683,9 @@ flatten@^1.0.2:
   resolved "https://registry.yarnpkg.com/flatten/-/flatten-1.0.3.tgz#c1283ac9f27b368abc1e36d1ff7b04501a30356b"
   integrity sha512-dVsPA/UwQ8+2uoFe5GHtiBMu48dWLTdsuEd7CKGlZlD78r1TTWBvDuFaFGKCo/ZfEr95Uk56vZoX86OsHkUeIg==
 
-"flow-protocol-ethereum@github:laminar-protocol/flow-protocol-ethereum#0.0.2":
+"flow-protocol-ethereum@github:laminar-protocol/flow-protocol-ethereum#0.0.4":
   version "0.0.2"
-  resolved "https://codeload.github.com/laminar-protocol/flow-protocol-ethereum/tar.gz/583891bdebc18928a78ae3e903dd1e371300afbe"
+  resolved "https://codeload.github.com/laminar-protocol/flow-protocol-ethereum/tar.gz/41202b6e094b8d04f35fc35244287c01c766f1f8"
 
 flush-write-stream@^1.0.0:
   version "1.1.1"
