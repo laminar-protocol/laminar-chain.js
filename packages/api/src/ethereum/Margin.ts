@@ -2,7 +2,7 @@ import BN from 'bn.js';
 import { from, Observable, of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { toNumber } from '@laminar/types/utils/precision';
-import { LeverageEnum, TokenId, TokenInfo } from '../types';
+import { LeverageEnum, TokenId, TokenInfo, MarginPoolInfo, MarginInfo } from '../types';
 import EthereumApi, { UINT256_MAX } from './EthereumApi';
 
 class Margin {
@@ -91,7 +91,7 @@ class Margin {
     return of([this.protocol.addresses.marginPool, this.protocol.addresses.marginPool2]);
   };
 
-  public marginInfo = (): Observable<any> => {
+  public marginInfo = (): Observable<MarginInfo> => {
     const methods = this.baseContracts.marginFlowProtocolSafety.methods;
 
     return from(
@@ -115,7 +115,7 @@ class Margin {
     );
   };
 
-  public poolInfo = (poolId: string) => {
+  public poolInfo = (poolId: string): Observable<MarginPoolInfo> => {
     const poolInterface = this.apiProvider.getMarginPoolInterfaceContract(poolId);
     const poolRegistry = this.apiProvider.getMarginPoolRegistryContract(poolId);
     return this.getEnableTradePairs(poolId).pipe(
@@ -136,6 +136,24 @@ class Margin {
                     base: base.id,
                     quote: quote.id
                   },
+                  enabledTrades: [
+                    'LongTwo',
+                    'LongThree',
+                    'LongFive',
+                    'LongTen',
+                    'LongTwenty',
+                    'LongThirty',
+                    'LongFifty',
+                    'LongReserved',
+                    'ShortTwo',
+                    'ShortThree',
+                    'ShortFive',
+                    'ShortTen',
+                    'ShortTwenty',
+                    'ShortThirty',
+                    'ShortFifty',
+                    'ShortReserved'
+                  ],
                   pairId: `${base.name.toUpperCase()}${quote.name.toUpperCase()}`
                 };
               });
@@ -215,6 +233,7 @@ class Margin {
     const leverage =
       direction === 'Short' ? -1 * multipleMap[multiple] : direction === 'Long' ? multipleMap[multiple] : 0;
 
+    console.log(poolId, pair.base, pair.quote, leverage, leveragedAmount, price);
     const extrinsic = this.apiProvider.baseContracts.marginFlowProtocol.methods.openPosition(
       poolId,
       pair.base,

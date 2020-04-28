@@ -2,7 +2,7 @@ import { ApiRx, WsProvider } from '@polkadot/api';
 import { ApiOptions } from '@polkadot/api/types';
 import { first } from 'rxjs/operators';
 
-import { ActionStatus, ChainType, LaminarTokenIds } from '../types';
+import { ActionStatus, ChainType, LaminarTokenNames } from '../types';
 import { options as getOptions } from './options';
 import Margin from './Margin';
 import Synthetic from './Synthetic';
@@ -19,7 +19,7 @@ class LaminarApi {
   public synthetic: Synthetic;
   public currencies: Currencies;
 
-  static tokenIds: LaminarTokenIds = ['LAMI', 'AUSD', 'FEUR', 'FJPY', 'FBTC', 'FETH'];
+  static tokenIds: LaminarTokenNames = ['LAMI', 'AUSD', 'FEUR', 'FJPY', 'FBTC', 'FETH'];
 
   constructor(options: LaminarApiOptions) {
     this.api = new ApiRx(

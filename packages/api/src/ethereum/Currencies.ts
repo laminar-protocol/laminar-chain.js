@@ -24,7 +24,7 @@ class Currencies {
         id: this.apiProvider.tokenContracts.DAI.options.address
       },
       {
-        name: 'EUR',
+        name: 'fEUR',
         displayName: 'Euro',
         precision: 18,
         isBaseToken: false,
@@ -32,7 +32,7 @@ class Currencies {
         id: this.apiProvider.tokenContracts.fEUR.options.address
       },
       {
-        name: 'JPY',
+        name: 'fJPY',
         displayName: 'Yen',
         precision: 18,
         isBaseToken: false,
@@ -40,7 +40,7 @@ class Currencies {
         id: this.apiProvider.tokenContracts.fJPY.options.address
       },
       {
-        name: 'XAU',
+        name: 'fXAU',
         displayName: 'Gold',
         precision: 18,
         isBaseToken: false,
@@ -48,7 +48,7 @@ class Currencies {
         id: this.apiProvider.tokenContracts.fXAU.options.address
       },
       {
-        name: 'AAPL',
+        name: 'fAAPL',
         displayName: 'Apple',
         precision: 18,
         isBaseToken: false,

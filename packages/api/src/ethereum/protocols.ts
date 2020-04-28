@@ -30,13 +30,13 @@ export const abis = [
   'SyntheticLiquidityPoolInterface'
 ] as const;
 
-export const tokenName = ['DAI', 'fEUR', 'fJPY', 'fXAU', 'fAAPL'] as const;
+export const TokenNames = ['DAI', 'fEUR', 'fJPY', 'fXAU', 'fAAPL'] as const;
 
 export type ProtocolType = 'kovan';
 
 export type AbiName = typeof abis[number];
 
-export type TokenName = typeof tokenName[number];
+export type TokenName = typeof TokenNames[number];
 
 export interface Protocol {
   networkType: ProtocolType;

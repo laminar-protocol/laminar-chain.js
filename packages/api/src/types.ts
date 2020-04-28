@@ -1,8 +1,9 @@
 import BN from 'bn.js';
+import { TokenNames as EthTokenNames } from './ethereum/protocols';
 
-export type LaminarTokenIds = ['LAMI', 'AUSD', 'FEUR', 'FJPY', 'FBTC', 'FETH'];
+export type LaminarTokenNames = ['LAMI', 'AUSD', 'FEUR', 'FJPY', 'FBTC', 'FETH'];
 
-export type TokenId = string | LaminarTokenIds[number];
+export type TokenId = string | LaminarTokenNames[number];
 
 export type TradingPair = {
   base: TokenId;
@@ -56,7 +57,7 @@ export interface TraderInfo {
 
 export interface TokenInfo {
   id: TokenId;
-  name: string;
+  name: typeof EthTokenNames[number] | LaminarTokenNames[number];
   displayName: string;
   precision: number;
   isBaseToken: boolean;
@@ -65,8 +66,8 @@ export interface TokenInfo {
 }
 
 export interface PoolOptions {
-  poolId: PoolInfo['id'];
-  tokenId: TokenInfo['id'];
+  poolId: string;
+  tokenId: string;
   additionalCollateralRatio: number | null;
   askSpread: number | null;
   bidSpread: number | null;

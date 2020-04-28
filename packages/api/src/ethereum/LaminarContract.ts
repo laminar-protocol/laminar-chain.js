@@ -48,9 +48,7 @@ class LaminarContract implements LaminarContract {
   }
 
   public getTokenContract(tokenId: string): Contract {
-    const contract = this.tokenContracts[tokenId];
-    if (!contract) throw new Error(`token ${tokenId} is undefined`);
-    return contract;
+    return this.createContract(this.protocol.abis.ERC20, tokenId);
   }
 
   public getBaseContract(name: keyof LaminarContract['baseContracts']): Contract {
