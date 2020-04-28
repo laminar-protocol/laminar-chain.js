@@ -29,7 +29,7 @@ class Currencies {
         id: 'AUSD'
       },
       {
-        name: 'EUR',
+        name: 'FEUR',
         displayName: 'Euro',
         precision: 18,
         isBaseToken: false,
@@ -37,7 +37,7 @@ class Currencies {
         id: 'FEUR'
       },
       {
-        name: 'JPY',
+        name: 'FJPY',
         displayName: 'Yen',
         precision: 18,
         isBaseToken: false,
@@ -45,7 +45,7 @@ class Currencies {
         id: 'FJPY'
       },
       {
-        name: 'BTC',
+        name: 'FBTC',
         displayName: 'BTC',
         precision: 18,
         isBaseToken: false,
@@ -53,7 +53,7 @@ class Currencies {
         id: 'FBTC'
       },
       {
-        name: 'ETH',
+        name: 'FETH',
         displayName: 'ETH',
         precision: 18,
         isBaseToken: false,

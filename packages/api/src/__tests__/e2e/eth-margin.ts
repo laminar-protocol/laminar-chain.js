@@ -24,9 +24,23 @@ describe('ethereum api', () => {
     });
   });
 
-  it('poolInfo', done => {
-    api.margin.poolInfo('0xabde99E93bc45b9cded88D0b9e79bE4221668608').subscribe(result => {
+  it('getEnableTradePairs', done => {
+    api.margin.getEnableTradePairs().subscribe(result => {
       console.log(result);
     });
+  });
+
+  it('poolInfo', done => {
+    api.margin.poolInfo('0xAAe87632fAE233Cba4e2175c15717924b88BEE8D').subscribe(result => {
+      console.log(result);
+    });
+  });
+
+  it('traderInfo', done => {
+    api.margin
+      .traderInfo('0x885501bcfBad1cAE12B4FD2272F1AbdE6dd88B38', '0xAAe87632fAE233Cba4e2175c15717924b88BEE8D')
+      .subscribe(result => {
+        console.log(result);
+      });
   });
 });
