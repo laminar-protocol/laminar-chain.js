@@ -19,7 +19,7 @@
     "@laminar/types": "^0.2.0-beta.59",
     "@open-web3/orml-api-derive": "^0.3.0-beta.3",
     "@polkadot/api": "^1.9.0-beta.22",
-    "flow-protocol-ethereum": "github:laminar-protocol/flow-protocol-ethereum#0.0.4",
+    "flow-protocol-ethereum": "github:laminar-protocol/flow-protocol-ethereum#0.0.5",
     "rxjs": "^6.5.4",
     "web3": "1.2.6",
     "web3-core": "1.2.6",
