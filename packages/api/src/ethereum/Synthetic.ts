@@ -17,16 +17,16 @@ class Synthetic {
     this.baseContracts = provider.baseContracts;
   }
 
-  public allowance = (account: string): Observable<string> => {
+  public allowance = (account: string, token: TokenId): Observable<string> => {
     const grantAddress = this.baseContracts.syntheticFlowProtocol.options.address;
-    const contract = this.apiProvider.tokenContracts.DAI;
+    const contract = this.apiProvider.getTokenContract(token);
     return from(contract.methods.allowance(account, grantAddress).call() as Promise<string>);
   };
 
-  public grant = async (account: string, balance: string | BN = UINT256_MAX) => {
+  public grant = async (account: string, token: TokenId, balance: string | BN = UINT256_MAX) => {
     const grantAddress = this.baseContracts.syntheticFlowProtocol.options.address;
-
-    const extrinsic = this.apiProvider.tokenContracts.DAI.methods.approve(grantAddress, balance);
+    const contract = this.apiProvider.getTokenContract(token);
+    const extrinsic = contract.methods.approve(grantAddress, balance);
     return this.apiProvider.extrinsicHelper(extrinsic, { from: account }, { action: 'Grant' });
   };
 
