@@ -3,8 +3,15 @@
 
 import { ITuple } from '@polkadot/types/types';
 import { Compact, Enum, Int, Option, Set, Struct, U8aFixed, Vec } from '@polkadot/types/codec';
-import { GenericAccountId, GenericAccountIndex, GenericAddress, GenericBlock, GenericCall, GenericConsensusEngineId, GenericDigest, GenericOrigin } from '@polkadot/types/generic';
-import { Bytes, Null, StorageKey, bool, i128, u128, u32, u64, u8 } from '@polkadot/types/primitive';
+import {
+  GenericAccountId,
+  GenericAccountIndex,
+  GenericAddress,
+  GenericBlock,
+  GenericCall,
+  GenericConsensusEngineId
+} from '@polkadot/types/generic';
+import { Bytes, DoNotConstruct, Null, StorageKey, bool, i128, u128, u32, u64, u8 } from '@polkadot/types/primitive';
 import { Price } from '@open-web3/orml-types/interfaces/prices';
 import { AuthorityId } from '@polkadot/types/interfaces/consensus';
 import { Signature } from '@polkadot/types/interfaces/extrinsics';
@@ -77,7 +84,9 @@ export interface CurrencyId extends Enum {
 export interface CurrencyIdOf extends CurrencyId {}
 
 /** @name Digest */
-export interface Digest extends GenericDigest {}
+export interface Digest extends Struct {
+  readonly logs: Vec<DigestItem>;
+}
 
 /** @name DigestItem */
 export interface DigestItem extends Enum {
@@ -101,6 +110,7 @@ export interface DigestItem extends Enum {
 export interface DispatchClass extends Enum {
   readonly isNormal: boolean;
   readonly isOperational: boolean;
+  readonly isMandatory: boolean;
 }
 
 /** @name DispatchInfo */
@@ -177,14 +187,6 @@ export interface Leverage extends Enum {
 
 /** @name Leverages */
 export interface Leverages extends Set {
-  readonly isShortTwo: boolean;
-  readonly isShortThree: boolean;
-  readonly isShortFive: boolean;
-  readonly isShortTen: boolean;
-  readonly isShortTwenty: boolean;
-  readonly isShortThirty: boolean;
-  readonly isShortFifty: boolean;
-  readonly isShortReserved: boolean;
   readonly isLongTwo: boolean;
   readonly isLongThree: boolean;
   readonly isLongFive: boolean;
@@ -193,6 +195,14 @@ export interface Leverages extends Set {
   readonly isLongThirty: boolean;
   readonly isLongFifty: boolean;
   readonly isLongReserved: boolean;
+  readonly isShortTwo: boolean;
+  readonly isShortThree: boolean;
+  readonly isShortFive: boolean;
+  readonly isShortTen: boolean;
+  readonly isShortTwenty: boolean;
+  readonly isShortThirty: boolean;
+  readonly isShortFifty: boolean;
+  readonly isShortReserved: boolean;
 }
 
 /** @name LiquidityPoolId */
@@ -214,6 +224,9 @@ export interface MarginLiquidityPoolOption extends Struct {
   readonly enabledTrades: Leverages;
 }
 
+/** @name ModuleId */
+export interface ModuleId extends LockIdentifier {}
+
 /** @name Moment */
 export interface Moment extends u64 {}
 
@@ -224,7 +237,7 @@ export interface OracleKey extends CurrencyId {}
 export interface OracleValue extends Price {}
 
 /** @name Origin */
-export interface Origin extends GenericOrigin {}
+export interface Origin extends DoNotConstruct {}
 
 /** @name Perbill */
 export interface Perbill extends u32 {}
@@ -269,6 +282,12 @@ export interface RiskThreshold extends Struct {
   readonly stopOut: Permill;
 }
 
+/** @name RuntimeDbWeight */
+export interface RuntimeDbWeight extends Struct {
+  readonly read: Weight;
+  readonly write: Weight;
+}
+
 /** @name Seal */
 export interface Seal extends ITuple<[ConsensusEngineId, Bytes]> {}
 
@@ -308,7 +327,7 @@ export interface TradingPair extends Struct {
 export interface ValidatorId extends AccountId {}
 
 /** @name Weight */
-export interface Weight extends u32 {}
+export interface Weight extends u64 {}
 
 /** @name WeightMultiplier */
 export interface WeightMultiplier extends Fixed64 {}

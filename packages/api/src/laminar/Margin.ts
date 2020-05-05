@@ -145,13 +145,13 @@ class Margin {
     return this.apiProvider.extrinsicHelper(extrinsic, account, { action: 'Close Position' });
   };
 
-  public deposit = async (account: string, amount: string | BN) => {
-    const extrinsic = this.api.tx.marginProtocol.deposit(amount);
+  public deposit = async (account: string, poolId: string, amount: string | BN) => {
+    const extrinsic = this.api.tx.marginProtocol.deposit(poolId, amount);
     return this.apiProvider.extrinsicHelper(extrinsic, account, { action: 'Deposit' });
   };
 
-  public withdraw = async (account: string, amount: string | BN) => {
-    const extrinsic = this.api.tx.marginProtocol.withdraw(amount);
+  public withdraw = async (account: string, poolId: string, amount: string | BN) => {
+    const extrinsic = this.api.tx.marginProtocol.withdraw(poolId, amount);
     return this.apiProvider.extrinsicHelper(extrinsic, account, { action: 'Withdraw' });
   };
 
