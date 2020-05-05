@@ -73,7 +73,7 @@ class Synthetic {
         );
 
         return {
-          poolId: poolInterface.options.address,
+          poolId: poolInterface.options.address.toLowerCase(),
           owner: '0x15ae150d7dC03d3B635EE90b85219dBFe071ED35',
           balance: await getBalance,
           options
@@ -83,7 +83,10 @@ class Synthetic {
   }
 
   public allPoolIds = () => {
-    return of([this.protocol.addresses.syntheticPool, this.protocol.addresses.syntheticPool2]);
+    return of([
+      this.protocol.addresses.syntheticPool.toLowerCase(),
+      this.protocol.addresses.syntheticPool2.toLowerCase()
+    ]);
   };
 
   public redeem = async (account: string, poolId: string, fromToken: TokenId, amount: string | BN) => {

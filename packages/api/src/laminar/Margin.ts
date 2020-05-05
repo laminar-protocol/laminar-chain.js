@@ -154,6 +154,16 @@ class Margin {
     const extrinsic = this.api.tx.marginProtocol.withdraw(amount);
     return this.apiProvider.extrinsicHelper(extrinsic, account, { action: 'Withdraw' });
   };
+
+  public depositLiquidity = async (account: string, poolId: string, amount: string | BN) => {
+    const extrinsic = this.api.tx.baseLiquidityPoolsForMargin.depositLiquidity(poolId, amount);
+    return this.apiProvider.extrinsicHelper(extrinsic, account, { action: 'Deposit Liquidity' });
+  };
+
+  public withdrawLiquidity = async (account: string, poolId: string, amount: string | BN) => {
+    const extrinsic = this.api.tx.baseLiquidityPoolsForMargin.withdrawLiquidity(poolId, amount);
+    return this.apiProvider.extrinsicHelper(extrinsic, account, { action: 'Withdraw Liquidity' });
+  };
 }
 
 export default Margin;
