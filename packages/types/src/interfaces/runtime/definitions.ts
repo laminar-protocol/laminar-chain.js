@@ -39,22 +39,22 @@ export default {
     Leverages: {
       _set: {
         _bitLength: 16,
-        ShortTwo: 0b0000000000000001,
-        ShortThree: 0b0000000000000010,
-        ShortFive: 0b0000000000000100,
-        ShortTen: 0b0000000000001000,
-        ShortTwenty: 0b0000000000010000,
-        ShortThirty: 0b0000000000100000,
-        ShortFifty: 0b0000000001000000,
-        ShortReserved: 0b0000000010000000,
-        LongTwo: 0b0000000100000000,
-        LongThree: 0b0000001000000000,
-        LongFive: 0b0000010000000000,
-        LongTen: 0b0000100000000000,
-        LongTwenty: 0b0001000000000000,
-        LongThirty: 0b0010000000000000,
-        LongFifty: 0b0100000000000000,
-        LongReserved: 0b1000000000000000
+        LongTwo: 0b0000000000000001,
+        LongThree: 0b0000000000000010,
+        LongFive: 0b0000000000000100,
+        LongTen: 0b0000000000001000,
+        LongTwenty: 0b0000000000010000,
+        LongThirty: 0b0000000000100000,
+        LongFifty: 0b0000000001000000,
+        LongReserved: 0b0000000010000000,
+        ShortTwo: 0b0000000100000000,
+        ShortThree: 0b0000001000000000,
+        ShortFive: 0b0000010000000000,
+        ShortTen: 0b0000100000000000,
+        ShortTwenty: 0b0001000000000000,
+        ShortThirty: 0b0010000000000000,
+        ShortFifty: 0b0100000000000000,
+        ShortReserved: 0b1000000000000000
       }
     },
     TradingPair: {
