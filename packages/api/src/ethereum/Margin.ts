@@ -88,7 +88,7 @@ class Margin {
   };
 
   public allPoolIds = () => {
-    return of([this.protocol.addresses.marginPool, this.protocol.addresses.marginPool2]);
+    return of([this.protocol.addresses.marginPool.toLowerCase(), this.protocol.addresses.marginPool2.toLowerCase()]);
   };
 
   public marginInfo = (): Observable<MarginInfo> => {
@@ -161,7 +161,7 @@ class Margin {
           )
         ]).then(([balance, owner, options]) => {
           return {
-            poolId: poolInterface.options.address,
+            poolId: poolInterface.options.address.toLowerCase(),
             balance,
             owner,
             enp: '0',
@@ -247,6 +247,16 @@ class Margin {
   public closePosition = async (account: string, positionId: string, price: string | BN = '0') => {
     const extrinsic = this.apiProvider.baseContracts.marginFlowProtocol.methods.closePosition(positionId, price);
     return this.apiProvider.extrinsicHelper(extrinsic, { from: account }, { action: 'Close Position' });
+  };
+
+  public depositLiquidity = async (account: string, poolId: string, amount: string | BN) => {
+    const extrinsic = this.apiProvider.getMarginPoolInterfaceContract(poolId).methods.depositLiquidity(amount);
+    return this.apiProvider.extrinsicHelper(extrinsic, { from: account }, { action: 'Deposit' });
+  };
+
+  public withdrawLiquidity = async (account: string, poolId: string, amount: string | BN) => {
+    const extrinsic = this.apiProvider.getMarginPoolInterfaceContract(poolId).methods.withdrawLiquidity(amount);
+    return this.apiProvider.extrinsicHelper(extrinsic, { from: account }, { action: 'Withdraw' });
   };
 }
 

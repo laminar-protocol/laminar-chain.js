@@ -21,7 +21,7 @@ class Currencies {
         precision: 18,
         isBaseToken: true,
         isNetworkToken: false,
-        id: this.apiProvider.tokenContracts.DAI.options.address
+        id: this.apiProvider.tokenContracts.DAI.options.address.toLowerCase()
       },
       {
         name: 'fEUR',
@@ -29,7 +29,7 @@ class Currencies {
         precision: 18,
         isBaseToken: false,
         isNetworkToken: false,
-        id: this.apiProvider.tokenContracts.fEUR.options.address
+        id: this.apiProvider.tokenContracts.fEUR.options.address.toLowerCase()
       },
       {
         name: 'fJPY',
@@ -37,7 +37,7 @@ class Currencies {
         precision: 18,
         isBaseToken: false,
         isNetworkToken: false,
-        id: this.apiProvider.tokenContracts.fJPY.options.address
+        id: this.apiProvider.tokenContracts.fJPY.options.address.toLowerCase()
       },
       {
         name: 'fXAU',
@@ -45,7 +45,7 @@ class Currencies {
         precision: 18,
         isBaseToken: false,
         isNetworkToken: false,
-        id: this.apiProvider.tokenContracts.fXAU.options.address
+        id: this.apiProvider.tokenContracts.fXAU.options.address.toLowerCase()
       },
       {
         name: 'fAAPL',
@@ -53,7 +53,7 @@ class Currencies {
         precision: 18,
         isBaseToken: false,
         isNetworkToken: false,
-        id: this.apiProvider.tokenContracts.fAAPL.options.address
+        id: this.apiProvider.tokenContracts.fAAPL.options.address.toLowerCase()
       }
     ]);
   };
