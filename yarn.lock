@@ -1234,6 +1234,11 @@
     "@types/yargs" "^15.0.0"
     chalk "^3.0.0"
 
+"@laminar/flow-protocol-ethereum@0.0.7":
+  version "0.0.7"
+  resolved "https://registry.yarnpkg.com/@laminar/flow-protocol-ethereum/-/flow-protocol-ethereum-0.0.7.tgz#aac0c3045b3d2c77e7240a0ead0981c714d91e79"
+  integrity sha512-L80SOVjYUlCYzSqiGIwa0N3hqkSMf7gba2XQjDgPv/I7F9coUe+O9+J1RJ7q9jFAdA/GiTgyfZZqS6MHG5nk/A==
+
 "@lerna/add@3.20.0":
   version "3.20.0"
   resolved "https://registry.yarnpkg.com/@lerna/add/-/add-3.20.0.tgz#bea7edf36fc93fb72ec34cb9ba854c48d4abf309"
@@ -6702,10 +6707,6 @@ flatten@^1.0.2:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/flatten/-/flatten-1.0.3.tgz#c1283ac9f27b368abc1e36d1ff7b04501a30356b"
   integrity sha512-dVsPA/UwQ8+2uoFe5GHtiBMu48dWLTdsuEd7CKGlZlD78r1TTWBvDuFaFGKCo/ZfEr95Uk56vZoX86OsHkUeIg==
-
-"flow-protocol-ethereum@github:laminar-protocol/flow-protocol-ethereum#0.0.7":
-  version "0.0.7"
-  resolved "https://codeload.github.com/laminar-protocol/flow-protocol-ethereum/tar.gz/eb743ebe15555b64bb78028ff8688fc143a8a56c"
 
 flush-write-stream@^1.0.0:
   version "1.1.1"
