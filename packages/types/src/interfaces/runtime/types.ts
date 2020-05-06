@@ -217,6 +217,19 @@ export interface MarginLiquidityPoolOption extends Struct {
   readonly enabledTrades: Leverages;
 }
 
+/** @name MarginPosition */
+export interface MarginPosition extends Struct {
+  readonly owner: AccountId;
+  readonly pool: LiquidityPoolId;
+  readonly pair: TradingPair;
+  readonly leverage: Leverage;
+  readonly leveragedHeld: Fixed128;
+  readonly leveragedDebits: Fixed128;
+  readonly leveragedDebitsInUsd: Fixed128;
+  readonly openAccumulatedSwapRate: Fixed128;
+  readonly marginHeld: Fixed128;
+}
+
 /** @name ModuleId */
 export interface ModuleId extends LockIdentifier {}
 
@@ -249,19 +262,6 @@ export interface Phantom extends Null {}
 
 /** @name PhantomData */
 export interface PhantomData extends Null {}
-
-/** @name Position */
-export interface Position extends Struct {
-  readonly owner: AccountId;
-  readonly pool: LiquidityPoolId;
-  readonly pair: TradingPair;
-  readonly leverage: Leverage;
-  readonly leveragedHeld: Fixed128;
-  readonly leveragedDebits: Fixed128;
-  readonly leveragedDebitsInUsd: Fixed128;
-  readonly openAccumulatedSwapRate: Fixed128;
-  readonly openMargin: Balance;
-}
 
 /** @name PositionId */
 export interface PositionId extends u64 {}
@@ -308,6 +308,12 @@ export interface SyntheticLiquidityPoolOption extends Struct {
   readonly askSpread: Permill;
   readonly additionalCollateralRatio: Option<Permill>;
   readonly syntheticEnabled: bool;
+}
+
+/** @name SyntheticPosition */
+export interface SyntheticPosition extends Struct {
+  readonly collateral: Balance;
+  readonly synthetic: Balance;
 }
 
 /** @name TradingPair */

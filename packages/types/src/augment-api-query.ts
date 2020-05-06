@@ -4,7 +4,7 @@
 import { AnyNumber, ITuple, Observable } from '@polkadot/types/types';
 import { Option, Vec } from '@polkadot/types/codec';
 import { bool } from '@polkadot/types/primitive';
-import { AccountId, AccumulateConfig, Balance, CurrencyId, Fixed128, LiquidityPoolId, MarginLiquidityPoolOption, OracleKey, Permill, Position, PositionId, RiskThreshold, SwapRate, SyntheticLiquidityPoolOption, TradingPair } from '@laminar/types/interfaces/runtime';
+import { AccountId, AccumulateConfig, Balance, CurrencyId, Fixed128, LiquidityPoolId, MarginLiquidityPoolOption, MarginPosition, OracleKey, Permill, PositionId, RiskThreshold, SwapRate, SyntheticLiquidityPoolOption, SyntheticPosition, TradingPair } from '@laminar/types/interfaces/runtime';
 import { TimestampedValueOf } from '@open-web3/orml-types/interfaces/oracle';
 import { AccountData, BalanceLock } from '@polkadot/types/interfaces/balances';
 import { ApiTypes } from '@polkadot/api/types';
@@ -44,7 +44,7 @@ declare module '@polkadot/api/types/storage' {
       marginCalledPools: AugmentedQuery<ApiType, (arg: LiquidityPoolId | AnyNumber | Uint8Array) => Observable<Option<bool>>> & QueryableStorageEntry<ApiType>;
       marginCalledTraders: AugmentedQueryDoubleMap<ApiType, (key1: AccountId | string | Uint8Array, key2: LiquidityPoolId | AnyNumber | Uint8Array) => Observable<Option<bool>>> & QueryableStorageEntry<ApiType>;
       nextPositionId: AugmentedQuery<ApiType, () => Observable<PositionId>> & QueryableStorageEntry<ApiType>;
-      positions: AugmentedQuery<ApiType, (arg: PositionId | AnyNumber | Uint8Array) => Observable<Option<Position>>> & QueryableStorageEntry<ApiType>;
+      positions: AugmentedQuery<ApiType, (arg: PositionId | AnyNumber | Uint8Array) => Observable<Option<MarginPosition>>> & QueryableStorageEntry<ApiType>;
       positionsByPool: AugmentedQueryDoubleMap<ApiType, (key1: LiquidityPoolId | AnyNumber | Uint8Array, key2: ITuple<[TradingPair, PositionId]> | [TradingPair | { base?: any; quote?: any } | string | Uint8Array, PositionId | AnyNumber | Uint8Array]) => Observable<Option<bool>>> & QueryableStorageEntry<ApiType>;
       positionsByTrader: AugmentedQueryDoubleMap<ApiType, (key1: AccountId | string | Uint8Array, key2: ITuple<[LiquidityPoolId, PositionId]> | [LiquidityPoolId | AnyNumber | Uint8Array, PositionId | AnyNumber | Uint8Array]) => Observable<Option<bool>>> & QueryableStorageEntry<ApiType>;
       traderRiskThreshold: AugmentedQuery<ApiType, (arg: TradingPair | { base?: any; quote?: any } | string | Uint8Array) => Observable<Option<RiskThreshold>>> & QueryableStorageEntry<ApiType>;
@@ -67,7 +67,7 @@ declare module '@polkadot/api/types/storage' {
       collateralRatio: AugmentedQuery<ApiType, (arg: CurrencyId | 'LAMI'|'AUSD'|'FEUR'|'FJPY'|'FBTC'|'FETH' | number | Uint8Array) => Observable<Option<Permill>>> & QueryableStorageEntry<ApiType>;
       extremeRatio: AugmentedQuery<ApiType, (arg: CurrencyId | 'LAMI'|'AUSD'|'FEUR'|'FJPY'|'FBTC'|'FETH' | number | Uint8Array) => Observable<Option<Permill>>> & QueryableStorageEntry<ApiType>;
       liquidationRatio: AugmentedQuery<ApiType, (arg: CurrencyId | 'LAMI'|'AUSD'|'FEUR'|'FJPY'|'FBTC'|'FETH' | number | Uint8Array) => Observable<Option<Permill>>> & QueryableStorageEntry<ApiType>;
-      positions: AugmentedQueryDoubleMap<ApiType, (key1: LiquidityPoolId | AnyNumber | Uint8Array, key2: CurrencyId | 'LAMI'|'AUSD'|'FEUR'|'FJPY'|'FBTC'|'FETH' | number | Uint8Array) => Observable<Position>> & QueryableStorageEntry<ApiType>;
+      positions: AugmentedQueryDoubleMap<ApiType, (key1: LiquidityPoolId | AnyNumber | Uint8Array, key2: CurrencyId | 'LAMI'|'AUSD'|'FEUR'|'FJPY'|'FBTC'|'FETH' | number | Uint8Array) => Observable<SyntheticPosition>> & QueryableStorageEntry<ApiType>;
     };
     tokens: {
       [index: string]: QueryableStorageEntry<ApiType>;
