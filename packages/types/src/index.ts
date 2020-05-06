@@ -12,6 +12,8 @@ import './augment-types';
 
 export * from './known';
 
+export { default as metadata } from './metadata/known';
+
 export const allDefinitions = {
   ...ormlDefinations,
   ...laminarDefinations
