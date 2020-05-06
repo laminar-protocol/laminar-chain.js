@@ -1,5 +1,5 @@
 import { derive as ormlDerives } from '@open-web3/orml-api-derive';
-import { types as laminarTypes } from '@laminar/types';
+import { types as laminarTypes, typesModules } from '@laminar/types';
 import { ApiOptions } from '@polkadot/api/types';
 import jsonrpc from '@laminar/types/interfaces/jsonrpc';
 
@@ -13,10 +13,20 @@ export const defaultOptions: ApiOptions = {
   derives: anyOrmlDerives
 };
 
-export const options = ({ types = {}, rpc = {}, derives = {}, ...otherOptions }: ApiOptions): ApiOptions => ({
+export const options = ({
+  types = {},
+  rpc = {},
+  derives = {},
+  typesAlias = {},
+  ...otherOptions
+}: ApiOptions): ApiOptions => ({
   types: {
     ...laminarTypes,
     ...types
+  },
+  typesAlias: {
+    ...typesModules,
+    ...typesAlias
   },
   rpc: {
     ...laminarRpc,

@@ -3998,7 +3998,7 @@
                     "hasher": "Twox64Concat",
                     "key1": "LiquidityPoolId",
                     "key2": "CurrencyId",
-                    "value": "Position",
+                    "value": "SyntheticPosition",
                     "key2Hasher": "Twox64Concat"
                   }
                 },
@@ -4189,7 +4189,7 @@
                 "name": "Positions",
                 "modifier": "Optional",
                 "type": {
-                  "Map": { "hasher": "Twox64Concat", "key": "PositionId", "value": "Position", "linked": false }
+                  "Map": { "hasher": "Twox64Concat", "key": "PositionId", "value": "MarginPosition", "linked": false }
                 },
                 "fallback": "0x00",
                 "documentation": []
