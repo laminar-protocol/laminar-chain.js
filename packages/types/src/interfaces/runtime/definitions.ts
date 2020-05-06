@@ -76,7 +76,7 @@ export default {
       additionalCollateralRatio: 'Option<Permill>',
       syntheticEnabled: 'bool'
     },
-    Position: {
+    MarginPosition: {
       owner: 'AccountId',
       pool: 'LiquidityPoolId',
       pair: 'TradingPair',
@@ -85,7 +85,11 @@ export default {
       leveragedDebits: 'Fixed128',
       leveragedDebitsInUsd: 'Fixed128',
       openAccumulatedSwapRate: 'Fixed128',
-      openMargin: 'Balance'
+      marginHeld: 'Fixed128'
+    },
+    SyntheticPosition: {
+      collateral: 'Balance',
+      synthetic: 'Balance'
     },
     RiskThreshold: {
       marginCall: 'Permill',

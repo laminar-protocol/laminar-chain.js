@@ -14,10 +14,15 @@ import * as ormlDefinations from '@open-web3/orml-types/interfaces/definitions';
 
 import * as laminarDefinations from '../src/interfaces/definitions';
 
+import { typesModules } from '../src/known';
+
 // Only keep our own modules to avoid confllicts with the one provided by polkadot.js
 // TODO: make an issue on polkadot.js
 function filterModules(names: string[], defs: any) {
   const registry = new TypeRegistry();
+  registry.setKnownTypes({
+    typesAlias: typesModules
+  });
   registerDefinitions(registry, defs);
   const metadata = new Metadata(registry, metaHex);
 

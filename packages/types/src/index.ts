@@ -10,6 +10,8 @@ import * as genericTypes from './generic';
 import './augment-api';
 import './augment-types';
 
+export * from './known';
+
 export const allDefinitions = {
   ...ormlDefinations,
   ...laminarDefinations
