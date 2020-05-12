@@ -42,9 +42,11 @@ class Synthetic {
 
             const data = options.toHuman() || {};
 
+            const _minAdditionalCollateralRatio = new BN(minAdditionalCollateralRatio.toString()).toNumber();
+
             const additionalCollateralRatio =
-              minAdditionalCollateralRatio.toHuman() > (data as any).additionalCollateralRatio
-                ? minAdditionalCollateralRatio.toHuman()
+              _minAdditionalCollateralRatio > (data as any).additionalCollateralRatio
+                ? _minAdditionalCollateralRatio
                 : (data as any).additionalCollateralRatio;
 
             return {
@@ -61,7 +63,7 @@ class Synthetic {
   public allPoolIds = () => {
     return this.api.query.baseLiquidityPoolsForSynthetic
       .nextPoolId()
-      .pipe(map(result => [...new Array(result.toNumber())].map((_, i) => `${i}`)));
+      .pipe(map(result => [...new Array(Number.parseInt(result.toString()))].map((_, i) => `${i}`)));
   };
 
   public redeem = async (account: string, poolId: string, fromToken: TokenId, fromAmount: string | BN) => {

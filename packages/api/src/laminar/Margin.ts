@@ -21,7 +21,7 @@ class Margin {
       map(result =>
         result
           .reduce((total, [, balance]) => {
-            return total.add(new BN(balance));
+            return total.add(new BN(balance.toString()));
           }, new BN(0))
           .toString()
       )
@@ -106,7 +106,7 @@ class Margin {
   public allPoolIds = () => {
     return this.api.query.baseLiquidityPoolsForMargin
       .nextPoolId()
-      .pipe(map(result => [...new Array(result.toNumber())].map((_, i) => `${i}`)));
+      .pipe(map(result => [...new Array(Number.parseInt(result.toString()))].map((_, i) => `${i}`)));
   };
 
   public positionsByPool = (poolId: string) => {
