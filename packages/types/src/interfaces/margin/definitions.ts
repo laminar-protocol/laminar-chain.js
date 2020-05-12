@@ -18,6 +18,10 @@ export default {
         {
           name: 'who',
           type: 'AccountId'
+        },
+        {
+          name: 'liquidityPoolId',
+          type: 'LiquidityPoolId'
         }
       ],
       type: 'TraderInfo'

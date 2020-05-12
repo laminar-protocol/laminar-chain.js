@@ -87,17 +87,20 @@ class Margin {
 
   public traderInfo = (account: string, poolId: string): Observable<TraderInfo> => {
     return combineLatest([
-      (this.api.rpc as any).margin.traderInfo(account),
-      this.api.query.marginProtocol.traderRiskThreshold()
+      (this.api.rpc as any).margin.traderInfo(account, poolId) as Observable<any>,
+      this.api.query.marginProtocol.traderRiskThreshold.entries()
     ]).pipe(
-      map(([result, traderThreshold]: any) => {
+      map(([result, traderThresholds]) => {
         return {
           equity: result.equity.toString(),
           freeMargin: result.free_margin.toString(),
           marginHeld: result.margin_held.toString(),
           marginLevel: result.margin_level.toString(),
           unrealizedPl: result.unrealized_pl.toString(),
-          traderThreshold: traderThreshold.toHuman()
+          traderThreshold: {
+            marginCall: 0,
+            stopOut: 0
+          }
         };
       })
     );
