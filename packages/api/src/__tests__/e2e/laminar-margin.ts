@@ -1,5 +1,5 @@
 import { LaminarApi } from '../..';
-import { WsProvider } from '@polkadot/api';
+import { WsProvider } from '@polkadot/rpc-provider';
 import { Keyring } from '@polkadot/api';
 
 describe('laminar margin', () => {

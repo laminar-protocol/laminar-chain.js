@@ -1,4 +1,5 @@
-import { ApiRx, WsProvider } from '@polkadot/api';
+import { ApiRx } from '@polkadot/api';
+import { WsProvider } from '@polkadot/rpc-provider';
 import { ApiOptions } from '@polkadot/api/types';
 import { first } from 'rxjs/operators';
 
