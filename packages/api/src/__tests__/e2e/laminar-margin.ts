@@ -23,6 +23,12 @@ describe('laminar margin', () => {
     });
   });
 
+  it('traderInfo', done => {
+    const result = api.margin.traderInfo('5EkTxjD5K75Z7T7tb6oREeoLt82MygJJP2oJ6DFF4weLt28D', '0').subscribe(result => {
+      console.log(result);
+    });
+  });
+
   it('poolInfo', async () => {
     const result = await api.margin.poolInfo('0').toPromise();
     console.log(result);
