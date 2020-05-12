@@ -1,5 +1,5 @@
 import { EthereumApi, LaminarApi } from '../..';
-import { WsProvider } from '@polkadot/api';
+import { WsProvider } from '@polkadot/rpc-provider';
 import Web3 from 'web3';
 
 describe('ethereum api', () => {
