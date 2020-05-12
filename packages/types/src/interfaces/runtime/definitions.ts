@@ -67,13 +67,13 @@ export default {
       offset: 'BlockNumber'
     },
     MarginLiquidityPoolOption: {
-      bidSpread: 'Permill',
-      askSpread: 'Permill',
+      bidSpread: 'Balance',
+      askSpread: 'Balance',
       enabledTrades: 'Leverages'
     },
     SyntheticLiquidityPoolOption: {
-      bidSpread: 'Permill',
-      askSpread: 'Permill',
+      bidSpread: 'Balance',
+      askSpread: 'Balance',
       additionalCollateralRatio: 'Option<Permill>',
       syntheticEnabled: 'bool'
     },
