@@ -17,7 +17,13 @@ class Margin {
   }
 
   public balance = (address: string) => {
-    return this.api.query.marginProtocol.balances(address).pipe(map(result => result.toString()));
+    return this.api.query.marginProtocol.balances.entries(address).pipe(
+      map(result =>
+        result.reduce((total, [, balance]) => {
+          return total.add(new BN(balance));
+        }, new BN(0))
+      )
+    );
   };
 
   public poolInfo = (poolId: string): Observable<MarginPoolInfo | null> => {
@@ -56,13 +62,22 @@ class Margin {
 
   public marginInfo = (): Observable<MarginInfo> => {
     return combineLatest([
-      this.api.query.marginProtocol.liquidityPoolELLThreshold(),
-      this.api.query.marginProtocol.liquidityPoolENPThreshold()
+      this.api.query.marginProtocol.liquidityPoolELLThreshold.entries(),
+      this.api.query.marginProtocol.liquidityPoolENPThreshold.entries()
     ]).pipe(
-      map(([ellThreshold, enpThreshold]) => {
+      map(([ellThresholds, enpThresholds]) => {
+        const ellThresholdList = ellThresholds.map(([, s]) => s.toHuman() as Threshold);
+        const enpThresholdList = enpThresholds.map(([, s]) => s.toHuman() as Threshold);
+
         return {
-          ellThreshold: ellThreshold.toHuman() as Threshold,
-          enpThreshold: enpThreshold.toHuman() as Threshold
+          ellThreshold: {
+            marginCall: Math.max(...ellThresholdList.map(({ marginCall }) => marginCall)),
+            stopOut: Math.max(...ellThresholdList.map(({ stopOut }) => stopOut))
+          },
+          enpThreshold: {
+            marginCall: Math.max(...enpThresholdList.map(({ marginCall }) => marginCall)),
+            stopOut: Math.max(...enpThresholdList.map(({ stopOut }) => stopOut))
+          }
         };
       })
     );
