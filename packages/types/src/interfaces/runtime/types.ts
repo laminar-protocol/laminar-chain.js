@@ -212,8 +212,8 @@ export interface LookupTarget extends AccountId {}
 
 /** @name MarginLiquidityPoolOption */
 export interface MarginLiquidityPoolOption extends Struct {
-  readonly bidSpread: Permill;
-  readonly askSpread: Permill;
+  readonly bidSpread: Spread;
+  readonly askSpread: Spread;
   readonly enabledTrades: Leverages;
 }
 
@@ -293,6 +293,9 @@ export interface SignedBlock extends Struct {
   readonly justification: Justification;
 }
 
+/** @name Spread */
+export interface Spread extends u128 {}
+
 /** @name StorageData */
 export interface StorageData extends Bytes {}
 
@@ -304,8 +307,8 @@ export interface SwapRate extends Struct {
 
 /** @name SyntheticLiquidityPoolOption */
 export interface SyntheticLiquidityPoolOption extends Struct {
-  readonly bidSpread: Permill;
-  readonly askSpread: Permill;
+  readonly bidSpread: Spread;
+  readonly askSpread: Spread;
   readonly additionalCollateralRatio: Option<Permill>;
   readonly syntheticEnabled: bool;
 }
