@@ -19,9 +19,11 @@ class Margin {
   public balance = (address: string) => {
     return this.api.query.marginProtocol.balances.entries(address).pipe(
       map(result =>
-        result.reduce((total, [, balance]) => {
-          return total.add(new BN(balance));
-        }, new BN(0))
+        result
+          .reduce((total, [, balance]) => {
+            return total.add(new BN(balance));
+          }, new BN(0))
+          .toString()
       )
     );
   };
