@@ -3,6 +3,7 @@ import definitions from '@polkadot/types/interfaces/runtime/definitions';
 export default {
   types: {
     ...definitions.types,
+    Weight: 'u32',
     CurrencyId: {
       _enum: ['LAMI', 'AUSD', 'FEUR', 'FJPY', 'FBTC', 'FETH']
     },
