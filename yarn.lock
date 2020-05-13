@@ -2060,17 +2060,17 @@
   dependencies:
     "@types/node" ">= 8"
 
-"@open-web3/orml-api-derive@^0.3.0-beta.7":
-  version "0.3.0-beta.7"
-  resolved "https://registry.yarnpkg.com/@open-web3/orml-api-derive/-/orml-api-derive-0.3.0-beta.7.tgz#43aecee7376291f6c8757983f05e478075c6734d"
-  integrity sha512-dA/+MunO25hfb3i26MtmOBuHaEv600y6luu70xrth99SthgI/n47lpkY0nos1oXBAsI2+4ilgE/10dfL2kX7ng==
+"@open-web3/orml-api-derive@^0.3.0-beta.8":
+  version "0.3.0-beta.8"
+  resolved "https://registry.yarnpkg.com/@open-web3/orml-api-derive/-/orml-api-derive-0.3.0-beta.8.tgz#7d3cd8ab1599e076874dba92ccca9039d6225f76"
+  integrity sha512-k9KYv0z+J+o3KrcdGAGjU/3v7ZSCzRZPexxo1TsDuRWIXafmozlRErKyZry3f6hta4m1naOYWG/P04+0y2l9eg==
   dependencies:
     memoizee "^0.4.14"
 
-"@open-web3/orml-types@^0.3.0-beta.7":
-  version "0.3.0-beta.7"
-  resolved "https://registry.yarnpkg.com/@open-web3/orml-types/-/orml-types-0.3.0-beta.7.tgz#d00ef840762b41a0a1a4e6bc91525da16a7b1409"
-  integrity sha512-Dl6mBvjGRJYoOfpop8if15tKd5UOxNSOTlHcXVyp3b2DbtEN8Kl9BqXwckgdhJ58TJnp94T2E4csmvNKrVg6/w==
+"@open-web3/orml-types@^0.3.0-beta.8":
+  version "0.3.0-beta.8"
+  resolved "https://registry.yarnpkg.com/@open-web3/orml-types/-/orml-types-0.3.0-beta.8.tgz#30fdddafa24efa61de315a3df1d7016a95ca7758"
+  integrity sha512-36tqCKNHc65Cnz6SFvBJkaK0MrCxnAt4IQt88KM18r4l7Tbmep3YZfxppOs4mS7VDoEeI8BoHgv6/g+jip4L7w==
 
 "@open-web3/util@^0.3.0-beta.4":
   version "0.3.0-beta.4"
