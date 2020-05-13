@@ -119,7 +119,7 @@ export interface ActionStatus {
 }
 
 export interface OracleValue {
-  tokenId: Exclude<TokenId, 'LAMI'>;
+  tokenId: TokenId;
   timestamp: number;
   value: string;
 }
