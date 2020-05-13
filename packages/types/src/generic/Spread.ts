@@ -1,14 +1,10 @@
 import { u128 } from '@polkadot/types/primitive';
-import { formatBalance } from '@polkadot/util';
+import { fromPrecision } from '../utils/precision';
 
 export default class Spread extends u128 {
+  public precision = 18;
+
   toHuman() {
-    return Number(
-      formatBalance(this, {
-        decimals: this.registry.chainDecimals,
-        withSi: false,
-        withUnit: false
-      })
-    );
+    return Number(fromPrecision(super.toJSON(), this.precision));
   }
 }
