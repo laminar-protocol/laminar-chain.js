@@ -29,6 +29,12 @@ describe('laminar margin', () => {
     });
   });
 
+  it('traderThreshold', done => {
+    const result = api.margin.traderThreshold('FEUR', 'AUSD').subscribe(result => {
+      console.log(result);
+    });
+  });
+
   it('poolInfo', async () => {
     const result = await api.margin.poolInfo('0').toPromise();
     console.log(result);

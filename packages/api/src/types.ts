@@ -52,7 +52,6 @@ export interface TraderInfo {
   marginHeld: string;
   marginLevel: string;
   unrealizedPl: string;
-  traderThreshold: Threshold;
 }
 
 export interface TokenInfo {
