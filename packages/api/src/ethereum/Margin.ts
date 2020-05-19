@@ -193,7 +193,9 @@ class Margin {
           freeMargin,
           marginHeld,
           marginLevel: '0',
-          unrealizedPl: '0'
+          unrealizedPl: '0',
+          totalLeveragedPosition: '0',
+          accumulatedSwap: '0'
         };
       })
     );

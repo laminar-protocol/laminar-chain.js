@@ -52,6 +52,8 @@ export interface TraderInfo {
   marginHeld: string;
   marginLevel: string;
   unrealizedPl: string;
+  totalLeveragedPosition: string;
+  accumulatedSwap: string;
 }
 
 export interface TokenInfo {
