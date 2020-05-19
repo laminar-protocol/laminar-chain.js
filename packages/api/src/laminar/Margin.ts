@@ -86,14 +86,29 @@ class Margin {
   };
 
   public traderInfo = (account: string, poolId: string): Observable<TraderInfo> => {
-    return ((this.api.rpc as any).margin.traderInfo(account, poolId) as Observable<any>).pipe(
-      map(([result]) => {
+    this.api.query.marginProtocol.balances;
+
+    return combineLatest([
+      (this.api.rpc as any).margin.traderInfo(account, poolId) as Observable<any>,
+      this.api.query.marginProtocol.balances(account, poolId)
+    ]).pipe(
+      map(([result, balance]) => {
+        const equity = result.equity;
+        const marginLevel = result.margin_level;
+        const unrealizedPl = result.unrealized_pl;
+
         return {
-          equity: result.equity.toString(),
+          balance: balance.toString(),
           freeMargin: result.free_margin.toString(),
           marginHeld: result.margin_held.toString(),
-          marginLevel: result.margin_level.toString(),
-          unrealizedPl: result.unrealized_pl.toString()
+          unrealizedPl: unrealizedPl.toString(),
+          accumulatedSwap: equity
+            .sub(balance)
+            .sub(unrealizedPl)
+            .toString(),
+          equity: equity.toString(),
+          marginLevel: marginLevel.toString(),
+          totalLeveragedPosition: (equity.toString() / marginLevel.toString()).toFixed(3)
         };
       })
     );
