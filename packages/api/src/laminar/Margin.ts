@@ -86,8 +86,6 @@ class Margin {
   };
 
   public traderInfo = (account: string, poolId: string): Observable<TraderInfo> => {
-    this.api.query.marginProtocol.balances;
-
     return combineLatest([
       (this.api.rpc as any).margin.traderInfo(account, poolId) as Observable<any>,
       this.api.query.marginProtocol.balances(account, poolId)
