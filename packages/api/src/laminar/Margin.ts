@@ -86,24 +86,27 @@ class Margin {
   };
 
   public traderInfo = (account: string, poolId: string): Observable<TraderInfo> => {
-    return combineLatest([
-      (this.api.rpc as any).margin.traderInfo(account, poolId) as Observable<any>,
-      this.api.query.marginProtocol.traderRiskThreshold.entries()
-    ]).pipe(
-      map(([result, traderThresholds]) => {
+    return ((this.api.rpc as any).margin.traderInfo(account, poolId) as Observable<any>).pipe(
+      map(([result]) => {
         return {
           equity: result.equity.toString(),
           freeMargin: result.free_margin.toString(),
           marginHeld: result.margin_held.toString(),
           marginLevel: result.margin_level.toString(),
-          unrealizedPl: result.unrealized_pl.toString(),
-          traderThreshold: {
-            marginCall: 0,
-            stopOut: 0
-          }
+          unrealizedPl: result.unrealized_pl.toString()
         };
       })
     );
+  };
+
+  //
+  public traderThreshold = (baseToken: TokenId, quoteToken: TokenId): Observable<Threshold> => {
+    return this.api.query.marginProtocol
+      .traderRiskThreshold({
+        base: baseToken,
+        quote: quoteToken
+      })
+      .pipe(map(result => result.toHuman() as Threshold));
   };
 
   public allPoolIds = () => {

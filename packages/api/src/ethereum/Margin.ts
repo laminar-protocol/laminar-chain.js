@@ -16,7 +16,7 @@ class Margin {
     this.baseContracts = provider.baseContracts;
   }
 
-  private getEnableTradePairs = (poolId: string) => {
+  private getWhiteListTradePairs = () => {
     return this.apiProvider.currencies.tokens().pipe(
       switchMap(async tokens => {
         const whiteListRequest: Promise<[boolean, TokenInfo, TokenInfo]>[] = [];
@@ -42,6 +42,14 @@ class Margin {
             }))
         );
 
+        return whiteList;
+      })
+    );
+  };
+
+  private getEnableTradePairs = (poolId: string) => {
+    return this.getWhiteListTradePairs().pipe(
+      switchMap(async whiteList => {
         const enableTradePairsRequest: Promise<[boolean, TokenInfo, TokenInfo]>[] = [];
 
         for (const { base, quote } of whiteList) {
@@ -56,7 +64,7 @@ class Margin {
           );
         }
 
-        const enableTradePairs = await Promise.all(whiteListRequest).then(result =>
+        const enableTradePairs = await Promise.all(enableTradePairsRequest).then(result =>
           result
             .filter(([isEnable]) => isEnable)
             .map(([, base, quote]) => ({
@@ -178,20 +186,28 @@ class Margin {
       Promise.all([
         this.baseContracts.marginFlowProtocol.methods.getEquityOfTrader(poolId, account).call(),
         this.baseContracts.marginFlowProtocol.methods.getFreeMargin(poolId, account).call(),
-        this.baseContracts.marginFlowProtocol.methods.getMarginHeld(poolId, account).call(),
-        this.baseContracts.marginFlowProtocolSafety.methods.traderRiskLiquidateThreshold().call(),
-        this.baseContracts.marginFlowProtocolSafety.methods.traderRiskMarginCallThreshold().call()
-      ]).then(([equity, freeMargin, marginHeld, stopOut, marginCall]) => {
+        this.baseContracts.marginFlowProtocol.methods.getMarginHeld(poolId, account).call()
+      ]).then(([equity, freeMargin, marginHeld]) => {
         return {
           equity,
           freeMargin,
           marginHeld,
           marginLevel: '0',
-          unrealizedPl: '0',
-          traderThreshold: {
-            marginCall: toNumber(marginCall),
-            stopOut: toNumber(stopOut)
-          }
+          unrealizedPl: '0'
+        };
+      })
+    );
+  }
+
+  public traderThreshold(baseToken: TokenId, quoteToken: TokenId) {
+    return from(
+      Promise.all([
+        this.baseContracts.marginFlowProtocolSafety.methods.traderRiskLiquidateThreshold().call(),
+        this.baseContracts.marginFlowProtocolSafety.methods.traderRiskMarginCallThreshold().call()
+      ]).then(([stopOut, marginCall]) => {
+        return {
+          marginCall: toNumber(marginCall),
+          stopOut: toNumber(stopOut)
         };
       })
     );
