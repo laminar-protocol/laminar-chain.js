@@ -29,13 +29,13 @@ export default {
   },
   types: {
     PoolInfo: {
-      enp: 'Fixed128',
-      ell: 'Fixed128'
+      enp: 'Rate',
+      ell: 'Rate'
     },
     TraderInfo: {
       equity: 'Fixed128',
       margin_held: 'Fixed128',
-      margin_level: 'Fixed128',
+      margin_level: 'Rate',
       free_margin: 'Fixed128',
       unrealized_pl: 'Fixed128'
     }

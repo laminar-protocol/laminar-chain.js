@@ -56,7 +56,7 @@ describe('laminar margin', () => {
   // });
 
   it('poolInfo111', done => {
-    const result = api.synthetic.poolInfo('0').subscribe(result => {
+    const result = api.margin.poolInfo('3').subscribe(result => {
       console.log(result);
     });
   });
@@ -76,7 +76,7 @@ describe('laminar margin', () => {
   });
 
   it('marginpositions', done => {
-    api.margin.position('3').subscribe(result => {
+    api.margin.position('19').subscribe(result => {
       console.log(result);
     });
   });

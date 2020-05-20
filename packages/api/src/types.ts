@@ -51,10 +51,10 @@ export interface TraderInfo {
   balance: string;
   freeMargin: string;
   marginHeld: string;
-  marginLevel: string;
   unrealizedPl: string;
   totalLeveragedPosition: string;
   accumulatedSwap: string;
+  marginLevel: number;
 }
 
 export interface AccumulatedSwapRate {
@@ -64,8 +64,8 @@ export interface AccumulatedSwapRate {
     quote: string;
   };
   pairId: string;
-  long: string;
-  short: string;
+  long: number;
+  short: number;
 }
 
 export interface MarginPosition {
@@ -79,8 +79,8 @@ export interface MarginPosition {
   leveragedHeld: string;
   leveragedDebits: string;
   leveragedDebitsInUsd: string;
-  openAccumulatedSwapRate: string;
   marginHeld: string;
+  openAccumulatedSwapRate: number;
 }
 
 export interface TokenInfo {
@@ -97,14 +97,14 @@ export interface PoolOptions {
   poolId: string;
   tokenId: string;
   additionalCollateralRatio: number | null;
-  askSpread: number | null;
-  bidSpread: number | null;
+  askSpread: string | null;
+  bidSpread: string | null;
   syntheticEnabled: boolean;
 }
 
 export interface TraderPairOptions {
-  bidSpread: number;
-  askSpread: number;
+  bidSpread: string;
+  askSpread: string;
   enabledTrades: string[];
   pair: {
     base: TokenId;
@@ -117,8 +117,8 @@ export interface MarginPoolInfo {
   poolId: string;
   owner: string;
   balance: string;
-  ell: string;
-  enp: string;
+  ell: number;
+  enp: number;
   options: TraderPairOptions[];
 }
 
@@ -128,8 +128,8 @@ export interface SyntheticPoolInfo {
   balance: string;
   options: {
     additionalCollateralRatio: number | null;
-    askSpread: number | null;
-    bidSpread: number | null;
+    askSpread: string | null;
+    bidSpread: string | null;
     tokenId: TokenId;
   }[];
 }

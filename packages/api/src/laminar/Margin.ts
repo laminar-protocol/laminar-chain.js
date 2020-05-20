@@ -1,18 +1,16 @@
 import { PoolInfo } from '@laminar/types/interfaces';
-
 import BN from 'bn.js';
 import { combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-
 import {
+  AccumulatedSwapRate,
   LeverageEnum,
   MarginInfo,
   MarginPoolInfo,
+  MarginPosition,
   Threshold,
-  TraderInfo,
   TokenId,
-  AccumulatedSwapRate,
-  MarginPosition
+  TraderInfo
 } from '../types';
 import LaminarApi from './LaminarApi';
 
@@ -50,8 +48,8 @@ class Margin {
           poolId: poolId,
           owner: owner.isEmpty ? null : (owner as any).value[0].toJSON(),
           balance: balances.toString(),
-          enp: (poolInfo as PoolInfo).enp.toString(),
-          ell: (poolInfo as PoolInfo).ell.toString(),
+          enp: (poolInfo as PoolInfo).enp.toHuman(),
+          ell: (poolInfo as PoolInfo).ell.toHuman(),
           options: liquidityPoolOptions.map(([storageKey, options]) => {
             const pair = storageKey.args[1].toJSON() as {
               base: string;
@@ -135,8 +133,7 @@ class Margin {
       map(result => {
         return result.map(([key, value]) => {
           const pair = key.args[1].toJSON() as { base: string; quote: string };
-          const long = value.long.toString();
-          const short = value.long.toString();
+          const { long, short } = value.toHuman() as { long: number; short: number };
           return { poolId: `${key.args[0].toJSON()}`, pair, pairId: `${pair.base}${pair.quote}`, long, short };
         });
       })

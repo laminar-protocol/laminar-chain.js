@@ -1,15 +1,15 @@
+import { toNumber } from '@laminar/types/utils/precision';
 import BN from 'bn.js';
 import { from, Observable, of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
-import { toNumber } from '@laminar/types/utils/precision';
 import {
-  LeverageEnum,
-  TokenId,
-  TokenInfo,
-  MarginPoolInfo,
-  MarginInfo,
   AccumulatedSwapRate,
-  MarginPosition
+  LeverageEnum,
+  MarginInfo,
+  MarginPoolInfo,
+  MarginPosition,
+  TokenId,
+  TokenInfo
 } from '../types';
 import EthereumApi, { UINT256_MAX } from './EthereumApi';
 
@@ -150,8 +150,8 @@ class Margin {
                 poolInterface.methods.getBidSpread(base.id, quote.id).call()
               ]).then(([askSpread, bidSpread]) => {
                 return {
-                  askSpread: toNumber(askSpread),
-                  bidSpread: toNumber(bidSpread),
+                  askSpread,
+                  bidSpread,
                   pair: {
                     base: base.id,
                     quote: quote.id
@@ -184,8 +184,8 @@ class Margin {
             poolId: poolInterface.options.address.toLowerCase(),
             balance,
             owner,
-            enp: '0',
-            ell: '0',
+            enp: 0,
+            ell: 0,
             options
           };
         });
