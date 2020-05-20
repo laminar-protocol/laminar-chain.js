@@ -304,8 +304,8 @@ export interface StorageData extends Bytes {}
 
 /** @name SwapRate */
 export interface SwapRate extends Struct {
-  readonly long: Fixed128;
-  readonly short: Fixed128;
+  readonly long: Rate;
+  readonly short: Rate;
 }
 
 /** @name SyntheticLiquidityPoolOption */
