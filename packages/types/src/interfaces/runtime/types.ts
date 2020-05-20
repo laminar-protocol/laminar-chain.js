@@ -220,7 +220,7 @@ export interface MarginLiquidityPoolOption extends Struct {
 /** @name MarginPosition */
 export interface MarginPosition extends Struct {
   readonly owner: AccountId;
-  readonly pool: LiquidityPoolId;
+  readonly poolId: LiquidityPoolId;
   readonly pair: TradingPair;
   readonly leverage: Leverage;
   readonly leveragedHeld: Fixed128;
