@@ -9,6 +9,7 @@ import {
   MarginPoolInfo,
   MarginPosition,
   TokenId,
+  TraderInfo,
   TokenInfo
 } from '../types';
 import EthereumApi, { UINT256_MAX } from './EthereumApi';
@@ -193,7 +194,7 @@ class Margin {
     );
   };
 
-  public traderInfo(account: string, poolId: string) {
+  public traderInfo(account: string, poolId: string): Observable<TraderInfo> {
     return from(
       Promise.all([
         this.baseContracts.marginFlowProtocol.methods.getEquityOfTrader(poolId, account).call(),
@@ -205,7 +206,7 @@ class Margin {
           equity,
           freeMargin,
           marginHeld,
-          marginLevel: '0',
+          marginLevel: 0,
           unrealizedPl: '0',
           totalLeveragedPosition: '0',
           accumulatedSwap: '0'
