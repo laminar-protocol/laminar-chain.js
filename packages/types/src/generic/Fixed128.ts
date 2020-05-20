@@ -1,6 +1,6 @@
-import { u128 } from '@polkadot/types/primitive';
+import { i128 } from '@polkadot/types/primitive';
 
-export default class Fixed128 extends u128 {
+export default class Fixed128 extends i128 {
   toHuman() {
     return super.toString();
   }

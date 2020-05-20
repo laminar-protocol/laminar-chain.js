@@ -1,8 +1,7 @@
 import BN from 'bn.js';
 import { combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-
-import { TokenId, SyntheticPoolInfo } from '../types';
+import { SyntheticPoolInfo, TokenId } from '../types';
 import LaminarApi from './LaminarApi';
 
 class Synthetic {
@@ -42,7 +41,7 @@ class Synthetic {
 
             const data = options.toHuman() || {};
 
-            const _minAdditionalCollateralRatio = new BN(minAdditionalCollateralRatio.toString()).toNumber();
+            const _minAdditionalCollateralRatio = minAdditionalCollateralRatio.toHuman();
 
             const additionalCollateralRatio =
               _minAdditionalCollateralRatio > (data as any).additionalCollateralRatio

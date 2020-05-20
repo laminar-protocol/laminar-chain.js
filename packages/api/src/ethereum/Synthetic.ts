@@ -1,9 +1,7 @@
 import BN from 'bn.js';
 import { from, Observable, of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
-import { toNumber } from '@laminar/types/utils/precision';
-
-import { TokenId, TokenInfo, SyntheticPoolInfo } from '../types';
+import { SyntheticPoolInfo, TokenId, TokenInfo } from '../types';
 import EthereumApi, { UINT256_MAX } from './EthereumApi';
 
 class Synthetic {
@@ -66,8 +64,8 @@ class Synthetic {
             ]).then(([additionalCollateralRatio, askSpread, bidSpread]) => ({
               tokenId: token.id,
               additionalCollateralRatio,
-              askSpread: toNumber(askSpread),
-              bidSpread: toNumber(bidSpread)
+              askSpread,
+              bidSpread
             }))
           )
         );

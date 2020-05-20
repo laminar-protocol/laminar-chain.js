@@ -85,7 +85,7 @@ export default {
       leveragedHeld: 'Fixed128',
       leveragedDebits: 'Fixed128',
       leveragedDebitsInUsd: 'Fixed128',
-      openAccumulatedSwapRate: 'Fixed128',
+      openAccumulatedSwapRate: 'Rate',
       marginHeld: 'Fixed128'
     },
     SyntheticPosition: {
@@ -98,6 +98,7 @@ export default {
     },
     Fixed128: 'i128',
     PositionId: 'u64',
-    Spread: 'u128'
+    Spread: 'u128',
+    Rate: 'Fixed128'
   }
 };
