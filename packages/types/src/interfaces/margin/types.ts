@@ -2,19 +2,19 @@
 /* eslint-disable */
 
 import { Struct } from '@polkadot/types/codec';
-import { Fixed128 } from '@laminar/types/interfaces/runtime';
+import { Fixed128, Rate } from '@laminar/types/interfaces/runtime';
 
 /** @name PoolInfo */
 export interface PoolInfo extends Struct {
-  readonly enp: Fixed128;
-  readonly ell: Fixed128;
+  readonly enp: Rate;
+  readonly ell: Rate;
 }
 
 /** @name TraderInfo */
 export interface TraderInfo extends Struct {
   readonly equity: Fixed128;
   readonly margin_held: Fixed128;
-  readonly margin_level: Fixed128;
+  readonly margin_level: Rate;
   readonly free_margin: Fixed128;
   readonly unrealized_pl: Fixed128;
 }

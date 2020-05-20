@@ -4,7 +4,7 @@
 import { Compact, Option, Raw, Vec } from '@polkadot/types/codec';
 import { BitVec, Bytes, Data, DoNotConstruct, Null, StorageKey, Text, Type, U256, bool, i128, i16, i256, i32, i64, i8, u128, u16, u256, u32, u64, u8, usize } from '@polkadot/types/primitive';
 import { PoolInfo, TraderInfo } from '@laminar/types/interfaces/margin';
-import { AccountId, AccountIdOf, AccountIndex, AccumulateConfig, Address, Amount, AmountOf, AssetId, Balance, BalanceOf, Block, BlockNumber, Call, ChangesTrieConfiguration, Consensus, ConsensusEngineId, CurrencyId, CurrencyIdOf, Digest, DigestItem, DispatchClass, DispatchInfo, DispatchInfoTo190, Fixed128, Fixed64, H160, H256, H512, Hash, Header, Index, Justification, KeyTypeId, KeyValue, Leverage, Leverages, LiquidityPoolId, LockIdentifier, LookupSource, LookupTarget, MarginLiquidityPoolOption, MarginPosition, ModuleId, Moment, OracleKey, OracleValue, Origin, Perbill, Percent, Permill, Perquintill, Phantom, PhantomData, PositionId, PreRuntime, RiskThreshold, RuntimeDbWeight, Seal, SealV0, SignedBlock, Spread, StorageData, SwapRate, SyntheticLiquidityPoolOption, SyntheticPosition, TradingPair, ValidatorId, Weight, WeightMultiplier } from '@laminar/types/interfaces/runtime';
+import { AccountId, AccountIdOf, AccountIndex, AccumulateConfig, Address, Amount, AmountOf, AssetId, Balance, BalanceOf, Block, BlockNumber, Call, ChangesTrieConfiguration, Consensus, ConsensusEngineId, CurrencyId, CurrencyIdOf, Digest, DigestItem, DispatchClass, DispatchInfo, DispatchInfoTo190, Fixed128, Fixed64, H160, H256, H512, Hash, Header, Index, Justification, KeyTypeId, KeyValue, Leverage, Leverages, LiquidityPoolId, LockIdentifier, LookupSource, LookupTarget, MarginLiquidityPoolOption, MarginPosition, ModuleId, Moment, OracleKey, OracleValue, Origin, Perbill, Percent, Permill, Perquintill, Phantom, PhantomData, PositionId, PreRuntime, Rate, RiskThreshold, RuntimeDbWeight, Seal, SealV0, SignedBlock, Spread, StorageData, SwapRate, SyntheticLiquidityPoolOption, SyntheticPosition, TradingPair, ValidatorId, Weight, WeightMultiplier } from '@laminar/types/interfaces/runtime';
 import { TimestampedValue, TimestampedValueOf } from '@open-web3/orml-types/interfaces/oracle';
 import { Price } from '@open-web3/orml-types/interfaces/prices';
 import { OrmlAccountData, OrmlBalanceLock } from '@open-web3/orml-types/interfaces/tokens';
@@ -1832,6 +1832,9 @@ declare module '@polkadot/types/types/registry' {
     'Compact<Spread>': Compact<Spread>;
     'Option<Spread>': Option<Spread>;
     'Vec<Spread>': Vec<Spread>;
+    Rate: Rate;
+    'Option<Rate>': Option<Rate>;
+    'Vec<Rate>': Vec<Rate>;
     PoolInfo: PoolInfo;
     'Option<PoolInfo>': Option<PoolInfo>;
     'Vec<PoolInfo>': Vec<PoolInfo>;

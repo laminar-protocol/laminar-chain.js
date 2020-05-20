@@ -226,7 +226,7 @@ export interface MarginPosition extends Struct {
   readonly leveragedHeld: Fixed128;
   readonly leveragedDebits: Fixed128;
   readonly leveragedDebitsInUsd: Fixed128;
-  readonly openAccumulatedSwapRate: Fixed128;
+  readonly openAccumulatedSwapRate: Rate;
   readonly marginHeld: Fixed128;
 }
 
@@ -268,6 +268,9 @@ export interface PositionId extends u64 {}
 
 /** @name PreRuntime */
 export interface PreRuntime extends ITuple<[ConsensusEngineId, Bytes]> {}
+
+/** @name Rate */
+export interface Rate extends Fixed128 {}
 
 /** @name RiskThreshold */
 export interface RiskThreshold extends Struct {
