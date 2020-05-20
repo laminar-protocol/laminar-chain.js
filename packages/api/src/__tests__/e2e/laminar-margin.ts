@@ -69,6 +69,18 @@ describe('laminar margin', () => {
       });
   });
 
+  it('accumulatedSwapRates', done => {
+    api.margin.accumulatedSwapRates().subscribe(result => {
+      console.log(result);
+    });
+  });
+
+  it('marginpositions', done => {
+    api.margin.position('3').subscribe(result => {
+      console.log(result);
+    });
+  });
+
   it('getPoolEnabledTradingPairs', done => {
     const result = api.api.tx.marginLiquidityPools.setEnabledTrades(
       '0',

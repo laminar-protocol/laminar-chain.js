@@ -4,7 +4,16 @@ import BN from 'bn.js';
 import { combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import { LeverageEnum, MarginInfo, MarginPoolInfo, Threshold, TraderInfo, TokenId } from '../types';
+import {
+  LeverageEnum,
+  MarginInfo,
+  MarginPoolInfo,
+  Threshold,
+  TraderInfo,
+  TokenId,
+  AccumulatedSwapRate,
+  MarginPosition
+} from '../types';
 import LaminarApi from './LaminarApi';
 
 class Margin {
@@ -112,7 +121,6 @@ class Margin {
     );
   };
 
-  //
   public traderThreshold = (baseToken: TokenId, quoteToken: TokenId): Observable<Threshold> => {
     return this.api.query.marginProtocol
       .traderRiskThreshold({
@@ -120,6 +128,28 @@ class Margin {
         quote: quoteToken
       })
       .pipe(map(result => result.toHuman() as Threshold));
+  };
+
+  public accumulatedSwapRates = (): Observable<AccumulatedSwapRate[]> => {
+    return this.api.query.marginLiquidityPools.accumulatedSwapRates.entries().pipe(
+      map(result => {
+        return result.map(([key, value]) => {
+          const pair = key.args[1].toJSON() as { base: string; quote: string };
+          const long = value.long.toString();
+          const short = value.long.toString();
+          return { poolId: `${key.args[0].toJSON()}`, pair, pairId: `${pair.base}${pair.quote}`, long, short };
+        });
+      })
+    );
+  };
+
+  public position = (positionId: string): Observable<MarginPosition | null> => {
+    return this.api.query.marginProtocol.positions(positionId).pipe(
+      map(result => {
+        if (result.isEmpty) return null;
+        return result.toHuman() as any;
+      })
+    );
   };
 
   public allPoolIds = () => {

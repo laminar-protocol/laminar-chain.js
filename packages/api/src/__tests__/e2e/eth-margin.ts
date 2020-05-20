@@ -49,4 +49,10 @@ describe('ethereum api', () => {
       console.log(result);
     });
   });
+
+  it('positions', done => {
+    api.margin.position('3').subscribe(result => {
+      console.log(result);
+    });
+  });
 });
