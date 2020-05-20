@@ -79,7 +79,7 @@ export default {
     },
     MarginPosition: {
       owner: 'AccountId',
-      pool: 'LiquidityPoolId',
+      poolId: 'LiquidityPoolId',
       pair: 'TradingPair',
       leverage: 'Leverage',
       leveragedHeld: 'Fixed128',

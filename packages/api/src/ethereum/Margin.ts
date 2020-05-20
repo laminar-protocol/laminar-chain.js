@@ -2,7 +2,15 @@ import BN from 'bn.js';
 import { from, Observable, of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { toNumber } from '@laminar/types/utils/precision';
-import { LeverageEnum, TokenId, TokenInfo, MarginPoolInfo, MarginInfo } from '../types';
+import {
+  LeverageEnum,
+  TokenId,
+  TokenInfo,
+  MarginPoolInfo,
+  MarginInfo,
+  AccumulatedSwapRate,
+  MarginPosition
+} from '../types';
 import EthereumApi, { UINT256_MAX } from './EthereumApi';
 
 class Margin {
@@ -123,6 +131,10 @@ class Margin {
     );
   };
 
+  public position = (): Observable<MarginPosition | null> => {
+    return of(null);
+  };
+
   public poolInfo = (poolId: string): Observable<MarginPoolInfo> => {
     const poolInterface = this.apiProvider.getMarginPoolInterfaceContract(poolId);
     const poolRegistry = this.apiProvider.getMarginPoolRegistryContract(poolId);
@@ -189,6 +201,7 @@ class Margin {
         this.baseContracts.marginFlowProtocol.methods.getMarginHeld(poolId, account).call()
       ]).then(([equity, freeMargin, marginHeld]) => {
         return {
+          balance: '0',
           equity,
           freeMargin,
           marginHeld,
@@ -213,6 +226,10 @@ class Margin {
         };
       })
     );
+  }
+
+  public accumulatedSwapRates(): Observable<AccumulatedSwapRate[]> {
+    return of([]);
   }
 
   public deposit = async (account: string, poolId: string, amount: string | BN) => {

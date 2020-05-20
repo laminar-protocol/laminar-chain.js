@@ -48,12 +48,39 @@ export interface MarginInfo {
 
 export interface TraderInfo {
   equity: string;
+  balance: string;
   freeMargin: string;
   marginHeld: string;
   marginLevel: string;
   unrealizedPl: string;
   totalLeveragedPosition: string;
   accumulatedSwap: string;
+}
+
+export interface AccumulatedSwapRate {
+  poolId: string;
+  pair: {
+    base: string;
+    quote: string;
+  };
+  pairId: string;
+  long: string;
+  short: string;
+}
+
+export interface MarginPosition {
+  owner: string;
+  poolId: string;
+  pair: {
+    base: string;
+    quote: string;
+  };
+  leverage: string;
+  leveragedHeld: string;
+  leveragedDebits: string;
+  leveragedDebitsInUsd: string;
+  openAccumulatedSwapRate: string;
+  marginHeld: string;
 }
 
 export interface TokenInfo {
