@@ -14,6 +14,8 @@ import {
 } from '../types';
 import LaminarApi from './LaminarApi';
 
+const unit = new BN('1000000000000000000');
+
 class Margin {
   private apiProvider: LaminarApi;
   private api: LaminarApi['api'];
@@ -112,8 +114,11 @@ class Margin {
             .sub(unrealizedPl)
             .toString(),
           equity: equity.toString(),
-          marginLevel: marginLevel.toString(),
-          totalLeveragedPosition: (equity.toString() / marginLevel.toString()).toFixed(3)
+          marginLevel: marginLevel.toHuman(),
+          totalLeveragedPosition: equity
+            .mul(unit)
+            .div(marginLevel.toBn())
+            .toString()
         };
       })
     );
