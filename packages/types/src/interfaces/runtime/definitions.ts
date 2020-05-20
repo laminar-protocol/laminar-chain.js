@@ -28,8 +28,8 @@ export default {
       ]
     },
     SwapRate: {
-      long: 'Fixed128',
-      short: 'Fixed128'
+      long: 'Rate',
+      short: 'Rate'
     },
     CurrencyIdOf: 'CurrencyId',
     Amount: 'i128',
