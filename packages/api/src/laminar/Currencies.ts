@@ -83,7 +83,7 @@ class Currencies {
   };
 
   public oracleValues = (): Observable<OracleValue[]> => {
-    return timer(0, 30000).pipe(
+    return this.api.rpc.chain.subscribeNewHeads().pipe(
       switchMap(() => this.tokens()),
       switchMap(tokens => {
         return combineLatest(
