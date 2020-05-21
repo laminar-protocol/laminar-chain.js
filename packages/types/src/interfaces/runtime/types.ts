@@ -3,7 +3,14 @@
 
 import { ITuple } from '@polkadot/types/types';
 import { Compact, Enum, Int, Option, Set, Struct, U8aFixed, Vec } from '@polkadot/types/codec';
-import { GenericAccountId, GenericAccountIndex, GenericAddress, GenericBlock, GenericCall, GenericConsensusEngineId } from '@polkadot/types/generic';
+import {
+  GenericAccountId,
+  GenericAccountIndex,
+  GenericAddress,
+  GenericBlock,
+  GenericCall,
+  GenericConsensusEngineId
+} from '@polkadot/types/generic';
 import { Bytes, DoNotConstruct, Null, StorageKey, bool, i128, u128, u32, u64, u8 } from '@polkadot/types/primitive';
 import { Price } from '@open-web3/orml-types/interfaces/prices';
 import { AuthorityId } from '@polkadot/types/interfaces/consensus';
@@ -110,13 +117,26 @@ export interface DispatchClass extends Enum {
 export interface DispatchInfo extends Struct {
   readonly weight: Weight;
   readonly class: DispatchClass;
-  readonly paysFee: bool;
+  readonly paysFee: Pays;
 }
 
 /** @name DispatchInfoTo190 */
 export interface DispatchInfoTo190 extends Struct {
   readonly weight: Weight;
   readonly class: DispatchClass;
+}
+
+/** @name DispatchInfoTo244 */
+export interface DispatchInfoTo244 extends Struct {
+  readonly weight: Weight;
+  readonly class: DispatchClass;
+  readonly paysFee: bool;
+}
+
+/** @name ExtrinsicsWeight */
+export interface ExtrinsicsWeight extends Struct {
+  readonly normal: Weight;
+  readonly operational: Weight;
 }
 
 /** @name Fixed128 */
@@ -244,6 +264,12 @@ export interface OracleValue extends Price {}
 
 /** @name Origin */
 export interface Origin extends DoNotConstruct {}
+
+/** @name Pays */
+export interface Pays extends Enum {
+  readonly isYes: boolean;
+  readonly isNo: boolean;
+}
 
 /** @name Perbill */
 export interface Perbill extends u32 {}
