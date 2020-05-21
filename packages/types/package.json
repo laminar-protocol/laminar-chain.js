@@ -1,6 +1,6 @@
 {
   "name": "@laminar/types",
-  "version": "0.2.0-beta.86",
+  "version": "0.2.0-beta.87",
   "description": "Laminar Chain JS types",
   "main": "index.js",
   "author": "Laminar Developers <hello@laminar.one>",
