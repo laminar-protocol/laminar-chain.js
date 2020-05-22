@@ -4,7 +4,7 @@ export default {
   types: {
     ...definitions.types,
     CurrencyId: {
-      _enum: ['LAMI', 'AUSD', 'FEUR', 'FJPY', 'FBTC', 'FETH']
+      _enum: ['LAMI', 'AUSD', 'FEUR', 'FJPY', 'FBTC', 'FETH', 'FAUD', 'FCAD', 'FCHF', 'FXAU', 'FOIL']
     },
     Leverage: {
       _enum: [
