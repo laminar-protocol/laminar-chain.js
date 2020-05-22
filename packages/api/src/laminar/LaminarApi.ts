@@ -20,7 +20,19 @@ class LaminarApi {
   public synthetic: Synthetic;
   public currencies: Currencies;
 
-  static tokenIds: LaminarTokenNames = ['LAMI', 'AUSD', 'FEUR', 'FJPY', 'FBTC', 'FETH'];
+  static tokenIds: LaminarTokenNames = [
+    'LAMI',
+    'AUSD',
+    'FEUR',
+    'FJPY',
+    'FBTC',
+    'FETH',
+    'FAUD',
+    'FCAD',
+    'FCHF',
+    'FXAU',
+    'FOIL'
+  ];
 
   constructor(options: LaminarApiOptions) {
     this.api = new ApiRx(
