@@ -1,7 +1,19 @@
 import BN from 'bn.js';
 import { TokenNames as EthTokenNames } from './ethereum/protocols';
 
-export type LaminarTokenNames = ['LAMI', 'AUSD', 'FEUR', 'FJPY', 'FBTC', 'FETH'];
+export type LaminarTokenNames = [
+  'LAMI',
+  'AUSD',
+  'FEUR',
+  'FJPY',
+  'FBTC',
+  'FETH',
+  'FAUD',
+  'FCAD',
+  'FCHF',
+  'FXAU',
+  'FOIL'
+];
 
 export type TokenId = string | LaminarTokenNames[number];
 
