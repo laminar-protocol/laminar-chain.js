@@ -59,6 +59,46 @@ class Currencies {
         isBaseToken: false,
         isNetworkToken: false,
         id: 'FETH'
+      },
+      {
+        name: 'FAUD',
+        displayName: 'AUD',
+        precision: 18,
+        isBaseToken: false,
+        isNetworkToken: false,
+        id: 'FAUD'
+      },
+      {
+        name: 'FCAD',
+        displayName: 'CAD',
+        precision: 18,
+        isBaseToken: false,
+        isNetworkToken: false,
+        id: 'FCAD'
+      },
+      {
+        name: 'FCHF',
+        displayName: 'CHF',
+        precision: 18,
+        isBaseToken: false,
+        isNetworkToken: false,
+        id: 'FCHF'
+      },
+      {
+        name: 'FXAU',
+        displayName: 'XAU',
+        precision: 18,
+        isBaseToken: false,
+        isNetworkToken: false,
+        id: 'FXAU'
+      },
+      {
+        name: 'FOIL',
+        displayName: 'OIL',
+        precision: 18,
+        isBaseToken: false,
+        isNetworkToken: false,
+        id: 'FOIL'
       }
     ]);
   };
