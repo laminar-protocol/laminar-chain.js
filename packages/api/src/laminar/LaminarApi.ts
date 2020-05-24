@@ -58,54 +58,64 @@ class LaminarApi {
         action
       } as Partial<ActionStatus>;
 
-      extrinsic.signAndSend(signOption).subscribe((result: any) => {
-        if (result.status.isInBlock) {
-          actionStatus.blockHash = result.status.asInBlock.toHex();
-        }
+      extrinsic.signAndSend(signOption).subscribe(
+        (result: any) => {
+          if (result.status.isInBlock) {
+            actionStatus.blockHash = result.status.asInBlock.toHex();
+          }
 
-        if (result.status.isFinalized || result.status.isInBlock) {
-          actionStatus.data = result;
-          actionStatus.account = extrinsic.signer.toString();
+          if (result.status.isFinalized || result.status.isInBlock) {
+            actionStatus.data = result;
+            actionStatus.account = extrinsic.signer.toString();
 
-          result.events
-            .filter(({ event: { section } }: any): boolean => section === 'system')
-            .forEach((event: any): void => {
-              const {
-                event: { data, method }
-              } = event;
+            result.events
+              .filter(({ event: { section } }: any): boolean => section === 'system')
+              .forEach((event: any): void => {
+                const {
+                  event: { data, method }
+                } = event;
 
-              if (method === 'ExtrinsicFailed') {
-                const [dispatchError] = data;
-                let message = dispatchError.type;
+                if (method === 'ExtrinsicFailed') {
+                  const [dispatchError] = data;
+                  let message = dispatchError.type;
 
-                if (dispatchError.isModule) {
-                  try {
-                    const mod = dispatchError.asModule;
-                    const error = this.api.registry.findMetaError(
-                      new Uint8Array([mod.index.toNumber(), mod.error.toNumber()])
-                    );
-                    message = `${error.section}.${error.name}`;
-                  } catch (error) {
-                    // swallow
+                  if (dispatchError.isModule) {
+                    try {
+                      const mod = dispatchError.asModule;
+                      const error = this.api.registry.findMetaError(
+                        new Uint8Array([mod.index.toNumber(), mod.error.toNumber()])
+                      );
+                      message = `${error.section}.${error.name}`;
+                    } catch (error) {
+                      // swallow
+                    }
                   }
-                }
 
-                actionStatus.message = message;
-                actionStatus.status = 'error';
-                reject(actionStatus);
-              } else if (method === 'ExtrinsicSuccess') {
-                actionStatus.status = 'success';
-                resolve(actionStatus as ActionStatus);
-              }
-            });
-        } else if (result.isError) {
-          actionStatus.account = extrinsic.signer.toString();
+                  actionStatus.message = message;
+                  actionStatus.status = 'error';
+                  reject(actionStatus);
+                } else if (method === 'ExtrinsicSuccess') {
+                  actionStatus.status = 'success';
+                  resolve(actionStatus as ActionStatus);
+                }
+              });
+          } else if (result.isError) {
+            actionStatus.account = extrinsic.signer.toString();
+            actionStatus.status = 'error';
+            actionStatus.data = result;
+
+            reject(actionStatus);
+          }
+        },
+        (error: any) => {
+          actionStatus.message = error.message;
+          actionStatus.data = error;
           actionStatus.status = 'error';
-          actionStatus.data = result;
+          actionStatus.account = extrinsic.signer.toString();
 
           reject(actionStatus);
         }
-      });
+      );
     });
   };
 
