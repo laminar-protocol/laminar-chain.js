@@ -1,5 +1,5 @@
 import staticLatest from './static-latest';
 
 export default {
-  '0xd76aaabbe9d9c367b7f292786d7e6649dad2661d11f4c25585aecf59dc69328f-100': staticLatest
+  '0x56a55498f5e54e74f8ce0866eeb35e0558bb4b64763c9e74541454dd901b6ca9-102': staticLatest
 };

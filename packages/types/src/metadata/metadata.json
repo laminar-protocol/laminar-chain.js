@@ -26,10 +26,10 @@
               },
               {
                 "name": "AllExtrinsicsWeight",
-                "modifier": "Optional",
-                "type": { "Plain": "Weight" },
-                "fallback": "0x00",
-                "documentation": [" Total weight for all extrinsics put together, for the current block."]
+                "modifier": "Default",
+                "type": { "Plain": "ExtrinsicsWeight" },
+                "fallback": "0x00000000000000000000000000000000",
+                "documentation": [" Total weight for all extrinsics for the current block."]
               },
               {
                 "name": "AllExtrinsicsLen",
@@ -146,49 +146,138 @@
             {
               "name": "remark",
               "args": [{ "name": "_remark", "type": "Bytes" }],
-              "documentation": [" Make some on-chain remark."]
+              "documentation": [
+                " Make some on-chain remark.",
+                "",
+                " # <weight>",
+                " - `O(1)`",
+                " - Base Weight: 0.665 µs, independent of remark length.",
+                " - No DB operations.",
+                " # </weight>"
+              ]
             },
             {
               "name": "set_heap_pages",
               "args": [{ "name": "pages", "type": "u64" }],
-              "documentation": [" Set the number of pages in the WebAssembly environment's heap."]
+              "documentation": [
+                " Set the number of pages in the WebAssembly environment's heap.",
+                "",
+                " # <weight>",
+                " - `O(1)`",
+                " - 1 storage write.",
+                " - Base Weight: 1.405 µs",
+                " - 1 write to HEAP_PAGES",
+                " # </weight>"
+              ]
             },
             {
               "name": "set_code",
               "args": [{ "name": "code", "type": "Bytes" }],
-              "documentation": [" Set the new runtime code."]
+              "documentation": [
+                " Set the new runtime code.",
+                "",
+                " # <weight>",
+                " - `O(C + S)` where `C` length of `code` and `S` complexity of `can_set_code`",
+                " - 1 storage write (codec `O(C)`).",
+                " - 1 call to `can_set_code`: `O(S)` (calls `sp_io::misc::runtime_version` which is expensive).",
+                " - 1 event.",
+                " The weight of this function is dependent on the runtime, but generally this is very expensive.",
+                " We will treat this as a full block.",
+                " # </weight>"
+              ]
             },
             {
               "name": "set_code_without_checks",
               "args": [{ "name": "code", "type": "Bytes" }],
-              "documentation": [" Set the new runtime code without doing any checks of the given `code`."]
+              "documentation": [
+                " Set the new runtime code without doing any checks of the given `code`.",
+                "",
+                " # <weight>",
+                " - `O(C)` where `C` length of `code`",
+                " - 1 storage write (codec `O(C)`).",
+                " - 1 event.",
+                " The weight of this function is dependent on the runtime. We will treat this as a full block.",
+                " # </weight>"
+              ]
             },
             {
               "name": "set_changes_trie_config",
               "args": [{ "name": "changes_trie_config", "type": "Option<ChangesTrieConfiguration>" }],
-              "documentation": [" Set the new changes trie configuration."]
+              "documentation": [
+                " Set the new changes trie configuration.",
+                "",
+                " # <weight>",
+                " - `O(1)`",
+                " - 1 storage write or delete (codec `O(1)`).",
+                " - 1 call to `deposit_log`: Uses `append` API, so O(1)",
+                " - Base Weight: 7.218 µs",
+                " - DB Weight:",
+                "     - Writes: Changes Trie, System Digest",
+                " # </weight>"
+              ]
             },
             {
               "name": "set_storage",
               "args": [{ "name": "items", "type": "Vec<KeyValue>" }],
-              "documentation": [" Set some items of storage."]
+              "documentation": [
+                " Set some items of storage.",
+                "",
+                " # <weight>",
+                " - `O(I)` where `I` length of `items`",
+                " - `I` storage writes (`O(1)`).",
+                " - Base Weight: 0.568 * i µs",
+                " - Writes: Number of items",
+                " # </weight>"
+              ]
             },
             {
               "name": "kill_storage",
               "args": [{ "name": "keys", "type": "Vec<Key>" }],
-              "documentation": [" Kill some items from storage."]
+              "documentation": [
+                " Kill some items from storage.",
+                "",
+                " # <weight>",
+                " - `O(IK)` where `I` length of `keys` and `K` length of one key",
+                " - `I` storage deletions.",
+                " - Base Weight: .378 * i µs",
+                " - Writes: Number of items",
+                " # </weight>"
+              ]
             },
             {
               "name": "kill_prefix",
-              "args": [{ "name": "prefix", "type": "Key" }],
-              "documentation": [" Kill all storage items with a key that starts with the given prefix."]
+              "args": [
+                { "name": "prefix", "type": "Key" },
+                { "name": "_subkeys", "type": "u32" }
+              ],
+              "documentation": [
+                " Kill all storage items with a key that starts with the given prefix.",
+                "",
+                " **NOTE:** We rely on the Root origin to provide us the number of subkeys under",
+                " the prefix we are removing to accurately calculate the weight of this function.",
+                "",
+                " # <weight>",
+                " - `O(P)` where `P` amount of keys with prefix `prefix`",
+                " - `P` storage deletions.",
+                " - Base Weight: 0.834 * P µs",
+                " - Writes: Number of subkeys + 1",
+                " # </weight>"
+              ]
             },
             {
               "name": "suicide",
               "args": [],
               "documentation": [
                 " Kill the sending account, assuming there are no references outstanding and the composite",
-                " data is equal to its default value."
+                " data is equal to its default value.",
+                "",
+                " # <weight>",
+                " - `O(1)`",
+                " - 1 storage read and deletion.",
+                " --------------------",
+                " Base Weight: 8.626 µs",
+                " No DB Read or Write operations because caller is already in overlay",
+                " # </weight>"
               ]
             }
           ],
@@ -207,7 +296,46 @@
             { "name": "NewAccount", "args": ["AccountId"], "documentation": [" A new account was created."] },
             { "name": "KilledAccount", "args": ["AccountId"], "documentation": [" An account was reaped."] }
           ],
-          "constants": [],
+          "constants": [
+            {
+              "name": "BlockHashCount",
+              "type": "BlockNumber",
+              "value": "0x84030000",
+              "documentation": [" The maximum number of blocks to allow in mortal eras."]
+            },
+            {
+              "name": "MaximumBlockWeight",
+              "type": "Weight",
+              "value": "0x00204aa9d1010000",
+              "documentation": [" The maximum weight of a block."]
+            },
+            {
+              "name": "DbWeight",
+              "type": "RuntimeDbWeight",
+              "value": "0x40787d010000000000e1f50500000000",
+              "documentation": [" The weight of runtime database operations the runtime can invoke."]
+            },
+            {
+              "name": "BlockExecutionWeight",
+              "type": "Weight",
+              "value": "0x00f2052a01000000",
+              "documentation": [" The base weight of executing a block, independent of the transactions in the block."]
+            },
+            {
+              "name": "ExtrinsicBaseWeight",
+              "type": "Weight",
+              "value": "0x4059730700000000",
+              "documentation": [
+                " The base weight of an Extrinsic in the block, independent of the of extrinsic being executed."
+              ]
+            },
+            {
+              "name": "MaximumBlockLength",
+              "type": "u32",
+              "value": "0x00005000",
+              "documentation": [" The maximum length of a block (in bytes)."]
+            }
+          ],
           "errors": [
             {
               "name": "InvalidSpecName",
@@ -275,7 +403,16 @@
                 " The timestamp should be greater than the previous one by the amount specified by",
                 " `MinimumPeriod`.",
                 "",
-                " The dispatch origin for this call must be `Inherent`."
+                " The dispatch origin for this call must be `Inherent`.",
+                "",
+                " # <weight>",
+                " - `O(T)` where `T` complexity of `on_timestamp_set`",
+                " - 1 storage read and 1 storage mutation (codec `O(1)`). (because of `DidUpdate::take` in `on_finalize`)",
+                " - 1 event handler `on_timestamp_set` `O(T)`.",
+                " - Benchmark: 7.678 (min squares analysis)",
+                "   - NOTE: This benchmark was done for a runtime with insignificant `on_timestamp_set` handlers.",
+                "     New benchmarking is needed when adding new handlers.",
+                " # </weight>"
               ]
             }
           ],
@@ -377,7 +514,7 @@
                 "name": "UnderConstruction",
                 "modifier": "Default",
                 "type": {
-                  "Map": { "hasher": "Twox64Concat", "key": "u32", "value": "Vec<RawVRFOutput>", "linked": false }
+                  "Map": { "hasher": "Twox64Concat", "key": "u32", "value": "Vec<Randomness>", "linked": false }
                 },
                 "fallback": "0x00",
                 "documentation": []
@@ -385,7 +522,7 @@
               {
                 "name": "Initialized",
                 "modifier": "Optional",
-                "type": { "Plain": "MaybeVrf" },
+                "type": { "Plain": "MaybeRandomness" },
                 "fallback": "0x00",
                 "documentation": [
                   " Temporary value (cleared at block finalization) which is `Some`",
@@ -493,9 +630,21 @@
           },
           "calls": [
             {
-              "name": "report_misbehavior",
-              "args": [{ "name": "_report", "type": "Bytes" }],
-              "documentation": [" Report some misbehavior."]
+              "name": "report_equivocation",
+              "args": [
+                { "name": "equivocation_proof", "type": "EquivocationProof" },
+                { "name": "key_owner_proof", "type": "KeyOwnerProof" }
+              ],
+              "documentation": [
+                " Report voter equivocation/misbehavior. This method will verify the",
+                " equivocation proof and validate the given key ownership proof",
+                " against the extracted offender. If both are valid, the offence",
+                " will be reported.",
+                "",
+                " Since the weight of the extrinsic is 0, in order to avoid DoS by",
+                " submission of invalid equivocation reports, a mandatory pre-validation of",
+                " the extrinsic is implemented in a `SignedExtension`."
+              ]
             }
           ],
           "events": [
@@ -527,7 +676,15 @@
               "name": "ChangePending",
               "documentation": [" Attempt to signal GRANDPA change with one already pending."]
             },
-            { "name": "TooSoon", "documentation": [" Cannot signal forced change so soon after last."] }
+            { "name": "TooSoon", "documentation": [" Cannot signal forced change so soon after last."] },
+            {
+              "name": "InvalidKeyOwnershipProof",
+              "documentation": [" A key ownership proof provided as part of an equivocation report is invalid."]
+            },
+            {
+              "name": "DuplicateOffenceReport",
+              "documentation": [" A given equivocation report is valid but already previously reported."]
+            }
           ]
         },
         {
@@ -746,7 +903,10 @@
                 "   - Removing enough funds from an account will trigger `T::DustRemoval::on_unbalanced`.",
                 "   - `transfer_keep_alive` works the same way as `transfer`, but has an additional",
                 "     check that the transfer will not kill the origin account.",
-                "",
+                " ---------------------------------",
+                " - Base Weight: 73.64 µs, worst case scenario (account created, account removed)",
+                " - DB Weight: 1 Read and 1 Write to destination account",
+                " - Origin account is already in memory, so no DB operations for them.",
                 " # </weight>"
               ]
             },
@@ -770,6 +930,11 @@
                 " # <weight>",
                 " - Independent of the arguments.",
                 " - Contains a limited number of reads and writes.",
+                " ---------------------",
+                " - Base Weight:",
+                "     - Creating: 27.56 µs",
+                "     - Killing: 35.11 µs",
+                " - DB Weight: 1 Read, 1 Write to `who`",
                 " # </weight>"
               ]
             },
@@ -782,7 +947,11 @@
               ],
               "documentation": [
                 " Exactly as `transfer`, except the origin must be root and the source account may be",
-                " specified."
+                " specified.",
+                " # <weight>",
+                " - Same as transfer, but additional read and write because the source account is",
+                "   not assumed to be in the overlay.",
+                " # </weight>"
               ]
             },
             {
@@ -797,7 +966,12 @@
                 "",
                 " 99% of the time you want [`transfer`] instead.",
                 "",
-                " [`transfer`]: struct.Module.html#method.transfer"
+                " [`transfer`]: struct.Module.html#method.transfer",
+                " # <weight>",
+                " - Cheaper than transfer because account cannot be killed.",
+                " - Base Weight: 51.4 µs",
+                " - DB Weight: 1 Read and 1 Write to dest (sender is in overlay already)",
+                " #</weight>"
               ]
             }
           ],
@@ -868,7 +1042,7 @@
                 "name": "NextFeeMultiplier",
                 "modifier": "Default",
                 "type": { "Plain": "Multiplier" },
-                "fallback": "0x0000000000000000",
+                "fallback": "0x00000000000000000000000000000000",
                 "documentation": []
               }
             ]
@@ -876,12 +1050,6 @@
           "calls": null,
           "events": null,
           "constants": [
-            {
-              "name": "TransactionBaseFee",
-              "type": "BalanceOf",
-              "value": "0x00008d49fd1a07000000000000000000",
-              "documentation": [" The fee to be paid for making a transaction; the base."]
-            },
             {
               "name": "TransactionByteFee",
               "type": "BalanceOf",
@@ -923,6 +1091,25 @@
               ]
             },
             {
+              "name": "sudo_unchecked_weight",
+              "args": [
+                { "name": "call", "type": "Call" },
+                { "name": "_weight", "type": "Weight" }
+              ],
+              "documentation": [
+                " Authenticates the sudo key and dispatches a function call with `Root` origin.",
+                " This function does not check the weight of the call, and instead allows the",
+                " Sudo user to specify the weight of the call.",
+                "",
+                " The dispatch origin for this call must be _Signed_.",
+                "",
+                " # <weight>",
+                " - O(1).",
+                " - The weight of this call is defined by the caller.",
+                " # </weight>"
+              ]
+            },
+            {
               "name": "set_key",
               "args": [{ "name": "new", "type": "LookupSource" }],
               "documentation": [
@@ -959,7 +1146,7 @@
             }
           ],
           "events": [
-            { "name": "Sudid", "args": ["bool"], "documentation": [" A sudo just took place."] },
+            { "name": "Sudid", "args": ["DispatchResult"], "documentation": [" A sudo just took place."] },
             {
               "name": "KeyChanged",
               "args": ["AccountId"],
@@ -1040,6 +1227,7 @@
           "constants": [],
           "errors": []
         },
+        { "name": "Historical", "storage": null, "calls": null, "events": null, "constants": [], "errors": [] },
         {
           "name": "RandomnessCollectiveFlip",
           "storage": {
@@ -1120,36 +1308,89 @@
               "name": "set_members",
               "args": [
                 { "name": "new_members", "type": "Vec<AccountId>" },
-                { "name": "prime", "type": "Option<AccountId>" }
+                { "name": "prime", "type": "Option<AccountId>" },
+                { "name": "old_count", "type": "MemberCount" }
               ],
               "documentation": [
                 " Set the collective's membership.",
                 "",
-                " - `new_members`: The new member list. Be nice to the chain and",
+                " - `new_members`: The new member list. Be nice to the chain and provide it sorted.",
                 " - `prime`: The prime member whose vote sets the default.",
+                " - `old_count`: The upper bound for the previous number of members in storage.",
+                "                Used for weight estimation.",
                 "",
-                " Requires root origin."
+                " Requires root origin.",
+                "",
+                " NOTE: Does not enforce the expected `MAX_MEMBERS` limit on the amount of members, but",
+                "       the weight estimations rely on it to estimate dispatchable weight.",
+                "",
+                " # <weight>",
+                " ## Weight",
+                " - `O(MP + N)` where:",
+                "   - `M` old-members-count (code- and governance-bounded)",
+                "   - `N` new-members-count (code- and governance-bounded)",
+                "   - `P` proposals-count (code-bounded)",
+                " - DB:",
+                "   - 1 storage mutation (codec `O(M)` read, `O(N)` write) for reading and writing the members",
+                "   - 1 storage read (codec `O(P)`) for reading the proposals",
+                "   - `P` storage mutations (codec `O(M)`) for updating the votes for each proposal",
+                "   - 1 storage write (codec `O(1)`) for deleting the old `prime` and setting the new one",
+                " # </weight>"
               ]
             },
             {
               "name": "execute",
-              "args": [{ "name": "proposal", "type": "Proposal" }],
+              "args": [
+                { "name": "proposal", "type": "Proposal" },
+                { "name": "length_bound", "type": "Compact<u32>" }
+              ],
               "documentation": [
                 " Dispatch a proposal from a member using the `Member` origin.",
                 "",
-                " Origin must be a member of the collective."
+                " Origin must be a member of the collective.",
+                "",
+                " # <weight>",
+                " ## Weight",
+                " - `O(M + P)` where `M` members-count (code-bounded) and `P` complexity of dispatching `proposal`",
+                " - DB: 1 read (codec `O(M)`) + DB access of `proposal`",
+                " - 1 event",
+                " # </weight>"
               ]
             },
             {
               "name": "propose",
               "args": [
                 { "name": "threshold", "type": "Compact<MemberCount>" },
-                { "name": "proposal", "type": "Proposal" }
+                { "name": "proposal", "type": "Proposal" },
+                { "name": "length_bound", "type": "Compact<u32>" }
               ],
               "documentation": [
+                " Add a new proposal to either be voted on or executed directly.",
+                "",
+                " Requires the sender to be member.",
+                "",
+                " `threshold` determines whether `proposal` is executed directly (`threshold < 2`)",
+                " or put up for voting.",
+                "",
                 " # <weight>",
-                " - Bounded storage reads and writes.",
-                " - Argument `threshold` has bearing on weight.",
+                " ## Weight",
+                " - `O(B + M + P1)` or `O(B + M + P2)` where:",
+                "   - `B` is `proposal` size in bytes (length-fee-bounded)",
+                "   - `M` is members-count (code- and governance-bounded)",
+                "   - branching is influenced by `threshold` where:",
+                "     - `P1` is proposal execution complexity (`threshold < 2`)",
+                "     - `P2` is proposals-count (code-bounded) (`threshold >= 2`)",
+                " - DB:",
+                "   - 1 storage read `is_member` (codec `O(M)`)",
+                "   - 1 storage read `ProposalOf::contains_key` (codec `O(1)`)",
+                "   - DB accesses influenced by `threshold`:",
+                "     - EITHER storage accesses done by `proposal` (`threshold < 2`)",
+                "     - OR proposal insertion (`threshold <= 2`)",
+                "       - 1 storage mutation `Proposals` (codec `O(P2)`)",
+                "       - 1 storage mutation `ProposalCount` (codec `O(1)`)",
+                "       - 1 storage write `ProposalOf` (codec `O(B)`)",
+                "       - 1 storage write `Voting` (codec `O(M)`)",
+                "   - 1 event",
                 " # </weight>"
               ]
             },
@@ -1161,9 +1402,17 @@
                 { "name": "approve", "type": "bool" }
               ],
               "documentation": [
+                " Add an aye or nay vote for the sender to the given proposal.",
+                "",
+                " Requires the sender to be a member.",
+                "",
                 " # <weight>",
-                " - Bounded storage read and writes.",
-                " - Will be slightly heavier if the proposal is approved / disapproved after the vote.",
+                " ## Weight",
+                " - `O(M)` where `M` is members-count (code- and governance-bounded)",
+                " - DB:",
+                "   - 1 storage read `Members` (codec `O(M)`)",
+                "   - 1 storage mutation `Voting` (codec `O(M)`)",
+                " - 1 event",
                 " # </weight>"
               ]
             },
@@ -1171,22 +1420,38 @@
               "name": "close",
               "args": [
                 { "name": "proposal", "type": "Hash" },
-                { "name": "index", "type": "Compact<ProposalIndex>" }
+                { "name": "index", "type": "Compact<ProposalIndex>" },
+                { "name": "proposal_weight_bound", "type": "Compact<Weight>" },
+                { "name": "length_bound", "type": "Compact<u32>" }
               ],
               "documentation": [
-                " May be called by any signed account after the voting duration has ended in order to",
-                " finish voting and close the proposal.",
+                " Close a vote that is either approved, disapproved or whose voting period has ended.",
                 "",
-                " Abstentions are counted as rejections unless there is a prime member set and the prime",
-                " member cast an approval.",
+                " May be called by any signed account in order to finish voting and close the proposal.",
                 "",
-                " - the weight of `proposal` preimage.",
-                " - up to three events deposited.",
-                " - one read, two removals, one mutation. (plus three static reads.)",
-                " - computation and i/o `O(P + L + M)` where:",
-                "   - `M` is number of members,",
-                "   - `P` is number of active proposals,",
-                "   - `L` is the encoded length of `proposal` preimage."
+                " If called before the end of the voting period it will only close the vote if it is",
+                " has enough votes to be approved or disapproved.",
+                "",
+                " If called after the end of the voting period abstentions are counted as rejections",
+                " unless there is a prime member set and the prime member cast an approval.",
+                "",
+                " + `proposal_weight_bound`: The maximum amount of weight consumed by executing the closed proposal.",
+                " + `length_bound`: The upper bound for the length of the proposal in storage. Checked via",
+                "                   `storage::read` so it is `size_of::<u32>() == 4` larger than the pure length.",
+                "",
+                " # <weight>",
+                " ## Weight",
+                " - `O(B + M + P1 + P2)` where:",
+                "   - `B` is `proposal` size in bytes (length-fee-bounded)",
+                "   - `M` is members-count (code- and governance-bounded)",
+                "   - `P1` is the complexity of `proposal` preimage.",
+                "   - `P2` is proposal-count (code-bounded)",
+                " - DB:",
+                "  - 2 storage reads (`Members`: codec `O(M)`, `Prime`: codec `O(1)`)",
+                "  - 3 mutations (`Voting`: codec `O(M)`, `ProposalOf`: codec `O(B)`, `Proposals`: codec `O(P2)`)",
+                "  - any mutations done while executing `proposal` (`P1`)",
+                " - up to 3 events",
+                " # </weight>"
               ]
             }
           ],
@@ -1219,12 +1484,12 @@
             },
             {
               "name": "Executed",
-              "args": ["Hash", "bool"],
+              "args": ["Hash", "DispatchResult"],
               "documentation": [" A motion was executed; `bool` is true if returned without error."]
             },
             {
               "name": "MemberExecuted",
-              "args": ["Hash", "bool"],
+              "args": ["Hash", "DispatchResult"],
               "documentation": [" A single member did some action; `bool` is true if returned without error."]
             },
             {
@@ -1244,6 +1509,18 @@
             {
               "name": "TooEarly",
               "documentation": [" The close call is made too early, before the end of the voting."]
+            },
+            {
+              "name": "TooManyProposals",
+              "documentation": [" There can only be a maximum of `MaxProposals` active proposals."]
+            },
+            {
+              "name": "WrongProposalWeight",
+              "documentation": [" The given weight bound for the proposal was too low."]
+            },
+            {
+              "name": "WrongProposalLength",
+              "documentation": [" The given length bound for the proposal was too low."]
             }
           ]
         },
@@ -1409,36 +1686,89 @@
               "name": "set_members",
               "args": [
                 { "name": "new_members", "type": "Vec<AccountId>" },
-                { "name": "prime", "type": "Option<AccountId>" }
+                { "name": "prime", "type": "Option<AccountId>" },
+                { "name": "old_count", "type": "MemberCount" }
               ],
               "documentation": [
                 " Set the collective's membership.",
                 "",
-                " - `new_members`: The new member list. Be nice to the chain and",
+                " - `new_members`: The new member list. Be nice to the chain and provide it sorted.",
                 " - `prime`: The prime member whose vote sets the default.",
+                " - `old_count`: The upper bound for the previous number of members in storage.",
+                "                Used for weight estimation.",
                 "",
-                " Requires root origin."
+                " Requires root origin.",
+                "",
+                " NOTE: Does not enforce the expected `MAX_MEMBERS` limit on the amount of members, but",
+                "       the weight estimations rely on it to estimate dispatchable weight.",
+                "",
+                " # <weight>",
+                " ## Weight",
+                " - `O(MP + N)` where:",
+                "   - `M` old-members-count (code- and governance-bounded)",
+                "   - `N` new-members-count (code- and governance-bounded)",
+                "   - `P` proposals-count (code-bounded)",
+                " - DB:",
+                "   - 1 storage mutation (codec `O(M)` read, `O(N)` write) for reading and writing the members",
+                "   - 1 storage read (codec `O(P)`) for reading the proposals",
+                "   - `P` storage mutations (codec `O(M)`) for updating the votes for each proposal",
+                "   - 1 storage write (codec `O(1)`) for deleting the old `prime` and setting the new one",
+                " # </weight>"
               ]
             },
             {
               "name": "execute",
-              "args": [{ "name": "proposal", "type": "Proposal" }],
+              "args": [
+                { "name": "proposal", "type": "Proposal" },
+                { "name": "length_bound", "type": "Compact<u32>" }
+              ],
               "documentation": [
                 " Dispatch a proposal from a member using the `Member` origin.",
                 "",
-                " Origin must be a member of the collective."
+                " Origin must be a member of the collective.",
+                "",
+                " # <weight>",
+                " ## Weight",
+                " - `O(M + P)` where `M` members-count (code-bounded) and `P` complexity of dispatching `proposal`",
+                " - DB: 1 read (codec `O(M)`) + DB access of `proposal`",
+                " - 1 event",
+                " # </weight>"
               ]
             },
             {
               "name": "propose",
               "args": [
                 { "name": "threshold", "type": "Compact<MemberCount>" },
-                { "name": "proposal", "type": "Proposal" }
+                { "name": "proposal", "type": "Proposal" },
+                { "name": "length_bound", "type": "Compact<u32>" }
               ],
               "documentation": [
+                " Add a new proposal to either be voted on or executed directly.",
+                "",
+                " Requires the sender to be member.",
+                "",
+                " `threshold` determines whether `proposal` is executed directly (`threshold < 2`)",
+                " or put up for voting.",
+                "",
                 " # <weight>",
-                " - Bounded storage reads and writes.",
-                " - Argument `threshold` has bearing on weight.",
+                " ## Weight",
+                " - `O(B + M + P1)` or `O(B + M + P2)` where:",
+                "   - `B` is `proposal` size in bytes (length-fee-bounded)",
+                "   - `M` is members-count (code- and governance-bounded)",
+                "   - branching is influenced by `threshold` where:",
+                "     - `P1` is proposal execution complexity (`threshold < 2`)",
+                "     - `P2` is proposals-count (code-bounded) (`threshold >= 2`)",
+                " - DB:",
+                "   - 1 storage read `is_member` (codec `O(M)`)",
+                "   - 1 storage read `ProposalOf::contains_key` (codec `O(1)`)",
+                "   - DB accesses influenced by `threshold`:",
+                "     - EITHER storage accesses done by `proposal` (`threshold < 2`)",
+                "     - OR proposal insertion (`threshold <= 2`)",
+                "       - 1 storage mutation `Proposals` (codec `O(P2)`)",
+                "       - 1 storage mutation `ProposalCount` (codec `O(1)`)",
+                "       - 1 storage write `ProposalOf` (codec `O(B)`)",
+                "       - 1 storage write `Voting` (codec `O(M)`)",
+                "   - 1 event",
                 " # </weight>"
               ]
             },
@@ -1450,9 +1780,17 @@
                 { "name": "approve", "type": "bool" }
               ],
               "documentation": [
+                " Add an aye or nay vote for the sender to the given proposal.",
+                "",
+                " Requires the sender to be a member.",
+                "",
                 " # <weight>",
-                " - Bounded storage read and writes.",
-                " - Will be slightly heavier if the proposal is approved / disapproved after the vote.",
+                " ## Weight",
+                " - `O(M)` where `M` is members-count (code- and governance-bounded)",
+                " - DB:",
+                "   - 1 storage read `Members` (codec `O(M)`)",
+                "   - 1 storage mutation `Voting` (codec `O(M)`)",
+                " - 1 event",
                 " # </weight>"
               ]
             },
@@ -1460,22 +1798,38 @@
               "name": "close",
               "args": [
                 { "name": "proposal", "type": "Hash" },
-                { "name": "index", "type": "Compact<ProposalIndex>" }
+                { "name": "index", "type": "Compact<ProposalIndex>" },
+                { "name": "proposal_weight_bound", "type": "Compact<Weight>" },
+                { "name": "length_bound", "type": "Compact<u32>" }
               ],
               "documentation": [
-                " May be called by any signed account after the voting duration has ended in order to",
-                " finish voting and close the proposal.",
+                " Close a vote that is either approved, disapproved or whose voting period has ended.",
                 "",
-                " Abstentions are counted as rejections unless there is a prime member set and the prime",
-                " member cast an approval.",
+                " May be called by any signed account in order to finish voting and close the proposal.",
                 "",
-                " - the weight of `proposal` preimage.",
-                " - up to three events deposited.",
-                " - one read, two removals, one mutation. (plus three static reads.)",
-                " - computation and i/o `O(P + L + M)` where:",
-                "   - `M` is number of members,",
-                "   - `P` is number of active proposals,",
-                "   - `L` is the encoded length of `proposal` preimage."
+                " If called before the end of the voting period it will only close the vote if it is",
+                " has enough votes to be approved or disapproved.",
+                "",
+                " If called after the end of the voting period abstentions are counted as rejections",
+                " unless there is a prime member set and the prime member cast an approval.",
+                "",
+                " + `proposal_weight_bound`: The maximum amount of weight consumed by executing the closed proposal.",
+                " + `length_bound`: The upper bound for the length of the proposal in storage. Checked via",
+                "                   `storage::read` so it is `size_of::<u32>() == 4` larger than the pure length.",
+                "",
+                " # <weight>",
+                " ## Weight",
+                " - `O(B + M + P1 + P2)` where:",
+                "   - `B` is `proposal` size in bytes (length-fee-bounded)",
+                "   - `M` is members-count (code- and governance-bounded)",
+                "   - `P1` is the complexity of `proposal` preimage.",
+                "   - `P2` is proposal-count (code-bounded)",
+                " - DB:",
+                "  - 2 storage reads (`Members`: codec `O(M)`, `Prime`: codec `O(1)`)",
+                "  - 3 mutations (`Voting`: codec `O(M)`, `ProposalOf`: codec `O(B)`, `Proposals`: codec `O(P2)`)",
+                "  - any mutations done while executing `proposal` (`P1`)",
+                " - up to 3 events",
+                " # </weight>"
               ]
             }
           ],
@@ -1508,12 +1862,12 @@
             },
             {
               "name": "Executed",
-              "args": ["Hash", "bool"],
+              "args": ["Hash", "DispatchResult"],
               "documentation": [" A motion was executed; `bool` is true if returned without error."]
             },
             {
               "name": "MemberExecuted",
-              "args": ["Hash", "bool"],
+              "args": ["Hash", "DispatchResult"],
               "documentation": [" A single member did some action; `bool` is true if returned without error."]
             },
             {
@@ -1533,6 +1887,18 @@
             {
               "name": "TooEarly",
               "documentation": [" The close call is made too early, before the end of the voting."]
+            },
+            {
+              "name": "TooManyProposals",
+              "documentation": [" There can only be a maximum of `MaxProposals` active proposals."]
+            },
+            {
+              "name": "WrongProposalWeight",
+              "documentation": [" The given weight bound for the proposal was too low."]
+            },
+            {
+              "name": "WrongProposalLength",
+              "documentation": [" The given length bound for the proposal was too low."]
             }
           ]
         },
@@ -1540,295 +1906,6 @@
           "name": "FinancialCouncilMembership",
           "storage": {
             "prefix": "Instance2Membership",
-            "items": [
-              {
-                "name": "Members",
-                "modifier": "Default",
-                "type": { "Plain": "Vec<AccountId>" },
-                "fallback": "0x00",
-                "documentation": [" The current membership, stored as an ordered Vec."]
-              },
-              {
-                "name": "Prime",
-                "modifier": "Optional",
-                "type": { "Plain": "AccountId" },
-                "fallback": "0x00",
-                "documentation": [" The current prime member, if one exists."]
-              }
-            ]
-          },
-          "calls": [
-            {
-              "name": "add_member",
-              "args": [{ "name": "who", "type": "AccountId" }],
-              "documentation": [" Add a member `who` to the set.", "", " May only be called from `AddOrigin` or root."]
-            },
-            {
-              "name": "remove_member",
-              "args": [{ "name": "who", "type": "AccountId" }],
-              "documentation": [
-                " Remove a member `who` from the set.",
-                "",
-                " May only be called from `RemoveOrigin` or root."
-              ]
-            },
-            {
-              "name": "swap_member",
-              "args": [
-                { "name": "remove", "type": "AccountId" },
-                { "name": "add", "type": "AccountId" }
-              ],
-              "documentation": [
-                " Swap out one member `remove` for another `add`.",
-                "",
-                " May only be called from `SwapOrigin` or root.",
-                "",
-                " Prime membership is *not* passed from `remove` to `add`, if extant."
-              ]
-            },
-            {
-              "name": "reset_members",
-              "args": [{ "name": "members", "type": "Vec<AccountId>" }],
-              "documentation": [
-                " Change the membership to a new set, disregarding the existing membership. Be nice and",
-                " pass `members` pre-sorted.",
-                "",
-                " May only be called from `ResetOrigin` or root."
-              ]
-            },
-            {
-              "name": "change_key",
-              "args": [{ "name": "new", "type": "AccountId" }],
-              "documentation": [
-                " Swap out the sending member for some other key `new`.",
-                "",
-                " May only be called from `Signed` origin of a current member.",
-                "",
-                " Prime membership is passed from the origin account to `new`, if extant."
-              ]
-            },
-            {
-              "name": "set_prime",
-              "args": [{ "name": "who", "type": "AccountId" }],
-              "documentation": [" Set the prime member. Must be a current member."]
-            },
-            { "name": "clear_prime", "args": [], "documentation": [" Remove the prime member if it exists."] }
-          ],
-          "events": [
-            {
-              "name": "MemberAdded",
-              "args": [],
-              "documentation": [" The given member was added; see the transaction for who."]
-            },
-            {
-              "name": "MemberRemoved",
-              "args": [],
-              "documentation": [" The given member was removed; see the transaction for who."]
-            },
-            {
-              "name": "MembersSwapped",
-              "args": [],
-              "documentation": [" Two members were swapped; see the transaction for who."]
-            },
-            {
-              "name": "MembersReset",
-              "args": [],
-              "documentation": [" The membership was reset; see the transaction for who the new set is."]
-            },
-            { "name": "KeyChanged", "args": [], "documentation": [" One of the members' keys changed."] },
-            { "name": "Dummy", "args": ["PhantomData"], "documentation": [" Phantom member, never used."] }
-          ],
-          "constants": [],
-          "errors": []
-        },
-        {
-          "name": "OperatorCollective",
-          "storage": {
-            "prefix": "Instance3Collective",
-            "items": [
-              {
-                "name": "Proposals",
-                "modifier": "Default",
-                "type": { "Plain": "Vec<Hash>" },
-                "fallback": "0x00",
-                "documentation": [" The hashes of the active proposals."]
-              },
-              {
-                "name": "ProposalOf",
-                "modifier": "Optional",
-                "type": { "Map": { "hasher": "Identity", "key": "Hash", "value": "Proposal", "linked": false } },
-                "fallback": "0x00",
-                "documentation": [" Actual proposal for a given hash, if it's current."]
-              },
-              {
-                "name": "Voting",
-                "modifier": "Optional",
-                "type": { "Map": { "hasher": "Identity", "key": "Hash", "value": "Votes", "linked": false } },
-                "fallback": "0x00",
-                "documentation": [" Votes on a given proposal, if it is ongoing."]
-              },
-              {
-                "name": "ProposalCount",
-                "modifier": "Default",
-                "type": { "Plain": "u32" },
-                "fallback": "0x00000000",
-                "documentation": [" Proposals so far."]
-              },
-              {
-                "name": "Members",
-                "modifier": "Default",
-                "type": { "Plain": "Vec<AccountId>" },
-                "fallback": "0x00",
-                "documentation": [" The current members of the collective. This is stored sorted (just by value)."]
-              },
-              {
-                "name": "Prime",
-                "modifier": "Optional",
-                "type": { "Plain": "AccountId" },
-                "fallback": "0x00",
-                "documentation": [
-                  " The member who provides the default vote for any other members that do not vote before",
-                  " the timeout. If None, then no member has that privilege."
-                ]
-              }
-            ]
-          },
-          "calls": [
-            {
-              "name": "set_members",
-              "args": [
-                { "name": "new_members", "type": "Vec<AccountId>" },
-                { "name": "prime", "type": "Option<AccountId>" }
-              ],
-              "documentation": [
-                " Set the collective's membership.",
-                "",
-                " - `new_members`: The new member list. Be nice to the chain and",
-                " - `prime`: The prime member whose vote sets the default.",
-                "",
-                " Requires root origin."
-              ]
-            },
-            {
-              "name": "execute",
-              "args": [{ "name": "proposal", "type": "Proposal" }],
-              "documentation": [
-                " Dispatch a proposal from a member using the `Member` origin.",
-                "",
-                " Origin must be a member of the collective."
-              ]
-            },
-            {
-              "name": "propose",
-              "args": [
-                { "name": "threshold", "type": "Compact<MemberCount>" },
-                { "name": "proposal", "type": "Proposal" }
-              ],
-              "documentation": [
-                " # <weight>",
-                " - Bounded storage reads and writes.",
-                " - Argument `threshold` has bearing on weight.",
-                " # </weight>"
-              ]
-            },
-            {
-              "name": "vote",
-              "args": [
-                { "name": "proposal", "type": "Hash" },
-                { "name": "index", "type": "Compact<ProposalIndex>" },
-                { "name": "approve", "type": "bool" }
-              ],
-              "documentation": [
-                " # <weight>",
-                " - Bounded storage read and writes.",
-                " - Will be slightly heavier if the proposal is approved / disapproved after the vote.",
-                " # </weight>"
-              ]
-            },
-            {
-              "name": "close",
-              "args": [
-                { "name": "proposal", "type": "Hash" },
-                { "name": "index", "type": "Compact<ProposalIndex>" }
-              ],
-              "documentation": [
-                " May be called by any signed account after the voting duration has ended in order to",
-                " finish voting and close the proposal.",
-                "",
-                " Abstentions are counted as rejections unless there is a prime member set and the prime",
-                " member cast an approval.",
-                "",
-                " - the weight of `proposal` preimage.",
-                " - up to three events deposited.",
-                " - one read, two removals, one mutation. (plus three static reads.)",
-                " - computation and i/o `O(P + L + M)` where:",
-                "   - `M` is number of members,",
-                "   - `P` is number of active proposals,",
-                "   - `L` is the encoded length of `proposal` preimage."
-              ]
-            }
-          ],
-          "events": [
-            {
-              "name": "Proposed",
-              "args": ["AccountId", "ProposalIndex", "Hash", "MemberCount"],
-              "documentation": [
-                " A motion (given hash) has been proposed (by given account) with a threshold (given",
-                " `MemberCount`)."
-              ]
-            },
-            {
-              "name": "Voted",
-              "args": ["AccountId", "Hash", "bool", "MemberCount", "MemberCount"],
-              "documentation": [
-                " A motion (given hash) has been voted on by given account, leaving",
-                " a tally (yes votes and no votes given respectively as `MemberCount`)."
-              ]
-            },
-            {
-              "name": "Approved",
-              "args": ["Hash"],
-              "documentation": [" A motion was approved by the required threshold."]
-            },
-            {
-              "name": "Disapproved",
-              "args": ["Hash"],
-              "documentation": [" A motion was not approved by the required threshold."]
-            },
-            {
-              "name": "Executed",
-              "args": ["Hash", "bool"],
-              "documentation": [" A motion was executed; `bool` is true if returned without error."]
-            },
-            {
-              "name": "MemberExecuted",
-              "args": ["Hash", "bool"],
-              "documentation": [" A single member did some action; `bool` is true if returned without error."]
-            },
-            {
-              "name": "Closed",
-              "args": ["Hash", "MemberCount", "MemberCount"],
-              "documentation": [" A proposal was closed after its duration was up."]
-            }
-          ],
-          "constants": [],
-          "errors": [
-            { "name": "NotMember", "documentation": [" Account is not a member"] },
-            { "name": "DuplicateProposal", "documentation": [" Duplicate proposals not allowed"] },
-            { "name": "ProposalMissing", "documentation": [" Proposal must exist"] },
-            { "name": "WrongIndex", "documentation": [" Mismatched index"] },
-            { "name": "DuplicateVote", "documentation": [" Duplicate vote ignored"] },
-            { "name": "AlreadyInitialized", "documentation": [" Members are already initialized!"] },
-            {
-              "name": "TooEarly",
-              "documentation": [" The close call is made too early, before the end of the voting."]
-            }
-          ]
-        },
-        {
-          "name": "OperatorMembership",
-          "storage": {
-            "prefix": "Instance3Membership",
             "items": [
               {
                 "name": "Members",
@@ -1941,21 +2018,21 @@
                 "type": {
                   "DoubleMap": {
                     "hasher": "Twox64Concat",
-                    "key1": "OracleKey",
-                    "key2": "AccountId",
+                    "key1": "AccountId",
+                    "key2": "OracleKey",
                     "value": "TimestampedValueOf",
                     "key2Hasher": "Twox64Concat"
                   }
                 },
                 "fallback": "0x00",
-                "documentation": []
+                "documentation": [" Raw values for each oracle operators"]
               },
               {
-                "name": "HasUpdate",
+                "name": "IsUpdated",
                 "modifier": "Default",
                 "type": { "Map": { "hasher": "Twox64Concat", "key": "OracleKey", "value": "bool", "linked": false } },
                 "fallback": "0x00",
-                "documentation": []
+                "documentation": [" True if Self::values(key) is up to date, otherwise the value is stale"]
               },
               {
                 "name": "Values",
@@ -1969,31 +2046,51 @@
                   }
                 },
                 "fallback": "0x00",
-                "documentation": []
+                "documentation": [" Combined value, may not be up to date"]
               },
               {
                 "name": "HasDispatched",
                 "modifier": "Default",
-                "type": { "Plain": "Vec<AccountId>" },
+                "type": { "Plain": "OrderedSet" },
                 "fallback": "0x00",
+                "documentation": [" If an oracle operator has feed a value in this block"]
+              },
+              {
+                "name": "Members",
+                "modifier": "Default",
+                "type": { "Plain": "OrderedSet" },
+                "fallback": "0x00",
+                "documentation": [" The current members of the collective. This is stored sorted (just by value)."]
+              },
+              {
+                "name": "SessionKeys",
+                "modifier": "Optional",
+                "type": {
+                  "Map": { "hasher": "Twox64Concat", "key": "AccountId", "value": "AuthorityId", "linked": false }
+                },
+                "fallback": "0x00",
+                "documentation": [" Session key for oracle operators"]
+              },
+              {
+                "name": "Nonces",
+                "modifier": "Default",
+                "type": { "Map": { "hasher": "Twox64Concat", "key": "AccountId", "value": "u32", "linked": false } },
+                "fallback": "0x00000000",
                 "documentation": []
               }
             ]
           },
           "calls": [
             {
-              "name": "feed_value",
+              "name": "feed_values",
               "args": [
-                { "name": "key", "type": "OracleKey" },
-                { "name": "value", "type": "OracleValue" }
+                { "name": "values", "type": "Vec<(OracleKey,OracleValue)>" },
+                { "name": "index", "type": "Compact<u32>" },
+                { "name": "_signature", "type": "Signature" }
               ],
               "documentation": []
             },
-            {
-              "name": "feed_values",
-              "args": [{ "name": "values", "type": "Vec<(OracleKey,OracleValue)>" }],
-              "documentation": []
-            }
+            { "name": "set_session_key", "args": [{ "name": "key", "type": "AuthorityId" }], "documentation": [] }
           ],
           "events": [
             {
@@ -2007,6 +2104,111 @@
             { "name": "NoPermission", "documentation": [] },
             { "name": "UpdateAlreadyDispatched", "documentation": [] }
           ]
+        },
+        {
+          "name": "OperatorMembership",
+          "storage": {
+            "prefix": "Instance3Membership",
+            "items": [
+              {
+                "name": "Members",
+                "modifier": "Default",
+                "type": { "Plain": "Vec<AccountId>" },
+                "fallback": "0x00",
+                "documentation": [" The current membership, stored as an ordered Vec."]
+              },
+              {
+                "name": "Prime",
+                "modifier": "Optional",
+                "type": { "Plain": "AccountId" },
+                "fallback": "0x00",
+                "documentation": [" The current prime member, if one exists."]
+              }
+            ]
+          },
+          "calls": [
+            {
+              "name": "add_member",
+              "args": [{ "name": "who", "type": "AccountId" }],
+              "documentation": [" Add a member `who` to the set.", "", " May only be called from `AddOrigin` or root."]
+            },
+            {
+              "name": "remove_member",
+              "args": [{ "name": "who", "type": "AccountId" }],
+              "documentation": [
+                " Remove a member `who` from the set.",
+                "",
+                " May only be called from `RemoveOrigin` or root."
+              ]
+            },
+            {
+              "name": "swap_member",
+              "args": [
+                { "name": "remove", "type": "AccountId" },
+                { "name": "add", "type": "AccountId" }
+              ],
+              "documentation": [
+                " Swap out one member `remove` for another `add`.",
+                "",
+                " May only be called from `SwapOrigin` or root.",
+                "",
+                " Prime membership is *not* passed from `remove` to `add`, if extant."
+              ]
+            },
+            {
+              "name": "reset_members",
+              "args": [{ "name": "members", "type": "Vec<AccountId>" }],
+              "documentation": [
+                " Change the membership to a new set, disregarding the existing membership. Be nice and",
+                " pass `members` pre-sorted.",
+                "",
+                " May only be called from `ResetOrigin` or root."
+              ]
+            },
+            {
+              "name": "change_key",
+              "args": [{ "name": "new", "type": "AccountId" }],
+              "documentation": [
+                " Swap out the sending member for some other key `new`.",
+                "",
+                " May only be called from `Signed` origin of a current member.",
+                "",
+                " Prime membership is passed from the origin account to `new`, if extant."
+              ]
+            },
+            {
+              "name": "set_prime",
+              "args": [{ "name": "who", "type": "AccountId" }],
+              "documentation": [" Set the prime member. Must be a current member."]
+            },
+            { "name": "clear_prime", "args": [], "documentation": [" Remove the prime member if it exists."] }
+          ],
+          "events": [
+            {
+              "name": "MemberAdded",
+              "args": [],
+              "documentation": [" The given member was added; see the transaction for who."]
+            },
+            {
+              "name": "MemberRemoved",
+              "args": [],
+              "documentation": [" The given member was removed; see the transaction for who."]
+            },
+            {
+              "name": "MembersSwapped",
+              "args": [],
+              "documentation": [" Two members were swapped; see the transaction for who."]
+            },
+            {
+              "name": "MembersReset",
+              "args": [],
+              "documentation": [" The membership was reset; see the transaction for who the new set is."]
+            },
+            { "name": "KeyChanged", "args": [], "documentation": [" One of the members' keys changed."] },
+            { "name": "Dummy", "args": ["PhantomData"], "documentation": [" Phantom member, never used."] }
+          ],
+          "constants": [],
+          "errors": []
         },
         {
           "name": "Utility",
@@ -2044,8 +2246,9 @@
                 " - `calls`: The calls to be dispatched from the same origin.",
                 "",
                 " # <weight>",
-                " - The sum of the weights of the `calls`.",
-                " - One event.",
+                " - Base weight: 14.39 + .987 * c µs",
+                " - Plus the sum of the weights of the `calls`.",
+                " - Plus one additional event. (repeat read/write)",
                 " # </weight>",
                 "",
                 " This will return `Ok` in all circumstances. To determine the success of the batch, an",
@@ -2067,7 +2270,8 @@
                 " The dispatch origin for this call must be _Signed_.",
                 "",
                 " # <weight>",
-                " - The weight of the `call` + 10,000.",
+                " - Base weight: 2.861 µs",
+                " - Plus the weight of the `call`",
                 " # </weight>"
               ]
             },
@@ -2120,6 +2324,15 @@
                 " - Storage: inserts one item, value size bounded by `MaxSignatories`, with a",
                 "   deposit taken for its lifetime of",
                 "   `MultisigDepositBase + threshold * MultisigDepositFactor`.",
+                " -------------------------------",
+                " - Base Weight:",
+                "     - Create: 46.55 + 0.089 * S µs",
+                "     - Approve: 34.03 + .112 * S µs",
+                "     - Complete: 40.36 + .225 * S µs",
+                " - DB Weight:",
+                "     - Reads: Multisig Storage, [Caller Account]",
+                "     - Writes: Multisig Storage, [Caller Account]",
+                " - Plus Call Weight",
                 " # </weight>"
               ]
             },
@@ -2163,6 +2376,13 @@
                 " - Storage: inserts one item, value size bounded by `MaxSignatories`, with a",
                 "   deposit taken for its lifetime of",
                 "   `MultisigDepositBase + threshold * MultisigDepositFactor`.",
+                " ----------------------------------",
+                " - Base Weight:",
+                "     - Create: 44.71 + 0.088 * S",
+                "     - Approve: 31.48 + 0.116 * S",
+                " - DB Weight:",
+                "     - Read: Multisig Storage, [Caller Account]",
+                "     - Write: Multisig Storage, [Caller Account]",
                 " # </weight>"
               ]
             },
@@ -2196,6 +2416,11 @@
                 " - One event.",
                 " - I/O: 1 read `O(S)`, one remove.",
                 " - Storage: removes one item.",
+                " ----------------------------------",
+                " - Base Weight: 37.6 + 0.084 * S",
+                " - DB Weight:",
+                "     - Read: Multisig Storage, [Caller Account]",
+                "     - Write: Multisig Storage, [Caller Account]",
                 " # </weight>"
               ]
             }
@@ -2345,9 +2570,9 @@
                 " proposal is awarded.",
                 "",
                 " # <weight>",
-                " - O(1).",
-                " - Limited storage reads.",
-                " - One DB change, one extra DB entry.",
+                " - Complexity: O(1)",
+                " - DbReads: `ProposalCount`, `origin account`",
+                " - DbWrites: `ProposalCount`, `Proposals`, `origin account`",
                 " # </weight>"
               ]
             },
@@ -2358,9 +2583,9 @@
                 " Reject a proposed spend. The original deposit will be slashed.",
                 "",
                 " # <weight>",
-                " - O(1).",
-                " - Limited storage reads.",
-                " - One DB clear.",
+                " - Complexity: O(1)",
+                " - DbReads: `Proposals`, `rejected proposer account`",
+                " - DbWrites: `Proposals`, `rejected proposer account`",
                 " # </weight>"
               ]
             },
@@ -2372,9 +2597,9 @@
                 " and the original deposit will be returned.",
                 "",
                 " # <weight>",
-                " - O(1).",
-                " - Limited storage reads.",
-                " - One DB change.",
+                " - Complexity: O(1).",
+                " - DbReads: `Proposals`, `Approvals`",
+                " - DbWrite: `Approvals`",
                 " # </weight>"
               ]
             },
@@ -2399,10 +2624,10 @@
                 " Emits `NewTip` if successful.",
                 "",
                 " # <weight>",
-                " - `O(R)` where `R` length of `reason`.",
-                " - One balance operation.",
-                " - One storage mutation (codec `O(R)`).",
-                " - One event.",
+                " - Complexity: `O(R)` where `R` length of `reason`.",
+                "   - encoding and hashing of 'reason'",
+                " - DbReads: `Reasons`, `Tips`, `who account data`",
+                " - DbWrites: `Tips`, `who account data`",
                 " # </weight>"
               ]
             },
@@ -2424,10 +2649,10 @@
                 " Emits `TipRetracted` if successful.",
                 "",
                 " # <weight>",
-                " - `O(T)`",
-                " - One balance operation.",
-                " - Two storage removals (one read, codec `O(T)`).",
-                " - One event.",
+                " - Complexity: `O(1)`",
+                "   - Depends on the length of `T::Hash` which is fixed.",
+                " - DbReads: `Tips`, `origin account`",
+                " - DbWrites: `Reasons`, `Tips`, `origin account`",
                 " # </weight>"
               ]
             },
@@ -2453,10 +2678,13 @@
                 " Emits `NewTip` if successful.",
                 "",
                 " # <weight>",
-                " - `O(R + T)` where `R` length of `reason`, `T` is the number of tippers. `T` is",
-                "   naturally capped as a membership set, `R` is limited through transaction-size.",
-                " - Two storage insertions (codecs `O(R)`, `O(T)`), one read `O(1)`.",
-                " - One event.",
+                " - Complexity: `O(R + T)` where `R` length of `reason`, `T` is the number of tippers.",
+                "   - `O(T)`: decoding `Tipper` vec of length `T`",
+                "     `T` is charged as upper bound given by `ContainsLengthBound`.",
+                "     The actual cost depends on the implementation of `T::Tippers`.",
+                "   - `O(R)`: hashing and encoding of reason of length `R`",
+                " - DbReads: `Tippers`, `Reasons`",
+                " - DbWrites: `Reasons`, `Tips`",
                 " # </weight>"
               ]
             },
@@ -2482,9 +2710,15 @@
                 " has started.",
                 "",
                 " # <weight>",
-                " - `O(T)`",
-                " - One storage mutation (codec `O(T)`), one storage read `O(1)`.",
-                " - Up to one event.",
+                " - Complexity: `O(T)` where `T` is the number of tippers.",
+                "   decoding `Tipper` vec of length `T`, insert tip and check closing,",
+                "   `T` is charged as upper bound given by `ContainsLengthBound`.",
+                "   The actual cost depends on the implementation of `T::Tippers`.",
+                "",
+                "   Actually weight could be lower as it depends on how many tips are in `OpenTip` but it",
+                "   is weighted as if almost full i.e of length `T-1`.",
+                " - DbReads: `Tippers`, `Tips`",
+                " - DbWrites: `Tips`",
                 " # </weight>"
               ]
             },
@@ -2502,9 +2736,12 @@
                 "   as the hash of the tuple of the original tip `reason` and the beneficiary account ID.",
                 "",
                 " # <weight>",
-                " - `O(T)`",
-                " - One storage retrieval (codec `O(T)`) and two removals.",
-                " - Up to three balance operations.",
+                " - Complexity: `O(T)` where `T` is the number of tippers.",
+                "   decoding `Tipper` vec of length `T`.",
+                "   `T` is charged as upper bound given by `ContainsLengthBound`.",
+                "   The actual cost depends on the implementation of `T::Tippers`.",
+                " - DbReads: `Tips`, `Tippers`, `tip finder`",
+                " - DbWrites: `Reasons`, `Tips`, `Tippers`, `tip finder`",
                 " # </weight>"
               ]
             }
@@ -2597,6 +2834,12 @@
               "type": "BalanceOf",
               "value": "0x0000c16ff28623000000000000000000",
               "documentation": [" The amount held on deposit per byte within the tip report reason."]
+            },
+            {
+              "name": "ModuleId",
+              "type": "ModuleId",
+              "value": "0x6c616d692f747279",
+              "documentation": [" The treasury's module id, used for deriving its sovereign account ID."]
             }
           ],
           "errors": [
@@ -3077,6 +3320,11 @@
                 "",
                 " NOTE: Two of the storage writes (`Self::bonded`, `Self::payee`) are _never_ cleaned",
                 " unless the `origin` falls below _existential deposit_ and gets removed as dust.",
+                " ------------------",
+                " Base Weight: 67.87 µs",
+                " DB Weight:",
+                " - Read: Bonded, Ledger, [Origin Account], Current Era, History Depth, Locks",
+                " - Write: Bonded, Payee, [Origin Account], Locks, Ledger",
                 " # </weight>"
               ]
             },
@@ -3100,6 +3348,11 @@
                 " - Independent of the arguments. Insignificant complexity.",
                 " - O(1).",
                 " - One DB entry.",
+                " ------------",
+                " Base Weight: 54.88 µs",
+                " DB Weight:",
+                " - Read: Era Election Status, Bonded, Ledger, [Origin Account], Locks",
+                " - Write: [Origin Account], Locks, Ledger",
                 " # </weight>"
               ]
             },
@@ -3133,12 +3386,17 @@
                 "   The only way to clean the aforementioned storage item is also user-controlled via",
                 "   `withdraw_unbonded`.",
                 " - One DB entry.",
+                " ----------",
+                " Base Weight: 50.34 µs",
+                " DB Weight:",
+                " - Read: Era Election Status, Ledger, Current Era, Locks, [Origin Account]",
+                " - Write: [Origin Account], Locks, Ledger",
                 " </weight>"
               ]
             },
             {
               "name": "withdraw_unbonded",
-              "args": [],
+              "args": [{ "name": "num_slashing_spans", "type": "u32" }],
               "documentation": [
                 " Remove any unlocked chunks from the `unlocking` queue from our management.",
                 "",
@@ -3158,6 +3416,17 @@
                 "  indirectly user-controlled. See [`unbond`] for more detail.",
                 " - Contains a limited number of reads, yet the size of which could be large based on `ledger`.",
                 " - Writes are limited to the `origin` account key.",
+                " ---------------",
+                " Complexity O(S) where S is the number of slashing spans to remove",
+                " Base Weight:",
+                " Update: 50.52 + .028 * S µs",
+                " - Reads: EraElectionStatus, Ledger, Current Era, Locks, [Origin Account]",
+                " - Writes: [Origin Account], Locks, Ledger",
+                " Kill: 79.41 + 2.366 * S µs",
+                " - Reads: EraElectionStatus, Ledger, Current Era, Bonded, Slashing Spans, [Origin Account], Locks",
+                " - Writes: Bonded, Slashing Spans (if S > 0), Ledger, Payee, Validators, Nominators, [Origin Account], Locks",
+                " - Writes Each: SpanSlash * S",
+                " NOTE: Weight annotation is the kill scenario, we refund otherwise.",
                 " # </weight>"
               ]
             },
@@ -3176,6 +3445,11 @@
                 " - Independent of the arguments. Insignificant complexity.",
                 " - Contains a limited number of reads.",
                 " - Writes are limited to the `origin` account key.",
+                " -----------",
+                " Base Weight: 17.13 µs",
+                " DB Weight:",
+                " - Read: Era Election Status, Ledger",
+                " - Write: Nominators, Validators",
                 " # </weight>"
               ]
             },
@@ -3192,9 +3466,15 @@
                 " And, it can be only called when [`EraElectionStatus`] is `Closed`.",
                 "",
                 " # <weight>",
-                " - The transaction's complexity is proportional to the size of `targets`,",
-                " which is capped at CompactAssignments::LIMIT.",
+                " - The transaction's complexity is proportional to the size of `targets` (N)",
+                " which is capped at CompactAssignments::LIMIT (MAX_NOMINATIONS).",
                 " - Both the reads and writes follow a similar pattern.",
+                " ---------",
+                " Base Weight: 22.34 + .36 * N µs",
+                " where N is the number of targets",
+                " DB Weight:",
+                " - Reads: Era Election Status, Ledger, Current Era",
+                " - Writes: Validators, Nominators",
                 " # </weight>"
               ]
             },
@@ -3213,6 +3493,11 @@
                 " - Independent of the arguments. Insignificant complexity.",
                 " - Contains one read.",
                 " - Writes are limited to the `origin` account key.",
+                " --------",
+                " Base Weight: 16.53 µs",
+                " DB Weight:",
+                " - Read: EraElectionStatus, Ledger",
+                " - Write: Validators, Nominators",
                 " # </weight>"
               ]
             },
@@ -3230,6 +3515,11 @@
                 " - Independent of the arguments. Insignificant complexity.",
                 " - Contains a limited number of reads.",
                 " - Writes are limited to the `origin` account key.",
+                " ---------",
+                " - Base Weight: 11.33 µs",
+                " - DB Weight:",
+                "     - Read: Ledger",
+                "     - Write: Payee",
                 " # </weight>"
               ]
             },
@@ -3247,13 +3537,27 @@
                 " - Independent of the arguments. Insignificant complexity.",
                 " - Contains a limited number of reads.",
                 " - Writes are limited to the `origin` account key.",
+                " ----------",
+                " Base Weight: 25.22 µs",
+                " DB Weight:",
+                " - Read: Bonded, Ledger New Controller, Ledger Old Controller",
+                " - Write: Bonded, Ledger New Controller, Ledger Old Controller",
                 " # </weight>"
               ]
             },
             {
               "name": "set_validator_count",
               "args": [{ "name": "new", "type": "Compact<u32>" }],
-              "documentation": [" The ideal number of validators."]
+              "documentation": [
+                " Sets the ideal number of validators.",
+                "",
+                " The dispatch origin must be Root.",
+                "",
+                " # <weight>",
+                " Base Weight: 1.717 µs",
+                " Write: Validator Count",
+                " # </weight>"
+              ]
             },
             {
               "name": "force_no_eras",
@@ -3261,8 +3565,12 @@
               "documentation": [
                 " Force there to be no new eras indefinitely.",
                 "",
+                " The dispatch origin must be Root.",
+                "",
                 " # <weight>",
                 " - No arguments.",
+                " - Base Weight: 1.857 µs",
+                " - Write: ForceEra",
                 " # </weight>"
               ]
             },
@@ -3273,20 +3581,49 @@
                 " Force there to be a new era at the end of the next session. After this, it will be",
                 " reset to normal (non-forced) behaviour.",
                 "",
+                " The dispatch origin must be Root.",
+                "",
                 " # <weight>",
                 " - No arguments.",
+                " - Base Weight: 1.959 µs",
+                " - Write ForceEra",
                 " # </weight>"
               ]
             },
             {
               "name": "set_invulnerables",
               "args": [{ "name": "validators", "type": "Vec<AccountId>" }],
-              "documentation": [" Set the validators who cannot be slashed (if any)."]
+              "documentation": [
+                " Set the validators who cannot be slashed (if any).",
+                "",
+                " The dispatch origin must be Root.",
+                "",
+                " # <weight>",
+                " - O(V)",
+                " - Base Weight: 2.208 + .006 * V µs",
+                " - Write: Invulnerables",
+                " # </weight>"
+              ]
             },
             {
               "name": "force_unstake",
-              "args": [{ "name": "stash", "type": "AccountId" }],
-              "documentation": [" Force a current staker to become completely unstaked, immediately."]
+              "args": [
+                { "name": "stash", "type": "AccountId" },
+                { "name": "num_slashing_spans", "type": "u32" }
+              ],
+              "documentation": [
+                " Force a current staker to become completely unstaked, immediately.",
+                "",
+                " The dispatch origin must be Root.",
+                "",
+                " # <weight>",
+                " O(S) where S is the number of slashing spans to be removed",
+                " Base Weight: 53.07 + 2.365 * S µs",
+                " Reads: Bonded, Slashing Spans, Account, Locks",
+                " Writes: Bonded, Slashing Spans (if S > 0), Ledger, Payee, Validators, Nominators, Account, Locks",
+                " Writes Each: SpanSlash * S",
+                " # </weight>"
+              ]
             },
             {
               "name": "force_new_era_always",
@@ -3294,8 +3631,11 @@
               "documentation": [
                 " Force there to be a new era at the end of sessions indefinitely.",
                 "",
+                " The dispatch origin must be Root.",
+                "",
                 " # <weight>",
-                " - One storage write",
+                " - Base Weight: 2.05 µs",
+                " - Write: ForceEra",
                 " # </weight>"
               ]
             },
@@ -3306,12 +3646,19 @@
                 { "name": "slash_indices", "type": "Vec<u32>" }
               ],
               "documentation": [
-                " Cancel enactment of a deferred slash. Can be called by either the root origin or",
-                " the `T::SlashCancelOrigin`.",
-                " passing the era and indices of the slashes for that era to kill.",
+                " Cancel enactment of a deferred slash.",
+                "",
+                " Can be called by either the root origin or the `T::SlashCancelOrigin`.",
+                "",
+                " Parameters: era and indices of the slashes for that era to kill.",
                 "",
                 " # <weight>",
-                " - One storage write.",
+                " Complexity: O(U + S)",
+                " with U unapplied slashes weighted with U=1000",
+                " and S is the number of slash indices to be canceled.",
+                " - Base: 5870 + 34.61 * S µs",
+                " - Read: Unapplied Slashes",
+                " - Write: Unapplied Slashes",
                 " # </weight>"
               ]
             },
@@ -3400,6 +3747,14 @@
                 " # <weight>",
                 " - Time complexity: at most O(MaxNominatorRewardedPerValidator).",
                 " - Contains a limited number of reads and writes.",
+                " -----------",
+                " N is the Number of payouts for the validator (including the validator)",
+                " Base Weight: 110 + 54.2 * N µs (Median Slopes)",
+                " DB Weight:",
+                " - Read: EraElectionStatus, CurrentEra, HistoryDepth, MigrateEra, ErasValidatorReward,",
+                "         ErasStakersClipped, ErasRewardPoints, ErasValidatorPrefs (8 items)",
+                " - Read Each: Bonded, Ledger, Payee, Locks, System Account (5 items)",
+                " - Write Each: System Account, Locks, Ledger (3 items)",
                 " # </weight>"
               ]
             },
@@ -3413,19 +3768,53 @@
                 " [`EraElectionStatus`] is `Closed`.",
                 "",
                 " # <weight>",
-                " - Time complexity: O(1). Bounded by `MAX_UNLOCKING_CHUNKS`.",
+                " - Time complexity: O(L), where L is unlocking chunks",
+                " - Bounded by `MAX_UNLOCKING_CHUNKS`.",
                 " - Storage changes: Can't increase storage, only decrease it.",
+                " ---------------",
+                " - Base Weight: 34.51 µs * .048 L µs",
+                " - DB Weight:",
+                "     - Reads: EraElectionStatus, Ledger, Locks, [Origin Account]",
+                "     - Writes: [Origin Account], Locks, Ledger",
                 " # </weight>"
               ]
             },
             {
               "name": "set_history_depth",
-              "args": [{ "name": "new_history_depth", "type": "Compact<EraIndex>" }],
-              "documentation": [" Set history_depth value.", "", " Origin must be root."]
+              "args": [
+                { "name": "new_history_depth", "type": "Compact<EraIndex>" },
+                { "name": "_era_items_deleted", "type": "Compact<u32>" }
+              ],
+              "documentation": [
+                " Set `HistoryDepth` value. This function will delete any history information",
+                " when `HistoryDepth` is reduced.",
+                "",
+                " Parameters:",
+                " - `new_history_depth`: The new history depth you would like to set.",
+                " - `era_items_deleted`: The number of items that will be deleted by this dispatch.",
+                "    This should report all the storage items that will be deleted by clearing old",
+                "    era history. Needed to report an accurate weight for the dispatch. Trusted by",
+                "    `Root` to report an accurate number.",
+                "",
+                " Origin must be root.",
+                "",
+                " # <weight>",
+                " - E: Number of history depths removed, i.e. 10 -> 7 = 3",
+                " - Base Weight: 29.13 * E µs",
+                " - DB Weight:",
+                "     - Reads: Current Era, History Depth",
+                "     - Writes: History Depth",
+                "     - Clear Prefix Each: Era Stakers, EraStakersClipped, ErasValidatorPrefs",
+                "     - Writes Each: ErasValidatorReward, ErasRewardPoints, ErasTotalStake, ErasStartSessionIndex",
+                " # </weight>"
+              ]
             },
             {
               "name": "reap_stash",
-              "args": [{ "name": "stash", "type": "AccountId" }],
+              "args": [
+                { "name": "stash", "type": "AccountId" },
+                { "name": "num_slashing_spans", "type": "u32" }
+              ],
               "documentation": [
                 " Remove all data structure concerning a staker/stash once its balance is zero.",
                 " This is essentially equivalent to `withdraw_unbonded` except it can be called by anyone",
@@ -3433,7 +3822,16 @@
                 "",
                 " This can be called from any origin.",
                 "",
-                " - `stash`: The stash account to reap. Its balance must be zero."
+                " - `stash`: The stash account to reap. Its balance must be zero.",
+                "",
+                " # <weight>",
+                " Complexity: O(S) where S is the number of slashing spans on the account.",
+                " Base Weight: 75.94 + 2.396 * S µs",
+                " DB Weight:",
+                " - Reads: Stash Account, Bonded, Slashing Spans, Locks",
+                " - Writes: Bonded, Slashing Spans (if S > 0), Ledger, Payee, Validators, Nominators, Stash Account, Locks",
+                " - Writes Each: SpanSlash * S",
+                " # </weight>"
               ]
             },
             {
@@ -3509,7 +3907,7 @@
                 " - Memory: O(n + m) reads to map index to `AccountId` for un-compact.",
                 "",
                 " - Storage: O(e) accountid reads from `Nomination` to read correct nominations.",
-                " - Storage: O(e) calls into `slashable_balance_of_extended` to convert ratio to staked.",
+                " - Storage: O(e) calls into `slashable_balance_of_vote_weight` to convert ratio to staked.",
                 "",
                 " - Memory: build_support_map. O(e).",
                 " - Memory: evaluate_support: O(E).",
@@ -3539,6 +3937,14 @@
             }
           ],
           "events": [
+            {
+              "name": "EraPayout",
+              "args": ["EraIndex", "Balance", "Balance"],
+              "documentation": [
+                " The era payout has been set; the first balance is the validator-payout; the second is",
+                " the remainder from the maximum amount of reward."
+              ]
+            },
             {
               "name": "Reward",
               "args": ["AccountId", "Balance"],
@@ -3676,7 +4082,9 @@
             {
               "name": "CallNotAllowed",
               "documentation": [" The call is not allowed at the given time due to restrictions of election period."]
-            }
+            },
+            { "name": "IncorrectHistoryDepth", "documentation": [" Incorrect previous history depth input provided."] },
+            { "name": "IncorrectSlashingSpans", "documentation": [" Incorrect number of slashing spans provided."] }
           ]
         },
         {
@@ -3767,10 +4175,12 @@
                 " The dispatch origin of this function must be signed.",
                 "",
                 " # <weight>",
-                " - O(log n) in number of accounts.",
-                " - One extra DB entry.",
-                " - Increases system account refs by one on success iff there were previously no keys set.",
-                "   In this case, purge_keys will need to be called before the account can be removed.",
+                " - Complexity: `O(1)`",
+                "   Actual cost depends on the number of length of `T::Keys::key_ids()` which is fixed.",
+                " - DbReads: `origin account`, `T::ValidatorIdOf`, `NextKeys`",
+                " - DbWrites: `origin account`, `NextKeys`",
+                " - DbReads per key id: `KeyOwner`",
+                " - DbWrites per key id: `KeyOwner`",
                 " # </weight>"
               ]
             },
@@ -3784,9 +4194,11 @@
                 " The dispatch origin of this function must be signed.",
                 "",
                 " # <weight>",
-                " - O(N) in number of key types.",
-                " - Removes N + 1 DB entries.",
-                " - Reduces system account refs by one on success.",
+                " - Complexity: `O(1)` in number of key types.",
+                "   Actual cost depends on the number of length of `T::Keys::key_ids()` which is fixed.",
+                " - DbReads: `T::ValidatorIdOf`, `NextKeys`, `origin account`",
+                " - DbWrites: `NextKeys`, `origin account`",
+                " - DbWrites per key id: `KeyOwnder`",
                 " # </weight>"
               ]
             }
@@ -3872,7 +4284,19 @@
                 { "name": "currency_id", "type": "CurrencyId" },
                 { "name": "amount", "type": "Compact<Balance>" }
               ],
-              "documentation": [" Transfer some balance to another account."]
+              "documentation": [
+                " Transfer some balance to another account.",
+                "",
+                " The dispatch origin for this call must be `Signed` by the transactor.",
+                "",
+                " # <weight>",
+                " - Complexity: `O(1)`",
+                " - Db reads: 2 * `Accounts`",
+                " - Db writes: 2 * `Accounts`",
+                " -------------------",
+                " Base Weight: 26.65 µs",
+                " # </weight>"
+              ]
             },
             {
               "name": "transfer_all",
@@ -3880,7 +4304,19 @@
                 { "name": "dest", "type": "LookupSource" },
                 { "name": "currency_id", "type": "CurrencyId" }
               ],
-              "documentation": [" Transfer all remaining balance to the given account."]
+              "documentation": [
+                " Transfer all remaining balance to the given account.",
+                "",
+                " The dispatch origin for this call must be `Signed` by the transactor.",
+                "",
+                " # <weight>",
+                " - Complexity: `O(1)`",
+                " - Db reads: 2 * `Accounts`",
+                " - Db writes: 2 * `Accounts`",
+                " -------------------",
+                " Base Weight: 26.99 µs",
+                " # </weight>"
+              ]
             }
           ],
           "events": [
@@ -3895,7 +4331,6 @@
             { "name": "BalanceTooLow", "documentation": [] },
             { "name": "TotalIssuanceOverflow", "documentation": [] },
             { "name": "AmountIntoBalanceFailed", "documentation": [] },
-            { "name": "ExistentialDeposit", "documentation": [] },
             { "name": "LiquidityRestrictions", "documentation": [] }
           ]
         },
@@ -3910,7 +4345,24 @@
                 { "name": "currency_id", "type": "CurrencyIdOf" },
                 { "name": "amount", "type": "Compact<BalanceOf>" }
               ],
-              "documentation": [" Transfer some balance to another account."]
+              "documentation": [
+                " Transfer some balance to another account under `currency_id`.",
+                "",
+                " The dispatch origin for this call must be `Signed` by the transactor.",
+                "",
+                " # <weight>",
+                " - Preconditions:",
+                " \t- T::MultiCurrency is orml_tokens",
+                "\t\t- T::NativeCurrency is pallet_balances",
+                " - Complexity: `O(1)`",
+                " - Db reads: 2 * `Accounts`",
+                " - Db writes: 2 * `Accounts`",
+                " -------------------",
+                " Base Weight:",
+                "\t\t- non-native currency: 26.72 µs",
+                "\t\t- native currency in worst case: 29.9 µs",
+                " # </weight>"
+              ]
             },
             {
               "name": "transfer_native_currency",
@@ -3918,7 +4370,22 @@
                 { "name": "dest", "type": "LookupSource" },
                 { "name": "amount", "type": "Compact<BalanceOf>" }
               ],
-              "documentation": [" Transfer native currency balance from one account to another."]
+              "documentation": [
+                " Transfer some native currency to another account.",
+                "",
+                " The dispatch origin for this call must be `Signed` by the transactor.",
+                "",
+                " # <weight>",
+                " - Preconditions:",
+                " \t- T::MultiCurrency is orml_tokens",
+                "\t\t- T::NativeCurrency is pallet_balances",
+                " - Complexity: `O(1)`",
+                " - Db reads: 2 * `Accounts`",
+                " - Db writes: 2 * `Accounts`",
+                " -------------------",
+                " Base Weight: 29.53 µs",
+                " # </weight>"
+              ]
             },
             {
               "name": "update_balance",
@@ -3927,7 +4394,25 @@
                 { "name": "currency_id", "type": "CurrencyIdOf" },
                 { "name": "amount", "type": "AmountOf" }
               ],
-              "documentation": [" Update balance of an account. This is a root call."]
+              "documentation": [
+                " update amount of account `who` under `currency_id`.",
+                "",
+                " The dispatch origin of this call must be _Root_.",
+                "",
+                " # <weight>",
+                " - Preconditions:",
+                " \t- T::MultiCurrency is orml_tokens",
+                "\t\t- T::NativeCurrency is pallet_balances",
+                " - Complexity: `O(1)`",
+                " - Db reads: `Accounts`",
+                " - Db writes: `Accounts`",
+                " -------------------",
+                " Base Weight:",
+                " \t- non-native currency: 25.36 µs",
+                "\t\t- native currency and killing account: 26.33 µs",
+                "\t\t- native currency and create account: 27.39 µs",
+                " # </weight>"
+              ]
             }
           ],
           "events": [
@@ -4051,10 +4536,15 @@
             }
           ],
           "constants": [
-            { "name": "DefaultExtremeRatio", "type": "Permill", "value": "0x204e0000", "documentation": [] },
+            { "name": "DefaultExtremeRatio", "type": "Permill", "value": "0x10270000", "documentation": [] },
             { "name": "DefaultLiquidationRatio", "type": "Permill", "value": "0x50c30000", "documentation": [] },
             { "name": "DefaultCollateralRatio", "type": "Permill", "value": "0xa0860100", "documentation": [] },
-            { "name": "SyntheticCurrencyIds", "type": "Vec<CurrencyId>", "value": "0x1002030405", "documentation": [] }
+            {
+              "name": "SyntheticCurrencyIds",
+              "type": "Vec<CurrencyId>",
+              "value": "0x240203060708090a0405",
+              "documentation": []
+            }
           ],
           "errors": []
         },
@@ -5076,13 +5566,14 @@
       "extrinsic": {
         "version": 4,
         "signedExtensions": [
-          "CheckVersion",
+          "CheckSpecVersion",
+          "CheckTxVersion",
           "CheckGenesis",
           "CheckEra",
           "CheckNonce",
           "CheckWeight",
-          "CheckOperator",
-          "ChargeTransactionPayment"
+          "ChargeTransactionPayment",
+          "ValidateEquivocationReport"
         ]
       }
     }
