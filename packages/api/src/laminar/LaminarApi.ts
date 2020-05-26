@@ -31,7 +31,8 @@ class LaminarApi {
     'FCAD',
     'FCHF',
     'FXAU',
-    'FOIL'
+    'FOIL',
+    'FGBP'
   ];
 
   constructor(options: LaminarApiOptions) {
