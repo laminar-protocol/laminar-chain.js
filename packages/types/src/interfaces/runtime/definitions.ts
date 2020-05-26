@@ -5,7 +5,7 @@ export default {
     ...definitions.types,
     OrderedSet: 'Vec<AccountId>',
     CurrencyId: {
-      _enum: ['LAMI', 'AUSD', 'FEUR', 'FJPY', 'FBTC', 'FETH', 'FAUD', 'FCAD', 'FCHF', 'FXAU', 'FOIL']
+      _enum: ['LAMI', 'AUSD', 'FEUR', 'FJPY', 'FBTC', 'FETH', 'FAUD', 'FCAD', 'FCHF', 'FXAU', 'FOIL', 'FGBP']
     },
     Leverage: {
       _enum: [
