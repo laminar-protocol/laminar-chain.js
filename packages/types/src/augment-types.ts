@@ -14,7 +14,7 @@ import { BlockAttestations, IncludedBlocks, MoreAttestations } from '@polkadot/t
 import { RawAuraPreDigest } from '@polkadot/types/interfaces/aura';
 import { ExtrinsicOrHash, ExtrinsicStatus } from '@polkadot/types/interfaces/author';
 import { UncleEntryItem } from '@polkadot/types/interfaces/authorship';
-import { BabeAuthorityWeight, BabeBlockWeight, BabeWeight, EpochAuthorship, MaybeRandomness, MaybeVrf, Randomness, RawBabePreDigest, RawBabePreDigestCompat, RawBabePreDigestPrimary, RawBabePreDigestPrimaryTo159, RawBabePreDigestSecondary, RawBabePreDigestSecondaryTo159, RawBabePreDigestTo159, SlotNumber, VrfData, VrfProof } from '@polkadot/types/interfaces/babe';
+import { AllowedSlots, BabeAuthorityWeight, BabeBlockWeight, BabeWeight, EpochAuthorship, MaybeRandomness, MaybeVrf, NextConfigDescriptor, NextConfigDescriptorV1, Randomness, RawBabePreDigest, RawBabePreDigestCompat, RawBabePreDigestPrimary, RawBabePreDigestPrimaryTo159, RawBabePreDigestSecondary, RawBabePreDigestSecondaryTo159, RawBabePreDigestTo159, SlotNumber, VrfData, VrfProof } from '@polkadot/types/interfaces/babe';
 import { AccountData, BalanceLock, BalanceLockTo212, Reasons, ReleasesBalances, VestingSchedule, WithdrawReasons } from '@polkadot/types/interfaces/balances';
 import { BlockHash } from '@polkadot/types/interfaces/chain';
 import { PrefixedStorageKey } from '@polkadot/types/interfaces/childstate';
@@ -22,8 +22,8 @@ import { EthereumAddress, StatementKind } from '@polkadot/types/interfaces/claim
 import { MemberCount, ProposalIndex, Votes, VotesTo230 } from '@polkadot/types/interfaces/collective';
 import { AuthorityId, RawVRFOutput } from '@polkadot/types/interfaces/consensus';
 import { AliveContractInfo, CodeHash, ContractCallRequest, ContractExecResult, ContractExecResultSuccess, ContractInfo, ContractStorageKey, Gas, PrefabWasmModule, PrefabWasmModuleReserved, Schedule, ScheduleTo212, SeedOf, TombstoneContractInfo, TrieId } from '@polkadot/types/interfaces/contracts';
-import { AccountVote, AccountVoteSplit, AccountVoteStandard, Conviction, Delegations, PreimageStatus, PreimageStatusAvailable, PriorLock, PropIndex, Proposal, ProxyState, ReferendumIndex, ReferendumInfo, ReferendumInfoFinished, ReferendumInfoTo239, ReferendumStatus, Tally, Voting, VotingDelegating, VotingDirect, VotingDirectVote } from '@polkadot/types/interfaces/democracy';
-import { ApprovalFlag, SetIndex, Vote, VoteIndex, VoteThreshold, VoterInfo } from '@polkadot/types/interfaces/elections';
+import { AccountVote, AccountVoteSplit, AccountVoteStandard, Conviction, Delegations, PreimageStatus, PreimageStatusAvailable, PriorLock, PropIndex, Proposal, ProxyState, ReferendumIndex, ReferendumInfo, ReferendumInfoFinished, ReferendumInfoTo239, ReferendumStatus, ReleasesDemocracy, Tally, Voting, VotingDelegating, VotingDirect, VotingDirectVote } from '@polkadot/types/interfaces/democracy';
+import { ApprovalFlag, DefunctVoter, Renouncing, SetIndex, Vote, VoteIndex, VoteThreshold, VoterInfo } from '@polkadot/types/interfaces/elections';
 import { CreatedBlock, ImportedAux } from '@polkadot/types/interfaces/engine';
 import { Account, Log, Vicinity } from '@polkadot/types/interfaces/evm';
 import { EcdsaSignature, Ed25519Signature, Extrinsic, ExtrinsicEra, ExtrinsicPayload, ExtrinsicPayloadUnknown, ExtrinsicPayloadV1, ExtrinsicPayloadV2, ExtrinsicPayloadV3, ExtrinsicPayloadV4, ExtrinsicSignatureV1, ExtrinsicSignatureV2, ExtrinsicSignatureV3, ExtrinsicSignatureV4, ExtrinsicUnknown, ExtrinsicV1, ExtrinsicV2, ExtrinsicV3, ExtrinsicV4, ImmortalEra, MortalEra, MultiSignature, Signature, SignerPayload, Sr25519Signature } from '@polkadot/types/interfaces/extrinsics';
@@ -43,6 +43,7 @@ import { FullIdentification, IdentificationTuple, Keys, MembershipProof, Session
 import { Bid, BidKind, SocietyJudgement, SocietyVote, StrikeCount, VouchingStatus } from '@polkadot/types/interfaces/society';
 import { ActiveEraInfo, CompactAssignments, CompactScore, ElectionCompute, ElectionResult, ElectionStatus, EraIndex, EraPoints, EraRewardPoints, EraRewards, Exposure, Forcing, IndividualExposure, KeyType, MomentOf, Nominations, NominatorIndex, OffchainAccuracy, PerU16, PhragmenScore, Points, ReleasesStaking, RewardDestination, RewardPoint, SlashJournalEntry, SlashingSpans, SlashingSpansTo204, SpanIndex, SpanRecord, StakingLedger, StakingLedgerTo223, StakingLedgerTo240, UnappliedSlash, UnappliedSlashOther, UnlockChunk, ValidatorIndex, ValidatorPrefs, ValidatorPrefsTo145, ValidatorPrefsTo196 } from '@polkadot/types/interfaces/staking';
 import { ApiId, KeyValueOption, ReadProof, RuntimeVersion, RuntimeVersionApi, StorageChangeSet } from '@polkadot/types/interfaces/state';
+import { WeightToFeeCoefficient } from '@polkadot/types/interfaces/support';
 import { AccountInfo, ChainProperties, ChainType, DigestOf, DispatchError, DispatchErrorModule, DispatchErrorTo198, DispatchResult, DispatchResultOf, DispatchResultTo198, Event, EventId, EventIndex, EventRecord, EventRecordTo76, Health, Key, LastRuntimeUpgradeInfo, NetworkState, NetworkStatePeerset, NetworkStatePeersetInfo, NodeRole, NotConnectedPeer, Peer, PeerEndpoint, PeerEndpointAddr, PeerInfo, PeerPing, Phase, RefCount } from '@polkadot/types/interfaces/system';
 import { OpenTip, OpenTipFinder, OpenTipTip, TreasuryProposal } from '@polkadot/types/interfaces/treasury';
 import { Multiplier } from '@polkadot/types/interfaces/txpayment';
@@ -137,6 +138,9 @@ declare module '@polkadot/types/types/registry' {
     RawAuraPreDigest: RawAuraPreDigest;
     'Option<RawAuraPreDigest>': Option<RawAuraPreDigest>;
     'Vec<RawAuraPreDigest>': Vec<RawAuraPreDigest>;
+    AllowedSlots: AllowedSlots;
+    'Option<AllowedSlots>': Option<AllowedSlots>;
+    'Vec<AllowedSlots>': Vec<AllowedSlots>;
     BabeAuthorityWeight: BabeAuthorityWeight;
     'Compact<BabeAuthorityWeight>': Compact<BabeAuthorityWeight>;
     'Option<BabeAuthorityWeight>': Option<BabeAuthorityWeight>;
@@ -158,6 +162,12 @@ declare module '@polkadot/types/types/registry' {
     EpochAuthorship: EpochAuthorship;
     'Option<EpochAuthorship>': Option<EpochAuthorship>;
     'Vec<EpochAuthorship>': Vec<EpochAuthorship>;
+    NextConfigDescriptor: NextConfigDescriptor;
+    'Option<NextConfigDescriptor>': Option<NextConfigDescriptor>;
+    'Vec<NextConfigDescriptor>': Vec<NextConfigDescriptor>;
+    NextConfigDescriptorV1: NextConfigDescriptorV1;
+    'Option<NextConfigDescriptorV1>': Option<NextConfigDescriptorV1>;
+    'Vec<NextConfigDescriptorV1>': Vec<NextConfigDescriptorV1>;
     Randomness: Randomness;
     'Option<Randomness>': Option<Randomness>;
     'Vec<Randomness>': Vec<Randomness>;
@@ -329,6 +339,9 @@ declare module '@polkadot/types/types/registry' {
     ReferendumStatus: ReferendumStatus;
     'Option<ReferendumStatus>': Option<ReferendumStatus>;
     'Vec<ReferendumStatus>': Vec<ReferendumStatus>;
+    ReleasesDemocracy: ReleasesDemocracy;
+    'Option<ReleasesDemocracy>': Option<ReleasesDemocracy>;
+    'Vec<ReleasesDemocracy>': Vec<ReleasesDemocracy>;
     Tally: Tally;
     'Option<Tally>': Option<Tally>;
     'Vec<Tally>': Vec<Tally>;
@@ -348,6 +361,12 @@ declare module '@polkadot/types/types/registry' {
     'Compact<ApprovalFlag>': Compact<ApprovalFlag>;
     'Option<ApprovalFlag>': Option<ApprovalFlag>;
     'Vec<ApprovalFlag>': Vec<ApprovalFlag>;
+    DefunctVoter: DefunctVoter;
+    'Option<DefunctVoter>': Option<DefunctVoter>;
+    'Vec<DefunctVoter>': Vec<DefunctVoter>;
+    Renouncing: Renouncing;
+    'Option<Renouncing>': Option<Renouncing>;
+    'Vec<Renouncing>': Vec<Renouncing>;
     SetIndex: SetIndex;
     'Compact<SetIndex>': Compact<SetIndex>;
     'Option<SetIndex>': Option<SetIndex>;
@@ -801,6 +820,9 @@ declare module '@polkadot/types/types/registry' {
     ValidatorPrefsTo145: ValidatorPrefsTo145;
     'Option<ValidatorPrefsTo145>': Option<ValidatorPrefsTo145>;
     'Vec<ValidatorPrefsTo145>': Vec<ValidatorPrefsTo145>;
+    WeightToFeeCoefficient: WeightToFeeCoefficient;
+    'Option<WeightToFeeCoefficient>': Option<WeightToFeeCoefficient>;
+    'Vec<WeightToFeeCoefficient>': Vec<WeightToFeeCoefficient>;
     AccountInfo: AccountInfo;
     'Option<AccountInfo>': Option<AccountInfo>;
     'Vec<AccountInfo>': Vec<AccountInfo>;
