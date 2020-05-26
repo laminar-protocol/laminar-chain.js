@@ -12,7 +12,8 @@ export type LaminarTokenNames = [
   'FCAD',
   'FCHF',
   'FXAU',
-  'FOIL'
+  'FOIL',
+  'FGBP'
 ];
 
 export type TokenId = string | LaminarTokenNames[number];

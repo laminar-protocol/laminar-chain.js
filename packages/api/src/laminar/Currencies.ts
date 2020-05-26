@@ -99,6 +99,14 @@ class Currencies {
         isBaseToken: false,
         isNetworkToken: false,
         id: 'FOIL'
+      },
+      {
+        name: 'FGBP',
+        displayName: 'GBP',
+        precision: 18,
+        isBaseToken: false,
+        isNetworkToken: false,
+        id: 'FGBP'
       }
     ]);
   };
