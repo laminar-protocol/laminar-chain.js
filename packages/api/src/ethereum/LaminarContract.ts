@@ -47,7 +47,7 @@ class LaminarContract implements LaminarContract {
     this.baseTokenContracts = this.tokenContracts.DAI;
   }
 
-  private createContract(abi: AbiItem[] | AbiItem, address: string): Contract {
+  public createContract(abi: AbiItem[] | AbiItem, address: string): Contract {
     return new this.web3.eth.Contract(abi, address);
   }
 
