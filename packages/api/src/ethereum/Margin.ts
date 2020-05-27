@@ -87,8 +87,8 @@ class Margin {
     );
   };
 
-  public balance = (address: string) => {
-    return from(this.apiProvider.tokenContracts.DAI.methods.balanceOf(address));
+  public balance = (address: string): Observable<string> => {
+    return from(this.apiProvider.tokenContracts.DAI.methods.balanceOf(address).call() as Promise<string>);
   };
 
   public allowance = (account: string): Observable<string> => {
