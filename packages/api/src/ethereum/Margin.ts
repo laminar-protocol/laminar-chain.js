@@ -88,7 +88,7 @@ class Margin {
   };
 
   public balance = (address: string) => {
-    return from(this.apiProvider.web3.eth.getBalance(address));
+    return from(this.apiProvider.tokenContracts.DAI.methods.balanceOf(address));
   };
 
   public allowance = (account: string): Observable<string> => {
@@ -268,6 +268,8 @@ class Margin {
 
     const leverage =
       direction === 'Short' ? -1 * multipleMap[multiple] : direction === 'Long' ? multipleMap[multiple] : 0;
+
+    console.log(leverage);
 
     const extrinsic = this.apiProvider.baseContracts.marginFlowProtocol.methods.openPosition(
       poolId,

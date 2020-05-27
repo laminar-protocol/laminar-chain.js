@@ -22,63 +22,18 @@ describe('ethereum api', () => {
 
   api.web3.eth.accounts.wallet.add(getEthAccountPair().privateKey);
 
-  let tokenIds: TokenId[] = [];
-  let pools: PoolInfo[];
-  let poolAndTokenPair: any;
-  let baseTokenId: TokenId;
-
   beforeAll(async () => {
     await api.isReady();
-    tokenIds = (await api.getTokens()).map(r => r.id) as TokenId[];
-    pools = await api.getDefaultPools();
-    poolAndTokenPair = tokenIds.reduce((result, token) => {
-      const tokens = pools.map((pool: any) => ({
-        poolId: pool.id,
-        tokenName: token
-      }));
-      // @ts-ignore
-      return result.concat(tokens);
-    }, []);
-    baseTokenId = tokenIds[0];
   });
 
-  const address1 = getEthAccountPair().publicKey;
-
-  const getBalance = async (account: string, tokenId: TokenId) => {
-    const balance = await api.getBalance(account, tokenId);
-    console.log(`${account}: ${tokenId}: ${balance}`);
-    return balance;
-  };
-
-  const getTokenAllowance = async (account: string, tokenId: TokenId) => {
-    const allowance = await api.getTokenAllowance(account, tokenId);
-    console.log(`${account}: allowance: ${allowance}`);
-    return allowance;
-  };
-
-  const mintWithMaxPrice = async (account: string, tokenId: TokenId, maxPrice: string, callback?: () => void) => {
-    await getTokenAllowance(account, tokenId);
-    await getBalance(account, tokenId);
-    await getBalance(account, baseTokenId);
-    await api.mintWithMaxPrice(account, pools[0].id, tokenId, '9999999', maxPrice);
-    await getBalance(account, tokenId);
-    await getBalance(account, baseTokenId);
-  };
-
-  const redeemWithMinPrice = async (account: string, tokenId: TokenId, minPrice: string) => {
-    await getBalance(account, tokenId);
-    await getBalance(account, baseTokenId);
-    await api.redeemWithMinPrice(account, pools[0].id, tokenId, '9999999', minPrice);
-    await getBalance(account, tokenId);
-    await getBalance(account, baseTokenId);
-  };
-
-  it.skip('mintWithMaxPrice', async () => {
-    // await mintWithMaxPrice(address1, tokenIds[1], '2');
-    await mintWithMaxPrice(address1, tokenIds[1], '99999999999999999999999999999999');
-  });
-
-  it.skip('redeemWithMinPrice', async () => {
-    await redeemWithMinPrice(address1, tokenIds[1], '1291911119111111111');
+  it('dai faucet', done => {
+    api.margin.openPosition(
+      '0x885501bcfbad1cae12b4fd2272f1abde6dd88b38',
+      '0xc8e4268474efc471093681ed10898a5ee73398ae',
+      { base: '0xbf7a7169562078c96f0ec1a8afd6ae50f12e5a99', quote: '0xabcf7f2e1569ff12cee47391c0225f11fd96b8fe' },
+      'ShortTwo',
+      '1000000',
+      '1000000'
+    );
   });
 });
