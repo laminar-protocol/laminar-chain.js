@@ -32,7 +32,7 @@ class Margin {
         for (const base of tokens) {
           for (const quote of tokens) {
             whiteListRequest.push(
-              this.baseContracts.marginFlowProtocol.methods
+              this.baseContracts.marginFlowProtocolConfig.methods
                 .tradingPairWhitelist(base.id, quote.id)
                 .call()
                 .then((result: boolean) => {
@@ -218,8 +218,8 @@ class Margin {
   public traderThreshold(baseToken: TokenId, quoteToken: TokenId) {
     return from(
       Promise.all([
-        this.baseContracts.marginFlowProtocolSafety.methods.traderRiskLiquidateThreshold().call(),
-        this.baseContracts.marginFlowProtocolSafety.methods.traderRiskMarginCallThreshold().call()
+        this.baseContracts.marginFlowProtocolConfig.methods.traderRiskLiquidateThreshold().call(),
+        this.baseContracts.marginFlowProtocolConfig.methods.traderRiskMarginCallThreshold().call()
       ]).then(([stopOut, marginCall]) => {
         return {
           marginCall: toNumber(marginCall),

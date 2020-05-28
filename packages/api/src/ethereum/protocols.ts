@@ -3,6 +3,7 @@ import { AbiItem } from 'web3-utils';
 import KovanERC20 from '@laminar/flow-protocol-ethereum/artifacts/kovan/abi/ERC20Detailed.json';
 import KovanFaucetInterface from '@laminar/flow-protocol-ethereum/artifacts/kovan/abi/FaucetInterface.json';
 import KovanMarginFlowProtocol from '@laminar/flow-protocol-ethereum/artifacts/kovan/abi/MarginFlowProtocol.json';
+import KovanMarginFlowProtocolConfig from '@laminar/flow-protocol-ethereum/artifacts/kovan/abi/MarginFlowProtocolConfig.json';
 import KovanMarginFlowProtocolSafety from '@laminar/flow-protocol-ethereum/artifacts/kovan/abi/MarginFlowProtocolSafety.json';
 import KovanMarginLiquidityPoolInterface from '@laminar/flow-protocol-ethereum/artifacts/kovan/abi/MarginLiquidityPoolInterface.json';
 import KovanMarginLiquidityPoolRegistry from '@laminar/flow-protocol-ethereum/artifacts/kovan/abi/MarginLiquidityPoolRegistry.json';
@@ -19,6 +20,7 @@ export const abis = [
   'ERC20',
   'FaucetInterface',
   'MarginFlowProtocol',
+  'MarginFlowProtocolConfig',
   'MarginFlowProtocolSafety',
   'MarginLiquidityPoolInterface',
   'MarginLiquidityPoolRegistry',
@@ -50,6 +52,7 @@ const kovan: Readonly<Protocol> = {
     ERC20: KovanERC20,
     FaucetInterface: KovanFaucetInterface,
     MarginFlowProtocol: KovanMarginFlowProtocol,
+    MarginFlowProtocolConfig: KovanMarginFlowProtocolConfig,
     MarginFlowProtocolSafety: KovanMarginFlowProtocolSafety,
     MarginLiquidityPoolInterface: KovanMarginLiquidityPoolInterface,
     MarginLiquidityPoolRegistry: KovanMarginLiquidityPoolRegistry,
