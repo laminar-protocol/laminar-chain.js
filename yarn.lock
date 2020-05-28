@@ -1264,10 +1264,10 @@
     "@types/yargs" "^15.0.0"
     chalk "^3.0.0"
 
-"@laminar/flow-protocol-ethereum@0.0.8":
-  version "0.0.8"
-  resolved "https://registry.yarnpkg.com/@laminar/flow-protocol-ethereum/-/flow-protocol-ethereum-0.0.8.tgz#f7ce9d312804e5ed00503c750ea80a7f16ccdfe1"
-  integrity sha512-Lg7xh772h1p7dGVm/aMdmmBrT5Znruw9EUZNTRDYbDsTDYnds7zgie4lOUc5JjfJXM9j0z3aZylFCk4XHCT+Hg==
+"@laminar/flow-protocol-ethereum@0.0.10":
+  version "0.0.10"
+  resolved "https://registry.yarnpkg.com/@laminar/flow-protocol-ethereum/-/flow-protocol-ethereum-0.0.10.tgz#6b705c4f9483f98d9cc85e7ac4c9ece6d06ee7ff"
+  integrity sha512-LCIyvZg5xD5RCY0QaEj8lNb2GJWtL9DSaL5NiAWyI34Z9wh+M6iGT/vdhl7BCwiwtX4Y4UZfXhKCaUCGS5Y1wg==
 
 "@lerna/add@3.20.0":
   version "3.20.0"

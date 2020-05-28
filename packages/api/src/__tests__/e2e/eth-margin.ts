@@ -24,21 +24,36 @@ describe('ethereum api', () => {
     });
   });
 
-  it('getEnableTradePairs', done => {
-    api.margin.getEnableTradePairs().subscribe(result => {
+  it('poolInfo', done => {
+    api.margin.poolInfo('0xA7B0990bfeDA6f8FFB7b67873Add2B3F35C00287').subscribe(result => {
       console.log(result);
     });
   });
 
-  it('poolInfo', done => {
-    api.margin.poolInfo('0xAAe87632fAE233Cba4e2175c15717924b88BEE8D').subscribe(result => {
+  it('getEnpAndEll', async done => {
+    try {
+      await api.baseContracts.marginFlowProtocolSafety.methods
+        .getEnpAndEll('0x3E514eF4a4bc5b6e9893957f834bb5bb21048F0A')
+        .call();
+    } catch (error) {
+      console.log(error);
+    }
+  });
+
+  it('getMarginLevel', async done => {
+    try {
+      const result = await api.baseContracts.marginFlowProtocolSafety.methods
+        .getMarginLevel('0x3E514eF4a4bc5b6e9893957f834bb5bb21048F0A', '0x885501bcfBad1cAE12B4FD2272F1AbdE6dd88B38')
+        .call();
       console.log(result);
-    });
+    } catch (error) {
+      console.log(error);
+    }
   });
 
   it('traderInfo', done => {
     api.margin
-      .traderInfo('0x885501bcfBad1cAE12B4FD2272F1AbdE6dd88B38', '0xAAe87632fAE233Cba4e2175c15717924b88BEE8D')
+      .traderInfo('0x885501bcfBad1cAE12B4FD2272F1AbdE6dd88B38', '0xA7B0990bfeDA6f8FFB7b67873Add2B3F35C00287')
       .subscribe(result => {
         console.log(result);
       });
@@ -46,12 +61,6 @@ describe('ethereum api', () => {
 
   it('traderThreshold', done => {
     api.margin.traderThreshold('AUSD', 'FEUR').subscribe(result => {
-      console.log(result);
-    });
-  });
-
-  it('positions', done => {
-    api.margin.position('3').subscribe(result => {
       console.log(result);
     });
   });
