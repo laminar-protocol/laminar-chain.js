@@ -99,7 +99,7 @@ export interface MarginPosition {
 export interface TokenInfo {
   id: TokenId;
   name: typeof EthTokenNames[number] | LaminarTokenNames[number];
-  displayName: string;
+  symbol: string;
   precision: number;
   isBaseToken: boolean;
   isNetworkToken: boolean;

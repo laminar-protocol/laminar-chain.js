@@ -1264,10 +1264,20 @@
     "@types/yargs" "^15.0.0"
     chalk "^3.0.0"
 
-"@laminar/flow-protocol-ethereum@0.0.10":
-  version "0.0.10"
-  resolved "https://registry.yarnpkg.com/@laminar/flow-protocol-ethereum/-/flow-protocol-ethereum-0.0.10.tgz#6b705c4f9483f98d9cc85e7ac4c9ece6d06ee7ff"
-  integrity sha512-LCIyvZg5xD5RCY0QaEj8lNb2GJWtL9DSaL5NiAWyI34Z9wh+M6iGT/vdhl7BCwiwtX4Y4UZfXhKCaUCGS5Y1wg==
+"@laminar/flow-protocol-ethereum@0.0.11":
+  version "0.0.11"
+  resolved "https://registry.yarnpkg.com/@laminar/flow-protocol-ethereum/-/flow-protocol-ethereum-0.0.11.tgz#cb7f2c33826beecce0f781199d683510257687be"
+  integrity sha512-q9Z0yKAyVaeOLdDzm2/JVhdFefhnny+QQJkNOb1c0dvMWmU0I3dplAZX44ADdri4xLLeklizugzYg/0Q/5WTBg==
+
+"@laminar/types@^0.2.0-beta.98":
+  version "0.2.0-beta.98"
+  resolved "https://registry.yarnpkg.com/@laminar/types/-/types-0.2.0-beta.98.tgz#77ca854e2f87e18330e66d714976a7ba253e3c88"
+  integrity sha512-yZnKt/Io0MmsTtGvYSuTrqTZqjYQpMMAwAs68mNiXfowcTKlYNZ9feDrwKCjUY6sFEkQPqSfMXgm0W1BDXLF1g==
+  dependencies:
+    "@babel/runtime" "^7.8.0"
+    "@open-web3/orml-types" "^0.3.0-beta.9"
+    "@polkadot/typegen" "^1.15.1"
+    "@polkadot/types" "^1.15.1"
 
 "@lerna/add@3.20.0":
   version "3.20.0"

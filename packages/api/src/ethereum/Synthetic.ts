@@ -82,8 +82,9 @@ class Synthetic {
 
   public allPoolIds = () => {
     return of([
-      this.protocol.addresses.syntheticPool.toLowerCase(),
-      this.protocol.addresses.syntheticPool2.toLowerCase()
+      this.protocol.addresses.syntheticPoolGeneral.toLowerCase(),
+      this.protocol.addresses.syntheticPoolXYZ.toLowerCase(),
+      this.protocol.addresses.syntheticProtocol.toLowerCase()
     ]);
   };
 

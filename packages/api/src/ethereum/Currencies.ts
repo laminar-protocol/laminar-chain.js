@@ -17,7 +17,7 @@ class Currencies {
     return of([
       {
         name: 'DAI',
-        displayName: 'DAI',
+        symbol: 'DAI',
         precision: 18,
         isBaseToken: true,
         isNetworkToken: false,
@@ -25,35 +25,83 @@ class Currencies {
       },
       {
         name: 'fEUR',
-        displayName: 'Euro',
+        symbol: 'FEUR',
         precision: 18,
         isBaseToken: false,
         isNetworkToken: false,
-        id: this.apiProvider.tokenContracts.fEUR.options.address.toLowerCase()
+        id: this.apiProvider.tokenContracts.FEUR.options.address.toLowerCase()
       },
       {
         name: 'fJPY',
-        displayName: 'Yen',
+        symbol: 'FJPY',
         precision: 18,
         isBaseToken: false,
         isNetworkToken: false,
-        id: this.apiProvider.tokenContracts.fJPY.options.address.toLowerCase()
+        id: this.apiProvider.tokenContracts.FJPY.options.address.toLowerCase()
+      },
+      {
+        name: 'fBTC',
+        symbol: 'FBTC',
+        precision: 18,
+        isBaseToken: false,
+        isNetworkToken: false,
+        id: this.apiProvider.tokenContracts.FBTC.options.address.toLowerCase()
+      },
+      {
+        name: 'fETH',
+        symbol: 'FETH',
+        precision: 18,
+        isBaseToken: false,
+        isNetworkToken: false,
+        id: this.apiProvider.tokenContracts.FETH.options.address.toLowerCase()
+      },
+      {
+        name: 'fAUD',
+        symbol: 'FAUD',
+        precision: 18,
+        isBaseToken: false,
+        isNetworkToken: false,
+        id: this.apiProvider.tokenContracts.FAUD.options.address.toLowerCase()
+      },
+      {
+        name: 'fCAD',
+        symbol: 'FCAD',
+        precision: 18,
+        isBaseToken: false,
+        isNetworkToken: false,
+        id: this.apiProvider.tokenContracts.FCAD.options.address.toLowerCase()
+      },
+      {
+        name: 'fCHF',
+        symbol: 'FCHF',
+        precision: 18,
+        isBaseToken: false,
+        isNetworkToken: false,
+        id: this.apiProvider.tokenContracts.FCHF.options.address.toLowerCase()
       },
       {
         name: 'fXAU',
-        displayName: 'Gold',
+        symbol: 'FXAU',
         precision: 18,
         isBaseToken: false,
         isNetworkToken: false,
-        id: this.apiProvider.tokenContracts.fXAU.options.address.toLowerCase()
+        id: this.apiProvider.tokenContracts.FXAU.options.address.toLowerCase()
       },
       {
-        name: 'fAAPL',
-        displayName: 'Apple',
+        name: 'fUSOIL',
+        symbol: 'FOIL',
         precision: 18,
         isBaseToken: false,
         isNetworkToken: false,
-        id: this.apiProvider.tokenContracts.fAAPL.options.address.toLowerCase()
+        id: this.apiProvider.tokenContracts.FOIL.options.address.toLowerCase()
+      },
+      {
+        name: 'fGBP',
+        symbol: 'FGBP',
+        precision: 18,
+        isBaseToken: false,
+        isNetworkToken: false,
+        id: this.apiProvider.tokenContracts.FGBP.options.address.toLowerCase()
       }
     ]);
   };
