@@ -32,7 +32,19 @@ export const abis = [
   'SyntheticLiquidityPoolInterface'
 ] as const;
 
-export const TokenNames = ['DAI', 'fEUR', 'fJPY', 'fXAU', 'fAAPL'] as const;
+export const TokenNames = [
+  'DAI',
+  'fEUR',
+  'fJPY',
+  'fCAD',
+  'fCHF',
+  'fGBP',
+  'fAUD',
+  'fUSOIL',
+  'fXAU',
+  'fBTC',
+  'fETH'
+] as const;
 
 export type ProtocolType = 'kovan';
 

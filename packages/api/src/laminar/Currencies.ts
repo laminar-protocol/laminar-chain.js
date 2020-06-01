@@ -14,7 +14,7 @@ class Currencies {
     return of([
       {
         name: 'LAMI',
-        displayName: 'LAMI',
+        symbol: 'LAMI',
         precision: 18,
         isBaseToken: false,
         isNetworkToken: true,
@@ -22,7 +22,7 @@ class Currencies {
       },
       {
         name: 'AUSD',
-        displayName: 'AUSD',
+        symbol: 'AUSD',
         precision: 18,
         isBaseToken: true,
         isNetworkToken: false,
@@ -30,7 +30,7 @@ class Currencies {
       },
       {
         name: 'FEUR',
-        displayName: 'Euro',
+        symbol: 'FEUR',
         precision: 18,
         isBaseToken: false,
         isNetworkToken: false,
@@ -38,7 +38,7 @@ class Currencies {
       },
       {
         name: 'FJPY',
-        displayName: 'Yen',
+        symbol: 'FJPY',
         precision: 18,
         isBaseToken: false,
         isNetworkToken: false,
@@ -46,7 +46,7 @@ class Currencies {
       },
       {
         name: 'FBTC',
-        displayName: 'BTC',
+        symbol: 'FBTC',
         precision: 18,
         isBaseToken: false,
         isNetworkToken: false,
@@ -54,7 +54,7 @@ class Currencies {
       },
       {
         name: 'FETH',
-        displayName: 'ETH',
+        symbol: 'FETH',
         precision: 18,
         isBaseToken: false,
         isNetworkToken: false,
@@ -62,7 +62,7 @@ class Currencies {
       },
       {
         name: 'FAUD',
-        displayName: 'AUD',
+        symbol: 'FAUD',
         precision: 18,
         isBaseToken: false,
         isNetworkToken: false,
@@ -70,7 +70,7 @@ class Currencies {
       },
       {
         name: 'FCAD',
-        displayName: 'CAD',
+        symbol: 'FCAD',
         precision: 18,
         isBaseToken: false,
         isNetworkToken: false,
@@ -78,7 +78,7 @@ class Currencies {
       },
       {
         name: 'FCHF',
-        displayName: 'CHF',
+        symbol: 'FCHF',
         precision: 18,
         isBaseToken: false,
         isNetworkToken: false,
@@ -86,7 +86,7 @@ class Currencies {
       },
       {
         name: 'FXAU',
-        displayName: 'XAU',
+        symbol: 'FXAU',
         precision: 18,
         isBaseToken: false,
         isNetworkToken: false,
@@ -94,20 +94,20 @@ class Currencies {
       },
       {
         name: 'FOIL',
-        displayName: 'OIL',
+        symbol: 'FOIL',
         precision: 18,
         isBaseToken: false,
         isNetworkToken: false,
         id: 'FOIL'
-      },
-      {
-        name: 'FGBP',
-        displayName: 'GBP',
-        precision: 18,
-        isBaseToken: false,
-        isNetworkToken: false,
-        id: 'FGBP'
       }
+      // {
+      //   name: 'FGBP',
+      //   symbol: 'GBP',
+      //   precision: 18,
+      //   isBaseToken: false,
+      //   isNetworkToken: false,
+      //   id: 'FGBP'
+      // }
     ]);
   };
 

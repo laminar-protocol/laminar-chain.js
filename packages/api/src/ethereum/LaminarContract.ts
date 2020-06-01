@@ -41,11 +41,17 @@ class LaminarContract implements LaminarContract {
 
     this.tokenContracts = {
       DAI: this.createContract(abis.ERC20, addresses.baseToken),
-      iUSD: this.createContract(abis.ERC20, addresses.iToken),
-      fEUR: this.createContract(abis.ERC20, addresses.fEUR),
-      fJPY: this.createContract(abis.ERC20, addresses.fJPY),
-      fAAPL: this.createContract(abis.ERC20, addresses.fAAPL),
-      fXAU: this.createContract(abis.ERC20, addresses.fXAU)
+      IUSD: this.createContract(abis.ERC20, addresses.iToken),
+      FEUR: this.createContract(abis.ERC20, addresses.fEUR),
+      FJPY: this.createContract(abis.ERC20, addresses.fJPY),
+      FCAD: this.createContract(abis.ERC20, addresses.fCAD),
+      FCHF: this.createContract(abis.ERC20, addresses.fCHF),
+      FGBP: this.createContract(abis.ERC20, addresses.fGBP),
+      FAUD: this.createContract(abis.ERC20, addresses.fAUD),
+      FOIL: this.createContract(abis.ERC20, addresses.fUSOIL),
+      FXAU: this.createContract(abis.ERC20, addresses.fXAU),
+      FBTC: this.createContract(abis.ERC20, addresses.fBTC),
+      FETH: this.createContract(abis.ERC20, addresses.fETH)
     };
 
     this.baseTokenContracts = this.tokenContracts.DAI;

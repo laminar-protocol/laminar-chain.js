@@ -105,7 +105,10 @@ class Margin {
   };
 
   public allPoolIds = () => {
-    return of([this.protocol.addresses.marginPool.toLowerCase(), this.protocol.addresses.marginPool2.toLowerCase()]);
+    return of([
+      this.protocol.addresses.marginPoolGeneral.toLowerCase(),
+      this.protocol.addresses.marginPoolACME.toLowerCase()
+    ]);
   };
 
   public marginInfo = (): Observable<MarginInfo> => {
@@ -175,7 +178,7 @@ class Margin {
                     'ShortFifty',
                     'ShortReserved'
                   ],
-                  pairId: `${base.name.toUpperCase()}${quote.name.toUpperCase()}`
+                  pairId: `${base.symbol.toUpperCase()}${quote.symbol.toUpperCase()}`
                 };
               });
             })
@@ -268,8 +271,6 @@ class Margin {
 
     const leverage =
       direction === 'Short' ? -1 * multipleMap[multiple] : direction === 'Long' ? multipleMap[multiple] : 0;
-
-    console.log(leverage);
 
     const extrinsic = this.apiProvider.baseContracts.marginFlowProtocol.methods.openPosition(
       poolId,
