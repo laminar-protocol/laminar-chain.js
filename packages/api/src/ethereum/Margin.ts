@@ -109,7 +109,7 @@ class Margin {
   };
 
   public marginInfo = (): Observable<MarginInfo> => {
-    const methods = this.baseContracts.marginFlowProtocolSafety.methods;
+    const methods = this.baseContracts.marginFlowProtocolConfig.methods;
 
     return from(
       Promise.all([
