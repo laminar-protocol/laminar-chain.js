@@ -19,7 +19,7 @@ describe('ethereum api', () => {
   });
 
   it('poolInfo', done => {
-    api.synthetic.poolInfo('0xb587B74502104cf1002d1F9cF4f7D7662E45A63D').subscribe(result => {
+    api.synthetic.poolInfo('0x61a7645ef693ea7740b121232ddc7b874be7fa09').subscribe(result => {
       console.log(result);
     });
   });
