@@ -1,4 +1,4 @@
-import { toNumber } from '@laminar/types/utils/precision';
+import { fromPrecision, toNumber } from '@laminar/types/utils/precision';
 import BN from 'bn.js';
 import { from, Observable, of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
@@ -9,8 +9,8 @@ import {
   MarginPoolInfo,
   MarginPosition,
   TokenId,
-  TraderInfo,
-  TokenInfo
+  TokenInfo,
+  TraderInfo
 } from '../types';
 import EthereumApi, { UINT256_MAX } from './EthereumApi';
 
@@ -194,8 +194,8 @@ class Margin {
             poolId: poolInterface.options.address.toLowerCase(),
             balance,
             owner,
-            enp: 0,
-            ell: 0,
+            enp: Number(fromPrecision(enpAndEll[0][0])),
+            ell: Number(fromPrecision(enpAndEll[1][0])),
             options
           };
         });
@@ -206,18 +206,21 @@ class Margin {
   public traderInfo(account: string, poolId: string): Observable<TraderInfo> {
     return from(
       Promise.all([
+        this.marginFlowProtocol.methods.balances(poolId, account).call(),
         this.marginFlowProtocol.methods.getEquityOfTrader(poolId, account).call(),
         this.marginFlowProtocol.methods.getFreeMargin(poolId, account).call(),
-        this.marginFlowProtocol.methods.getMarginHeld(poolId, account).call()
-      ]).then(([equity, freeMargin, marginHeld]) => {
+        this.marginFlowProtocol.methods.getMarginHeld(poolId, account).call(),
+        this.marginFlowProtocolSafety.methods.getMarginLevel(poolId, account).call(),
+        this.marginFlowProtocolSafety.methods.getLeveragedDebitsOfTrader(poolId, account).call()
+      ]).then(([balances, equity, freeMargin, marginHeld, marginLevel, leveraged]) => {
         return {
-          balance: '0',
+          balance: balances,
           equity,
           freeMargin,
           marginHeld,
-          marginLevel: 0,
+          marginLevel: Number(fromPrecision(marginLevel[0])),
           unrealizedPl: '0',
-          totalLeveragedPosition: '0',
+          totalLeveragedPosition: leveraged,
           accumulatedSwap: '0'
         };
       })

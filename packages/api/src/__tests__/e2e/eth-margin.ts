@@ -25,7 +25,7 @@ describe('ethereum api', () => {
   });
 
   it('poolInfo', done => {
-    api.margin.poolInfo('0xA7B0990bfeDA6f8FFB7b67873Add2B3F35C00287').subscribe(result => {
+    api.margin.poolInfo('0x7884f42F780b6942e29151F96EEFC287fF2A0172').subscribe(result => {
       console.log(result);
     });
   });
@@ -53,7 +53,7 @@ describe('ethereum api', () => {
 
   it('traderInfo', done => {
     api.margin
-      .traderInfo('0x885501bcfBad1cAE12B4FD2272F1AbdE6dd88B38', '0xA7B0990bfeDA6f8FFB7b67873Add2B3F35C00287')
+      .traderInfo('0x885501bcfBad1cAE12B4FD2272F1AbdE6dd88B38', '0x7884f42F780b6942e29151F96EEFC287fF2A0172')
       .subscribe(result => {
         console.log(result);
       });

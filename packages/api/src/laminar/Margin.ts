@@ -12,9 +12,8 @@ import {
   TokenId,
   TraderInfo
 } from '../types';
+import { unit } from '../utils';
 import LaminarApi from './LaminarApi';
-
-const unit = new BN('1000000000000000000');
 
 class Margin {
   private apiProvider: LaminarApi;
