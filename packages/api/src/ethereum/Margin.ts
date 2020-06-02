@@ -17,12 +17,16 @@ import EthereumApi, { UINT256_MAX } from './EthereumApi';
 class Margin {
   private apiProvider: EthereumApi;
   private protocol: EthereumApi['protocol'];
-  private baseContracts: EthereumApi['baseContracts'];
+  public marginFlowProtocolConfig: EthereumApi['baseContracts']['marginFlowProtocolConfig'];
+  public marginFlowProtocol: EthereumApi['baseContracts']['marginFlowProtocol'];
+  public marginFlowProtocolSafety: EthereumApi['baseContracts']['marginFlowProtocolSafety'];
 
   constructor(provider: EthereumApi) {
     this.apiProvider = provider;
     this.protocol = provider.protocol;
-    this.baseContracts = provider.baseContracts;
+    this.marginFlowProtocolConfig = provider.baseContracts.marginFlowProtocolConfig;
+    this.marginFlowProtocol = provider.baseContracts.marginFlowProtocol;
+    this.marginFlowProtocolSafety = provider.baseContracts.marginFlowProtocolSafety;
   }
 
   private getWhiteListTradePairs = () => {
@@ -32,7 +36,7 @@ class Margin {
         for (const base of tokens) {
           for (const quote of tokens) {
             whiteListRequest.push(
-              this.baseContracts.marginFlowProtocolConfig.methods
+              this.marginFlowProtocolConfig.methods
                 .tradingPairWhitelist(base.id, quote.id)
                 .call()
                 .then((result: boolean) => {
@@ -91,15 +95,16 @@ class Margin {
     return from(this.apiProvider.tokenContracts.DAI.methods.balanceOf(address).call() as Promise<string>);
   };
 
-  public allowance = (account: string): Observable<string> => {
-    const grantAddress = this.baseContracts.marginFlowProtocol.options.address;
+  public allowance = (account: string, grantAddress = this.marginFlowProtocol.options.address): Observable<string> => {
     const contract = this.apiProvider.tokenContracts.DAI;
     return from(contract.methods.allowance(account, grantAddress).call() as Promise<string>);
   };
 
-  public grant = async (account: string, balance: string | BN = UINT256_MAX) => {
-    const grantAddress = this.baseContracts.marginFlowProtocol.options.address;
-
+  public grant = async (
+    account: string,
+    grantAddress = this.marginFlowProtocol.options.address,
+    balance: string | BN = UINT256_MAX
+  ) => {
     const extrinsic = this.apiProvider.tokenContracts.DAI.methods.approve(grantAddress, balance);
     return this.apiProvider.extrinsicHelper(extrinsic, { from: account }, { action: 'Grant' });
   };
@@ -112,7 +117,7 @@ class Margin {
   };
 
   public marginInfo = (): Observable<MarginInfo> => {
-    const methods = this.baseContracts.marginFlowProtocolConfig.methods;
+    const methods = this.marginFlowProtocolConfig.methods;
 
     return from(
       Promise.all([
@@ -182,8 +187,9 @@ class Margin {
                 };
               });
             })
-          )
-        ]).then(([balance, owner, options]) => {
+          ),
+          this.marginFlowProtocolSafety.methods.getEnpAndEll(poolId).call()
+        ]).then(([balance, owner, options, enpAndEll]) => {
           return {
             poolId: poolInterface.options.address.toLowerCase(),
             balance,
@@ -200,9 +206,9 @@ class Margin {
   public traderInfo(account: string, poolId: string): Observable<TraderInfo> {
     return from(
       Promise.all([
-        this.baseContracts.marginFlowProtocol.methods.getEquityOfTrader(poolId, account).call(),
-        this.baseContracts.marginFlowProtocol.methods.getFreeMargin(poolId, account).call(),
-        this.baseContracts.marginFlowProtocol.methods.getMarginHeld(poolId, account).call()
+        this.marginFlowProtocol.methods.getEquityOfTrader(poolId, account).call(),
+        this.marginFlowProtocol.methods.getFreeMargin(poolId, account).call(),
+        this.marginFlowProtocol.methods.getMarginHeld(poolId, account).call()
       ]).then(([equity, freeMargin, marginHeld]) => {
         return {
           balance: '0',
@@ -221,8 +227,8 @@ class Margin {
   public traderThreshold(baseToken: TokenId, quoteToken: TokenId) {
     return from(
       Promise.all([
-        this.baseContracts.marginFlowProtocolConfig.methods.traderRiskLiquidateThreshold().call(),
-        this.baseContracts.marginFlowProtocolConfig.methods.traderRiskMarginCallThreshold().call()
+        this.marginFlowProtocolConfig.methods.traderRiskLiquidateThreshold().call(),
+        this.marginFlowProtocolConfig.methods.traderRiskMarginCallThreshold().call()
       ]).then(([stopOut, marginCall]) => {
         return {
           marginCall: toNumber(marginCall),
@@ -237,12 +243,12 @@ class Margin {
   }
 
   public deposit = async (account: string, poolId: string, amount: string | BN) => {
-    const extrinsic = this.apiProvider.baseContracts.marginFlowProtocol.methods.deposit(poolId, amount);
+    const extrinsic = this.marginFlowProtocol.methods.deposit(poolId, amount);
     return this.apiProvider.extrinsicHelper(extrinsic, { from: account }, { action: 'Deposit' });
   };
 
   public withdraw = async (account: string, poolId: string, amount: string | BN) => {
-    const extrinsic = this.apiProvider.baseContracts.marginFlowProtocol.methods.withdraw(poolId, amount);
+    const extrinsic = this.marginFlowProtocol.methods.withdraw(poolId, amount);
     return this.apiProvider.extrinsicHelper(extrinsic, { from: account }, { action: 'Withdraw' });
   };
 
@@ -272,7 +278,7 @@ class Margin {
     const leverage =
       direction === 'Short' ? -1 * multipleMap[multiple] : direction === 'Long' ? multipleMap[multiple] : 0;
 
-    const extrinsic = this.apiProvider.baseContracts.marginFlowProtocol.methods.openPosition(
+    const extrinsic = this.marginFlowProtocol.methods.openPosition(
       poolId,
       pair.base,
       pair.quote,
@@ -284,7 +290,7 @@ class Margin {
   };
 
   public closePosition = async (account: string, positionId: string, price: string | BN = '0') => {
-    const extrinsic = this.apiProvider.baseContracts.marginFlowProtocol.methods.closePosition(positionId, price);
+    const extrinsic = this.marginFlowProtocol.methods.closePosition(positionId, price);
     return this.apiProvider.extrinsicHelper(extrinsic, { from: account }, { action: 'Close Position' });
   };
 
@@ -296,6 +302,11 @@ class Margin {
   public withdrawLiquidity = async (account: string, poolId: string, amount: string | BN) => {
     const extrinsic = this.apiProvider.getMarginPoolInterfaceContract(poolId).methods.withdrawLiquidity(amount);
     return this.apiProvider.extrinsicHelper(extrinsic, { from: account }, { action: 'Withdraw' });
+  };
+
+  public payTraderDeposits = async (account: string, poolId: string) => {
+    const extrinsic = this.marginFlowProtocolSafety.methods.payTraderDeposits(poolId);
+    return this.apiProvider.extrinsicHelper(extrinsic, { from: account }, { action: 'Pay Trader Deposits' });
   };
 }
 
