@@ -42,9 +42,9 @@ class Synthetic {
 
   poolInfo(poolId: string): Observable<SyntheticPoolInfo | null> {
     const poolInterface = this.apiProvider.getSyntheticPoolInterfaceContract(poolId);
-    const owner = '0x15ae150d7dC03d3B635EE90b85219dBFe071ED35';
     return this.apiProvider.currencies.tokens().pipe(
       switchMap(async tokens => {
+        const owner = await poolInterface.methods.owner().call();
         const getBalance = this.apiProvider.baseTokenContracts.methods.balanceOf(owner).call();
         const enabledTokens = await Promise.all(
           tokens.map(token =>
@@ -72,7 +72,7 @@ class Synthetic {
 
         return {
           poolId: poolInterface.options.address.toLowerCase(),
-          owner: '0x15ae150d7dC03d3B635EE90b85219dBFe071ED35',
+          owner: owner,
           balance: await getBalance,
           options
         };
@@ -83,8 +83,7 @@ class Synthetic {
   public allPoolIds = () => {
     return of([
       this.protocol.addresses.syntheticPoolGeneral.toLowerCase(),
-      this.protocol.addresses.syntheticPoolXYZ.toLowerCase(),
-      this.protocol.addresses.syntheticProtocol.toLowerCase()
+      this.protocol.addresses.syntheticPoolXYZ.toLowerCase()
     ]);
   };
 
