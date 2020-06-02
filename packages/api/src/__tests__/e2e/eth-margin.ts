@@ -59,6 +59,12 @@ describe('ethereum api', () => {
       });
   });
 
+  it('oracleValues', done => {
+    api.currencies.oracleValues().subscribe(result => {
+      console.log(result);
+    });
+  });
+
   it('traderThreshold', done => {
     api.margin.traderThreshold('AUSD', 'FEUR').subscribe(result => {
       console.log(result);

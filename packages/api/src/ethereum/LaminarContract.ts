@@ -16,7 +16,11 @@ interface LaminarContract {
   web3: Web3;
   protocol: Protocol;
   baseContracts: Record<
-    'marginFlowProtocol' | 'marginFlowProtocolConfig' | 'marginFlowProtocolSafety' | 'syntheticFlowProtocol',
+    | 'marginFlowProtocol'
+    | 'marginFlowProtocolConfig'
+    | 'marginFlowProtocolSafety'
+    | 'syntheticFlowProtocol'
+    | 'priceOracleInterface',
     Contract
   >;
   tokenContracts: Record<string | 'iUSD', Contract>;
@@ -36,7 +40,8 @@ class LaminarContract implements LaminarContract {
       marginFlowProtocol: this.createContract(abis.MarginFlowProtocol, addresses.marginProtocol),
       marginFlowProtocolConfig: this.createContract(abis.MarginFlowProtocolConfig, addresses.marginProtocolConfig),
       marginFlowProtocolSafety: this.createContract(abis.MarginFlowProtocolSafety, addresses.marginProtocolSafety),
-      syntheticFlowProtocol: this.createContract(abis.SyntheticFlowProtocol, addresses.syntheticProtocol)
+      syntheticFlowProtocol: this.createContract(abis.SyntheticFlowProtocol, addresses.syntheticProtocol),
+      priceOracleInterface: this.createContract(abis.PriceOracleInterface, addresses.oracle)
     };
 
     this.tokenContracts = {

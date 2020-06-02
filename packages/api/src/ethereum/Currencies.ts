@@ -1,7 +1,7 @@
-import { Observable, of, combineLatest } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
+import { Observable, of, timer, combineLatest } from 'rxjs';
+import { switchMap, map } from 'rxjs/operators';
 
-import { TokenBalance, TokenInfo } from '../types';
+import { TokenBalance, TokenInfo, OracleValue } from '../types';
 import EthereumApi from './EthereumApi';
 
 class Currencies {
@@ -10,8 +10,6 @@ class Currencies {
   constructor(provider: EthereumApi) {
     this.apiProvider = provider;
   }
-
-  public oracleValues: undefined;
 
   public tokens = (): Observable<TokenInfo[]> => {
     return of([
@@ -122,6 +120,27 @@ class Currencies {
                 };
               })
           )
+        );
+      })
+    );
+  };
+
+  public oracleValues = (): Observable<OracleValue[]> => {
+    return timer(0, 120000).pipe(
+      switchMap(() => this.tokens()),
+      switchMap(tokens => {
+        const timestamp = +new Date();
+        return Promise.all(
+          tokens
+            .filter(token => !token.isNetworkToken && !token.isBaseToken)
+            .map(async ({ id }) => {
+              const value = await this.apiProvider.baseContracts.priceOracleInterface.methods.getPrice(id).call();
+              return {
+                tokenId: id,
+                timestamp,
+                value: value
+              };
+            })
         );
       })
     );
