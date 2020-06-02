@@ -1,7 +1,6 @@
-import { Observable, of, timer, combineLatest } from 'rxjs';
-import { switchMap, map } from 'rxjs/operators';
-
-import { TokenBalance, TokenInfo, OracleValue } from '../types';
+import { combineLatest, Observable, of, timer } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
+import { OracleValue, TokenBalance, TokenInfo } from '../types';
 import EthereumApi from './EthereumApi';
 
 class Currencies {
