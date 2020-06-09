@@ -86,6 +86,10 @@ class LaminarContract implements LaminarContract {
     return this.createContract(this.protocol.abis.SyntheticLiquidityPoolInterface, poolId);
   }
 
+  public getSyntheticFlowTokenContract(tokenId: string): Contract {
+    return this.createContract(this.protocol.abis.SyntheticFlowToken, tokenId);
+  }
+
   public getNetworkType = async (): Promise<string> => this.web3.eth.net.getNetworkType();
 }
 
