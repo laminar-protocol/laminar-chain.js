@@ -23,7 +23,8 @@ interface LaminarContract {
     | 'priceOracleInterface',
     Contract
   >;
-  tokenContracts: Record<string | 'iUSD', Contract>;
+  tokenIds: Record<string, string>;
+  tokenContracts: Record<string, Contract>;
   baseTokenContracts: Contract;
 }
 
@@ -44,19 +45,34 @@ class LaminarContract implements LaminarContract {
       priceOracleInterface: this.createContract(abis.PriceOracleInterface, addresses.oracle)
     };
 
+    this.tokenIds = {
+      DAI: addresses.baseToken,
+      IUSD: addresses.iToken,
+      FEUR: addresses.fEUR,
+      FJPY: addresses.fJPY,
+      FCAD: addresses.fCAD,
+      FCHF: addresses.fCHF,
+      FGBP: addresses.fGBP,
+      FAUD: addresses.fAUD,
+      FOIL: addresses.fUSOIL,
+      FXAU: addresses.fXAU,
+      FBTC: addresses.fBTC,
+      FETH: addresses.fETH
+    };
+
     this.tokenContracts = {
-      DAI: this.createContract(abis.ERC20, addresses.baseToken),
-      IUSD: this.createContract(abis.ERC20, addresses.iToken),
-      FEUR: this.createContract(abis.ERC20, addresses.fEUR),
-      FJPY: this.createContract(abis.ERC20, addresses.fJPY),
-      FCAD: this.createContract(abis.ERC20, addresses.fCAD),
-      FCHF: this.createContract(abis.ERC20, addresses.fCHF),
-      FGBP: this.createContract(abis.ERC20, addresses.fGBP),
-      FAUD: this.createContract(abis.ERC20, addresses.fAUD),
-      FOIL: this.createContract(abis.ERC20, addresses.fUSOIL),
-      FXAU: this.createContract(abis.ERC20, addresses.fXAU),
-      FBTC: this.createContract(abis.ERC20, addresses.fBTC),
-      FETH: this.createContract(abis.ERC20, addresses.fETH)
+      DAI: this.createContract(abis.ERC20, this.tokenIds.DAI),
+      IUSD: this.createContract(abis.ERC20, this.tokenIds.IUSD),
+      FEUR: this.createContract(abis.ERC20, this.tokenIds.FEUR),
+      FJPY: this.createContract(abis.ERC20, this.tokenIds.FJPY),
+      FCAD: this.createContract(abis.ERC20, this.tokenIds.FCAD),
+      FCHF: this.createContract(abis.ERC20, this.tokenIds.FCHF),
+      FGBP: this.createContract(abis.ERC20, this.tokenIds.FGBP),
+      FAUD: this.createContract(abis.ERC20, this.tokenIds.FAUD),
+      FOIL: this.createContract(abis.ERC20, this.tokenIds.FOIL),
+      FXAU: this.createContract(abis.ERC20, this.tokenIds.FXAU),
+      FBTC: this.createContract(abis.ERC20, this.tokenIds.FBTC),
+      FETH: this.createContract(abis.ERC20, this.tokenIds.FETH)
     };
 
     this.baseTokenContracts = this.tokenContracts.DAI;
