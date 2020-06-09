@@ -1269,16 +1269,6 @@
   resolved "https://registry.yarnpkg.com/@laminar/flow-protocol-ethereum/-/flow-protocol-ethereum-0.0.11.tgz#cb7f2c33826beecce0f781199d683510257687be"
   integrity sha512-q9Z0yKAyVaeOLdDzm2/JVhdFefhnny+QQJkNOb1c0dvMWmU0I3dplAZX44ADdri4xLLeklizugzYg/0Q/5WTBg==
 
-"@laminar/types@^0.2.0-beta.98":
-  version "0.2.0-beta.98"
-  resolved "https://registry.yarnpkg.com/@laminar/types/-/types-0.2.0-beta.98.tgz#77ca854e2f87e18330e66d714976a7ba253e3c88"
-  integrity sha512-yZnKt/Io0MmsTtGvYSuTrqTZqjYQpMMAwAs68mNiXfowcTKlYNZ9feDrwKCjUY6sFEkQPqSfMXgm0W1BDXLF1g==
-  dependencies:
-    "@babel/runtime" "^7.8.0"
-    "@open-web3/orml-types" "^0.3.0-beta.9"
-    "@polkadot/typegen" "^1.15.1"
-    "@polkadot/types" "^1.15.1"
-
 "@lerna/add@3.20.0":
   version "3.20.0"
   resolved "https://registry.yarnpkg.com/@lerna/add/-/add-3.20.0.tgz#bea7edf36fc93fb72ec34cb9ba854c48d4abf309"
