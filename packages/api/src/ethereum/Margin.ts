@@ -146,12 +146,11 @@ class Margin {
 
   public poolInfo = (poolId: string): Observable<MarginPoolInfo> => {
     const poolInterface = this.apiProvider.getMarginPoolInterfaceContract(poolId);
-    const poolRegistry = this.apiProvider.getMarginPoolRegistryContract(poolId);
     return this.getEnableTradePairs(poolId).pipe(
       switchMap(async tradingPairs => {
         return Promise.all([
           this.apiProvider.tokenContracts.DAI.methods.balanceOf(poolId).call(),
-          poolRegistry.methods.owner().call(),
+          poolInterface.methods.owner().call(),
           Promise.all(
             tradingPairs.map(({ base, quote }) => {
               return Promise.all([
