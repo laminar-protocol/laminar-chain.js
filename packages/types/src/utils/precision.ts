@@ -16,10 +16,10 @@ export const stringToNumber = (arg: string | number) => {
         `while converting string to number, invalid string value '${arg}', should be a number matching (^-?[0-9.]+).`
       );
     }
-    return arg;
+    return Number(arg);
   }
 
-  return Number(arg);
+  return arg;
 };
 
 export const numberToString = (arg: string | number) => {
