@@ -66,14 +66,30 @@ export default {
       frequency: 'BlockNumber',
       offset: 'BlockNumber'
     },
-    MarginLiquidityPoolOption: {
-      bidSpread: 'Spread',
-      askSpread: 'Spread',
+    DepositBalanceOf: 'u128',
+    Pool: {
+      owner: 'AccountId',
+      balance: 'u128'
+    },
+    MarginTradingPairOption: {
+      enabled: 'bool',
+      maxSpread: 'Option<u128>',
+      swapRate: 'SwapRate',
+      accumulateConfig: 'Option<AccumulateConfig>'
+    },
+    MarginPoolOption: {
+      additionalSwapRate: 'FixedI128',
+      minLeveragedAmount: 'u128'
+    },
+    MarginPoolTradingPairOption: {
+      enabled: 'bool',
+      bidSpread: 'Option<Spread>',
+      askSpread: 'Option<Spread>',
       enabledTrades: 'Leverages'
     },
-    SyntheticLiquidityPoolOption: {
-      bidSpread: 'Spread',
-      askSpread: 'Spread',
+    SyntheticPoolCurrencyOption: {
+      bidSpread: 'Option<Spread>',
+      askSpread: 'Option<Spread>',
       additionalCollateralRatio: 'Option<Permill>',
       syntheticEnabled: 'bool'
     },
@@ -82,11 +98,11 @@ export default {
       poolId: 'LiquidityPoolId',
       pair: 'TradingPair',
       leverage: 'Leverage',
-      leveragedHeld: 'Fixed128',
-      leveragedDebits: 'Fixed128',
-      leveragedDebitsInUsd: 'Fixed128',
+      leveragedHeld: 'FixedI128',
+      leveragedDebits: 'FixedI128',
+      leveragedDebitsInUsd: 'FixedI128',
       openAccumulatedSwapRate: 'Rate',
-      marginHeld: 'Fixed128'
+      marginHeld: 'FixedI128'
     },
     SyntheticPosition: {
       collateral: 'Balance',
@@ -96,9 +112,28 @@ export default {
       marginCall: 'Permill',
       stopOut: 'Permill'
     },
-    Fixed128: 'i128',
+    FixedI128: 'i128',
     PositionId: 'u64',
     Spread: 'u128',
-    Rate: 'Fixed128'
+    Rate: 'FixedI128',
+    PoolTraderInfo: {
+      positionNum: 'PositionId',
+      long: 'PairInfo',
+      short: 'PairInfo'
+    },
+    PairInfo: {
+      baseAmount: 'FixedI128',
+      quoteAmount: 'FixedI128'
+    },
+    TradingPairRiskThreshold: {
+      trader: 'Option<RiskThreshold>',
+      enp: 'Option<RiskThreshold>',
+      ell: 'Option<RiskThreshold>'
+    },
+    SyntheticTokensRatio: {
+      extreme: 'Option<Permill>',
+      liquidation: 'Option<Permill>',
+      collateral: 'Option<Permill>'
+    }
   }
 };

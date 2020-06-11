@@ -33,11 +33,11 @@ export default {
       ell: 'Rate'
     },
     TraderInfo: {
-      equity: 'Fixed128',
-      margin_held: 'Fixed128',
+      equity: 'FixedI128',
+      margin_held: 'FixedI128',
       margin_level: 'Rate',
-      free_margin: 'Fixed128',
-      unrealized_pl: 'Fixed128'
+      free_margin: 'FixedI128',
+      unrealized_pl: 'FixedI128'
     }
   }
 };
