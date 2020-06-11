@@ -19,5 +19,9 @@
     "@open-web3/orml-types": "^0.3.0-beta.9",
     "@polkadot/typegen": "^1.15.1",
     "@polkadot/types": "^1.15.1"
+  },
+  "devDependencies": {
+    "@types/websocket": "^1.0.0",
+    "websocket": "^1.0.31"
   }
 }

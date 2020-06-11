@@ -3,7 +3,14 @@
 
 import { ITuple } from '@polkadot/types/types';
 import { Compact, Enum, Int, Option, Set, Struct, U8aFixed, Vec } from '@polkadot/types/codec';
-import { GenericAccountId, GenericAccountIndex, GenericAddress, GenericBlock, GenericCall, GenericConsensusEngineId } from '@polkadot/types/generic';
+import {
+  GenericAccountId,
+  GenericAccountIndex,
+  GenericAddress,
+  GenericBlock,
+  GenericCall,
+  GenericConsensusEngineId
+} from '@polkadot/types/generic';
 import { Bytes, DoNotConstruct, Null, StorageKey, bool, i128, u128, u32, u64, u8 } from '@polkadot/types/primitive';
 import { Price } from '@open-web3/orml-types/interfaces/prices';
 import { AuthorityId } from '@polkadot/types/interfaces/consensus';
@@ -82,6 +89,9 @@ export interface CurrencyId extends Enum {
 /** @name CurrencyIdOf */
 export interface CurrencyIdOf extends CurrencyId {}
 
+/** @name DepositBalanceOf */
+export interface DepositBalanceOf extends u128 {}
+
 /** @name Digest */
 export interface Digest extends Struct {
   readonly logs: Vec<DigestItem>;
@@ -139,10 +149,13 @@ export interface ExtrinsicsWeight extends Struct {
 }
 
 /** @name Fixed128 */
-export interface Fixed128 extends i128 {}
+export interface Fixed128 extends Int {}
 
 /** @name Fixed64 */
 export interface Fixed64 extends Int {}
+
+/** @name FixedI128 */
+export interface FixedI128 extends i128 {}
 
 /** @name H160 */
 export interface H160 extends U8aFixed {}
@@ -229,10 +242,17 @@ export interface LookupSource extends Address {}
 /** @name LookupTarget */
 export interface LookupTarget extends AccountId {}
 
-/** @name MarginLiquidityPoolOption */
-export interface MarginLiquidityPoolOption extends Struct {
-  readonly bidSpread: Spread;
-  readonly askSpread: Spread;
+/** @name MarginPoolOption */
+export interface MarginPoolOption extends Struct {
+  readonly additionalSwapRate: FixedI128;
+  readonly minLeveragedAmount: u128;
+}
+
+/** @name MarginPoolTradingPairOption */
+export interface MarginPoolTradingPairOption extends Struct {
+  readonly enabled: bool;
+  readonly bidSpread: Option<Spread>;
+  readonly askSpread: Option<Spread>;
   readonly enabledTrades: Leverages;
 }
 
@@ -242,11 +262,19 @@ export interface MarginPosition extends Struct {
   readonly poolId: LiquidityPoolId;
   readonly pair: TradingPair;
   readonly leverage: Leverage;
-  readonly leveragedHeld: Fixed128;
-  readonly leveragedDebits: Fixed128;
-  readonly leveragedDebitsInUsd: Fixed128;
+  readonly leveragedHeld: FixedI128;
+  readonly leveragedDebits: FixedI128;
+  readonly leveragedDebitsInUsd: FixedI128;
   readonly openAccumulatedSwapRate: Rate;
-  readonly marginHeld: Fixed128;
+  readonly marginHeld: FixedI128;
+}
+
+/** @name MarginTradingPairOption */
+export interface MarginTradingPairOption extends Struct {
+  readonly enabled: bool;
+  readonly maxSpread: Option<u128>;
+  readonly swapRate: SwapRate;
+  readonly accumulateConfig: Option<AccumulateConfig>;
 }
 
 /** @name ModuleId */
@@ -266,6 +294,12 @@ export interface OrderedSet extends Vec<AccountId> {}
 
 /** @name Origin */
 export interface Origin extends DoNotConstruct {}
+
+/** @name PairInfo */
+export interface PairInfo extends Struct {
+  readonly baseAmount: FixedI128;
+  readonly quoteAmount: FixedI128;
+}
 
 /** @name Pays */
 export interface Pays extends Enum {
@@ -291,6 +325,19 @@ export interface Phantom extends Null {}
 /** @name PhantomData */
 export interface PhantomData extends Null {}
 
+/** @name Pool */
+export interface Pool extends Struct {
+  readonly owner: AccountId;
+  readonly balance: u128;
+}
+
+/** @name PoolTraderInfo */
+export interface PoolTraderInfo extends Struct {
+  readonly positionNum: PositionId;
+  readonly long: PairInfo;
+  readonly short: PairInfo;
+}
+
 /** @name PositionId */
 export interface PositionId extends u64 {}
 
@@ -306,7 +353,7 @@ export interface ProxyType extends Enum {
 }
 
 /** @name Rate */
-export interface Rate extends Fixed128 {}
+export interface Rate extends FixedI128 {}
 
 /** @name RiskThreshold */
 export interface RiskThreshold extends Struct {
@@ -344,10 +391,10 @@ export interface SwapRate extends Struct {
   readonly short: Rate;
 }
 
-/** @name SyntheticLiquidityPoolOption */
-export interface SyntheticLiquidityPoolOption extends Struct {
-  readonly bidSpread: Spread;
-  readonly askSpread: Spread;
+/** @name SyntheticPoolCurrencyOption */
+export interface SyntheticPoolCurrencyOption extends Struct {
+  readonly bidSpread: Option<Spread>;
+  readonly askSpread: Option<Spread>;
   readonly additionalCollateralRatio: Option<Permill>;
   readonly syntheticEnabled: bool;
 }
@@ -358,10 +405,24 @@ export interface SyntheticPosition extends Struct {
   readonly synthetic: Balance;
 }
 
+/** @name SyntheticTokensRatio */
+export interface SyntheticTokensRatio extends Struct {
+  readonly extreme: Option<Permill>;
+  readonly liquidation: Option<Permill>;
+  readonly collateral: Option<Permill>;
+}
+
 /** @name TradingPair */
 export interface TradingPair extends Struct {
   readonly base: CurrencyId;
   readonly quote: CurrencyId;
+}
+
+/** @name TradingPairRiskThreshold */
+export interface TradingPairRiskThreshold extends Struct {
+  readonly trader: Option<RiskThreshold>;
+  readonly enp: Option<RiskThreshold>;
+  readonly ell: Option<RiskThreshold>;
 }
 
 /** @name ValidatorId */
