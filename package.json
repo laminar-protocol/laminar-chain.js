@@ -14,7 +14,9 @@
   "scripts": {
     "build": "yarn check-deps && yarn build:interfaces && polkadot-dev-build-ts",
     "build:interfaces": "node -r ts-node/register packages/types/scripts/generate.ts",
-    "build:metadata": "ts-node --project ./tsconfig.json packages/types/scripts/metadata.ts",
+    "build:metadata": "yarn build:metadataStatic && yarn build:metadataJson",
+    "build:metadataStatic": "ts-node --project ./tsconfig.json packages/types/scripts/metadataStatic.ts",
+    "build:metadataJson": "ts-node --project ./tsconfig.json packages/types/scripts/metadataJson.ts",
     "lint": "eslint --ext .js,.jsx,.ts,.tsx . && tsc --noEmit --pretty",
     "clean": "polkadot-dev-clean-build",
     "postinstall": "polkadot-dev-yarn-only",
