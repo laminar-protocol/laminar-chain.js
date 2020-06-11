@@ -12,7 +12,7 @@
     "typescript": "^3.7.2"
   },
   "scripts": {
-    "build": "yarn check-deps && yarn build:interfaces && polkadot-dev-build-ts && yarn build:metadata",
+    "build": "yarn check-deps && yarn build:interfaces && polkadot-dev-build-ts",
     "build:interfaces": "node -r ts-node/register packages/types/scripts/generate.ts",
     "build:metadata": "ts-node --project ./tsconfig.json packages/types/scripts/metadata.ts",
     "lint": "eslint --ext .js,.jsx,.ts,.tsx . && tsc --noEmit --pretty",
