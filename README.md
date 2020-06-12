@@ -3,7 +3,7 @@
 
 # Laminar Chain JS SDK
 
-This library provides SDK to access Laminar Ethereum and Lamianr Chain.
+This library provides SDK to access Laminar Ethereum and Laminar Chain.
 
 # Getting Started
 
