@@ -17,33 +17,87 @@ yarn add @polkadot/api @lamianr/api@beta
 
   - Create API instance for Laminar Chain
 
-```ts
-import { ApiPromise } from '@polkadot/api';
-import { WsProvider } from '@polkadot/rpc-provider';
-import { options } from '@lamianr/api';
+    ```ts
+    import { ApiPromise } from '@polkadot/api';
+    import { WsProvider } from '@polkadot/rpc-provider';
+    import { options } from '@lamianr/api';
 
-async function main() {
-  const provider = new WsProvider('ws://localhost:9944');
-  const api = new ApiPromise(options({ provider }));
-  await api.isReady;
+    async function main() {
+      const provider = new WsProvider('ws://localhost:9944');
+      const api = new ApiPromise(options({ provider }));
+      await api.isReady;
 
-  // use api
-}
+      // use api
+    }
 
-main();
-```
+    main();
+    ```
 
-- Use api to interact with node
+  - Use api to interact with node
 
-```ts
-// query and display account data
-const data = await api.query.system.account('5F98oWfz2r5rcRVnP9VCndg33DAAsky3iuoBSpaPUbgN9AJn');
-console.log(data.toHuman());
-```
+    ```ts
+    // query and display account data
+    const data = await api.query.system.account('5F98oWfz2r5rcRVnP9VCndg33DAAsky3iuoBSpaPUbgN9AJn');
+    console.log(data.toHuman());
+    ```
 
 - Laminar Ethereum
 
-TODO
+  - Create API instance for Laminar Ethereum
+
+    ```ts
+    import { EthereumApi } from '@lamianr/api';
+    import Web3 from 'web3';
+
+    const api = new EthereumApi({
+      provider: new Web3.providers.HttpProvider(<network_endpoint>)
+    })
+    ```
+
+  - Create API instance from metamask
+
+    ```ts
+    import { EthereumApi } from '@lamianr/api';
+
+    const api = new EthereumApi({
+      provider: window.web3.currentProvider.
+    })
+    ```
+
+  - Call the contract
+
+    ```ts
+    import { EthereumApi } from '@lamianr/api';
+
+    const api = new EthereumApi({
+      provider: window.web3.currentProvider.
+    })
+
+    const run = async () => {
+      // call marginFlowProtocol
+      await api.marginFlowProtocol.methods.balances(<poolId>, <account>).call() // balance
+
+      // call syntheticFlowProtocol
+      api.baseContracts.syntheticFlowProtocol.methods.redeem(<fromToken>, <poolId>, <amount>).send(<sendOption>) // redeem
+
+      // call MarginPoolInterfaceContract
+      const contract = api.getMarginPoolInterfaceContract(<poolId>)
+
+      // call SyntheticPoolInterfaceContract
+      const contract = api.getSyntheticPoolInterfaceContract(<poolId>)
+
+      await contract.methods.getAskSpread(<tokenId>).call() // getAskSpread
+
+      // get margin allowance
+      await api.margin.allowance(<account>, <contractAddress>)
+
+      // margin contract grant
+      await api.margin.grant(<account>, <contractAddress>)
+
+    }
+
+    run()
+    ```
 
 # Packages
 
