@@ -35,17 +35,15 @@ main();
 
 - Use api to interact with node
 
-- Laminar Ethereum
-
-TODO
-
 ```ts
 // query and display account data
 const data = await api.query.system.account('5F98oWfz2r5rcRVnP9VCndg33DAAsky3iuoBSpaPUbgN9AJn');
 console.log(data.toHuman());
 ```
 
--
+- Laminar Ethereum
+
+TODO
 
 # Packages
 
