@@ -1,5 +1,5 @@
 ![license](https://img.shields.io/badge/License-Apache%202.0-blue?logo=apache&style=flat-square)
-[![npm](https://img.shields.io/npm/v/@alamianr/api?logo=npm&style=flat-square)](https://www.npmjs.com/package/@alamianr/api)
+[![npm](https://img.shields.io/npm/v/@laminar/api?logo=npm&style=flat-square)](https://www.npmjs.com/package/@laminar/api)
 
 # Laminar Chain JS SDK
 
