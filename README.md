@@ -10,7 +10,7 @@ This library provides SDK to access Laminar Ethereum and Laminar Chain.
 - Install dependencies
 
 ```bash
-yarn add @polkadot/api @lamianr/api@beta
+yarn add @polkadot/api @laminar/api@beta
 ```
 
 - Laminar Chain
@@ -20,7 +20,7 @@ yarn add @polkadot/api @lamianr/api@beta
     ```ts
     import { ApiPromise } from '@polkadot/api';
     import { WsProvider } from '@polkadot/rpc-provider';
-    import { options } from '@lamianr/api';
+    import { options } from '@laminar/api';
 
     async function main() {
       const provider = new WsProvider('ws://localhost:9944');
