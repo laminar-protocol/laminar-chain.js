@@ -46,7 +46,7 @@ yarn add @polkadot/api @laminar/api@beta
   - Create API instance for Laminar Ethereum
 
     ```ts
-    import { EthereumApi } from '@lamianr/api';
+    import { EthereumApi } from '@laminar/api';
     import Web3 from 'web3';
 
     const api = new EthereumApi({
@@ -57,7 +57,7 @@ yarn add @polkadot/api @laminar/api@beta
   - Create API instance from metamask
 
     ```ts
-    import { EthereumApi } from '@lamianr/api';
+    import { EthereumApi } from '@laminar/api';
 
     const api = new EthereumApi({
       provider: window.web3.currentProvider.
@@ -67,7 +67,7 @@ yarn add @polkadot/api @laminar/api@beta
   - Call the contract
 
     ```ts
-    import { EthereumApi } from '@lamianr/api';
+    import { EthereumApi } from '@laminar/api';
 
     const api = new EthereumApi({
       provider: window.web3.currentProvider.
