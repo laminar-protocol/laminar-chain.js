@@ -66,10 +66,10 @@ export default {
       frequency: 'BlockNumber',
       offset: 'BlockNumber'
     },
-    DepositBalanceOf: 'u128',
+    IdentityDepositBalanceOf: 'Balance',
     Pool: {
       owner: 'AccountId',
-      balance: 'u128'
+      balance: 'Balance'
     },
     MarginTradingPairOption: {
       enabled: 'bool',
@@ -134,6 +134,15 @@ export default {
       extreme: 'Option<Permill>',
       liquidation: 'Option<Permill>',
       collateral: 'Option<Permill>'
+    },
+    PositionsSnapshot: {
+      positionsCount: 'PositionId',
+      long: 'LeveragedAmounts',
+      short: 'LeveragedAmounts'
+    },
+    LeveragedAmounts: {
+      held: 'FixedI128',
+      debits: 'FixedI128'
     }
   }
 };

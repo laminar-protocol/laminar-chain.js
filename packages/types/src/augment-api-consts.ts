@@ -2,20 +2,19 @@
 /* eslint-disable */
 
 import { Codec } from '@polkadot/types/types';
-import { Vec } from '@polkadot/types/codec';
-import { Balance, CurrencyId, CurrencyIdOf, DepositBalanceOf, Permill } from '@laminar/types/interfaces/runtime';
+import { Balance, CurrencyId, CurrencyIdOf, IdentityDepositBalanceOf } from '@laminar/types/interfaces/runtime';
 
 declare module '@polkadot/metadata/Decorated/consts/types' {
   export interface Constants {
     [index: string]: ModuleConstants;
     baseLiquidityPoolsForMargin: {
       [index: string]: AugmentedConst<object & Codec>;
-      deposit: AugmentedConst<DepositBalanceOf>;
+      deposit: AugmentedConst<IdentityDepositBalanceOf>;
       existentialDeposit: AugmentedConst<Balance>;
     };
     baseLiquidityPoolsForSynthetic: {
       [index: string]: AugmentedConst<object & Codec>;
-      deposit: AugmentedConst<DepositBalanceOf>;
+      deposit: AugmentedConst<IdentityDepositBalanceOf>;
       existentialDeposit: AugmentedConst<Balance>;
     };
     currencies: {
@@ -25,13 +24,6 @@ declare module '@polkadot/metadata/Decorated/consts/types' {
     syntheticProtocol: {
       [index: string]: AugmentedConst<object & Codec>;
       getCollateralCurrencyId: AugmentedConst<CurrencyId>;
-    };
-    syntheticTokens: {
-      [index: string]: AugmentedConst<object & Codec>;
-      defaultCollateralRatio: AugmentedConst<Permill>;
-      defaultExtremeRatio: AugmentedConst<Permill>;
-      defaultLiquidationRatio: AugmentedConst<Permill>;
-      syntheticCurrencyIds: AugmentedConst<Vec<CurrencyId>>;
     };
   }
 }
