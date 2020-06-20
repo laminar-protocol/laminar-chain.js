@@ -3,7 +3,14 @@
 
 import { ITuple } from '@polkadot/types/types';
 import { Compact, Enum, Int, Option, Set, Struct, U8aFixed, Vec } from '@polkadot/types/codec';
-import { GenericAccountId, GenericAccountIndex, GenericAddress, GenericBlock, GenericCall, GenericConsensusEngineId } from '@polkadot/types/generic';
+import {
+  GenericAccountId,
+  GenericAccountIndex,
+  GenericAddress,
+  GenericBlock,
+  GenericCall,
+  GenericConsensusEngineId
+} from '@polkadot/types/generic';
 import { Bytes, DoNotConstruct, Null, StorageKey, bool, i128, u128, u32, u64, u8 } from '@polkadot/types/primitive';
 import { Price } from '@open-web3/orml-types/interfaces/prices';
 import { AuthorityId } from '@polkadot/types/interfaces/consensus';
@@ -81,9 +88,6 @@ export interface CurrencyId extends Enum {
 
 /** @name CurrencyIdOf */
 export interface CurrencyIdOf extends CurrencyId {}
-
-/** @name DepositBalanceOf */
-export interface DepositBalanceOf extends u128 {}
 
 /** @name Digest */
 export interface Digest extends Struct {
@@ -171,6 +175,9 @@ export interface Header extends Struct {
   readonly digest: Digest;
 }
 
+/** @name IdentityDepositBalanceOf */
+export interface IdentityDepositBalanceOf extends Balance {}
+
 /** @name Index */
 export interface Index extends u32 {}
 
@@ -201,6 +208,12 @@ export interface Leverage extends Enum {
   readonly isShortThirty: boolean;
   readonly isShortFifty: boolean;
   readonly isShortReserved: boolean;
+}
+
+/** @name LeveragedAmounts */
+export interface LeveragedAmounts extends Struct {
+  readonly held: FixedI128;
+  readonly debits: FixedI128;
 }
 
 /** @name Leverages */
@@ -321,7 +334,7 @@ export interface PhantomData extends Null {}
 /** @name Pool */
 export interface Pool extends Struct {
   readonly owner: AccountId;
-  readonly balance: u128;
+  readonly balance: Balance;
 }
 
 /** @name PoolTraderInfo */
@@ -333,6 +346,13 @@ export interface PoolTraderInfo extends Struct {
 
 /** @name PositionId */
 export interface PositionId extends u64 {}
+
+/** @name PositionsSnapshot */
+export interface PositionsSnapshot extends Struct {
+  readonly positionsCount: PositionId;
+  readonly long: LeveragedAmounts;
+  readonly short: LeveragedAmounts;
+}
 
 /** @name PreRuntime */
 export interface PreRuntime extends ITuple<[ConsensusEngineId, Bytes]> {}

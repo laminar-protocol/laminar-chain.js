@@ -1324,7 +1324,7 @@
             {
               "name": "WeightToFee",
               "type": "Vec<WeightToFeeCoefficient>",
-              "value": "0x0401000000000000000000000000000000000000000001",
+              "value": "0x0400127a00000000000000000000000000000000000001",
               "documentation": [" The polynomial that is applied in order to derive fee from weight."]
             }
           ],
@@ -5716,7 +5716,7 @@
                   }
                 },
                 "fallback": "0x000000",
-                "documentation": []
+                "documentation": [" Ratios for each currency."]
               },
               {
                 "name": "Positions",
@@ -5731,7 +5731,7 @@
                   }
                 },
                 "fallback": "0x0000000000000000000000000000000000000000000000000000000000000000",
-                "documentation": []
+                "documentation": [" Positions of a currency in a pool"]
               }
             ]
           },
@@ -5748,7 +5748,11 @@
                   "type": "Compact<Permill>"
                 }
               ],
-              "documentation": []
+              "documentation": [
+                " Set extreme liquidation ratio.",
+                "",
+                " May only be called from `UpdateOrigin` or root."
+              ]
             },
             {
               "name": "set_liquidation_ratio",
@@ -5762,7 +5766,7 @@
                   "type": "Compact<Permill>"
                 }
               ],
-              "documentation": []
+              "documentation": [" Set liquidation ratio.", "", " May only be called from `UpdateOrigin` or root."]
             },
             {
               "name": "set_collateral_ratio",
@@ -5776,7 +5780,7 @@
                   "type": "Compact<Permill>"
                 }
               ],
-              "documentation": []
+              "documentation": [" Set collateral ratio.", "", " May only be called from `UpdateOrigin` or root."]
             }
           ],
           "events": [
@@ -5796,32 +5800,7 @@
               "documentation": [" Collateral ratio updated. (currency_id, ratio)"]
             }
           ],
-          "constants": [
-            {
-              "name": "DefaultExtremeRatio",
-              "type": "Permill",
-              "value": "0x10270000",
-              "documentation": []
-            },
-            {
-              "name": "DefaultLiquidationRatio",
-              "type": "Permill",
-              "value": "0x50c30000",
-              "documentation": []
-            },
-            {
-              "name": "DefaultCollateralRatio",
-              "type": "Permill",
-              "value": "0xa0860100",
-              "documentation": []
-            },
-            {
-              "name": "SyntheticCurrencyIds",
-              "type": "Vec<CurrencyId>",
-              "value": "0x240203060708090a0405",
-              "documentation": []
-            }
-          ],
+          "constants": [],
           "errors": []
         },
         {
@@ -5848,7 +5827,7 @@
                   "type": "Price"
                 }
               ],
-              "documentation": []
+              "documentation": [" Mint synthetic tokens."]
             },
             {
               "name": "redeem",
@@ -5870,7 +5849,7 @@
                   "type": "Price"
                 }
               ],
-              "documentation": []
+              "documentation": [" Redeem collateral."]
             },
             {
               "name": "liquidate",
@@ -5888,7 +5867,7 @@
                   "type": "Compact<Balance>"
                 }
               ],
-              "documentation": []
+              "documentation": [" Liquidite `currency_id` in `pool_id` by `synthetic_amount`."]
             },
             {
               "name": "add_collateral",
@@ -5906,7 +5885,7 @@
                   "type": "Compact<Balance>"
                 }
               ],
-              "documentation": []
+              "documentation": [" Add collateral to `currency_id` in `pool_id` by `collateral_amount`."]
             },
             {
               "name": "withdraw_collateral",
@@ -5920,7 +5899,7 @@
                   "type": "CurrencyId"
                 }
               ],
-              "documentation": []
+              "documentation": [" Withdraw all available collateral.", "", " May only be called from the pool owner."]
             }
           ],
           "events": [
@@ -5928,41 +5907,32 @@
               "name": "Minted",
               "args": ["AccountId", "CurrencyId", "LiquidityPoolId", "Balance", "Balance"],
               "documentation": [
-                " Synthetic token minted.",
-                " (who, synthetic_currency_id, liquidity_pool_id, collateral_amount, synthetic_amount)"
+                " Synthetic token minted: (who, synthetic_currency_id, pool_id, collateral_amount, synthetic_amount)"
               ]
             },
             {
               "name": "Redeemed",
               "args": ["AccountId", "CurrencyId", "LiquidityPoolId", "Balance", "Balance"],
               "documentation": [
-                " Synthetic token redeemed.",
-                " (who, synthetic_currency_id, liquidity_pool_id, collateral_amount, synthetic_amount)"
+                " Synthetic token redeemed: (who, synthetic_currency_id, pool_id, collateral_amount, synthetic_amount)"
               ]
             },
             {
               "name": "Liquidated",
               "args": ["AccountId", "CurrencyId", "LiquidityPoolId", "Balance", "Balance"],
               "documentation": [
-                " Synthetic token liquidated.",
-                " (who, synthetic_currency_id, liquidity_pool_id, collateral_amount, synthetic_amount)"
+                " Synthetic token liquidated: (who, synthetic_currency_id, pool_id, collateral_amount, synthetic_amount)"
               ]
             },
             {
               "name": "CollateralAdded",
               "args": ["AccountId", "CurrencyId", "LiquidityPoolId", "Balance"],
-              "documentation": [
-                " Collateral added.",
-                " (who, synthetic_currency_id, liquidity_pool_id, collateral_amount)"
-              ]
+              "documentation": [" Collateral added: (who, synthetic_currency_id, pool_id, collateral_amount)"]
             },
             {
               "name": "CollateralWithdrew",
               "args": ["AccountId", "CurrencyId", "LiquidityPoolId", "Balance"],
-              "documentation": [
-                " Collateral withdrew.",
-                " (who, synthetic_currency_id, liquidity_pool_id, collateral_amount)"
-              ]
+              "documentation": [" Collateral withdrew: (who, synthetic_currency_id, pool_id, collateral_amount)"]
             }
           ],
           "constants": [
@@ -5975,68 +5945,68 @@
           ],
           "errors": [
             {
-              "name": "BalanceTooLow",
-              "documentation": []
+              "name": "InsufficientLiquidityInPool",
+              "documentation": [" Insufficient liquidity in pool for minting."]
             },
             {
-              "name": "LiquidityProviderBalanceTooLow",
-              "documentation": []
-            },
-            {
-              "name": "NotSupportedByLiquidityPool",
-              "documentation": []
+              "name": "CannotMintInPool",
+              "documentation": [" Required synthetic minting is not supported by pool."]
             },
             {
               "name": "AskPriceTooHigh",
-              "documentation": []
+              "documentation": [" Ask price is too high."]
             },
             {
               "name": "BidPriceTooLow",
-              "documentation": []
+              "documentation": [" Bind price is too low."]
             },
             {
               "name": "NumOverflow",
-              "documentation": []
+              "documentation": [" Number overflow in calculation."]
             },
             {
               "name": "NoPrice",
-              "documentation": []
+              "documentation": [" No price from provider."]
             },
             {
               "name": "NegativeAdditionalCollateralAmount",
-              "documentation": []
+              "documentation": [
+                " Negative required additional amount from pool.",
+                "",
+                " May caused by wrong spread and ratio config of pool"
+              ]
             },
             {
-              "name": "LiquidityPoolSyntheticPositionTooLow",
-              "documentation": []
+              "name": "InsufficientSyntheticInPosition",
+              "documentation": [" Insufficient amount of synthetic in the position for liquidation or redeeming."]
             },
             {
-              "name": "LiquidityPoolCollateralPositionTooLow",
-              "documentation": []
+              "name": "InsufficientCollateralInPosition",
+              "documentation": [" Insufficient amount of collateral in the position for liquidation or redeeming."]
             },
             {
-              "name": "NotEnoughLockedCollateralAvailable",
-              "documentation": []
+              "name": "InsufficientLockedCollateral",
+              "documentation": [" Insufficient amount of collateral locked in protocol."]
             },
             {
               "name": "StillInSafePosition",
-              "documentation": []
+              "documentation": [" Still in safe position and cannot be liquidated."]
             },
             {
-              "name": "NotPoolOwner",
-              "documentation": []
+              "name": "NoPermission",
+              "documentation": [" Caller doesn't have permission."]
             },
             {
               "name": "NoBidSpread",
-              "documentation": []
+              "documentation": [" Bid spread not set."]
             },
             {
               "name": "NoAskSpread",
-              "documentation": []
+              "documentation": [" Ask spread not set."]
             },
             {
               "name": "NotValidSyntheticCurrencyId",
-              "documentation": []
+              "documentation": [" The currency is not enabled in synthetic protocol."]
             }
           ]
         },
@@ -6052,7 +6022,7 @@
                   "Plain": "PositionId"
                 },
                 "fallback": "0x0000000000000000",
-                "documentation": []
+                "documentation": [" Next available position ID."]
               },
               {
                 "name": "Positions",
@@ -6066,7 +6036,7 @@
                   }
                 },
                 "fallback": "0x00",
-                "documentation": []
+                "documentation": [" Positions."]
               },
               {
                 "name": "PositionsByTrader",
@@ -6081,7 +6051,7 @@
                   }
                 },
                 "fallback": "0x00",
-                "documentation": []
+                "documentation": [" Positions existence check by traders and liquidity pool IDs."]
               },
               {
                 "name": "PositionsByPool",
@@ -6096,22 +6066,22 @@
                   }
                 },
                 "fallback": "0x00",
-                "documentation": []
+                "documentation": [" Positions existence check by pools and trading pairs."]
               },
               {
-                "name": "PoolTraderInfos",
+                "name": "PositionsSnapshots",
                 "modifier": "Default",
                 "type": {
                   "DoubleMap": {
                     "hasher": "Twox64Concat",
                     "key1": "LiquidityPoolId",
                     "key2": "TradingPair",
-                    "value": "PoolTraderInfo",
+                    "value": "PositionsSnapshot",
                     "key2Hasher": "Twox64Concat"
                   }
                 },
                 "fallback": "0x000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
-                "documentation": []
+                "documentation": [" Positions snapshots.", "", " Used for performance improvement."]
               },
               {
                 "name": "Balances",
@@ -6126,7 +6096,14 @@
                   }
                 },
                 "fallback": "0x00000000000000000000000000000000",
-                "documentation": []
+                "documentation": [
+                  " Balance of a trader in a liquidity pool.",
+                  "",
+                  " The balance value could be positive or negative:",
+                  " - If positive, it represents 'balance' the trader could use to open positions, withdraw etc.",
+                  " - If negative, it represents how much the trader owns the pool. Owning could happen when realzing loss",
+                  " but trader has not enough free margin at the moment; Then repayment would be done while realizing profit."
+                ]
               },
               {
                 "name": "MarginCalledTraders",
@@ -6141,7 +6118,11 @@
                   }
                 },
                 "fallback": "0x00",
-                "documentation": []
+                "documentation": [
+                  " Margin call check of a trader in a pool.",
+                  "",
+                  " A trader may only open new positions if not in margin called state."
+                ]
               },
               {
                 "name": "MarginCalledPools",
@@ -6155,7 +6136,11 @@
                   }
                 },
                 "fallback": "0x00",
-                "documentation": []
+                "documentation": [
+                  " Margin call pool.",
+                  "",
+                  " New positions may only be opened in a pool if which not in margin called state."
+                ]
               },
               {
                 "name": "RiskThresholds",
@@ -6170,7 +6155,7 @@
                 },
                 "fallback": "0x000000",
                 "documentation": [
-                  " Risk thresholds of a trading pair, including trader risk threshold, pool ENP and ELL.",
+                  " Risk thresholds of a trading pair, including trader risk threshold, pool ENP and ELL risk threshold.",
                   "",
                   " DEFAULT-NOTE: `trader`, `enp`, and `ell` are all `None` by default."
                 ]
@@ -6202,7 +6187,7 @@
                   "type": "Price"
                 }
               ],
-              "documentation": []
+              "documentation": [" Open a position in `pool_id`."]
             },
             {
               "name": "close_position",
@@ -6216,7 +6201,7 @@
                   "type": "Price"
                 }
               ],
-              "documentation": []
+              "documentation": [" Close position by id."]
             },
             {
               "name": "deposit",
@@ -6230,7 +6215,7 @@
                   "type": "Compact<Balance>"
                 }
               ],
-              "documentation": []
+              "documentation": [" Deposit liquidity to caller's account."]
             },
             {
               "name": "withdraw",
@@ -6244,7 +6229,7 @@
                   "type": "Compact<Balance>"
                 }
               ],
-              "documentation": []
+              "documentation": [" Withdraw liquidity from caller's account."]
             },
             {
               "name": "trader_margin_call",
@@ -6258,7 +6243,11 @@
                   "type": "Compact<LiquidityPoolId>"
                 }
               ],
-              "documentation": []
+              "documentation": [
+                " Margin call a trader.",
+                "",
+                " May only be called from none origin. Would fail if the trader is still safe."
+              ]
             },
             {
               "name": "trader_become_safe",
@@ -6272,7 +6261,11 @@
                   "type": "Compact<LiquidityPoolId>"
                 }
               ],
-              "documentation": []
+              "documentation": [
+                " Remove trader's margin-called status.",
+                "",
+                " May only be called from none origin. Would fail if the trader is not safe yet."
+              ]
             },
             {
               "name": "trader_stop_out",
@@ -6286,7 +6279,11 @@
                   "type": "Compact<LiquidityPoolId>"
                 }
               ],
-              "documentation": []
+              "documentation": [
+                " Stop out a trader.",
+                "",
+                " May only be called from none origin. Would fail if stop out threshold not reached."
+              ]
             },
             {
               "name": "liquidity_pool_margin_call",
@@ -6296,7 +6293,11 @@
                   "type": "Compact<LiquidityPoolId>"
                 }
               ],
-              "documentation": []
+              "documentation": [
+                " Margin call a liqudity pool.",
+                "",
+                " May only be called from none origin. Would fail if the pool still safe."
+              ]
             },
             {
               "name": "liquidity_pool_become_safe",
@@ -6306,7 +6307,11 @@
                   "type": "Compact<LiquidityPoolId>"
                 }
               ],
-              "documentation": []
+              "documentation": [
+                " Remove a pool's margin-called status.",
+                "",
+                " May only be called from none origin. Would fail if the pool is not safe yet."
+              ]
             },
             {
               "name": "liquidity_pool_force_close",
@@ -6316,7 +6321,11 @@
                   "type": "Compact<LiquidityPoolId>"
                 }
               ],
-              "documentation": []
+              "documentation": [
+                " Force close a liquidity pool.",
+                "",
+                " May only be called from none origin. Would fail if pool ENP or ELL thresholds not reached."
+              ]
             },
             {
               "name": "set_trading_pair_risk_threshold",
@@ -6338,7 +6347,11 @@
                   "type": "Option<RiskThreshold>"
                 }
               ],
-              "documentation": []
+              "documentation": [
+                " Set risk thresholds of a trading pair.",
+                "",
+                " May only be called from `UpdateOrigin` or root."
+              ]
             }
           ],
           "events": [
@@ -6346,13 +6359,13 @@
               "name": "PositionOpened",
               "args": ["AccountId", "PositionId", "LiquidityPoolId", "TradingPair", "Leverage", "Amount", "Price"],
               "documentation": [
-                " Position opened: (who, position_id, pool_id, trading_pair, leverage, leveraged_amount, market_price)"
+                " Position opened: (who, position_id, pool_id, trading_pair, leverage, leveraged_amount, open_price)"
               ]
             },
             {
               "name": "PositionClosed",
               "args": ["AccountId", "PositionId", "LiquidityPoolId", "Price"],
-              "documentation": [" Position closed: (who, position_id, pool_id, market_price)"]
+              "documentation": [" Position closed: (who, position_id, pool_id, close_price)"]
             },
             {
               "name": "Deposited",
@@ -6367,38 +6380,38 @@
             {
               "name": "TraderMarginCalled",
               "args": ["AccountId"],
-              "documentation": [" TraderMarginCalled: (who)"]
+              "documentation": [" Trader margin called: (who)"]
             },
             {
               "name": "TraderBecameSafe",
               "args": ["AccountId"],
-              "documentation": [" TraderBecameSafe: (who)"]
+              "documentation": [" Trader became safe: (who)"]
             },
             {
               "name": "TraderStoppedOut",
               "args": ["AccountId"],
-              "documentation": [" TraderStoppedOut: (who)"]
+              "documentation": [" Trader stopped out: (who)"]
             },
             {
               "name": "LiquidityPoolMarginCalled",
               "args": ["LiquidityPoolId"],
-              "documentation": [" LiquidityPoolMarginCalled: (pool_id)"]
+              "documentation": [" Liquidity pool margin called: (pool_id)"]
             },
             {
               "name": "LiquidityPoolBecameSafe",
               "args": ["LiquidityPoolId"],
-              "documentation": [" LiquidityPoolBecameSafe: (pool_id)"]
+              "documentation": [" Liquidity pool became safe: (pool_id)"]
             },
             {
               "name": "LiquidityPoolForceClosed",
               "args": ["LiquidityPoolId"],
-              "documentation": [" LiquidityPoolForceClosed: (pool_id)"]
+              "documentation": [" Liquidity pool force closed: (pool_id)"]
             },
             {
               "name": "TradingPairRiskThresholdSet",
               "args": ["TradingPair", "Option<RiskThreshold>", "Option<RiskThreshold>", "Option<RiskThreshold>"],
               "documentation": [
-                " Set trading pair risk threshold (pair, trader_risk_threshold, liquidity_pool_enp_threshold, liquidity_pool_ell_threshold)"
+                " Trading pair risk threshold set (pair, trader_risk_threshold, liquidity_pool_enp_threshold, liquidity_pool_ell_threshold)"
               ]
             }
           ],
@@ -6406,95 +6419,87 @@
           "errors": [
             {
               "name": "NoPrice",
-              "documentation": []
+              "documentation": [" No price from provider."]
             },
             {
               "name": "NoAskSpread",
-              "documentation": []
+              "documentation": [" Ask spread not set."]
             },
             {
               "name": "NoBidSpread",
-              "documentation": []
+              "documentation": [" Bid spread not set."]
             },
             {
               "name": "MarketPriceTooHigh",
-              "documentation": []
+              "documentation": [" Market price is too high."]
             },
             {
               "name": "MarketPriceTooLow",
-              "documentation": []
+              "documentation": [" Market price is too low."]
             },
             {
               "name": "NumOutOfBound",
-              "documentation": []
+              "documentation": [" Number out of bound in calculation."]
             },
             {
               "name": "UnsafeTrader",
-              "documentation": []
-            },
-            {
-              "name": "TraderWouldBeUnsafe",
-              "documentation": []
+              "documentation": [" Trader is not safe."]
             },
             {
               "name": "UnsafePool",
-              "documentation": []
+              "documentation": [" Liquidity pool is not safe."]
             },
             {
               "name": "PoolWouldBeUnsafe",
-              "documentation": []
+              "documentation": [" Pool would be unsafe."]
             },
             {
               "name": "SafeTrader",
-              "documentation": []
+              "documentation": [" Trader is safe."]
             },
             {
               "name": "SafePool",
-              "documentation": []
+              "documentation": [" Pool is safe."]
             },
             {
               "name": "NotReachedRiskThreshold",
-              "documentation": []
+              "documentation": [" Not reach risk threshold yet."]
             },
             {
               "name": "MarginCalledTrader",
-              "documentation": []
+              "documentation": [" Trader has been margin called."]
             },
             {
               "name": "MarginCalledPool",
-              "documentation": []
+              "documentation": [" Pool has been margin called."]
             },
             {
               "name": "NoAvailablePositionId",
-              "documentation": []
+              "documentation": [" No available position id."]
             },
             {
               "name": "PositionNotFound",
-              "documentation": []
+              "documentation": [" Position not found."]
             },
             {
               "name": "PositionNotOpenedByTrader",
-              "documentation": []
+              "documentation": [" Position is not opened by caller."]
             },
             {
               "name": "PositionNotAllowed",
-              "documentation": []
-            },
-            {
-              "name": "CannotOpenPosition",
-              "documentation": []
+              "documentation": [" Position is not allow in pool."]
             },
             {
               "name": "CannotOpenMorePosition",
-              "documentation": []
+              "documentation": [" Positions count reached maximum."]
             },
             {
               "name": "InsufficientFreeMargin",
-              "documentation": []
+              "documentation": [" Insufficient free margin."]
             },
             {
               "name": "NoRiskThreshold",
-              "documentation": []
+              "documentation": [" Risk threshold not set."]
             }
           ]
         },
@@ -6510,7 +6515,7 @@
                   "Plain": "LiquidityPoolId"
                 },
                 "fallback": "0x00000000",
-                "documentation": []
+                "documentation": [" Next available liquidity pool ID."]
               },
               {
                 "name": "Pools",
@@ -6524,7 +6529,7 @@
                   }
                 },
                 "fallback": "0x00",
-                "documentation": []
+                "documentation": [" Liquidity pool information.", "", " Returns `None` if no such pool exists."]
               },
               {
                 "name": "IdentityInfos",
@@ -6533,13 +6538,15 @@
                   "Map": {
                     "hasher": "Twox64Concat",
                     "key": "LiquidityPoolId",
-                    "value": "(IdentityInfo,DepositBalanceOf,bool)",
+                    "value": "(IdentityInfo,IdentityDepositBalanceOf,bool)",
                     "linked": false
                   }
                 },
                 "fallback": "0x00",
                 "documentation": [
-                  " Store identity info of liquidity pool LiquidityPoolId => Option<(IdentityInfo, DepositAmount, VerifyStatus)>"
+                  " Identity info of liquidity pools: `(identity_info, deposit_amount, is_verified)`.",
+                  "",
+                  " Returns `None` if identity info of the pool not set or removed."
                 ]
               }
             ]
@@ -6548,7 +6555,7 @@
             {
               "name": "create_pool",
               "args": [],
-              "documentation": []
+              "documentation": [" Create a liquidity pool.", "", " Caller would be the owner of created pool."]
             },
             {
               "name": "disable_pool",
@@ -6558,7 +6565,7 @@
                   "type": "Compact<LiquidityPoolId>"
                 }
               ],
-              "documentation": []
+              "documentation": [" Disable a liquidity pool.", "", " May only be called from the pool owner."]
             },
             {
               "name": "remove_pool",
@@ -6568,7 +6575,11 @@
                   "type": "Compact<LiquidityPoolId>"
                 }
               ],
-              "documentation": []
+              "documentation": [
+                " Remove a liquidity pool.",
+                "",
+                " May only be called from the pool owner. Pools may only be removed when there is no liability."
+              ]
             },
             {
               "name": "deposit_liquidity",
@@ -6582,7 +6593,7 @@
                   "type": "Compact<Balance>"
                 }
               ],
-              "documentation": []
+              "documentation": [" Deposit liquidity to a pool."]
             },
             {
               "name": "withdraw_liquidity",
@@ -6596,7 +6607,7 @@
                   "type": "Compact<Balance>"
                 }
               ],
-              "documentation": []
+              "documentation": [" Withdraw liquidity from a pool."]
             },
             {
               "name": "set_identity",
@@ -6610,7 +6621,11 @@
                   "type": "IdentityInfo"
                 }
               ],
-              "documentation": []
+              "documentation": [
+                " Set identity of a liquidity pool.",
+                "",
+                " May only be called from the pool owner. `IdentityDeposit` amount of balance would be reserved."
+              ]
             },
             {
               "name": "verify_identity",
@@ -6620,7 +6635,11 @@
                   "type": "Compact<LiquidityPoolId>"
                 }
               ],
-              "documentation": []
+              "documentation": [
+                " Mark the identity of a liquidity pool as verified.",
+                "",
+                " May only be called from `UpdateOrigin` or root."
+              ]
             },
             {
               "name": "clear_identity",
@@ -6630,7 +6649,11 @@
                   "type": "Compact<LiquidityPoolId>"
                 }
               ],
-              "documentation": []
+              "documentation": [
+                " Remove the identity info of a liquidity pool.",
+                "",
+                " May only be called from the pool owner. The reserved balance would be released."
+              ]
             },
             {
               "name": "transfer_liquidity_pool",
@@ -6644,54 +6667,58 @@
                   "type": "AccountId"
                 }
               ],
-              "documentation": []
+              "documentation": [
+                " Transfer the ownership of the liquidity pool to `to`.",
+                "",
+                " May only be called from the pool owner."
+              ]
             }
           ],
           "events": [
             {
               "name": "LiquidityPoolCreated",
               "args": ["AccountId", "LiquidityPoolId"],
-              "documentation": [" Liquidity pool created (who, pool_id)"]
+              "documentation": [" Liquidity pool created: (who, pool_id)"]
             },
             {
               "name": "LiquidityPoolDisabled",
               "args": ["AccountId", "LiquidityPoolId"],
-              "documentation": [" Liquidity pool disabled (who, pool_id)"]
+              "documentation": [" Liquidity pool disabled: (who, pool_id)"]
             },
             {
               "name": "LiquidityPoolRemoved",
               "args": ["AccountId", "LiquidityPoolId"],
-              "documentation": [" Liquidity pool removed (who, pool_id)"]
+              "documentation": [" Liquidity pool removed: (who, pool_id)"]
             },
             {
-              "name": "DepositLiquidity",
+              "name": "LiquidityDeposited",
               "args": ["AccountId", "LiquidityPoolId", "Balance"],
-              "documentation": [" Deposit liquidity (who, pool_id, amount)"]
+              "documentation": [" Liquidity deposited: (who, pool_id, amount)"]
             },
             {
-              "name": "WithdrawLiquidity",
+              "name": "LiquidityWithdrew",
               "args": ["AccountId", "LiquidityPoolId", "Balance"],
-              "documentation": [" Withdraw liquidity (who, pool_id, amount)"]
+              "documentation": [" Liquidity withdrew: (who, pool_id, amount)"]
             },
             {
-              "name": "SetIdentity",
+              "name": "IdentitySet",
               "args": ["AccountId", "LiquidityPoolId"],
-              "documentation": [" Set identity (who, pool_id)"]
+              "documentation": [" Identity set: (who, pool_id)"]
             },
             {
-              "name": "VerifyIdentity",
+              "name": "IdentityVerified",
               "args": ["LiquidityPoolId"],
-              "documentation": [" Verify identity (pool_id)"]
+              "documentation": [" Identity verified: (pool_id)"]
             },
             {
-              "name": "ClearIdentity",
+              "name": "IdentityCleared",
               "args": ["AccountId", "LiquidityPoolId"],
-              "documentation": [" Clear identity (who, pool_id)"]
+              "documentation": [" Identity cleared: (who, pool_id)"]
             },
             {
-              "name": "TransferLiquidityPool",
+              "name": "LiquidityPoolTransferred",
               "args": ["AccountId", "LiquidityPoolId", "AccountId"],
-              "documentation": [" Transfer liquidity pool (who, pool_id, to)"]
+              "documentation": [" Liquidity pool transffered to another owner: (from, pool_id, to)"]
             }
           ],
           "constants": [
@@ -6703,7 +6730,7 @@
             },
             {
               "name": "Deposit",
-              "type": "DepositBalanceOf",
+              "type": "IdentityDepositBalanceOf",
               "value": "0x000040b2bac9e0191e02000000000000",
               "documentation": []
             }
@@ -6711,39 +6738,43 @@
           "errors": [
             {
               "name": "NoPermission",
-              "documentation": []
+              "documentation": [" Caller doesn't have permission."]
             },
             {
-              "name": "CannotCreateMorePool",
-              "documentation": []
+              "name": "NoAvailablePoolId",
+              "documentation": [" No available pool id."]
             },
             {
               "name": "CannotRemovePool",
-              "documentation": []
+              "documentation": [" Can not remove a pool.", "", " There is still liability, such as opened positions."]
             },
             {
-              "name": "CannotDepositAmount",
-              "documentation": []
+              "name": "LiquidityOverflow",
+              "documentation": [
+                " Liquidity amount overflows maximum.",
+                "",
+                " Only happened when the liquity currency went wrong and liquidity amount overflows the integer type."
+              ]
             },
             {
-              "name": "CannotWithdrawAmount",
-              "documentation": []
+              "name": "NotEnoughBalance",
+              "documentation": [" Not enough balance to withdraw."]
             },
             {
               "name": "CannotWithdrawExistentialDeposit",
-              "documentation": []
+              "documentation": [" Cannot withdraw the existential deposit amount."]
             },
             {
               "name": "PoolNotFound",
-              "documentation": []
+              "documentation": [" Pool not found."]
             },
             {
               "name": "IdentityInfoTooLong",
-              "documentation": []
+              "documentation": [" One of the identity information is too long."]
             },
             {
-              "name": "IdentityNotFound",
-              "documentation": []
+              "name": "IdentityInfoNotFound",
+              "documentation": [" Identify information not found."]
             }
           ]
         },
@@ -6764,7 +6795,7 @@
                   }
                 },
                 "fallback": "0x0000000000000000000000000000000000000000000000000000000000000000000000",
-                "documentation": []
+                "documentation": [" Trading pair options."]
               },
               {
                 "name": "PoolOptions",
@@ -6778,7 +6809,7 @@
                   }
                 },
                 "fallback": "0x0000000000000000000000000000000000000000000000000000000000000000",
-                "documentation": []
+                "documentation": [" Liquidity pool options, managed by pool owner."]
               },
               {
                 "name": "PoolTradingPairOptions",
@@ -6793,7 +6824,11 @@
                   }
                 },
                 "fallback": "0x0000000000",
-                "documentation": []
+                "documentation": [
+                  " Trading pair options in a liquidity pool.",
+                  "",
+                  " Getter is implemented manually to cap the spread with max spread."
+                ]
               },
               {
                 "name": "AccumulatedSwapRates",
@@ -6808,7 +6843,7 @@
                   }
                 },
                 "fallback": "0x0000000000000000000000000000000000000000000000000000000000000000",
-                "documentation": []
+                "documentation": [" The accumulated swap rate of trading pairs in liquidity pools."]
               },
               {
                 "name": "DefaultMinLeveragedAmount",
@@ -6817,7 +6852,7 @@
                   "Plain": "Balance"
                 },
                 "fallback": "0x00000000000000000000000000000000",
-                "documentation": []
+                "documentation": [" The default minimum leveraged amount allowed to open a position."]
               },
               {
                 "name": "LastAccumulateTime",
@@ -6826,7 +6861,7 @@
                   "Plain": "Moment"
                 },
                 "fallback": "0x0000000000000000",
-                "documentation": []
+                "documentation": [" The last time swap rate was accumulated."]
               }
             ]
           },
@@ -6851,10 +6886,14 @@
                   "type": "Compact<Balance>"
                 }
               ],
-              "documentation": []
+              "documentation": [
+                " Set bid and ask spread for `pair` in `pool_id`.",
+                "",
+                " May only be called from the pool owner."
+              ]
             },
             {
-              "name": "set_enabled_trades",
+              "name": "set_enabled_leverages",
               "args": [
                 {
                   "name": "pool_id",
@@ -6869,7 +6908,11 @@
                   "type": "Leverages"
                 }
               ],
-              "documentation": []
+              "documentation": [
+                " Set enabled leverages for `pair` in `pool_id`.",
+                "",
+                " May only be called from the pool owner."
+              ]
             },
             {
               "name": "set_swap_rate",
@@ -6883,10 +6926,10 @@
                   "type": "SwapRate"
                 }
               ],
-              "documentation": []
+              "documentation": [" Set swap rate for `pair`.", "", " May only be called from `UpdateOrigin` or root."]
             },
             {
-              "name": "set_additional_swap",
+              "name": "set_additional_swap_rate",
               "args": [
                 {
                   "name": "pool_id",
@@ -6897,7 +6940,11 @@
                   "type": "FixedI128"
                 }
               ],
-              "documentation": []
+              "documentation": [
+                " Set additional swap rate for `pool_id`.",
+                "",
+                " May only be called from the pool owner."
+              ]
             },
             {
               "name": "set_max_spread",
@@ -6911,10 +6958,14 @@
                   "type": "Compact<Balance>"
                 }
               ],
-              "documentation": []
+              "documentation": [
+                " Set maximum spread for `pair`.",
+                "",
+                " May only be called from `UpdateOrigin` or root."
+              ]
             },
             {
-              "name": "set_accumulate",
+              "name": "set_accumulate_config",
               "args": [
                 {
                   "name": "pair",
@@ -6929,7 +6980,11 @@
                   "type": "Moment"
                 }
               ],
-              "documentation": []
+              "documentation": [
+                " Set swap rate accumulation configuration.",
+                "",
+                " May only be called from `UpdateOrigin` or root."
+              ]
             },
             {
               "name": "enable_trading_pair",
@@ -6939,7 +6994,7 @@
                   "type": "TradingPair"
                 }
               ],
-              "documentation": []
+              "documentation": [" Enable a trading pair.", "", " May only be called from `UpdateOrigin` or root."]
             },
             {
               "name": "disable_trading_pair",
@@ -6949,7 +7004,7 @@
                   "type": "TradingPair"
                 }
               ],
-              "documentation": []
+              "documentation": [" Disable a trading pair.", "", " May only be called from `UpdateOrigin` or root."]
             },
             {
               "name": "liquidity_pool_enable_trading_pair",
@@ -6963,7 +7018,7 @@
                   "type": "TradingPair"
                 }
               ],
-              "documentation": []
+              "documentation": [" Enable `pair` in `pool_id`.", "", " May only be called from the pool owner."]
             },
             {
               "name": "liquidity_pool_disable_trading_pair",
@@ -6977,7 +7032,7 @@
                   "type": "TradingPair"
                 }
               ],
-              "documentation": []
+              "documentation": [" Disable `pair` in `pool_id`.", "", " May only be called from the pool owner."]
             },
             {
               "name": "set_default_min_leveraged_amount",
@@ -6987,7 +7042,11 @@
                   "type": "Compact<Balance>"
                 }
               ],
-              "documentation": []
+              "documentation": [
+                " Set default minimum leveraged amount to open a position.",
+                "",
+                " May only be called from `UpdateOrigin` or root."
+              ]
             },
             {
               "name": "set_min_leveraged_amount",
@@ -7001,105 +7060,97 @@
                   "type": "Compact<Balance>"
                 }
               ],
-              "documentation": []
+              "documentation": [
+                " Set minimum leveraged amount to open a position in `pool_id`.",
+                "",
+                " May only be called from the pool owner."
+              ]
             }
           ],
           "events": [
             {
-              "name": "SetSpread",
+              "name": "SpreadSet",
               "args": ["AccountId", "LiquidityPoolId", "TradingPair", "Balance", "Balance"],
-              "documentation": [" Set spread (who, pool_id, pair, bid, ask)"]
+              "documentation": [" Spread set: (who, pool_id, pair, bid, ask)"]
             },
             {
-              "name": "SetEnabledTrades",
+              "name": "EnabledTradesSet",
               "args": ["AccountId", "LiquidityPoolId", "TradingPair", "Leverages"],
-              "documentation": [" Set enabled trades (who, pool_id, pair, enabled)"]
+              "documentation": [" Enabled trades set: (who, pool_id, pair, enabled_leverages)"]
             },
             {
               "name": "SwapRateUpdated",
               "args": ["TradingPair", "SwapRate"],
-              "documentation": [" Swap rate updated (pair, swap_rate)"]
+              "documentation": [" Swap rate updated: (pair, swap_rate)"]
             },
             {
               "name": "AccumulatedSwapRateUpdated",
               "args": ["LiquidityPoolId", "TradingPair", "SwapRate"],
-              "documentation": [" Accumulated swap rate updated (pool_id, pair, accumulated_swap_rate)"]
+              "documentation": [" Accumulated swap rate updated: (pool_id, pair, accumulated_swap_rate)"]
             },
             {
               "name": "AdditionalSwapRateUpdated",
               "args": ["AccountId", "LiquidityPoolId", "FixedI128"],
-              "documentation": [" Additional swap rate updated (who, pool_id, additional_swap_rate)"]
+              "documentation": [" Additional swap rate updated: (who, pool_id, additional_swap_rate)"]
             },
             {
               "name": "MaxSpreadUpdated",
               "args": ["TradingPair", "Balance"],
-              "documentation": [" Max spread updated (pair, spread)"]
+              "documentation": [" Max spread updated: (pair, spread)"]
             },
             {
-              "name": "SetAccumulate",
+              "name": "AccumulateConfigSet",
               "args": ["TradingPair", "Moment", "Moment"],
-              "documentation": [" Set accumulate (pair, frequency, offset)"]
+              "documentation": [" Accumulate set: (pair, frequency, offset)"]
             },
             {
               "name": "TradingPairEnabled",
               "args": ["TradingPair"],
-              "documentation": [" Trading pair enabled (pair)"]
+              "documentation": [" Trading pair enabled: (pair)"]
             },
             {
               "name": "TradingPairDisabled",
               "args": ["TradingPair"],
-              "documentation": [" Trading pair disabled (pair)"]
+              "documentation": [" Trading pair disabled: (pair)"]
             },
             {
               "name": "LiquidityPoolTradingPairEnabled",
-              "args": ["TradingPair"],
-              "documentation": [" LiquidityPool trading pair enabled (pair)"]
+              "args": ["LiquidityPoolId", "TradingPair"],
+              "documentation": [" Trading pair enabled in pool: (pool_id, pair)"]
             },
             {
               "name": "LiquidityPoolTradingPairDisabled",
-              "args": ["TradingPair"],
-              "documentation": [" LiquidityPool trading pair disabled (pair)"]
+              "args": ["LiquidityPoolId", "TradingPair"],
+              "documentation": [" Trading pair disabled in pool: (pool_id, pair)"]
             },
             {
-              "name": "SetDefaultMinLeveragedAmount",
+              "name": "DefaultMinLeveragedAmountSet",
               "args": ["Balance"],
-              "documentation": [" Set default min leveraged amount (default_min_leveraged_amount)"]
+              "documentation": [" Default min leveraged amount set: (default_min_leveraged_amount)"]
             },
             {
-              "name": "SetMinLeveragedAmount",
+              "name": "MinLeveragedAmountSet",
               "args": ["LiquidityPoolId", "Balance"],
-              "documentation": [" Set min leveraged amount (pool_id, min_leveraged_amount)"]
+              "documentation": [" Pool min leveraged amount set: (pool_id, min_leveraged_amount)"]
             }
           ],
           "constants": [],
           "errors": [
             {
               "name": "NoPermission",
-              "documentation": []
+              "documentation": [" Caller doesn't have permission."]
             },
             {
               "name": "SwapRateTooHigh",
-              "documentation": []
-            },
-            {
-              "name": "SwapRateTooLow",
-              "documentation": []
-            },
-            {
-              "name": "SpreadTooHigh",
-              "documentation": []
+              "documentation": [" Swap rate is higher than max allowed."]
             },
             {
               "name": "TradingPairNotEnabled",
-              "documentation": []
-            },
-            {
-              "name": "NumOutOfBound",
-              "documentation": []
+              "documentation": [" Trading pair is not enabled in pool."]
             },
             {
               "name": "FrequencyTooLow",
-              "documentation": []
+              "documentation": [" `frequency` of accumulate config is too low."]
             }
           ]
         },
@@ -7115,7 +7166,7 @@
                   "Plain": "LiquidityPoolId"
                 },
                 "fallback": "0x00000000",
-                "documentation": []
+                "documentation": [" Next available liquidity pool ID."]
               },
               {
                 "name": "Pools",
@@ -7129,7 +7180,7 @@
                   }
                 },
                 "fallback": "0x00",
-                "documentation": []
+                "documentation": [" Liquidity pool information.", "", " Returns `None` if no such pool exists."]
               },
               {
                 "name": "IdentityInfos",
@@ -7138,13 +7189,15 @@
                   "Map": {
                     "hasher": "Twox64Concat",
                     "key": "LiquidityPoolId",
-                    "value": "(IdentityInfo,DepositBalanceOf,bool)",
+                    "value": "(IdentityInfo,IdentityDepositBalanceOf,bool)",
                     "linked": false
                   }
                 },
                 "fallback": "0x00",
                 "documentation": [
-                  " Store identity info of liquidity pool LiquidityPoolId => Option<(IdentityInfo, DepositAmount, VerifyStatus)>"
+                  " Identity info of liquidity pools: `(identity_info, deposit_amount, is_verified)`.",
+                  "",
+                  " Returns `None` if identity info of the pool not set or removed."
                 ]
               }
             ]
@@ -7153,7 +7206,7 @@
             {
               "name": "create_pool",
               "args": [],
-              "documentation": []
+              "documentation": [" Create a liquidity pool.", "", " Caller would be the owner of created pool."]
             },
             {
               "name": "disable_pool",
@@ -7163,7 +7216,7 @@
                   "type": "Compact<LiquidityPoolId>"
                 }
               ],
-              "documentation": []
+              "documentation": [" Disable a liquidity pool.", "", " May only be called from the pool owner."]
             },
             {
               "name": "remove_pool",
@@ -7173,7 +7226,11 @@
                   "type": "Compact<LiquidityPoolId>"
                 }
               ],
-              "documentation": []
+              "documentation": [
+                " Remove a liquidity pool.",
+                "",
+                " May only be called from the pool owner. Pools may only be removed when there is no liability."
+              ]
             },
             {
               "name": "deposit_liquidity",
@@ -7187,7 +7244,7 @@
                   "type": "Compact<Balance>"
                 }
               ],
-              "documentation": []
+              "documentation": [" Deposit liquidity to a pool."]
             },
             {
               "name": "withdraw_liquidity",
@@ -7201,7 +7258,7 @@
                   "type": "Compact<Balance>"
                 }
               ],
-              "documentation": []
+              "documentation": [" Withdraw liquidity from a pool."]
             },
             {
               "name": "set_identity",
@@ -7215,7 +7272,11 @@
                   "type": "IdentityInfo"
                 }
               ],
-              "documentation": []
+              "documentation": [
+                " Set identity of a liquidity pool.",
+                "",
+                " May only be called from the pool owner. `IdentityDeposit` amount of balance would be reserved."
+              ]
             },
             {
               "name": "verify_identity",
@@ -7225,7 +7286,11 @@
                   "type": "Compact<LiquidityPoolId>"
                 }
               ],
-              "documentation": []
+              "documentation": [
+                " Mark the identity of a liquidity pool as verified.",
+                "",
+                " May only be called from `UpdateOrigin` or root."
+              ]
             },
             {
               "name": "clear_identity",
@@ -7235,7 +7300,11 @@
                   "type": "Compact<LiquidityPoolId>"
                 }
               ],
-              "documentation": []
+              "documentation": [
+                " Remove the identity info of a liquidity pool.",
+                "",
+                " May only be called from the pool owner. The reserved balance would be released."
+              ]
             },
             {
               "name": "transfer_liquidity_pool",
@@ -7249,54 +7318,58 @@
                   "type": "AccountId"
                 }
               ],
-              "documentation": []
+              "documentation": [
+                " Transfer the ownership of the liquidity pool to `to`.",
+                "",
+                " May only be called from the pool owner."
+              ]
             }
           ],
           "events": [
             {
               "name": "LiquidityPoolCreated",
               "args": ["AccountId", "LiquidityPoolId"],
-              "documentation": [" Liquidity pool created (who, pool_id)"]
+              "documentation": [" Liquidity pool created: (who, pool_id)"]
             },
             {
               "name": "LiquidityPoolDisabled",
               "args": ["AccountId", "LiquidityPoolId"],
-              "documentation": [" Liquidity pool disabled (who, pool_id)"]
+              "documentation": [" Liquidity pool disabled: (who, pool_id)"]
             },
             {
               "name": "LiquidityPoolRemoved",
               "args": ["AccountId", "LiquidityPoolId"],
-              "documentation": [" Liquidity pool removed (who, pool_id)"]
+              "documentation": [" Liquidity pool removed: (who, pool_id)"]
             },
             {
-              "name": "DepositLiquidity",
+              "name": "LiquidityDeposited",
               "args": ["AccountId", "LiquidityPoolId", "Balance"],
-              "documentation": [" Deposit liquidity (who, pool_id, amount)"]
+              "documentation": [" Liquidity deposited: (who, pool_id, amount)"]
             },
             {
-              "name": "WithdrawLiquidity",
+              "name": "LiquidityWithdrew",
               "args": ["AccountId", "LiquidityPoolId", "Balance"],
-              "documentation": [" Withdraw liquidity (who, pool_id, amount)"]
+              "documentation": [" Liquidity withdrew: (who, pool_id, amount)"]
             },
             {
-              "name": "SetIdentity",
+              "name": "IdentitySet",
               "args": ["AccountId", "LiquidityPoolId"],
-              "documentation": [" Set identity (who, pool_id)"]
+              "documentation": [" Identity set: (who, pool_id)"]
             },
             {
-              "name": "VerifyIdentity",
+              "name": "IdentityVerified",
               "args": ["LiquidityPoolId"],
-              "documentation": [" Verify identity (pool_id)"]
+              "documentation": [" Identity verified: (pool_id)"]
             },
             {
-              "name": "ClearIdentity",
+              "name": "IdentityCleared",
               "args": ["AccountId", "LiquidityPoolId"],
-              "documentation": [" Clear identity (who, pool_id)"]
+              "documentation": [" Identity cleared: (who, pool_id)"]
             },
             {
-              "name": "TransferLiquidityPool",
+              "name": "LiquidityPoolTransferred",
               "args": ["AccountId", "LiquidityPoolId", "AccountId"],
-              "documentation": [" Transfer liquidity pool (who, pool_id, to)"]
+              "documentation": [" Liquidity pool transffered to another owner: (from, pool_id, to)"]
             }
           ],
           "constants": [
@@ -7308,7 +7381,7 @@
             },
             {
               "name": "Deposit",
-              "type": "DepositBalanceOf",
+              "type": "IdentityDepositBalanceOf",
               "value": "0x000040b2bac9e0191e02000000000000",
               "documentation": []
             }
@@ -7316,39 +7389,43 @@
           "errors": [
             {
               "name": "NoPermission",
-              "documentation": []
+              "documentation": [" Caller doesn't have permission."]
             },
             {
-              "name": "CannotCreateMorePool",
-              "documentation": []
+              "name": "NoAvailablePoolId",
+              "documentation": [" No available pool id."]
             },
             {
               "name": "CannotRemovePool",
-              "documentation": []
+              "documentation": [" Can not remove a pool.", "", " There is still liability, such as opened positions."]
             },
             {
-              "name": "CannotDepositAmount",
-              "documentation": []
+              "name": "LiquidityOverflow",
+              "documentation": [
+                " Liquidity amount overflows maximum.",
+                "",
+                " Only happened when the liquity currency went wrong and liquidity amount overflows the integer type."
+              ]
             },
             {
-              "name": "CannotWithdrawAmount",
-              "documentation": []
+              "name": "NotEnoughBalance",
+              "documentation": [" Not enough balance to withdraw."]
             },
             {
               "name": "CannotWithdrawExistentialDeposit",
-              "documentation": []
+              "documentation": [" Cannot withdraw the existential deposit amount."]
             },
             {
               "name": "PoolNotFound",
-              "documentation": []
+              "documentation": [" Pool not found."]
             },
             {
               "name": "IdentityInfoTooLong",
-              "documentation": []
+              "documentation": [" One of the identity information is too long."]
             },
             {
-              "name": "IdentityNotFound",
-              "documentation": []
+              "name": "IdentityInfoNotFound",
+              "documentation": [" Identify information not found."]
             }
           ]
         },
@@ -7370,7 +7447,7 @@
                   }
                 },
                 "fallback": "0x00000000",
-                "documentation": []
+                "documentation": [" Currency options in a liquidity pool."]
               },
               {
                 "name": "MinAdditionalCollateralRatio",
@@ -7379,11 +7456,11 @@
                   "Plain": "Permill"
                 },
                 "fallback": "0x00000000",
-                "documentation": []
+                "documentation": [" Minimum additional collateral ratio."]
               },
               {
                 "name": "MaxSpread",
-                "modifier": "Default",
+                "modifier": "Optional",
                 "type": {
                   "Map": {
                     "hasher": "Twox64Concat",
@@ -7392,8 +7469,8 @@
                     "linked": false
                   }
                 },
-                "fallback": "0x00000000000000000000000000000000",
-                "documentation": []
+                "fallback": "0x00",
+                "documentation": [" Maximum spread of a currency."]
               }
             ]
           },
@@ -7418,7 +7495,11 @@
                   "type": "Compact<Balance>"
                 }
               ],
-              "documentation": []
+              "documentation": [
+                " Set bid and ask spread of `currency_id` in `pool_id`.",
+                "",
+                " May only be called from the pool owner."
+              ]
             },
             {
               "name": "set_additional_collateral_ratio",
@@ -7436,7 +7517,11 @@
                   "type": "Option<Permill>"
                 }
               ],
-              "documentation": []
+              "documentation": [
+                " Set additional collateral ratio of `currency_id` in `pool_id`.",
+                "",
+                " May only be called from the pool owner."
+              ]
             },
             {
               "name": "set_min_additional_collateral_ratio",
@@ -7446,7 +7531,11 @@
                   "type": "Compact<Permill>"
                 }
               ],
-              "documentation": []
+              "documentation": [
+                " Set minimum additional collateral ratio.",
+                "",
+                " May only be called from `UpdateOrigin` or root."
+              ]
             },
             {
               "name": "set_synthetic_enabled",
@@ -7464,7 +7553,11 @@
                   "type": "bool"
                 }
               ],
-              "documentation": []
+              "documentation": [
+                " Enable or disable synthetic of `currency_id` in `pool_id`.",
+                "",
+                " May only be called from the pool owner."
+              ]
             },
             {
               "name": "set_max_spread",
@@ -7478,45 +7571,49 @@
                   "type": "Compact<Balance>"
                 }
               ],
-              "documentation": []
+              "documentation": [
+                " Set max spread of `currency_id`.",
+                "",
+                " May only be called from `UpdateOrigin` or root."
+              ]
             }
           ],
           "events": [
             {
-              "name": "SetSpread",
+              "name": "SpreadSet",
               "args": ["AccountId", "LiquidityPoolId", "CurrencyId", "Balance", "Balance"],
-              "documentation": [" Set spread (who, pool_id, currency_id, bid, ask)"]
+              "documentation": [" Spread set: (who, pool_id, currency_id, bid, ask)"]
             },
             {
-              "name": "SetAdditionalCollateralRatio",
+              "name": "AdditionalCollateralRatioSet",
               "args": ["AccountId", "LiquidityPoolId", "CurrencyId", "Option<Permill>"],
-              "documentation": [" Set additional collateral ratio (who, pool_id, currency_id, ratio)"]
+              "documentation": [" Additional collateral ratio set: (who, pool_id, currency_id, ratio)"]
             },
             {
-              "name": "SetMinAdditionalCollateralRatio",
+              "name": "MinAdditionalCollateralRatioSet",
               "args": ["Permill"],
-              "documentation": [" Set min additional collateral ratio (min_additional_collateral_ratio)"]
+              "documentation": [" Min additional collateral ratio set: (min_additional_collateral_ratio)"]
             },
             {
-              "name": "SetSyntheticEnabled",
+              "name": "SyntheticEnabledSet",
               "args": ["AccountId", "LiquidityPoolId", "CurrencyId", "bool"],
-              "documentation": [" Set synthetic enabled (who, pool_id, currency_id, enabled)"]
+              "documentation": [" Synthetic enabled set: (who, pool_id, currency_id, is_enabled)"]
             },
             {
               "name": "MaxSpreadUpdated",
               "args": ["CurrencyId", "Balance"],
-              "documentation": [" Max spread updated (currency_id, spread)"]
+              "documentation": [" Max spread updated: (currency_id, spread)"]
             }
           ],
           "constants": [],
           "errors": [
             {
               "name": "NoPermission",
-              "documentation": []
+              "documentation": [" Caller doesn't have permission."]
             },
             {
               "name": "SpreadTooHigh",
-              "documentation": []
+              "documentation": [" Spread is higher than max allowed."]
             }
           ]
         }
