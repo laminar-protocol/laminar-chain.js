@@ -25,17 +25,17 @@ class Synthetic {
 
   poolInfo(poolId: string): Observable<SyntheticPoolInfo | null> {
     return combineLatest([
-      this.api.query.baseLiquidityPoolsForSynthetic.owners(poolId),
-      this.api.query.baseLiquidityPoolsForSynthetic.balances(poolId),
-      this.api.query.syntheticLiquidityPools.liquidityPoolOptions.entries(poolId),
+      this.api.query.baseLiquidityPoolsForSynthetic.pools(poolId),
+      this.api.query.syntheticLiquidityPools.poolCurrencyOptions.entries(poolId),
       this.api.query.syntheticLiquidityPools.minAdditionalCollateralRatio()
     ]).pipe(
-      map(([owner, balances, liquidityPoolOptions, minAdditionalCollateralRatio]) => {
-        if (owner.isEmpty) return null;
+      map(([pool, liquidityPoolOptions, minAdditionalCollateralRatio]) => {
+        if (pool.isEmpty) return null;
+        const { owner, balance } = pool.unwrap();
         return {
           poolId: poolId,
-          owner: owner.isEmpty ? null : (owner as any).value[0].toJSON(),
-          balance: balances.toString(),
+          owner: owner.toString(),
+          balance: balance.toString(),
           options: liquidityPoolOptions.map(([storageKey, options]) => {
             const tokenId = storageKey.args[1].toJSON();
 

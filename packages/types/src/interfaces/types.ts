@@ -3,3 +3,4 @@
 
 export * from './runtime/types';
 export * from './margin/types';
+export * from './synthetic/types';
