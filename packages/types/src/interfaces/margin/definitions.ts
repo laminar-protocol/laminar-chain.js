@@ -2,17 +2,17 @@
 
 export default {
   rpc: {
-    poolInfo: {
+    poolState: {
       description: '',
       params: [
         {
-          name: 'liquidityPoolId',
+          name: 'pool_id',
           type: 'LiquidityPoolId'
         }
       ],
-      type: 'PoolInfo'
+      type: 'MarginPoolState'
     },
-    traderInfo: {
+    traderState: {
       description: '',
       params: [
         {
@@ -20,22 +20,23 @@ export default {
           type: 'AccountId'
         },
         {
-          name: 'liquidityPoolId',
+          name: 'pool_id',
           type: 'LiquidityPoolId'
         }
       ],
-      type: 'TraderInfo'
+      type: 'MarginTraderState'
     }
   },
   types: {
-    PoolInfo: {
-      enp: 'Rate',
-      ell: 'Rate'
+    MarginPoolState: {
+      enp: 'FixedI128',
+      ell: 'FixedI128',
+      required_deposit: 'FixedI128'
     },
-    TraderInfo: {
+    MarginTraderState: {
       equity: 'FixedI128',
       margin_held: 'FixedI128',
-      margin_level: 'Rate',
+      margin_level: 'FixedI128',
       free_margin: 'FixedI128',
       unrealized_pl: 'FixedI128'
     }

@@ -1,4 +1,4 @@
-import { PoolInfo } from '@laminar/types/interfaces';
+import { MarginPoolState, MarginTraderState } from '@laminar/types/interfaces';
 import BN from 'bn.js';
 import { combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -38,19 +38,19 @@ class Margin {
 
   public poolInfo = (poolId: string): Observable<MarginPoolInfo | null> => {
     return combineLatest([
-      this.api.query.baseLiquidityPoolsForMargin.owners(poolId),
-      this.api.query.baseLiquidityPoolsForMargin.balances(poolId),
-      this.api.query.marginLiquidityPools.liquidityPoolOptions.entries(poolId),
-      (this.api.rpc as any).margin.poolInfo(poolId)
+      this.api.query.baseLiquidityPoolsForMargin.pools(poolId),
+      this.api.query.marginLiquidityPools.poolTradingPairOptions.entries(poolId),
+      (this.api.rpc as any).margin.poolState(poolId) as Observable<MarginPoolState>
     ]).pipe(
-      map(([owner, balances, liquidityPoolOptions, poolInfo]) => {
-        if (owner.isEmpty) return null;
+      map(([pool, liquidityPoolOptions, poolState]) => {
+        if (pool.isEmpty) return null;
+        const { owner, balance } = pool.unwrap();
         return {
           poolId: poolId,
-          owner: owner.isEmpty ? null : (owner as any).value[0].toJSON(),
-          balance: balances.toString(),
-          enp: (poolInfo as PoolInfo).enp.toHuman(),
-          ell: (poolInfo as PoolInfo).ell.toHuman(),
+          owner: owner.toString(),
+          balance: balance.toString(),
+          enp: Number(poolState.enp.toString()),
+          ell: Number(poolState.ell.toString()),
           options: liquidityPoolOptions.map(([storageKey, options]) => {
             const pair = storageKey.args[1].toJSON() as {
               base: string;
@@ -95,7 +95,7 @@ class Margin {
 
   public traderInfo = (account: string, poolId: string): Observable<TraderInfo> => {
     return combineLatest([
-      (this.api.rpc as any).margin.traderInfo(account, poolId) as Observable<any>,
+      (this.api.rpc as any).margin.traderState(account, poolId) as Observable<MarginTraderState>,
       this.api.query.marginProtocol.balances(account, poolId)
     ]).pipe(
       map(([result, balance]) => {

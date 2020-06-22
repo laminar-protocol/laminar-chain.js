@@ -6486,8 +6486,20 @@
               "documentation": [" Position is not opened by caller."]
             },
             {
-              "name": "PositionNotAllowed",
-              "documentation": [" Position is not allow in pool."]
+              "name": "LeverageNotAllowedInPool",
+              "documentation": [" Leverage not allowed in pool,"]
+            },
+            {
+              "name": "TradingPairNotEnabled",
+              "documentation": [" Trading pair not enabled in protocol,"]
+            },
+            {
+              "name": "TradingPairNotEnabledInPool",
+              "documentation": [" Trading pair not enabled in pool,"]
+            },
+            {
+              "name": "BelowMinLeveragedAmount",
+              "documentation": [" Leveraged amount is below mininum,"]
             },
             {
               "name": "CannotOpenMorePosition",
