@@ -1182,10 +1182,10 @@
     "@types/yargs" "^15.0.0"
     chalk "^3.0.0"
 
-"@laminar/flow-protocol-ethereum@0.0.11":
-  version "0.0.11"
-  resolved "https://registry.yarnpkg.com/@laminar/flow-protocol-ethereum/-/flow-protocol-ethereum-0.0.11.tgz#cb7f2c33826beecce0f781199d683510257687be"
-  integrity sha512-q9Z0yKAyVaeOLdDzm2/JVhdFefhnny+QQJkNOb1c0dvMWmU0I3dplAZX44ADdri4xLLeklizugzYg/0Q/5WTBg==
+"@laminar/flow-protocol-ethereum@0.0.12":
+  version "0.0.12"
+  resolved "https://registry.yarnpkg.com/@laminar/flow-protocol-ethereum/-/flow-protocol-ethereum-0.0.12.tgz#ad0771b1428c95d90fcc573c222d6cf4b4f89555"
+  integrity sha512-kB4cOuwdAQLpc03lQ01vg5fXy9kz5lacNDCI5FD473p4GAAVjHHh05dCgXGnZBOLpk5AGlJWUAg0YpaRHAmCfw==
 
 "@lerna/add@3.21.0":
   version "3.21.0"
@@ -1994,10 +1994,10 @@
   dependencies:
     "@types/node" ">= 8"
 
-"@open-web3/orml-api-derive@^0.3.0-beta.9":
-  version "0.3.0-beta.18"
-  resolved "https://registry.yarnpkg.com/@open-web3/orml-api-derive/-/orml-api-derive-0.3.0-beta.18.tgz#425b8e332f7074efee90e369b39c75edd7e85ef2"
-  integrity sha512-uf92moUKoXCYi9SC0JwBjzdxKK+9LgWNom7lyOBNw6V9/n1P0swEtefGmFTuB33vYOO3nv5mLTlUd5lGUndiYg==
+"@open-web3/orml-api-derive@^0.3.0-beta.20":
+  version "0.3.0-beta.20"
+  resolved "https://registry.yarnpkg.com/@open-web3/orml-api-derive/-/orml-api-derive-0.3.0-beta.20.tgz#46901b93a6ddd1cc17818843d5505f42de1a6bc1"
+  integrity sha512-C3I5N+hCR5W1LtWbXgNW3iXcgY8F43+5ASAckhAg5WDdEGyPasusTg2Kzuxm/kR/ck/ffA7HAd0ElRfrqeCygg==
   dependencies:
     "@babel/runtime" "^7.8.4"
     memoizee "^0.4.14"
