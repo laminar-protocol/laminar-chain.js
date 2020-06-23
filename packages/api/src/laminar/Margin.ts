@@ -71,22 +71,18 @@ class Margin {
   };
 
   public marginInfo = (): Observable<MarginInfo> => {
-    return combineLatest([
-      this.api.query.marginProtocol.liquidityPoolELLThreshold.entries(),
-      this.api.query.marginProtocol.liquidityPoolENPThreshold.entries()
-    ]).pipe(
-      map(([ellThresholds, enpThresholds]) => {
-        const ellThresholdList = ellThresholds.map(([, s]) => s.toHuman() as Threshold);
-        const enpThresholdList = enpThresholds.map(([, s]) => s.toHuman() as Threshold);
+    return this.api.query.marginProtocol.riskThresholds.entries().pipe(
+      map(result => {
+        const list = result.map(([, s]) => s.toHuman() as any);
 
         return {
           ellThreshold: {
-            marginCall: Math.max(...ellThresholdList.map(({ marginCall }) => marginCall)),
-            stopOut: Math.max(...ellThresholdList.map(({ stopOut }) => stopOut))
+            marginCall: Math.max(...list.filter(({ ell }) => ell).map(({ ell }) => ell.marginCall)),
+            stopOut: Math.max(...list.filter(({ ell }) => ell).map(({ ell }) => ell.stopOut))
           },
           enpThreshold: {
-            marginCall: Math.max(...enpThresholdList.map(({ marginCall }) => marginCall)),
-            stopOut: Math.max(...enpThresholdList.map(({ stopOut }) => stopOut))
+            marginCall: Math.max(...list.filter(({ enp }) => enp).map(({ enp }) => enp.marginCall)),
+            stopOut: Math.max(...list.filter(({ enp }) => enp).map(({ enp }) => enp.stopOut))
           }
         };
       })
@@ -125,11 +121,20 @@ class Margin {
 
   public traderThreshold = (baseToken: TokenId, quoteToken: TokenId): Observable<Threshold> => {
     return this.api.query.marginProtocol
-      .traderRiskThreshold({
+      .riskThresholds({
         base: baseToken,
         quote: quoteToken
       })
-      .pipe(map(result => result.toHuman() as Threshold));
+      .pipe(
+        map(
+          result =>
+            (result.toHuman() as any)?.trader ||
+            ({
+              marginCall: 0,
+              stopOut: 0
+            } as Threshold)
+        )
+      );
   };
 
   public accumulatedSwapRates = (): Observable<AccumulatedSwapRate[]> => {
