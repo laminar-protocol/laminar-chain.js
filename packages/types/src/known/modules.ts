@@ -7,6 +7,12 @@ const typesModules: Record<string, OverrideModuleType> = {
   },
   marginProtocol: {
     Position: 'MarginPosition'
+  },
+  baseLiquidityPoolsForMargin: {
+    IdentityInfo: 'LiquidityPoolIdentityInfo'
+  },
+  baseLiquidityPoolsForSynthetic: {
+    IdentityInfo: 'LiquidityPoolIdentityInfo'
   }
 };
 

@@ -143,6 +143,13 @@ export default {
     LeveragedAmounts: {
       held: 'FixedI128',
       debits: 'FixedI128'
+    },
+    LiquidityPoolIdentityInfo: {
+      legalName: 'Vec<u8>',
+      displayName: 'Vec<u8>',
+      web: 'Vec<u8>',
+      email: 'Vec<u8>',
+      image_url: 'Vec<u8>'
     }
   }
 };
