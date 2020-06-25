@@ -21,7 +21,8 @@ interface LaminarContract {
     | 'marginFlowProtocolSafety'
     | 'marginLiquidityPoolRegistry'
     | 'syntheticFlowProtocol'
-    | 'priceOracleInterface',
+    | 'priceOracleInterface'
+    | 'moneyMarket',
     Contract
   >;
   tokenIds: Record<string, string>;
@@ -44,7 +45,8 @@ class LaminarContract implements LaminarContract {
       marginFlowProtocolSafety: this.createContract(abis.MarginFlowProtocolSafety, addresses.marginProtocolSafety),
       marginLiquidityPoolRegistry: this.createContract(abis.MarginLiquidityPoolRegistry, addresses.marginPoolRegistry),
       syntheticFlowProtocol: this.createContract(abis.SyntheticFlowProtocol, addresses.syntheticProtocol),
-      priceOracleInterface: this.createContract(abis.PriceOracleInterface, addresses.oracle)
+      priceOracleInterface: this.createContract(abis.PriceOracleInterface, addresses.oracle),
+      moneyMarket: this.createContract(abis.MoneyMarket, addresses.moneyMarket)
     };
 
     this.tokenIds = {
