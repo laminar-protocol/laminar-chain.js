@@ -164,24 +164,7 @@ class Margin {
                     base: base.id,
                     quote: quote.id
                   },
-                  enabledTrades: [
-                    'LongTwo',
-                    'LongThree',
-                    'LongFive',
-                    'LongTen',
-                    'LongTwenty',
-                    'LongThirty',
-                    'LongFifty',
-                    'LongReserved',
-                    'ShortTwo',
-                    'ShortThree',
-                    'ShortFive',
-                    'ShortTen',
-                    'ShortTwenty',
-                    'ShortThirty',
-                    'ShortFifty',
-                    'ShortReserved'
-                  ],
+                  enabledTrades: ['LongFive', 'LongTen', 'LongTwenty', 'ShortFive', 'ShortTen', 'ShortTwenty'],
                   pairId: `${base.symbol.toUpperCase()}${quote.symbol.toUpperCase()}`
                 };
               });
@@ -206,8 +189,8 @@ class Margin {
     return from(
       Promise.all([
         this.marginFlowProtocol.methods.balances(poolId, account).call(),
-        this.marginFlowProtocol.methods.getEquityOfTrader(poolId, account).call(),
-        this.marginFlowProtocol.methods.getFreeMargin(poolId, account).call(),
+        this.marginFlowProtocol.methods.getExactEquityOfTrader(poolId, account).call(),
+        this.marginFlowProtocol.methods.getExactFreeMargin(poolId, account).call(),
         this.marginFlowProtocol.methods.getMarginHeld(poolId, account).call(),
         this.marginFlowProtocolSafety.methods.getMarginLevel(poolId, account).call(),
         this.marginFlowProtocolSafety.methods.getLeveragedDebitsOfTrader(poolId, account).call()

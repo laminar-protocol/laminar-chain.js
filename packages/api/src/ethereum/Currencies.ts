@@ -1,4 +1,4 @@
-import { combineLatest, Observable, of, timer } from 'rxjs';
+import { combineLatest, Observable, of, from, timer } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { OracleValue, TokenBalance, TokenInfo } from '../types';
 import EthereumApi from './EthereumApi';
@@ -101,6 +101,18 @@ class Currencies {
         id: this.apiProvider.tokenContracts.FGBP.options.address.toLowerCase()
       }
     ]);
+  };
+
+  public convertAmountToBase = (amount: string): Observable<string> => {
+    return from(
+      this.apiProvider.baseContracts.moneyMarket.methods.convertAmountToBase(amount).call() as Promise<string>
+    );
+  };
+
+  public convertAmountFromBase = (amount: string): Observable<string> => {
+    return from(
+      this.apiProvider.baseContracts.moneyMarket.methods.convertAmountFromBase(amount).call() as Promise<string>
+    );
   };
 
   public balances = (address: string): Observable<TokenBalance[]> => {
