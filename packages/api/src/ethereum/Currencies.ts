@@ -2,6 +2,7 @@ import { combineLatest, Observable, of, from, timer } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { OracleValue, TokenBalance, TokenInfo } from '../types';
 import EthereumApi from './EthereumApi';
+import { toNumber } from '@laminar/types/utils/precision';
 
 class Currencies {
   private apiProvider: EthereumApi;
@@ -111,7 +112,19 @@ class Currencies {
 
   public convertAmountFromBase = (amount: string): Observable<string> => {
     return from(
-      this.apiProvider.baseContracts.moneyMarket.methods.convertAmountFromBase(amount).call() as Promise<string>
+      this.apiProvider.baseContracts.moneyMarket.methods
+        .convertAmountFromBase(amount)
+        .call()
+        .then() as Promise<string>
+    );
+  };
+
+  public exchangeRate = (): Observable<number> => {
+    return from(
+      this.apiProvider.baseContracts.moneyMarket.methods
+        .exchangeRate()
+        .call()
+        .then((result: string) => toNumber(result)) as Promise<number>
     );
   };
 
