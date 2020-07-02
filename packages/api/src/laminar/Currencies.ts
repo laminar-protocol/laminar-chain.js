@@ -21,7 +21,7 @@ class Currencies {
         id: 'LAMI'
       },
       {
-        name: 'AUSD',
+        name: 'USD',
         symbol: 'AUSD',
         precision: 18,
         isBaseToken: true,
@@ -29,7 +29,7 @@ class Currencies {
         id: 'AUSD'
       },
       {
-        name: 'FEUR',
+        name: 'EUR',
         symbol: 'FEUR',
         precision: 18,
         isBaseToken: false,
@@ -37,7 +37,7 @@ class Currencies {
         id: 'FEUR'
       },
       {
-        name: 'FJPY',
+        name: 'JPY',
         symbol: 'FJPY',
         precision: 18,
         isBaseToken: false,
@@ -45,7 +45,7 @@ class Currencies {
         id: 'FJPY'
       },
       {
-        name: 'FBTC',
+        name: 'BTC',
         symbol: 'FBTC',
         precision: 18,
         isBaseToken: false,
@@ -53,7 +53,7 @@ class Currencies {
         id: 'FBTC'
       },
       {
-        name: 'FETH',
+        name: 'ETH',
         symbol: 'FETH',
         precision: 18,
         isBaseToken: false,
@@ -61,7 +61,7 @@ class Currencies {
         id: 'FETH'
       },
       {
-        name: 'FAUD',
+        name: 'AUD',
         symbol: 'FAUD',
         precision: 18,
         isBaseToken: false,
@@ -69,7 +69,7 @@ class Currencies {
         id: 'FAUD'
       },
       {
-        name: 'FCAD',
+        name: 'CAD',
         symbol: 'FCAD',
         precision: 18,
         isBaseToken: false,
@@ -77,7 +77,7 @@ class Currencies {
         id: 'FCAD'
       },
       {
-        name: 'FCHF',
+        name: 'CHF',
         symbol: 'FCHF',
         precision: 18,
         isBaseToken: false,
@@ -85,7 +85,7 @@ class Currencies {
         id: 'FCHF'
       },
       {
-        name: 'FXAU',
+        name: 'XAU',
         symbol: 'FXAU',
         precision: 18,
         isBaseToken: false,
@@ -93,7 +93,7 @@ class Currencies {
         id: 'FXAU'
       },
       {
-        name: 'FOIL',
+        name: 'OIL',
         symbol: 'FOIL',
         precision: 18,
         isBaseToken: false,
