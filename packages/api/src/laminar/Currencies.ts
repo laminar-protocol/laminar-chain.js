@@ -22,7 +22,7 @@ class Currencies {
       },
       {
         name: 'USD',
-        symbol: 'AUSD',
+        symbol: 'USD',
         precision: 18,
         isBaseToken: true,
         isNetworkToken: false,
@@ -30,7 +30,7 @@ class Currencies {
       },
       {
         name: 'EUR',
-        symbol: 'FEUR',
+        symbol: 'EUR',
         precision: 18,
         isBaseToken: false,
         isNetworkToken: false,
@@ -38,7 +38,7 @@ class Currencies {
       },
       {
         name: 'JPY',
-        symbol: 'FJPY',
+        symbol: 'JPY',
         precision: 18,
         isBaseToken: false,
         isNetworkToken: false,
@@ -46,7 +46,7 @@ class Currencies {
       },
       {
         name: 'BTC',
-        symbol: 'FBTC',
+        symbol: 'BTC',
         precision: 18,
         isBaseToken: false,
         isNetworkToken: false,
@@ -54,7 +54,7 @@ class Currencies {
       },
       {
         name: 'ETH',
-        symbol: 'FETH',
+        symbol: 'ETH',
         precision: 18,
         isBaseToken: false,
         isNetworkToken: false,
@@ -62,7 +62,7 @@ class Currencies {
       },
       {
         name: 'AUD',
-        symbol: 'FAUD',
+        symbol: 'AUD',
         precision: 18,
         isBaseToken: false,
         isNetworkToken: false,
@@ -70,7 +70,7 @@ class Currencies {
       },
       {
         name: 'CAD',
-        symbol: 'FCAD',
+        symbol: 'CAD',
         precision: 18,
         isBaseToken: false,
         isNetworkToken: false,
@@ -78,7 +78,7 @@ class Currencies {
       },
       {
         name: 'CHF',
-        symbol: 'FCHF',
+        symbol: 'CHF',
         precision: 18,
         isBaseToken: false,
         isNetworkToken: false,
@@ -86,7 +86,7 @@ class Currencies {
       },
       {
         name: 'XAU',
-        symbol: 'FXAU',
+        symbol: 'XAU',
         precision: 18,
         isBaseToken: false,
         isNetworkToken: false,
@@ -94,7 +94,7 @@ class Currencies {
       },
       {
         name: 'OIL',
-        symbol: 'FOIL',
+        symbol: 'OIL',
         precision: 18,
         isBaseToken: false,
         isNetworkToken: false,
