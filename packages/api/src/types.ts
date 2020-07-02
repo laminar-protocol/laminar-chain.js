@@ -1,5 +1,4 @@
 import BN from 'bn.js';
-import { TokenNames as EthTokenNames } from './ethereum/protocols';
 
 export type LaminarTokenNames = [
   'LAMI',
