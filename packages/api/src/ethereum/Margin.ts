@@ -165,7 +165,7 @@ class Margin {
                     quote: quote.id
                   },
                   enabledTrades: ['LongFive', 'LongTen', 'LongTwenty', 'ShortFive', 'ShortTen', 'ShortTwenty'],
-                  pairId: `${base.symbol.toUpperCase()}${quote.symbol.toUpperCase()}`
+                  pairId: `${base.name.toUpperCase()}${quote.name.toUpperCase()}`
                 };
               });
             })

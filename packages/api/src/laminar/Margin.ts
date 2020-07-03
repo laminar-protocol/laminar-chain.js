@@ -40,9 +40,10 @@ class Margin {
     return combineLatest([
       this.api.query.baseLiquidityPoolsForMargin.pools(poolId),
       this.api.query.marginLiquidityPools.poolTradingPairOptions.entries(poolId),
-      (this.api.rpc as any).margin.poolState(poolId) as Observable<MarginPoolState>
+      (this.api.rpc as any).margin.poolState(poolId) as Observable<MarginPoolState>,
+      this.apiProvider.currencies.tokens()
     ]).pipe(
-      map(([pool, liquidityPoolOptions, poolState]) => {
+      map(([pool, liquidityPoolOptions, poolState, tokens]) => {
         if (pool.isEmpty) return null;
         const { owner, balance } = pool.unwrap();
         return {
@@ -59,9 +60,12 @@ class Margin {
 
             const data = options.toHuman() || {};
 
+            const baseToken = tokens.find(({ id }) => pair.base === id);
+            const quoteToken = tokens.find(({ id }) => pair.quote === id);
+
             return {
               pair: pair,
-              pairId: `${pair.base}${pair.quote}`,
+              pairId: `${baseToken?.name || pair.base}${quoteToken?.name || pair.quote}`,
               ...(data as any)
             };
           })
