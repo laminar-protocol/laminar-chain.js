@@ -1,8 +1,7 @@
 import { combineLatest, Observable, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
-import { OracleValue, TokenBalance, TokenInfo } from '../types';
+import { TokenId, OracleValue, TokenBalance, TokenInfo } from '../types';
 import LaminarApi from './LaminarApi';
-import { TokenId } from '../types';
 import BN from 'bn.js';
 
 class Currencies {
