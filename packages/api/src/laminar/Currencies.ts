@@ -2,13 +2,22 @@ import { combineLatest, Observable, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { OracleValue, TokenBalance, TokenInfo } from '../types';
 import LaminarApi from './LaminarApi';
+import { TokenId } from '../types';
+import BN from 'bn.js';
 
 class Currencies {
+  private apiProvider: LaminarApi;
   private api: LaminarApi['api'];
 
   constructor(provider: LaminarApi) {
+    this.apiProvider = provider;
     this.api = provider.api;
   }
+
+  public transfer = async (account: string, dest: string, tokenId: TokenId, amount: string | BN) => {
+    const extrinsic = this.api.tx.currencies.transfer(dest, tokenId as any, amount);
+    return this.apiProvider.extrinsicHelper(extrinsic, account, { action: 'Transfer' });
+  };
 
   public tokens = (): Observable<TokenInfo[]> => {
     return of([
