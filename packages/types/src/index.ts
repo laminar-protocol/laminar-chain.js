@@ -12,6 +12,8 @@ import './augment-types';
 
 export * from './known';
 
+export * from './augment-api-mobx';
+
 export { default as metadata } from './metadata/known';
 
 export const allDefinitions = {

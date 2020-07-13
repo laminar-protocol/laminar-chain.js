@@ -5,6 +5,6 @@ export default class Permill extends u32 {
   public precision = 6;
 
   toHuman() {
-    return Number(fromPrecision(super.toJSON(), this.precision));
+    return fromPrecision(super.toJSON(), this.precision);
   }
 }
