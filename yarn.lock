@@ -2227,10 +2227,10 @@
   dependencies:
     "@types/node" ">= 8"
 
-"@open-web3/api-mobx@^0.3.0-beta.21":
-  version "0.3.0-beta.21"
-  resolved "https://registry.yarnpkg.com/@open-web3/api-mobx/-/api-mobx-0.3.0-beta.21.tgz#e9591da1560422ec201ee29bc5e84bc1de0ee82b"
-  integrity sha512-Dhy8TIZ9yea9w/iJWK/W5Q4ZvnxbK2poOqmJZFsIXMTEZ8F/JZ+pGZ3Lln8yExMX4nXWWMRtVvgHFWmjINp8Fg==
+"@open-web3/api-mobx@^0.3.0-beta.27":
+  version "0.3.0-beta.27"
+  resolved "https://registry.yarnpkg.com/@open-web3/api-mobx/-/api-mobx-0.3.0-beta.27.tgz#3b2e56934151a22e68cf596b45218fd73bb72643"
+  integrity sha512-rtR5F4TG+pEUSalLxG8M4fRxEchireWOjpOP9ps3qnj2QXym8SK3k/U/RqXvxk74mwLlxXOso9MA6AcyEoBlWQ==
   dependencies:
     "@polkadot/api" "^1.23.1"
     "@polkadot/types" "^1.23.1"
@@ -2246,10 +2246,10 @@
     memoizee "^0.4.14"
     rxjs "^6.5.5"
 
-"@open-web3/orml-types@^0.3.0-beta.21":
-  version "0.3.0-beta.21"
-  resolved "https://registry.yarnpkg.com/@open-web3/orml-types/-/orml-types-0.3.0-beta.21.tgz#2eb2fec5adcda637d6e6b93b40b8c9a089cb6cba"
-  integrity sha512-J7nRU+7FxJLmTxfi5AT/6T6TDdQm2D1RM81xLF7yRC5HDchA4/EmCxHc+nSaN8Sc2c0+YTVPlvyqKOPIpPFi2A==
+"@open-web3/orml-types@^0.3.0-beta.27":
+  version "0.3.0-beta.27"
+  resolved "https://registry.yarnpkg.com/@open-web3/orml-types/-/orml-types-0.3.0-beta.27.tgz#86f68f8d92515520c7644e50f393494c3884e5cc"
+  integrity sha512-2M28xXyD68onJwaanYsUazqEKE97iqLNWpiqL+zpxfGETv2p7wyvbsOuTc8qtDPPyPx34w5BA6yKZGqfp84y8w==
 
 "@open-web3/util@^0.3.0-beta.4":
   version "0.3.0-beta.18"

@@ -384,7 +384,7 @@ export interface StorageType {
      *
      * @key1 AccountIndex
      **/
-    accounts: StorageMap<string, Option<ITuple<[AccountId, BalanceOf]>>>;
+    accounts: StorageMap<string, Option<ITuple<[AccountId, BalanceOf, bool]>>>;
   };
   marginLiquidityPools: {
     /**
@@ -438,7 +438,7 @@ export interface StorageType {
      *
      * The balance value could be positive or negative:
      * - If positive, it represents 'balance' the trader could use to open positions, withdraw etc.
-     * - If negative, it represents how much the trader owns the pool. Owning could happen when realzing loss
+     * - If negative, it represents how much the trader owns the pool. Owning could happen when realizing loss.
      * but trader has not enough free margin at the moment; Then repayment would be done while realizing profit.
      *
      *
@@ -455,7 +455,7 @@ export interface StorageType {
      *
      * @key1 LiquidityPoolId
      **/
-    marginCalledPools: StorageMap<string, Option<bool>>;
+    marginCalledPools: StorageMap<string, Option<ITuple<[]>>>;
     /**
      * Margin call check of a trader in a pool.
      *
@@ -466,7 +466,7 @@ export interface StorageType {
      *
      * @key2 LiquidityPoolId
      **/
-    marginCalledTraders: StorageDoubleMap<string, string, Option<bool>>;
+    marginCalledTraders: StorageDoubleMap<string, string, Option<ITuple<[]>>>;
     /**
      * Next available position ID.
      *
@@ -487,7 +487,7 @@ export interface StorageType {
      *
      * @key2 (TradingPair,PositionId)
      **/
-    positionsByPool: StorageDoubleMap<string, string, Option<bool>>;
+    positionsByPool: StorageDoubleMap<string, string, Option<ITuple<[]>>>;
     /**
      * Positions existence check by traders and liquidity pool IDs.
      *
@@ -496,7 +496,7 @@ export interface StorageType {
      *
      * @key2 (LiquidityPoolId,PositionId)
      **/
-    positionsByTrader: StorageDoubleMap<string, string, Option<bool>>;
+    positionsByTrader: StorageDoubleMap<string, string, Option<ITuple<[]>>>;
     /**
      * Positions snapshots.
      *
@@ -519,6 +519,9 @@ export interface StorageType {
     riskThresholds: StorageMap<string, TradingPairRiskThreshold>;
   };
   multisig: {
+    /**
+     **/
+    calls: StorageMap<string, Option<ITuple<[Bytes, AccountId, BalanceOf]>>>;
     /**
      * The set of open multisig operations.
      *
@@ -1177,6 +1180,9 @@ export interface StorageType {
     /**
      **/
     nextFeeMultiplier: Multiplier;
+    /**
+     **/
+    storageVersion: Releases;
   };
   utility: {};
 }
