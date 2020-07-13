@@ -66,7 +66,7 @@ export interface TraderInfo {
   unrealizedPl: string;
   totalLeveragedPosition: string;
   accumulatedSwap: string;
-  marginLevel: number;
+  marginLevel: string;
 }
 
 export interface AccumulatedSwapRate {

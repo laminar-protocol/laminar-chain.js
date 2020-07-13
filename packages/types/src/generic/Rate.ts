@@ -5,6 +5,6 @@ export default class Rate extends i128 {
   public precision = 18;
 
   toHuman() {
-    return Number(fromPrecision(super.toString(), this.precision));
+    return fromPrecision(super.toString(), this.precision);
   }
 }

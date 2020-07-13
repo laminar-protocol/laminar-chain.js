@@ -113,7 +113,7 @@ class Margin {
             .sub(unrealizedPl)
             .toString(),
           equity: equity.toString(),
-          marginLevel: marginLevel.toHuman(),
+          marginLevel: marginLevel.toString(),
           totalLeveragedPosition: equity
             .mul(unit)
             .div(marginLevel.toBn())

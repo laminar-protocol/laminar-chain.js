@@ -7,6 +7,7 @@ import generateQuery from '@polkadot/typegen/generate/query';
 import generateTx from '@polkadot/typegen/generate/tx';
 import { registerDefinitions } from '@polkadot/typegen/util';
 import metaHex from '../src/metadata/static-latest';
+import generateMobx from '@open-web3/api-mobx/scripts/mobx';
 
 import * as defaultDefinations from '@polkadot/types/interfaces/definitions';
 
@@ -48,7 +49,6 @@ const definations = {
 const metadata = filterModules(
   [
     'Oracle',
-    'BaseLiquidityPoolsForMargin',
     'Tokens',
     'Currencies',
     'SyntheticTokens',
@@ -68,3 +68,7 @@ generateConst('packages/types/src/augment-api-consts.ts', metadata, definations)
 
 generateTx('packages/types/src/augment-api-tx.ts', metadata, definations);
 generateQuery('packages/types/src/augment-api-query.ts', metadata, definations);
+
+generateMobx('packages/types/src/augment-api-mobx.ts', metaHex, definations, {
+  typesAlias: typesModules
+});

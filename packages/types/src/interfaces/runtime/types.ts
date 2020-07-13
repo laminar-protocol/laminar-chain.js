@@ -3,7 +3,14 @@
 
 import { ITuple } from '@polkadot/types/types';
 import { Compact, Enum, Int, Option, Set, Struct, U8aFixed, Vec } from '@polkadot/types/codec';
-import { GenericAccountId, GenericAccountIndex, GenericAddress, GenericBlock, GenericCall, GenericConsensusEngineId } from '@polkadot/types/generic';
+import {
+  GenericAccountId,
+  GenericAccountIndex,
+  GenericAddress,
+  GenericBlock,
+  GenericCall,
+  GenericConsensusEngineId
+} from '@polkadot/types/generic';
 import { Bytes, DoNotConstruct, Null, StorageKey, bool, i128, u128, u32, u64, u8 } from '@polkadot/types/primitive';
 import { Price } from '@open-web3/orml-types/interfaces/prices';
 import { AuthorityId } from '@polkadot/types/interfaces/consensus';
@@ -264,6 +271,9 @@ export interface ModuleId extends LockIdentifier {}
 /** @name Moment */
 export interface Moment extends u64 {}
 
+/** @name OpaqueCall */
+export interface OpaqueCall extends Bytes {}
+
 /** @name OracleKey */
 export interface OracleKey extends CurrencyId {}
 
@@ -342,6 +352,20 @@ export interface ProxyType extends Enum {
 
 /** @name Rate */
 export interface Rate extends FixedI128 {}
+
+/** @name Releases */
+export interface Releases extends Enum {
+  readonly isV1: boolean;
+  readonly isV2: boolean;
+  readonly isV3: boolean;
+  readonly isV4: boolean;
+  readonly isV5: boolean;
+  readonly isV6: boolean;
+  readonly isV7: boolean;
+  readonly isV8: boolean;
+  readonly isV9: boolean;
+  readonly isV10: boolean;
+}
 
 /** @name RiskThreshold */
 export interface RiskThreshold extends Struct {

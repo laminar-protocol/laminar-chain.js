@@ -12,6 +12,8 @@ import './augment-types';
 
 export * from './known';
 
+export * from './augment-api-mobx';
+
 export { default as metadata } from './metadata/known';
 
 // FIXME: currently we cannot override this in runtime definations because the code generation script cannot handle overrides

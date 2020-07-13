@@ -200,7 +200,7 @@ class Margin {
           equity,
           freeMargin,
           marginHeld,
-          marginLevel: Number(fromPrecision(marginLevel[0])),
+          marginLevel: fromPrecision(marginLevel[0]),
           unrealizedPl: '0',
           totalLeveragedPosition: leveraged,
           accumulatedSwap: '0'
