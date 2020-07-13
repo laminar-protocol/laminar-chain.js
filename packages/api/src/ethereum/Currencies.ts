@@ -22,7 +22,7 @@ class Currencies {
         id: this.apiProvider.tokenContracts.DAI.options.address.toLowerCase()
       },
       {
-        name: 'fEUR',
+        name: 'EUR',
         symbol: 'FEUR',
         precision: 18,
         isBaseToken: false,
@@ -30,7 +30,7 @@ class Currencies {
         id: this.apiProvider.tokenContracts.FEUR.options.address.toLowerCase()
       },
       {
-        name: 'fJPY',
+        name: 'JPY',
         symbol: 'FJPY',
         precision: 18,
         isBaseToken: false,
@@ -38,7 +38,7 @@ class Currencies {
         id: this.apiProvider.tokenContracts.FJPY.options.address.toLowerCase()
       },
       {
-        name: 'fBTC',
+        name: 'BTC',
         symbol: 'FBTC',
         precision: 18,
         isBaseToken: false,
@@ -46,7 +46,7 @@ class Currencies {
         id: this.apiProvider.tokenContracts.FBTC.options.address.toLowerCase()
       },
       {
-        name: 'fETH',
+        name: 'ETH',
         symbol: 'FETH',
         precision: 18,
         isBaseToken: false,
@@ -54,7 +54,7 @@ class Currencies {
         id: this.apiProvider.tokenContracts.FETH.options.address.toLowerCase()
       },
       {
-        name: 'fAUD',
+        name: 'AUD',
         symbol: 'FAUD',
         precision: 18,
         isBaseToken: false,
@@ -62,7 +62,7 @@ class Currencies {
         id: this.apiProvider.tokenContracts.FAUD.options.address.toLowerCase()
       },
       {
-        name: 'fCAD',
+        name: 'CAD',
         symbol: 'FCAD',
         precision: 18,
         isBaseToken: false,
@@ -70,7 +70,7 @@ class Currencies {
         id: this.apiProvider.tokenContracts.FCAD.options.address.toLowerCase()
       },
       {
-        name: 'fCHF',
+        name: 'CHF',
         symbol: 'FCHF',
         precision: 18,
         isBaseToken: false,
@@ -78,7 +78,7 @@ class Currencies {
         id: this.apiProvider.tokenContracts.FCHF.options.address.toLowerCase()
       },
       {
-        name: 'fXAU',
+        name: 'XAU',
         symbol: 'FXAU',
         precision: 18,
         isBaseToken: false,
@@ -86,7 +86,7 @@ class Currencies {
         id: this.apiProvider.tokenContracts.FXAU.options.address.toLowerCase()
       },
       {
-        name: 'fUSOIL',
+        name: 'USOIL',
         symbol: 'FOIL',
         precision: 18,
         isBaseToken: false,
@@ -94,7 +94,7 @@ class Currencies {
         id: this.apiProvider.tokenContracts.FOIL.options.address.toLowerCase()
       },
       {
-        name: 'fGBP',
+        name: 'GBP',
         symbol: 'FGBP',
         precision: 18,
         isBaseToken: false,

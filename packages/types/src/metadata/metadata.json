@@ -873,7 +873,7 @@
                   "Map": {
                     "hasher": "Blake2_128Concat",
                     "key": "AccountIndex",
-                    "value": "(AccountId,BalanceOf)",
+                    "value": "(AccountId,BalanceOf,bool)",
                     "linked": false
                   }
                 },
@@ -989,6 +989,10 @@
                 {
                   "name": "index",
                   "type": "AccountIndex"
+                },
+                {
+                  "name": "freeze",
+                  "type": "bool"
                 }
               ],
               "documentation": [
@@ -999,6 +1003,7 @@
                 "",
                 " - `index`: the index to be (re-)assigned.",
                 " - `new`: the new owner of the index. This function is a no-op if it is equal to sender.",
+                " - `freeze`: if set to `true`, will freeze the index so it cannot be transferred.",
                 "",
                 " Emits `IndexAssigned` if successful.",
                 "",
@@ -1014,6 +1019,35 @@
                 "    - Writes: Indices Accounts, System Account (original owner)",
                 " # </weight>"
               ]
+            },
+            {
+              "name": "freeze",
+              "args": [
+                {
+                  "name": "index",
+                  "type": "AccountIndex"
+                }
+              ],
+              "documentation": [
+                " Freeze an index so it will always point to the sender account. This consumes the deposit.",
+                "",
+                " The dispatch origin for this call must be _Signed_ and the signing account must have a",
+                " non-frozen account `index`.",
+                "",
+                " - `index`: the index to be frozen in place.",
+                "",
+                " Emits `IndexFrozen` if successful.",
+                "",
+                " # <weight>",
+                " - `O(1)`.",
+                " - One storage mutation (codec `O(1)`).",
+                " - Up to one slash operation.",
+                " - One event.",
+                " -------------------",
+                " - Base Weight: 30.86 µs",
+                " - DB Weight: 1 Read/Write (Accounts)",
+                " # </weight>"
+              ]
             }
           ],
           "events": [
@@ -1026,6 +1060,11 @@
               "name": "IndexFreed",
               "args": ["AccountIndex"],
               "documentation": [" A account index has been freed up (unassigned)."]
+            },
+            {
+              "name": "IndexFrozen",
+              "args": ["AccountIndex", "AccountId"],
+              "documentation": [" A account index has been frozen to its current account ID."]
             }
           ],
           "constants": [],
@@ -1251,6 +1290,24 @@
               "name": "Deposit",
               "args": ["AccountId", "Balance"],
               "documentation": [" Some amount was deposited (e.g. for transaction fees)."]
+            },
+            {
+              "name": "Reserved",
+              "args": ["AccountId", "Balance"],
+              "documentation": [" Some balance was reserved (moved from free to reserved)."]
+            },
+            {
+              "name": "Unreserved",
+              "args": ["AccountId", "Balance"],
+              "documentation": [" Some balance was unreserved (moved from reserved to free)."]
+            },
+            {
+              "name": "ReserveRepatriated",
+              "args": ["AccountId", "AccountId", "Balance", "BalanceStatus"],
+              "documentation": [
+                " Some balance was moved from the reserve of the first account to the second account.",
+                " Final argument indicates the destination balance type."
+              ]
             }
           ],
           "constants": [
@@ -1307,7 +1364,16 @@
                 "type": {
                   "Plain": "Multiplier"
                 },
-                "fallback": "0x00000000000000000000000000000000",
+                "fallback": "0x000064a7b3b6e00d0000000000000000",
+                "documentation": []
+              },
+              {
+                "name": "StorageVersion",
+                "modifier": "Default",
+                "type": {
+                  "Plain": "PaymentReleases"
+                },
+                "fallback": "0x00",
                 "documentation": []
               }
             ]
@@ -1908,17 +1974,19 @@
             {
               "name": "Executed",
               "args": ["Hash", "DispatchResult"],
-              "documentation": [" A motion was executed; `bool` is true if returned without error."]
+              "documentation": [" A motion was executed; result will be `Ok` if it returned without error."]
             },
             {
               "name": "MemberExecuted",
               "args": ["Hash", "DispatchResult"],
-              "documentation": [" A single member did some action; `bool` is true if returned without error."]
+              "documentation": [" A single member did some action; result will be `Ok` if it returned without error."]
             },
             {
               "name": "Closed",
               "args": ["Hash", "MemberCount", "MemberCount"],
-              "documentation": [" A proposal was closed after its duration was up."]
+              "documentation": [
+                " A proposal was closed because its threshold was reached or after its duration was up."
+              ]
             }
           ],
           "constants": [],
@@ -1949,7 +2017,7 @@
             },
             {
               "name": "TooEarly",
-              "documentation": [" The close call is made too early, before the end of the voting."]
+              "documentation": [" The close call was made too early, before the end of the voting."]
             },
             {
               "name": "TooManyProposals",
@@ -1999,7 +2067,7 @@
                   "type": "AccountId"
                 }
               ],
-              "documentation": [" Add a member `who` to the set.", "", " May only be called from `AddOrigin` or root."]
+              "documentation": [" Add a member `who` to the set.", "", " May only be called from `T::AddOrigin`."]
             },
             {
               "name": "remove_member",
@@ -2012,7 +2080,7 @@
               "documentation": [
                 " Remove a member `who` from the set.",
                 "",
-                " May only be called from `RemoveOrigin` or root."
+                " May only be called from `T::RemoveOrigin`."
               ]
             },
             {
@@ -2030,7 +2098,7 @@
               "documentation": [
                 " Swap out one member `remove` for another `add`.",
                 "",
-                " May only be called from `SwapOrigin` or root.",
+                " May only be called from `T::SwapOrigin`.",
                 "",
                 " Prime membership is *not* passed from `remove` to `add`, if extant."
               ]
@@ -2047,7 +2115,7 @@
                 " Change the membership to a new set, disregarding the existing membership. Be nice and",
                 " pass `members` pre-sorted.",
                 "",
-                " May only be called from `ResetOrigin` or root."
+                " May only be called from `T::ResetOrigin`."
               ]
             },
             {
@@ -2074,12 +2142,20 @@
                   "type": "AccountId"
                 }
               ],
-              "documentation": [" Set the prime member. Must be a current member."]
+              "documentation": [
+                " Set the prime member. Must be a current member.",
+                "",
+                " May only be called from `T::PrimeOrigin`."
+              ]
             },
             {
               "name": "clear_prime",
               "args": [],
-              "documentation": [" Remove the prime member if it exists."]
+              "documentation": [
+                " Remove the prime member if it exists.",
+                "",
+                " May only be called from `T::PrimeOrigin`."
+              ]
             }
           ],
           "events": [
@@ -2443,17 +2519,19 @@
             {
               "name": "Executed",
               "args": ["Hash", "DispatchResult"],
-              "documentation": [" A motion was executed; `bool` is true if returned without error."]
+              "documentation": [" A motion was executed; result will be `Ok` if it returned without error."]
             },
             {
               "name": "MemberExecuted",
               "args": ["Hash", "DispatchResult"],
-              "documentation": [" A single member did some action; `bool` is true if returned without error."]
+              "documentation": [" A single member did some action; result will be `Ok` if it returned without error."]
             },
             {
               "name": "Closed",
               "args": ["Hash", "MemberCount", "MemberCount"],
-              "documentation": [" A proposal was closed after its duration was up."]
+              "documentation": [
+                " A proposal was closed because its threshold was reached or after its duration was up."
+              ]
             }
           ],
           "constants": [],
@@ -2484,7 +2562,7 @@
             },
             {
               "name": "TooEarly",
-              "documentation": [" The close call is made too early, before the end of the voting."]
+              "documentation": [" The close call was made too early, before the end of the voting."]
             },
             {
               "name": "TooManyProposals",
@@ -2534,7 +2612,7 @@
                   "type": "AccountId"
                 }
               ],
-              "documentation": [" Add a member `who` to the set.", "", " May only be called from `AddOrigin` or root."]
+              "documentation": [" Add a member `who` to the set.", "", " May only be called from `T::AddOrigin`."]
             },
             {
               "name": "remove_member",
@@ -2547,7 +2625,7 @@
               "documentation": [
                 " Remove a member `who` from the set.",
                 "",
-                " May only be called from `RemoveOrigin` or root."
+                " May only be called from `T::RemoveOrigin`."
               ]
             },
             {
@@ -2565,7 +2643,7 @@
               "documentation": [
                 " Swap out one member `remove` for another `add`.",
                 "",
-                " May only be called from `SwapOrigin` or root.",
+                " May only be called from `T::SwapOrigin`.",
                 "",
                 " Prime membership is *not* passed from `remove` to `add`, if extant."
               ]
@@ -2582,7 +2660,7 @@
                 " Change the membership to a new set, disregarding the existing membership. Be nice and",
                 " pass `members` pre-sorted.",
                 "",
-                " May only be called from `ResetOrigin` or root."
+                " May only be called from `T::ResetOrigin`."
               ]
             },
             {
@@ -2609,12 +2687,20 @@
                   "type": "AccountId"
                 }
               ],
-              "documentation": [" Set the prime member. Must be a current member."]
+              "documentation": [
+                " Set the prime member. Must be a current member.",
+                "",
+                " May only be called from `T::PrimeOrigin`."
+              ]
             },
             {
               "name": "clear_prime",
               "args": [],
-              "documentation": [" Remove the prime member if it exists."]
+              "documentation": [
+                " Remove the prime member if it exists.",
+                "",
+                " May only be called from `T::PrimeOrigin`."
+              ]
             }
           ],
           "events": [
@@ -2761,6 +2847,10 @@
                   "type": "Compact<u32>"
                 },
                 {
+                  "name": "_block",
+                  "type": "BlockNumber"
+                },
+                {
                   "name": "_signature",
                   "type": "Signature"
                 }
@@ -2831,7 +2921,7 @@
                   "type": "AccountId"
                 }
               ],
-              "documentation": [" Add a member `who` to the set.", "", " May only be called from `AddOrigin` or root."]
+              "documentation": [" Add a member `who` to the set.", "", " May only be called from `T::AddOrigin`."]
             },
             {
               "name": "remove_member",
@@ -2844,7 +2934,7 @@
               "documentation": [
                 " Remove a member `who` from the set.",
                 "",
-                " May only be called from `RemoveOrigin` or root."
+                " May only be called from `T::RemoveOrigin`."
               ]
             },
             {
@@ -2862,7 +2952,7 @@
               "documentation": [
                 " Swap out one member `remove` for another `add`.",
                 "",
-                " May only be called from `SwapOrigin` or root.",
+                " May only be called from `T::SwapOrigin`.",
                 "",
                 " Prime membership is *not* passed from `remove` to `add`, if extant."
               ]
@@ -2879,7 +2969,7 @@
                 " Change the membership to a new set, disregarding the existing membership. Be nice and",
                 " pass `members` pre-sorted.",
                 "",
-                " May only be called from `ResetOrigin` or root."
+                " May only be called from `T::ResetOrigin`."
               ]
             },
             {
@@ -2906,12 +2996,20 @@
                   "type": "AccountId"
                 }
               ],
-              "documentation": [" Set the prime member. Must be a current member."]
+              "documentation": [
+                " Set the prime member. Must be a current member.",
+                "",
+                " May only be called from `T::PrimeOrigin`."
+              ]
             },
             {
               "name": "clear_prime",
               "args": [],
-              "documentation": [" Remove the prime member if it exists."]
+              "documentation": [
+                " Remove the prime member if it exists.",
+                "",
+                " May only be called from `T::PrimeOrigin`."
+              ]
             }
           ],
           "events": [
@@ -2967,12 +3065,12 @@
               "documentation": [
                 " Send a batch of dispatch calls.",
                 "",
-                " This will execute until the first one fails and then stop. Calls must fulfil the",
-                " `IsCallable` filter unless the origin is `Root`.",
-                "",
                 " May be called from any origin.",
                 "",
                 " - `calls`: The calls to be dispatched from the same origin.",
+                "",
+                " If origin is root then call are dispatch without checking origin filter. (This includes",
+                " bypassing `frame_system::Trait::BaseCallFilter`).",
                 "",
                 " # <weight>",
                 " - Base weight: 14.39 + .987 * c µs",
@@ -3002,9 +3100,6 @@
               "documentation": [
                 " Send a call through an indexed pseudonym of the sender.",
                 "",
-                " The call must fulfil only the pre-cleared `IsCallable` filter (i.e. only the level of",
-                " filtering that remains after calling `take()`).",
-                "",
                 " NOTE: If you need to ensure that any account-based filtering is honored (i.e. because",
                 " you expect `proxy` to have been used prior in the call stack and you want it to apply to",
                 " any sub-accounts), then use `as_limited_sub` instead.",
@@ -3032,7 +3127,8 @@
               "documentation": [
                 " Send a call through an indexed pseudonym of the sender.",
                 "",
-                " Calls must each fulfil the `IsCallable` filter; it is not cleared before.",
+                " Filter from origin are passed along. The call will be dispatched with an origin which",
+                " use the same filter as the origin of this call.",
                 "",
                 " NOTE: If you need to ensure that any account-based filtering is not honored (i.e.",
                 " because you expect `proxy` to have been used prior in the call stack and you do not want",
@@ -3060,20 +3156,10 @@
               "name": "BatchCompleted",
               "args": [],
               "documentation": [" Batch of dispatches completed fully with no error."]
-            },
-            {
-              "name": "Uncallable",
-              "args": ["u32"],
-              "documentation": [" A call with a `false` IsCallable filter was attempted."]
             }
           ],
           "constants": [],
-          "errors": [
-            {
-              "name": "Uncallable",
-              "documentation": [" A call with a `false` `IsCallable` filter was attempted."]
-            }
-          ]
+          "errors": []
         },
         {
           "name": "Multisig",
@@ -3094,10 +3180,56 @@
                 },
                 "fallback": "0x00",
                 "documentation": [" The set of open multisig operations."]
+              },
+              {
+                "name": "Calls",
+                "modifier": "Optional",
+                "type": {
+                  "Map": {
+                    "hasher": "Identity",
+                    "key": "[u8;32]",
+                    "value": "(Bytes,AccountId,BalanceOf)",
+                    "linked": false
+                  }
+                },
+                "fallback": "0x00",
+                "documentation": []
               }
             ]
           },
           "calls": [
+            {
+              "name": "as_multi_threshold_1",
+              "args": [
+                {
+                  "name": "other_signatories",
+                  "type": "Vec<AccountId>"
+                },
+                {
+                  "name": "call",
+                  "type": "Call"
+                }
+              ],
+              "documentation": [
+                " Immediately dispatch a multi-signature call using a single approval from the caller.",
+                "",
+                " The dispatch origin for this call must be _Signed_.",
+                "",
+                " - `other_signatories`: The accounts (other than the sender) who are part of the",
+                " multi-signature, but do not participate in the approval process.",
+                " - `call`: The call to be executed.",
+                "",
+                " Result is equivalent to the dispatched result.",
+                "",
+                " # <weight>",
+                " O(Z + C) where Z is the length of the call and C its execution weight.",
+                " -------------------------------",
+                " - Base Weight: 33.72 + 0.002 * Z µs",
+                " - DB Weight: None",
+                " - Plus Call Weight",
+                " # </weight>"
+              ]
+            },
             {
               "name": "as_multi",
               "args": [
@@ -3115,15 +3247,22 @@
                 },
                 {
                   "name": "call",
-                  "type": "Call"
+                  "type": "Bytes"
+                },
+                {
+                  "name": "store_call",
+                  "type": "bool"
+                },
+                {
+                  "name": "max_weight",
+                  "type": "Weight"
                 }
               ],
               "documentation": [
                 " Register approval for a dispatch to be made from a deterministic composite account if",
                 " approved by a total of `threshold - 1` of `other_signatories`.",
                 "",
-                " If there are enough, then dispatch the call. Calls must each fulfil the `IsCallable`",
-                " filter.",
+                " If there are enough, then dispatch the call.",
                 "",
                 " Payment: `DepositBase` will be reserved if this is the first approval, plus",
                 " `threshold` times `DepositFactor`. It is returned once this dispatch happens or",
@@ -3162,12 +3301,13 @@
                 "   `DepositBase + threshold * DepositFactor`.",
                 " -------------------------------",
                 " - Base Weight:",
-                "     - Create: 46.55 + 0.089 * S µs",
-                "     - Approve: 34.03 + .112 * S µs",
-                "     - Complete: 40.36 + .225 * S µs",
+                "     - Create:          41.89 + 0.118 * S + .002 * Z µs",
+                "     - Create w/ Store: 53.57 + 0.119 * S + .003 * Z µs",
+                "     - Approve:         31.39 + 0.136 * S + .002 * Z µs",
+                "     - Complete:        39.94 + 0.26  * S + .002 * Z µs",
                 " - DB Weight:",
-                "     - Reads: Multisig Storage, [Caller Account]",
-                "     - Writes: Multisig Storage, [Caller Account]",
+                "     - Reads: Multisig Storage, [Caller Account], Calls (if `store_call`)",
+                "     - Writes: Multisig Storage, [Caller Account], Calls (if `store_call`)",
                 " - Plus Call Weight",
                 " # </weight>"
               ]
@@ -3190,6 +3330,10 @@
                 {
                   "name": "call_hash",
                   "type": "[u8;32]"
+                },
+                {
+                  "name": "max_weight",
+                  "type": "Weight"
                 }
               ],
               "documentation": [
@@ -3277,10 +3421,10 @@
                 " - I/O: 1 read `O(S)`, one remove.",
                 " - Storage: removes one item.",
                 " ----------------------------------",
-                " - Base Weight: 37.6 + 0.084 * S",
+                " - Base Weight: 36.07 + 0.124 * S",
                 " - DB Weight:",
-                "     - Read: Multisig Storage, [Caller Account]",
-                "     - Write: Multisig Storage, [Caller Account]",
+                "     - Read: Multisig Storage, [Caller Account], Refund Account, Calls",
+                "     - Write: Multisig Storage, [Caller Account], Refund Account, Calls",
                 " # </weight>"
               ]
             }
@@ -3317,18 +3461,13 @@
                 " A multisig operation has been cancelled. First param is the account that is",
                 " cancelling, third is the multisig account, fourth is hash of the call."
               ]
-            },
-            {
-              "name": "Uncallable",
-              "args": ["u32"],
-              "documentation": [" A call with a `false` IsCallable filter was attempted."]
             }
           ],
           "constants": [],
           "errors": [
             {
-              "name": "ZeroThreshold",
-              "documentation": [" Threshold is too low (zero)."]
+              "name": "MinimumThreshold",
+              "documentation": [" Threshold must be 2 or greater."]
             },
             {
               "name": "AlreadyApproved",
@@ -3375,8 +3514,12 @@
               "documentation": [" A timepoint was given, yet no multisig operation is underway."]
             },
             {
-              "name": "Uncallable",
-              "documentation": [" A call with a `false` `IsCallable` filter was attempted."]
+              "name": "WeightTooLow",
+              "documentation": [" The maximum weight information provided was too low."]
+            },
+            {
+              "name": "AlreadyStored",
+              "documentation": [" The data to be stored is already stored."]
             }
           ]
         },
@@ -3490,6 +3633,8 @@
               "documentation": [
                 " Reject a proposed spend. The original deposit will be slashed.",
                 "",
+                " May only be called from `T::RejectOrigin`.",
+                "",
                 " # <weight>",
                 " - Complexity: O(1)",
                 " - DbReads: `Proposals`, `rejected proposer account`",
@@ -3508,6 +3653,8 @@
               "documentation": [
                 " Approve a proposal. At a later time, the proposal will be allocated to the beneficiary",
                 " and the original deposit will be returned.",
+                "",
+                " May only be called from `T::ApproveOrigin`.",
                 "",
                 " # <weight>",
                 " - Complexity: O(1).",
@@ -4667,6 +4814,44 @@
               ]
             },
             {
+              "name": "increase_validator_count",
+              "args": [
+                {
+                  "name": "additional",
+                  "type": "Compact<u32>"
+                }
+              ],
+              "documentation": [
+                " Increments the ideal number of validators.",
+                "",
+                " The dispatch origin must be Root.",
+                "",
+                " # <weight>",
+                " Base Weight: 1.717 µs",
+                " Read/Write: Validator Count",
+                " # </weight>"
+              ]
+            },
+            {
+              "name": "scale_validator_count",
+              "args": [
+                {
+                  "name": "factor",
+                  "type": "Percent"
+                }
+              ],
+              "documentation": [
+                " Scale up the ideal number of validators by a factor.",
+                "",
+                " The dispatch origin must be Root.",
+                "",
+                " # <weight>",
+                " Base Weight: 1.717 µs",
+                " Read/Write: Validator Count",
+                " # </weight>"
+              ]
+            },
+            {
               "name": "force_no_eras",
               "args": [],
               "documentation": [
@@ -4772,7 +4957,7 @@
               "documentation": [
                 " Cancel enactment of a deferred slash.",
                 "",
-                " Can be called by either the root origin or the `T::SlashCancelOrigin`.",
+                " Can be called by the `T::SlashCancelOrigin`.",
                 "",
                 " Parameters: era and indices of the slashes for that era to kill.",
                 "",
@@ -4815,7 +5000,9 @@
                 " - Contains a limited number of reads and writes.",
                 " -----------",
                 " N is the Number of payouts for the validator (including the validator)",
-                " Base Weight: 110 + 54.2 * N µs (Median Slopes)",
+                " Base Weight:",
+                " - Reward Destination Staked: 110 + 54.2 * N µs (Median Slopes)",
+                " - Reward Destination Controller (Creating): 120 + 41.95 * N µs (Median Slopes)",
                 " DB Weight:",
                 " - Read: EraElectionStatus, CurrentEra, HistoryDepth, ErasValidatorReward,",
                 "         ErasStakersClipped, ErasRewardPoints, ErasValidatorPrefs (8 items)",
@@ -5101,6 +5288,61 @@
               "type": "EraIndex",
               "value": "0x04000000",
               "documentation": [" Number of eras that staked funds must remain bonded for."]
+            },
+            {
+              "name": "SlashDeferDuration",
+              "type": "EraIndex",
+              "value": "0x02000000",
+              "documentation": [
+                " Number of eras that slashes are deferred by, after computation.",
+                "",
+                " This should be less than the bonding duration.",
+                " Set to 0 if slashes should be applied immediately, without opportunity for",
+                " intervention."
+              ]
+            },
+            {
+              "name": "ElectionLookahead",
+              "type": "BlockNumber",
+              "value": "0xe1000000",
+              "documentation": [
+                " The number of blocks before the end of the era from which election submissions are allowed.",
+                "",
+                " Setting this to zero will disable the offchain compute and only on-chain seq-phragmen will",
+                " be used.",
+                "",
+                " This is bounded by being within the last session. Hence, setting it to a value more than the",
+                " length of a session will be pointless."
+              ]
+            },
+            {
+              "name": "MaxIterations",
+              "type": "u32",
+              "value": "0x05000000",
+              "documentation": [
+                " Maximum number of balancing iterations to run in the offchain submission.",
+                "",
+                " If set to 0, balance_solution will not be executed at all."
+              ]
+            },
+            {
+              "name": "MinSolutionScoreBump",
+              "type": "Perbill",
+              "value": "0x20a10700",
+              "documentation": [
+                " The threshold of improvement that should be provided for a new solution to be accepted."
+              ]
+            },
+            {
+              "name": "MaxNominatorRewardedPerValidator",
+              "type": "u32",
+              "value": "0x40000000",
+              "documentation": [
+                " The maximum number of nominators rewarded for each validator.",
+                "",
+                " For each validator only the `$MaxNominatorRewardedPerValidator` biggest stakers can claim",
+                " their reward. This used to limit the i/o cost for the nominator payout."
+              ]
             }
           ],
           "errors": [
@@ -5432,11 +5674,11 @@
                 "modifier": "Default",
                 "type": {
                   "DoubleMap": {
-                    "hasher": "Twox64Concat",
+                    "hasher": "Blake2_128Concat",
                     "key1": "AccountId",
                     "key2": "CurrencyId",
                     "value": "Vec<BalanceLock>",
-                    "key2Hasher": "Blake2_128Concat"
+                    "key2Hasher": "Twox64Concat"
                   }
                 },
                 "fallback": "0x00",
@@ -5450,11 +5692,11 @@
                 "modifier": "Default",
                 "type": {
                   "DoubleMap": {
-                    "hasher": "Twox64Concat",
+                    "hasher": "Blake2_128Concat",
                     "key1": "AccountId",
                     "key2": "CurrencyId",
                     "value": "AccountData",
-                    "key2Hasher": "Blake2_128Concat"
+                    "key2Hasher": "Twox64Concat"
                   }
                 },
                 "fallback": "0x000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
@@ -5748,11 +5990,7 @@
                   "type": "Compact<Permill>"
                 }
               ],
-              "documentation": [
-                " Set extreme liquidation ratio.",
-                "",
-                " May only be called from `UpdateOrigin` or root."
-              ]
+              "documentation": [" Set extreme liquidation ratio.", "", " May only be called from `UpdateOrigin`."]
             },
             {
               "name": "set_liquidation_ratio",
@@ -5766,7 +6004,7 @@
                   "type": "Compact<Permill>"
                 }
               ],
-              "documentation": [" Set liquidation ratio.", "", " May only be called from `UpdateOrigin` or root."]
+              "documentation": [" Set liquidation ratio.", "", " May only be called from `UpdateOrigin`."]
             },
             {
               "name": "set_collateral_ratio",
@@ -5780,7 +6018,7 @@
                   "type": "Compact<Permill>"
                 }
               ],
-              "documentation": [" Set collateral ratio.", "", " May only be called from `UpdateOrigin` or root."]
+              "documentation": [" Set collateral ratio.", "", " May only be called from `UpdateOrigin`."]
             }
           ],
           "events": [
@@ -6046,7 +6284,7 @@
                     "hasher": "Twox64Concat",
                     "key1": "AccountId",
                     "key2": "(LiquidityPoolId,PositionId)",
-                    "value": "bool",
+                    "value": "()",
                     "key2Hasher": "Twox64Concat"
                   }
                 },
@@ -6061,7 +6299,7 @@
                     "hasher": "Twox64Concat",
                     "key1": "LiquidityPoolId",
                     "key2": "(TradingPair,PositionId)",
-                    "value": "bool",
+                    "value": "()",
                     "key2Hasher": "Twox64Concat"
                   }
                 },
@@ -6101,7 +6339,7 @@
                   "",
                   " The balance value could be positive or negative:",
                   " - If positive, it represents 'balance' the trader could use to open positions, withdraw etc.",
-                  " - If negative, it represents how much the trader owns the pool. Owning could happen when realzing loss",
+                  " - If negative, it represents how much the trader owns the pool. Owning could happen when realizing loss.",
                   " but trader has not enough free margin at the moment; Then repayment would be done while realizing profit."
                 ]
               },
@@ -6113,7 +6351,7 @@
                     "hasher": "Twox64Concat",
                     "key1": "AccountId",
                     "key2": "LiquidityPoolId",
-                    "value": "bool",
+                    "value": "()",
                     "key2Hasher": "Twox64Concat"
                   }
                 },
@@ -6131,7 +6369,7 @@
                   "Map": {
                     "hasher": "Twox64Concat",
                     "key": "LiquidityPoolId",
-                    "value": "bool",
+                    "value": "()",
                     "linked": false
                   }
                 },
@@ -6350,7 +6588,7 @@
               "documentation": [
                 " Set risk thresholds of a trading pair.",
                 "",
-                " May only be called from `UpdateOrigin` or root."
+                " May only be called from `UpdateOrigin`."
               ]
             }
           ],
@@ -6630,7 +6868,7 @@
                 },
                 {
                   "name": "identity_info",
-                  "type": "IdentityInfo"
+                  "type": "LiquidityPoolIdentityInfo"
                 }
               ],
               "documentation": [
@@ -6650,7 +6888,7 @@
               "documentation": [
                 " Mark the identity of a liquidity pool as verified.",
                 "",
-                " May only be called from `UpdateOrigin` or root."
+                " May only be called from `UpdateOrigin`."
               ]
             },
             {
@@ -6765,7 +7003,7 @@
               "documentation": [
                 " Liquidity amount overflows maximum.",
                 "",
-                " Only happened when the liquity currency went wrong and liquidity amount overflows the integer type."
+                " Only happened when the liquidity currency went wrong and liquidity amount overflows the integer type."
               ]
             },
             {
@@ -6938,7 +7176,7 @@
                   "type": "SwapRate"
                 }
               ],
-              "documentation": [" Set swap rate for `pair`.", "", " May only be called from `UpdateOrigin` or root."]
+              "documentation": [" Set swap rate for `pair`.", "", " May only be called from `UpdateOrigin`."]
             },
             {
               "name": "set_additional_swap_rate",
@@ -6970,11 +7208,7 @@
                   "type": "Compact<Balance>"
                 }
               ],
-              "documentation": [
-                " Set maximum spread for `pair`.",
-                "",
-                " May only be called from `UpdateOrigin` or root."
-              ]
+              "documentation": [" Set maximum spread for `pair`.", "", " May only be called from `UpdateOrigin`."]
             },
             {
               "name": "set_accumulate_config",
@@ -6995,7 +7229,7 @@
               "documentation": [
                 " Set swap rate accumulation configuration.",
                 "",
-                " May only be called from `UpdateOrigin` or root."
+                " May only be called from `UpdateOrigin`."
               ]
             },
             {
@@ -7006,7 +7240,7 @@
                   "type": "TradingPair"
                 }
               ],
-              "documentation": [" Enable a trading pair.", "", " May only be called from `UpdateOrigin` or root."]
+              "documentation": [" Enable a trading pair.", "", " May only be called from `UpdateOrigin`."]
             },
             {
               "name": "disable_trading_pair",
@@ -7016,7 +7250,7 @@
                   "type": "TradingPair"
                 }
               ],
-              "documentation": [" Disable a trading pair.", "", " May only be called from `UpdateOrigin` or root."]
+              "documentation": [" Disable a trading pair.", "", " May only be called from `UpdateOrigin`."]
             },
             {
               "name": "liquidity_pool_enable_trading_pair",
@@ -7057,7 +7291,7 @@
               "documentation": [
                 " Set default minimum leveraged amount to open a position.",
                 "",
-                " May only be called from `UpdateOrigin` or root."
+                " May only be called from `UpdateOrigin`."
               ]
             },
             {
@@ -7281,7 +7515,7 @@
                 },
                 {
                   "name": "identity_info",
-                  "type": "IdentityInfo"
+                  "type": "LiquidityPoolIdentityInfo"
                 }
               ],
               "documentation": [
@@ -7301,7 +7535,7 @@
               "documentation": [
                 " Mark the identity of a liquidity pool as verified.",
                 "",
-                " May only be called from `UpdateOrigin` or root."
+                " May only be called from `UpdateOrigin`."
               ]
             },
             {
@@ -7416,7 +7650,7 @@
               "documentation": [
                 " Liquidity amount overflows maximum.",
                 "",
-                " Only happened when the liquity currency went wrong and liquidity amount overflows the integer type."
+                " Only happened when the liquidity currency went wrong and liquidity amount overflows the integer type."
               ]
             },
             {
@@ -7546,7 +7780,7 @@
               "documentation": [
                 " Set minimum additional collateral ratio.",
                 "",
-                " May only be called from `UpdateOrigin` or root."
+                " May only be called from `UpdateOrigin`."
               ]
             },
             {
@@ -7583,11 +7817,7 @@
                   "type": "Compact<Balance>"
                 }
               ],
-              "documentation": [
-                " Set max spread of `currency_id`.",
-                "",
-                " May only be called from `UpdateOrigin` or root."
-              ]
+              "documentation": [" Set max spread of `currency_id`.", "", " May only be called from `UpdateOrigin`."]
             }
           ],
           "events": [

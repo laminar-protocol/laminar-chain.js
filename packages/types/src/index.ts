@@ -16,9 +16,18 @@ export * from './augment-api-mobx';
 
 export { default as metadata } from './metadata/known';
 
+// FIXME: currently we cannot override this in runtime definations because the code generation script cannot handle overrides
+// This will make it behave correctly in runtime, but wrong types in TS defination.
+const additionalOverride = {
+  types: {
+    Keys: 'SessionKeys2'
+  }
+};
+
 export const allDefinitions = {
   ...ormlDefinations,
-  ...laminarDefinations
+  ...laminarDefinations,
+  additionalOverride
 };
 
 export const allJSONRpc = {
