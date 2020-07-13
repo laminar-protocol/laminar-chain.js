@@ -9,20 +9,32 @@ declare module '@polkadot/metadata/Decorated/consts/types' {
     [index: string]: ModuleConstants;
     baseLiquidityPoolsForMargin: {
       [index: string]: AugmentedConst<object & Codec>;
+      /**
+       **/
       deposit: AugmentedConst<IdentityDepositBalanceOf>;
+      /**
+       **/
       existentialDeposit: AugmentedConst<Balance>;
     };
     baseLiquidityPoolsForSynthetic: {
       [index: string]: AugmentedConst<object & Codec>;
+      /**
+       **/
       deposit: AugmentedConst<IdentityDepositBalanceOf>;
+      /**
+       **/
       existentialDeposit: AugmentedConst<Balance>;
     };
     currencies: {
       [index: string]: AugmentedConst<object & Codec>;
+      /**
+       **/
       nativeCurrencyId: AugmentedConst<CurrencyIdOf>;
     };
     syntheticProtocol: {
       [index: string]: AugmentedConst<object & Codec>;
+      /**
+       **/
       getCollateralCurrencyId: AugmentedConst<CurrencyId>;
     };
   }

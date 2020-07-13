@@ -4,41 +4,9 @@
 import { ITuple } from '@polkadot/types/types';
 import { Option, Vec } from '@polkadot/types/codec';
 import { Bytes, bool, u32, u64 } from '@polkadot/types/primitive';
-import {
-  AccountId,
-  Balance,
-  BalanceOf,
-  BlockNumber,
-  ExtrinsicsWeight,
-  FixedI128,
-  Hash,
-  IdentityDepositBalanceOf,
-  LiquidityPoolId,
-  MarginPoolOption,
-  MarginPoolTradingPairOption,
-  MarginPosition,
-  MarginTradingPairOption,
-  Moment,
-  Perbill,
-  Permill,
-  Pool,
-  PositionId,
-  PositionsSnapshot,
-  Releases,
-  SwapRate,
-  SyntheticPoolCurrencyOption,
-  SyntheticPosition,
-  SyntheticTokensRatio,
-  TradingPairRiskThreshold,
-  ValidatorId
-} from '@laminar/types/interfaces/runtime';
+import { AccountId, Balance, BalanceOf, BlockNumber, ExtrinsicsWeight, FixedI128, Hash, IdentityDepositBalanceOf, LiquidityPoolId, MarginPoolOption, MarginPoolTradingPairOption, MarginPosition, MarginTradingPairOption, Moment, Perbill, Permill, Pool, PositionId, PositionsSnapshot, Releases, SwapRate, SyntheticPoolCurrencyOption, SyntheticPosition, SyntheticTokensRatio, TradingPairRiskThreshold, ValidatorId } from '@laminar/types/interfaces/runtime';
 import { OrderedSet, TimestampedValueOf } from '@open-web3/orml-types/interfaces/oracle';
-import {
-  BabeAuthorityWeight,
-  MaybeRandomness,
-  NextConfigDescriptor,
-  Randomness
-} from '@polkadot/types/interfaces/babe';
+import { BabeAuthorityWeight, MaybeRandomness, NextConfigDescriptor, Randomness } from '@polkadot/types/interfaces/babe';
 import { AccountData, BalanceLock } from '@polkadot/types/interfaces/balances';
 import { ProposalIndex, Votes } from '@polkadot/types/interfaces/collective';
 import { AuthorityId } from '@polkadot/types/interfaces/consensus';
@@ -47,39 +15,15 @@ import { SetId, StoredPendingChange, StoredState } from '@polkadot/types/interfa
 import { IdentityInfo } from '@polkadot/types/interfaces/identity';
 import { DeferredOffenceOf, OffenceDetails, ReportIdOf } from '@polkadot/types/interfaces/offences';
 import { Keys, SessionIndex } from '@polkadot/types/interfaces/session';
-import {
-  ActiveEraInfo,
-  ElectionResult,
-  ElectionScore,
-  ElectionStatus,
-  EraIndex,
-  EraRewardPoints,
-  Exposure,
-  Forcing,
-  Nominations,
-  RewardDestination,
-  SlashingSpans,
-  SpanRecord,
-  StakingLedger,
-  UnappliedSlash,
-  ValidatorPrefs
-} from '@polkadot/types/interfaces/staking';
-import {
-  AccountInfo,
-  DigestOf,
-  EventIndex,
-  EventRecord,
-  LastRuntimeUpgradeInfo,
-  Phase
-} from '@polkadot/types/interfaces/system';
+import { ActiveEraInfo, ElectionResult, ElectionScore, ElectionStatus, EraIndex, EraRewardPoints, Exposure, Forcing, Nominations, RewardDestination, SlashingSpans, SpanRecord, StakingLedger, UnappliedSlash, ValidatorPrefs } from '@polkadot/types/interfaces/staking';
+import { AccountInfo, DigestOf, EventIndex, EventRecord, LastRuntimeUpgradeInfo, Phase } from '@polkadot/types/interfaces/system';
 import { OpenTip } from '@polkadot/types/interfaces/treasury';
 import { Multiplier } from '@polkadot/types/interfaces/txpayment';
 import { Multisig } from '@polkadot/types/interfaces/utility';
 import { StorageDoubleMap, StorageMap } from '@open-web3/api-mobx';
 
 export interface StorageType {
-  babe: {
-    /**
+  babe: {    /**
      * Current epoch authorities.
      *
      **/
@@ -108,7 +52,7 @@ export interface StorageType {
     initialized: Option<MaybeRandomness>;
     /**
      * How late the current block is compared to its parent.
-     *
+     * 
      * This entry is populated as part of block execution and is cleaned up
      * on block finalization. Querying this storage entry outside of block
      * execution context should always yield zero.
@@ -127,9 +71,9 @@ export interface StorageType {
     nextRandomness: Randomness;
     /**
      * The epoch randomness for the *current* epoch.
-     *
+     * 
      * # Security
-     *
+     * 
      * This MUST NOT be used for gambling, as it can be influenced by a
      * malicious validator in the short term. It MAY be used in many
      * cryptographic protocols, however, so long as one remembers that this
@@ -141,11 +85,11 @@ export interface StorageType {
     randomness: Randomness;
     /**
      * Randomness under construction.
-     *
+     * 
      * We make a tradeoff between storage accesses and list length.
      * We store the under-construction randomness in segments of up to
      * `UNDER_CONSTRUCTION_SEGMENT_LENGTH`.
-     *
+     * 
      * Once a segment reaches this length, we begin the next one.
      * We reset all segments and return to `0` at the beginning of every
      * epoch.
@@ -160,10 +104,9 @@ export interface StorageType {
      **/
     underConstruction: StorageMap<string, Vec<Randomness>>;
   };
-  balances: {
-    /**
+  balances: {    /**
      * The balance of an account.
-     *
+     * 
      * NOTE: This is only used in the case that this module is used to store balances.
      *
      *
@@ -180,7 +123,7 @@ export interface StorageType {
     locks: StorageMap<string, Vec<BalanceLock>>;
     /**
      * Storage version of the pallet.
-     *
+     * 
      * This is set to v2.0.0 for new networks.
      *
      **/
@@ -191,10 +134,9 @@ export interface StorageType {
      **/
     totalIssuance: Balance;
   };
-  baseLiquidityPoolsForMargin: {
-    /**
+  baseLiquidityPoolsForMargin: {    /**
      * Identity info of liquidity pools: `(identity_info, deposit_amount, is_verified)`.
-     *
+     * 
      * Returns `None` if identity info of the pool not set or removed.
      *
      *
@@ -208,7 +150,7 @@ export interface StorageType {
     nextPoolId: LiquidityPoolId;
     /**
      * Liquidity pool information.
-     *
+     * 
      * Returns `None` if no such pool exists.
      *
      *
@@ -216,10 +158,9 @@ export interface StorageType {
      **/
     pools: StorageMap<string, Option<Pool>>;
   };
-  baseLiquidityPoolsForSynthetic: {
-    /**
+  baseLiquidityPoolsForSynthetic: {    /**
      * Identity info of liquidity pools: `(identity_info, deposit_amount, is_verified)`.
-     *
+     * 
      * Returns `None` if identity info of the pool not set or removed.
      *
      *
@@ -233,7 +174,7 @@ export interface StorageType {
     nextPoolId: LiquidityPoolId;
     /**
      * Liquidity pool information.
-     *
+     * 
      * Returns `None` if no such pool exists.
      *
      *
@@ -241,8 +182,7 @@ export interface StorageType {
      **/
     pools: StorageMap<string, Option<Pool>>;
   };
-  financialCouncil: {
-    /**
+  financialCouncil: {    /**
      * The current members of the collective. This is stored sorted (just by value).
      *
      **/
@@ -278,8 +218,7 @@ export interface StorageType {
      **/
     voting: StorageMap<string, Option<Votes>>;
   };
-  financialCouncilMembership: {
-    /**
+  financialCouncilMembership: {    /**
      * The current membership, stored as an ordered Vec.
      *
      **/
@@ -290,8 +229,7 @@ export interface StorageType {
      **/
     prime: Option<AccountId>;
   };
-  generalCouncil: {
-    /**
+  generalCouncil: {    /**
      * The current members of the collective. This is stored sorted (just by value).
      *
      **/
@@ -327,8 +265,7 @@ export interface StorageType {
      **/
     voting: StorageMap<string, Option<Votes>>;
   };
-  generalCouncilMembership: {
-    /**
+  generalCouncilMembership: {    /**
      * The current membership, stored as an ordered Vec.
      *
      **/
@@ -339,8 +276,7 @@ export interface StorageType {
      **/
     prime: Option<AccountId>;
   };
-  grandpa: {
-    /**
+  grandpa: {    /**
      * The number of changes (both in terms of keys and underlying economic responsibilities)
      * in the "set" of Grandpa validators from genesis.
      *
@@ -359,7 +295,7 @@ export interface StorageType {
     /**
      * A mapping from grandpa set ID to the index of the *most recent* session for which its
      * members were responsible.
-     *
+     * 
      * TWOX-NOTE: `SetId` is not under user control.
      *
      *
@@ -377,8 +313,7 @@ export interface StorageType {
      **/
     state: StoredState;
   };
-  indices: {
-    /**
+  indices: {    /**
      * The lookup from index to account.
      *
      *
@@ -386,8 +321,7 @@ export interface StorageType {
      **/
     accounts: StorageMap<string, Option<ITuple<[AccountId, BalanceOf, bool]>>>;
   };
-  marginLiquidityPools: {
-    /**
+  marginLiquidityPools: {    /**
      * The accumulated swap rate of trading pairs in liquidity pools.
      *
      *
@@ -415,7 +349,7 @@ export interface StorageType {
     poolOptions: StorageMap<string, MarginPoolOption>;
     /**
      * Trading pair options in a liquidity pool.
-     *
+     * 
      * Getter is implemented manually to cap the spread with max spread.
      *
      *
@@ -432,10 +366,9 @@ export interface StorageType {
      **/
     tradingPairOptions: StorageMap<string, MarginTradingPairOption>;
   };
-  marginProtocol: {
-    /**
+  marginProtocol: {    /**
      * Balance of a trader in a liquidity pool.
-     *
+     * 
      * The balance value could be positive or negative:
      * - If positive, it represents 'balance' the trader could use to open positions, withdraw etc.
      * - If negative, it represents how much the trader owns the pool. Owning could happen when realizing loss.
@@ -449,7 +382,7 @@ export interface StorageType {
     balances: StorageDoubleMap<string, string, FixedI128>;
     /**
      * Margin call pool.
-     *
+     * 
      * New positions may only be opened in a pool if which not in margin called state.
      *
      *
@@ -458,7 +391,7 @@ export interface StorageType {
     marginCalledPools: StorageMap<string, Option<ITuple<[]>>>;
     /**
      * Margin call check of a trader in a pool.
-     *
+     * 
      * A trader may only open new positions if not in margin called state.
      *
      *
@@ -499,7 +432,7 @@ export interface StorageType {
     positionsByTrader: StorageDoubleMap<string, string, Option<ITuple<[]>>>;
     /**
      * Positions snapshots.
-     *
+     * 
      * Used for performance improvement.
      *
      *
@@ -510,7 +443,7 @@ export interface StorageType {
     positionsSnapshots: StorageDoubleMap<string, string, PositionsSnapshot>;
     /**
      * Risk thresholds of a trading pair, including trader risk threshold, pool ENP and ELL risk threshold.
-     *
+     * 
      * DEFAULT-NOTE: `trader`, `enp`, and `ell` are all `None` by default.
      *
      *
@@ -518,8 +451,7 @@ export interface StorageType {
      **/
     riskThresholds: StorageMap<string, TradingPairRiskThreshold>;
   };
-  multisig: {
-    /**
+  multisig: {    /**
      **/
     calls: StorageMap<string, Option<ITuple<[Bytes, AccountId, BalanceOf]>>>;
     /**
@@ -532,8 +464,7 @@ export interface StorageType {
      **/
     multisigs: StorageDoubleMap<string, string, Option<Multisig>>;
   };
-  offences: {
-    /**
+  offences: {    /**
      * A vector of reports of the same kind that happened at the same time slot.
      *
      *
@@ -557,9 +488,9 @@ export interface StorageType {
     reports: StorageMap<string, Option<OffenceDetails>>;
     /**
      * Enumerates all reports of a kind along with the time they happened.
-     *
+     * 
      * All reports are sorted by the time of offence.
-     *
+     * 
      * Note that the actual type of this mapping is `Vec<u8>`, this is because values of
      * different types are not supported at the moment so we are doing the manual serialization.
      *
@@ -568,8 +499,7 @@ export interface StorageType {
      **/
     reportsByKindIndex: StorageMap<string, Bytes>;
   };
-  operatorMembership: {
-    /**
+  operatorMembership: {    /**
      * The current membership, stored as an ordered Vec.
      *
      **/
@@ -580,8 +510,7 @@ export interface StorageType {
      **/
     prime: Option<AccountId>;
   };
-  oracle: {
-    /**
+  oracle: {    /**
      * If an oracle operator has feed a value in this block
      *
      **/
@@ -625,8 +554,7 @@ export interface StorageType {
      **/
     values: StorageMap<string, Option<TimestampedValueOf>>;
   };
-  palletTreasury: {
-    /**
+  palletTreasury: {    /**
      * Proposal indices that have been approved but not yet awarded.
      *
      **/
@@ -661,8 +589,7 @@ export interface StorageType {
      **/
     tips: StorageMap<string, Option<OpenTip>>;
   };
-  randomnessCollectiveFlip: {
-    /**
+  randomnessCollectiveFlip: {    /**
      * Series of block headers from the last 81 blocks that acts as random seed material. This
      * is arranged as a ring buffer with `block_number % 81` being the index into the `Vec` of
      * the oldest hash.
@@ -670,15 +597,14 @@ export interface StorageType {
      **/
     randomMaterial: Vec<Hash>;
   };
-  session: {
-    /**
+  session: {    /**
      * Current index of the session.
      *
      **/
     currentIndex: SessionIndex;
     /**
      * Indices of disabled validators.
-     *
+     * 
      * The set is cleared when `on_session_ending` returns a new set of identities.
      *
      **/
@@ -715,10 +641,9 @@ export interface StorageType {
      **/
     validators: Vec<ValidatorId>;
   };
-  staking: {
-    /**
+  staking: {    /**
      * The active era information, it holds index and start.
-     *
+     * 
      * The active era is the era currently rewarded.
      * Validator set of this era must be equal to `SessionInterface::validators`.
      *
@@ -733,7 +658,7 @@ export interface StorageType {
     bonded: StorageMap<string, Option<AccountId>>;
     /**
      * A mapping from still-bonded eras to the first session index of that era.
-     *
+     * 
      * Must contains information for eras for the range:
      * `[active_era - bounding_duration; active_era]`
      *
@@ -747,7 +672,7 @@ export interface StorageType {
     canceledSlashPayout: BalanceOf;
     /**
      * The current era index.
-     *
+     * 
      * This is the latest planned era, depending on how the Session pallet queues the validator
      * set, it might be active or not.
      *
@@ -774,9 +699,9 @@ export interface StorageType {
     erasRewardPoints: StorageMap<string, EraRewardPoints>;
     /**
      * Exposure of validator at era.
-     *
+     * 
      * This is keyed first by the era index to allow bulk deletion and then the stash account.
-     *
+     * 
      * Is it removed after `HISTORY_DEPTH` eras.
      * If stakers hasn't been set or has been removed then empty exposure is returned.
      *
@@ -788,14 +713,14 @@ export interface StorageType {
     erasStakers: StorageDoubleMap<string, string, Exposure>;
     /**
      * Clipped Exposure of validator at era.
-     *
+     * 
      * This is similar to [`ErasStakers`] but number of nominators exposed is reduced to the
      * `T::MaxNominatorRewardedPerValidator` biggest stakers.
      * (Note: the field `total` and `own` of the exposure remains unchanged).
      * This is used to limit the i/o cost for the nominator payout.
-     *
+     * 
      * This is keyed fist by the era index to allow bulk deletion and then the stash account.
-     *
+     * 
      * Is it removed after `HISTORY_DEPTH` eras.
      * If stakers hasn't been set or has been removed then empty exposure is returned.
      *
@@ -822,9 +747,9 @@ export interface StorageType {
     erasTotalStake: StorageMap<string, BalanceOf>;
     /**
      * Similar to `ErasStakers`, this holds the preferences of validators.
-     *
+     * 
      * This is keyed first by the era index to allow bulk deletion and then the stash account.
-     *
+     * 
      * Is it removed after `HISTORY_DEPTH` eras.
      *
      *
@@ -835,7 +760,7 @@ export interface StorageType {
     erasValidatorPrefs: StorageDoubleMap<string, string, ValidatorPrefs>;
     /**
      * The total validator era payout for the last `HISTORY_DEPTH` eras.
-     *
+     * 
      * Eras that haven't finished yet or has been removed doesn't have reward.
      *
      *
@@ -849,9 +774,9 @@ export interface StorageType {
     forceEra: Forcing;
     /**
      * Number of eras to keep in history.
-     *
+     * 
      * Information is kept for eras in `[current_era - history_depth; current_era]`.
-     *
+     * 
      * Must be more than the number of eras delayed by session otherwise. I.e. active era must
      * always be in history. I.e. `active_era > current_era - history_depth` must be
      * guaranteed.
@@ -927,7 +852,7 @@ export interface StorageType {
     slashingSpans: StorageMap<string, Option<SlashingSpans>>;
     /**
      * The percentage of the slash that is distributed to reporters.
-     *
+     * 
      * The rest of the slashed value is handled by the `Slash`.
      *
      **/
@@ -955,7 +880,7 @@ export interface StorageType {
     /**
      * True if network has been upgraded to this version.
      * Storage version of the pallet.
-     *
+     * 
      * This is set to v3.0.0 for new networks.
      *
      **/
@@ -990,15 +915,13 @@ export interface StorageType {
      **/
     validatorSlashInEra: StorageDoubleMap<string, string, Option<ITuple<[Perbill, BalanceOf]>>>;
   };
-  sudo: {
-    /**
+  sudo: {    /**
      * The `AccountId` of the sudo key.
      *
      **/
     key: AccountId;
   };
-  syntheticLiquidityPools: {
-    /**
+  syntheticLiquidityPools: {    /**
      * Maximum spread of a currency.
      *
      *
@@ -1020,8 +943,7 @@ export interface StorageType {
      **/
     poolCurrencyOptions: StorageDoubleMap<string, string, SyntheticPoolCurrencyOption>;
   };
-  syntheticTokens: {
-    /**
+  syntheticTokens: {    /**
      * Positions of a currency in a pool
      *
      *
@@ -1038,8 +960,7 @@ export interface StorageType {
      **/
     ratios: StorageMap<string, SyntheticTokensRatio>;
   };
-  system: {
-    /**
+  system: {    /**
      * The full account information for a particular account ID.
      *
      *
@@ -1081,11 +1002,11 @@ export interface StorageType {
     /**
      * Mapping between a topic (represented by T::Hash) and a vector of indexes
      * of events in the `<Events<T>>` list.
-     *
+     * 
      * All topic vectors have deterministic storage locations depending on the topic. This
      * allows light-clients to leverage the changes trie storage tracking mechanism and
      * in case of changes fetch the list of events of interest.
-     *
+     * 
      * The value has the type `(T::BlockNumber, EventIndex)` because if we used only just
      * the `EventIndex` then in case if the topic has the same contents on the next block
      * no notification will be triggered thus the event might be lost.
@@ -1132,8 +1053,7 @@ export interface StorageType {
      **/
     parentHash: Hash;
   };
-  timestamp: {
-    /**
+  timestamp: {    /**
      * Did the timestamp get updated in this block?
      *
      **/
@@ -1144,12 +1064,11 @@ export interface StorageType {
      **/
     now: Moment;
   };
-  tokens: {
-    /**
+  tokens: {    /**
      * The balance of a token type under an account.
-     *
+     * 
      * NOTE: If the total is ever zero, decrease account ref account.
-     *
+     * 
      * NOTE: This is only used in the case that this module is used to store balances.
      *
      *
@@ -1176,13 +1095,12 @@ export interface StorageType {
      **/
     totalIssuance: StorageMap<string, Balance>;
   };
-  transactionPayment: {
-    /**
+  transactionPayment: {    /**
      **/
     nextFeeMultiplier: Multiplier;
     /**
      **/
     storageVersion: Releases;
   };
-  utility: {};
+  utility: {  };
 }
