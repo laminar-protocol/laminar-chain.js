@@ -63,8 +63,8 @@ export default {
       quote: 'CurrencyId'
     },
     AccumulateConfig: {
-      frequency: 'BlockNumber',
-      offset: 'BlockNumber'
+      frequency: 'Moment',
+      offset: 'Moment'
     },
     IdentityDepositBalanceOf: 'Balance',
     Pool: {
@@ -100,7 +100,6 @@ export default {
       leverage: 'Leverage',
       leveragedHeld: 'FixedI128',
       leveragedDebits: 'FixedI128',
-      leveragedDebitsInUsd: 'FixedI128',
       openAccumulatedSwapRate: 'Rate',
       marginHeld: 'FixedI128'
     },
@@ -114,7 +113,7 @@ export default {
     },
     FixedI128: 'i128',
     PositionId: 'u64',
-    Spread: 'u128',
+    Spread: 'Balance',
     Rate: 'FixedI128',
     PoolTraderInfo: {
       positionNum: 'PositionId',
