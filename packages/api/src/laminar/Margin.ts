@@ -36,39 +36,89 @@ class Margin {
     );
   };
 
+  public tradingPairOptions = (poolId: string): Observable<MarginPoolInfo['options']> => {
+    return combineLatest([
+      this.apiProvider.currencies.tokens(),
+      this.api.query.marginLiquidityPools.poolTradingPairOptions.entries(poolId),
+      this.api.query.marginLiquidityPools.tradingPairOptions.entries()
+    ]).pipe(
+      map(([tokens, poolTradingPairOptionsList, tradingPairOptionsList]) => {
+        const getPairId = (pair: { base: string; quote: string }): string => {
+          const baseToken = tokens.find(({ id }) => pair.base === id);
+          const quoteToken = tokens.find(({ id }) => pair.quote === id);
+          return `${baseToken?.name || pair.base}${quoteToken?.name || pair.quote}`;
+        };
+
+        const tradingPairOptionsMap: Record<string, any> = {};
+
+        for (const tradingPairOptions of tradingPairOptionsList) {
+          const pairId = getPairId(tradingPairOptions[0].args[0].toJSON() as { base: string; quote: string });
+          const options = tradingPairOptions[1];
+
+          tradingPairOptionsMap[pairId] = options;
+        }
+
+        return poolTradingPairOptionsList.map(([storageKey, options]) => {
+          const pair = storageKey.args[1].toJSON() as {
+            base: string;
+            quote: string;
+          };
+
+          const pairId = getPairId(pair);
+
+          let askSpread = options.askSpread;
+          let bidSpread = options.bidSpread;
+
+          if (tradingPairOptionsMap[pairId]) {
+            const maxSpread = tradingPairOptionsMap[pairId].maxSpread;
+
+            if (!maxSpread.isEmpty && !askSpread.isEmpty && maxSpread.value.lt(askSpread.value)) {
+              askSpread = maxSpread;
+            }
+
+            if (!maxSpread.isEmpty && !bidSpread.isEmpty && maxSpread.value.lt(bidSpread.value)) {
+              bidSpread = maxSpread;
+            }
+          }
+
+          const data = options.toHuman() || {};
+
+          return {
+            pair: pair,
+            pairId: pairId,
+            ...(data as any),
+            askSpread: askSpread.toString(),
+            bidSpread: bidSpread.toString()
+          };
+        });
+      })
+    );
+  };
+
   public poolInfo = (poolId: string): Observable<MarginPoolInfo | null> => {
     return combineLatest([
+      this.tradingPairOptions(poolId),
       this.api.query.baseLiquidityPoolsForMargin.pools(poolId),
-      this.api.query.marginLiquidityPools.poolTradingPairOptions.entries(poolId),
       (this.api.rpc as any).margin.poolState(poolId) as Observable<MarginPoolState>,
-      this.apiProvider.currencies.tokens()
+      this.api.query.marginLiquidityPools.poolOptions(poolId),
+      this.api.query.marginLiquidityPools.defaultMinLeveragedAmount()
     ]).pipe(
-      map(([pool, liquidityPoolOptions, poolState, tokens]) => {
+      map(([tradingPairOptions, pool, poolState, poolOptions, defaultMinLeveragedAmount]) => {
         if (pool.isEmpty) return null;
         const { owner, balance } = pool.unwrap();
+
+        const minLeveragedAmount = poolOptions.minLeveragedAmount.gt(defaultMinLeveragedAmount)
+          ? poolOptions.minLeveragedAmount.toString()
+          : defaultMinLeveragedAmount.toString();
+
         return {
           poolId: poolId,
           owner: owner.toString(),
           balance: balance.toString(),
           enp: Number(poolState.enp.toString()),
           ell: Number(poolState.ell.toString()),
-          options: liquidityPoolOptions.map(([storageKey, options]) => {
-            const pair = storageKey.args[1].toJSON() as {
-              base: string;
-              quote: string;
-            };
-
-            const data = options.toHuman() || {};
-
-            const baseToken = tokens.find(({ id }) => pair.base === id);
-            const quoteToken = tokens.find(({ id }) => pair.quote === id);
-
-            return {
-              pair: pair,
-              pairId: `${baseToken?.name || pair.base}${quoteToken?.name || pair.quote}`,
-              ...(data as any)
-            };
-          })
+          options: tradingPairOptions,
+          minLeveragedAmount
         };
       })
     );
