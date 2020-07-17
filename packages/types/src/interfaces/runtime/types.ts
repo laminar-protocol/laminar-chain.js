@@ -3,7 +3,14 @@
 
 import { ITuple } from '@polkadot/types/types';
 import { Compact, Enum, Int, Option, Set, Struct, U8aFixed, Vec } from '@polkadot/types/codec';
-import { GenericAccountId, GenericAccountIndex, GenericAddress, GenericBlock, GenericCall, GenericConsensusEngineId } from '@polkadot/types/generic';
+import {
+  GenericAccountId,
+  GenericAccountIndex,
+  GenericAddress,
+  GenericBlock,
+  GenericCall,
+  GenericConsensusEngineId
+} from '@polkadot/types/generic';
 import { Bytes, DoNotConstruct, Null, StorageKey, bool, i128, u128, u32, u64, u8 } from '@polkadot/types/primitive';
 import { Price } from '@open-web3/orml-types/interfaces/prices';
 import { AuthorityId } from '@polkadot/types/interfaces/consensus';
@@ -20,8 +27,8 @@ export interface AccountIndex extends GenericAccountIndex {}
 
 /** @name AccumulateConfig */
 export interface AccumulateConfig extends Struct {
-  readonly frequency: BlockNumber;
-  readonly offset: BlockNumber;
+  readonly frequency: Moment;
+  readonly offset: Moment;
 }
 
 /** @name Address */
@@ -245,7 +252,6 @@ export interface MarginPosition extends Struct {
   readonly leverage: Leverage;
   readonly leveragedHeld: FixedI128;
   readonly leveragedDebits: FixedI128;
-  readonly leveragedDebitsInUsd: FixedI128;
   readonly openAccumulatedSwapRate: Rate;
   readonly marginHeld: FixedI128;
 }
@@ -385,7 +391,7 @@ export interface SignedBlock extends Struct {
 }
 
 /** @name Spread */
-export interface Spread extends u128 {}
+export interface Spread extends Balance {}
 
 /** @name StorageData */
 export interface StorageData extends Bytes {}
