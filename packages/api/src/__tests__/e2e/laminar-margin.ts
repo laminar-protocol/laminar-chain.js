@@ -1,6 +1,7 @@
 import { LaminarApi } from '../..';
 import { WsProvider } from '@polkadot/rpc-provider';
 import { Keyring } from '@polkadot/api';
+import { take } from 'rxjs/operators';
 
 describe('laminar margin', () => {
   jest.setTimeout(300000);
@@ -36,8 +37,10 @@ describe('laminar margin', () => {
   });
 
   it('poolInfo', async () => {
-    const result = await api.margin.poolInfo('0').toPromise();
-    console.log(result);
+    const result = await api.margin
+      .poolInfo('0')
+      .pipe(take(1))
+      .toPromise();
   });
 
   it('positionsByPool', async () => {

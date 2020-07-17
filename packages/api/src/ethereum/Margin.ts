@@ -170,15 +170,17 @@ class Margin {
               });
             })
           ),
-          this.marginFlowProtocolSafety.methods.getEnpAndEll(poolId).call()
-        ]).then(([balance, owner, options, enpAndEll]) => {
+          this.marginFlowProtocolSafety.methods.getEnpAndEll(poolId).call(),
+          poolInterface.methods.minLeverageAmount().call()
+        ]).then(([balance, owner, options, enpAndEll, minLeverageAmount]) => {
           return {
             poolId: poolInterface.options.address.toLowerCase(),
             balance,
             owner,
             enp: Number(fromPrecision(enpAndEll[0][0])),
             ell: Number(fromPrecision(enpAndEll[1][0])),
-            options
+            options,
+            minLeveragedAmount: minLeverageAmount
           };
         });
       })

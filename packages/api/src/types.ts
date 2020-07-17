@@ -132,6 +132,7 @@ export interface MarginPoolInfo {
   ell: number;
   enp: number;
   options: TraderPairOptions[];
+  minLeveragedAmount: string;
 }
 
 export interface SyntheticPoolInfo {
