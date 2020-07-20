@@ -1,4 +1,4 @@
-// import definitions from '@polkadot/types/interfaces/runtime/definitions';
+import { Definitions } from '@polkadot/types/types';
 
 export default {
   rpc: {
@@ -41,4 +41,4 @@ export default {
       unrealized_pl: 'FixedI128'
     }
   }
-};
+} as Definitions;

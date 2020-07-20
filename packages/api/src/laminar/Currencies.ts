@@ -146,7 +146,7 @@ class Currencies {
           tokens
             .filter(token => !token.isNetworkToken && !token.isBaseToken)
             .map(({ id }) =>
-              (this.api.rpc as any).oracle.getValue(id).pipe(
+              this.api.rpc.oracle.getValue(id as any).pipe(
                 map(result => {
                   return [id, result];
                 })

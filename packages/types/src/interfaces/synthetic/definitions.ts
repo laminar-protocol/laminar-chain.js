@@ -1,4 +1,4 @@
-// import definitions from '@polkadot/types/interfaces/runtime/definitions';
+import { Definitions } from '@polkadot/types/types';
 
 export default {
   rpc: {
@@ -23,4 +23,4 @@ export default {
       is_safe: 'boolean'
     }
   }
-};
+} as Definitions;

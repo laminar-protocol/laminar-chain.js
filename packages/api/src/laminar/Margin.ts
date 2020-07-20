@@ -1,4 +1,3 @@
-import { MarginPoolState, MarginTraderState } from '@laminar/types/interfaces';
 import BN from 'bn.js';
 import { combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -99,7 +98,7 @@ class Margin {
     return combineLatest([
       this.tradingPairOptions(poolId),
       this.api.query.baseLiquidityPoolsForMargin.pools(poolId),
-      (this.api.rpc as any).margin.poolState(poolId) as Observable<MarginPoolState>,
+      this.api.rpc.margin.poolState(poolId as any),
       this.api.query.marginLiquidityPools.poolOptions(poolId),
       this.api.query.marginLiquidityPools.defaultMinLeveragedAmount()
     ]).pipe(
@@ -145,7 +144,7 @@ class Margin {
 
   public traderInfo = (account: string, poolId: string): Observable<TraderInfo> => {
     return combineLatest([
-      (this.api.rpc as any).margin.traderState(account, poolId) as Observable<MarginTraderState>,
+      this.api.rpc.margin.traderState(account, poolId as any),
       this.api.query.marginProtocol.balances(account, poolId)
     ]).pipe(
       map(([result, balance]) => {
