@@ -1,6 +1,8 @@
 import definitions from '@polkadot/types/interfaces/runtime/definitions';
+import { Definitions } from '@polkadot/types/types';
 
 export default {
+  rpc: { ...definitions.rpc },
   types: {
     ...definitions.types,
     OrderedSet: 'Vec<AccountId>',
@@ -151,4 +153,4 @@ export default {
       image_url: 'Vec<u8>'
     }
   }
-};
+} as Definitions;
