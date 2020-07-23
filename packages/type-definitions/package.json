@@ -1,7 +1,7 @@
 {
-  "name": "@laminar/types",
-  "version": "0.2.0-beta.133",
-  "description": "Laminar Chain JS types",
+  "name": "@laminar/type-definitions",
+  "version": "0.2.0-beta.132",
+  "description": "Laminar Chain JS type definitions",
   "main": "index.js",
   "author": "Laminar Developers <hello@laminar.one>",
   "license": "Apache-2.0",
@@ -15,15 +15,6 @@
   },
   "homepage": "https://github.com/laminar-protocol/laminar-chain.js",
   "dependencies": {
-    "@babel/runtime": "^7.8.0",
-    "@open-web3/api-mobx": "^0.5.0-beta.1",
-    "@open-web3/orml-types": "^0.5.0-beta.1",
-    "@polkadot/typegen": "^1.20.1",
-    "@polkadot/types": "^1.20.1",
-    "@laminar/type-definitions": "^0.2.0-beta.132"
-  },
-  "devDependencies": {
-    "@types/websocket": "^1.0.0",
-    "websocket": "^1.0.31"
+    "@open-web3/orml-type-definitions": "^0.5.0-beta.2"
   }
 }

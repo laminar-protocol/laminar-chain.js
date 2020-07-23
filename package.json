@@ -13,7 +13,7 @@
   },
   "scripts": {
     "build": "yarn check-deps && yarn build:interfaces && polkadot-dev-build-ts",
-    "build:interfaces": "node -r ts-node/register packages/types/scripts/generate.ts",
+    "build:interfaces": "node -r ts-node/register -r tsconfig-paths/register packages/types/scripts/generate.ts",
     "build:metadata": "yarn build:metadataStatic && yarn build:metadataJson",
     "build:metadataStatic": "ts-node --project ./tsconfig.json packages/types/scripts/metadataStatic.ts",
     "build:metadataJson": "ts-node --project ./tsconfig.json packages/types/scripts/metadataJson.ts",

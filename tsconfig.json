@@ -10,7 +10,9 @@
       "@laminar/api": ["packages/api/src"],
       "@laminar/api/*": ["packages/api/src/*"],
       "@laminar/types": ["packages/types/src"],
-      "@laminar/types/*": ["packages/types/src/*"]
+      "@laminar/types/*": ["packages/types/src/*"],
+      "@laminar/type-definitions": ["packages/type-definitions/src"],
+      "@laminar/type-definitions/*": ["packages/type-definitions/src/*"]
     },
     "skipLibCheck": true,
     "typeRoots": ["./node_modules/@polkadot/ts", "./node_modules/@types"]

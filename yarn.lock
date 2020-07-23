@@ -2236,6 +2236,11 @@
     memoizee "^0.4.14"
     rxjs "^6.5.5"
 
+"@open-web3/orml-type-definitions@^0.5.0-beta.2":
+  version "0.5.1"
+  resolved "https://registry.yarnpkg.com/@open-web3/orml-type-definitions/-/orml-type-definitions-0.5.1.tgz#4cc0746007bcebed2aac48dcb5579f5882655dfe"
+  integrity sha512-vSaQN5B7UuaA+DaYLF5pAFe4y2E8SDnsz1GDarCTSt7EpzISVUniJbysWUK+MP5ZLIB3oBxRt1oEN/b5yb8cxg==
+
 "@open-web3/orml-types@^0.5.0-beta.1":
   version "0.5.0-beta.1"
   resolved "https://registry.yarnpkg.com/@open-web3/orml-types/-/orml-types-0.5.0-beta.1.tgz#7ccce8dfb72b403f327d1ef7a0289b555d5a4e99"
