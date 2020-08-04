@@ -36,12 +36,15 @@ class LaminarApi {
   ];
 
   constructor(options: LaminarApiOptions) {
-    this.api = new ApiRx(
-      getOptions({
-        ...options,
-        provider: options.provider
-      })
-    );
+    const allOptions = getOptions({
+      ...options,
+      types: {
+        ...options.types
+      },
+      provider: options.provider
+    });
+
+    this.api = new ApiRx(allOptions);
 
     this.margin = new Margin(this);
     this.synthetic = new Synthetic(this);

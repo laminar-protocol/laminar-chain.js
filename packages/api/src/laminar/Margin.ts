@@ -11,7 +11,7 @@ import {
   TokenId,
   TraderInfo
 } from '../types';
-import { unit } from '../utils';
+import { unit, permillToFixedU128 } from '../utils';
 import LaminarApi from './LaminarApi';
 
 class Margin {
@@ -22,6 +22,18 @@ class Margin {
     this.apiProvider = provider;
     this.api = provider.api;
   }
+
+  public pairIdHelper = (): Observable<(pair: { base: string; quote: string }) => string> => {
+    return this.apiProvider.currencies.tokens().pipe(
+      map(tokens => {
+        return (pair: { base: string; quote: string }): string => {
+          const baseToken = tokens.find(({ id }) => pair.base === id);
+          const quoteToken = tokens.find(({ id }) => pair.quote === id);
+          return `${baseToken?.name || pair.base}${quoteToken?.name || pair.quote}`;
+        };
+      })
+    );
+  };
 
   public balance = (address: string) => {
     return this.api.query.marginProtocol.balances.entries(address).pipe(
@@ -37,17 +49,11 @@ class Margin {
 
   public tradingPairOptions = (poolId: string): Observable<MarginPoolInfo['options']> => {
     return combineLatest([
-      this.apiProvider.currencies.tokens(),
       this.api.query.marginLiquidityPools.poolTradingPairOptions.entries(poolId),
-      this.api.query.marginLiquidityPools.tradingPairOptions.entries()
+      this.api.query.marginLiquidityPools.tradingPairOptions.entries(),
+      this.pairIdHelper()
     ]).pipe(
-      map(([tokens, poolTradingPairOptionsList, tradingPairOptionsList]) => {
-        const getPairId = (pair: { base: string; quote: string }): string => {
-          const baseToken = tokens.find(({ id }) => pair.base === id);
-          const quoteToken = tokens.find(({ id }) => pair.quote === id);
-          return `${baseToken?.name || pair.base}${quoteToken?.name || pair.quote}`;
-        };
-
+      map(([poolTradingPairOptionsList, tradingPairOptionsList, getPairId]) => {
         const tradingPairOptionsMap: Record<string, any> = {};
 
         for (const tradingPairOptions of tradingPairOptionsList) {
@@ -58,11 +64,7 @@ class Margin {
         }
 
         return poolTradingPairOptionsList.map(([storageKey, options]) => {
-          const pair = storageKey.args[1].toJSON() as {
-            base: string;
-            quote: string;
-          };
-
+          const pair = storageKey.args[1].toJSON() as { base: string; quote: string };
           const pairId = getPairId(pair);
 
           let askSpread = options.askSpread;
@@ -71,21 +73,22 @@ class Margin {
           if (tradingPairOptionsMap[pairId]) {
             const maxSpread = tradingPairOptionsMap[pairId].maxSpread;
 
-            if (!maxSpread.isEmpty && !askSpread.isEmpty && maxSpread.value.lt(askSpread.value)) {
-              askSpread = maxSpread;
-            }
-
-            if (!maxSpread.isEmpty && !bidSpread.isEmpty && maxSpread.value.lt(bidSpread.value)) {
-              bidSpread = maxSpread;
+            if (!maxSpread.isEmpty) {
+              if (!askSpread.isEmpty && maxSpread.value.lt(askSpread.value)) {
+                askSpread = maxSpread;
+              }
+              if (!bidSpread.isEmpty && maxSpread.value.lt(bidSpread.value)) {
+                bidSpread = maxSpread;
+              }
             }
           }
 
-          const data = options.toHuman() || {};
+          const enabledTrades = options.enabledTrades.toJSON();
 
           return {
             pair: pair,
             pairId: pairId,
-            ...(data as any),
+            enabledTrades,
             askSpread: askSpread.toString(),
             bidSpread: bidSpread.toString()
           };
@@ -104,6 +107,7 @@ class Margin {
     ]).pipe(
       map(([tradingPairOptions, pool, poolState, poolOptions, defaultMinLeveragedAmount]) => {
         if (pool.isEmpty) return null;
+
         const { owner, balance } = pool.unwrap();
 
         const minLeveragedAmount = poolOptions.minLeveragedAmount.gt(defaultMinLeveragedAmount)
@@ -111,11 +115,11 @@ class Margin {
           : defaultMinLeveragedAmount.toString();
 
         return {
-          poolId: poolId,
+          poolId: `${poolId}`,
           owner: owner.toString(),
           balance: balance.toString(),
-          enp: Number(poolState.enp.toString()),
-          ell: Number(poolState.ell.toString()),
+          enp: poolState.enp.toString(),
+          ell: poolState.ell.toString(),
           options: tradingPairOptions,
           minLeveragedAmount
         };
@@ -126,16 +130,27 @@ class Margin {
   public marginInfo = (): Observable<MarginInfo> => {
     return this.api.query.marginProtocol.riskThresholds.entries().pipe(
       map(result => {
-        const list = result.map(([, s]) => s.toHuman() as any);
+        const list = result.map(([, s]) => s);
+
+        const ellList = list.filter(({ ell }) => !ell.isNone).map(({ ell }) => ell.unwrap());
+        const enpList = list.filter(({ enp }) => !enp.isNone).map(({ enp }) => enp.unwrap());
+
+        const getListMaxValue = (riskList: BN[]) => {
+          return permillToFixedU128(
+            riskList.reduce((a, b) => {
+              return BN.max(a, b);
+            }, new BN(0))
+          ).toString();
+        };
 
         return {
           ellThreshold: {
-            marginCall: Math.max(...list.filter(({ ell }) => ell).map(({ ell }) => ell.marginCall)),
-            stopOut: Math.max(...list.filter(({ ell }) => ell).map(({ ell }) => ell.stopOut))
+            marginCall: getListMaxValue(ellList.map(({ marginCall }) => marginCall)),
+            stopOut: getListMaxValue(ellList.map(({ stopOut }) => stopOut))
           },
           enpThreshold: {
-            marginCall: Math.max(...list.filter(({ enp }) => enp).map(({ enp }) => enp.marginCall)),
-            stopOut: Math.max(...list.filter(({ enp }) => enp).map(({ enp }) => enp.stopOut))
+            marginCall: getListMaxValue(enpList.map(({ marginCall }) => marginCall)),
+            stopOut: getListMaxValue(enpList.map(({ stopOut }) => stopOut))
           }
         };
       })
@@ -165,38 +180,54 @@ class Margin {
           marginLevel: marginLevel.toString(),
           totalLeveragedPosition: equity
             .mul(unit)
-            .div(marginLevel.toBn())
+            .div(marginLevel)
             .toString()
         };
       })
     );
   };
 
-  public traderThreshold = (baseToken: TokenId, quoteToken: TokenId): Observable<Threshold> => {
+  public traderThreshold = (baseToken: string, quoteToken: string): Observable<Threshold> => {
     return this.api.query.marginProtocol
       .riskThresholds({
         base: baseToken,
         quote: quoteToken
       })
       .pipe(
-        map(
-          result =>
-            (result.toHuman() as any)?.trader ||
-            ({
-              marginCall: 0,
-              stopOut: 0
-            } as Threshold)
-        )
+        map(result => {
+          if (result.trader.isNone) {
+            return {
+              marginCall: '0',
+              stopOut: '0'
+            };
+          } else {
+            const { marginCall, stopOut } = result.trader.unwrap();
+            return {
+              marginCall: permillToFixedU128(marginCall).toString(),
+              stopOut: permillToFixedU128(stopOut).toString()
+            };
+          }
+        })
       );
   };
 
   public accumulatedSwapRates = (): Observable<AccumulatedSwapRate[]> => {
-    return this.api.query.marginLiquidityPools.accumulatedSwapRates.entries().pipe(
-      map(result => {
+    return combineLatest([
+      this.api.query.marginLiquidityPools.accumulatedSwapRates.entries(),
+      this.pairIdHelper()
+    ]).pipe(
+      map(([result, getPairId]) => {
         return result.map(([key, value]) => {
           const pair = key.args[1].toJSON() as { base: string; quote: string };
-          const { long, short } = value.toHuman() as { long: number; short: number };
-          return { poolId: `${key.args[0].toJSON()}`, pair, pairId: `${pair.base}${pair.quote}`, long, short };
+          const pairId = getPairId(pair);
+
+          return {
+            poolId: key.args[0].toString(),
+            pair,
+            pairId,
+            long: value.long.toString(),
+            short: value.short.toString()
+          };
         });
       })
     );
@@ -206,7 +237,22 @@ class Margin {
     return this.api.query.marginProtocol.positions(positionId).pipe(
       map(result => {
         if (result.isEmpty) return null;
-        return result.toHuman() as any;
+
+        const unwrapPosition = result.unwrap();
+
+        return {
+          owner: unwrapPosition.owner.toString(),
+          poolId: unwrapPosition.poolId.toString(),
+          pair: {
+            base: unwrapPosition.pair.base.toString(),
+            quote: unwrapPosition.pair.quote.toString()
+          },
+          leverage: unwrapPosition.leverage.toString(),
+          leveragedHeld: unwrapPosition.leveragedHeld.toString(),
+          leveragedDebits: unwrapPosition.leveragedDebits.toString(),
+          marginHeld: unwrapPosition.marginHeld.toString(),
+          openAccumulatedSwapRate: unwrapPosition.openAccumulatedSwapRate.toString()
+        };
       })
     );
   };
@@ -214,7 +260,7 @@ class Margin {
   public allPoolIds = () => {
     return this.api.query.baseLiquidityPoolsForMargin
       .nextPoolId()
-      .pipe(map(result => [...new Array(Number.parseInt(result.toString()))].map((_, i) => `${i}`)));
+      .pipe(map(result => [...new Array(result.toNumber())].map((_, i) => `${i}`)));
   };
 
   public positionsByPool = (poolId: string) => {
@@ -223,8 +269,8 @@ class Margin {
         return allResult.map(([storageKey]) => {
           const data: any = storageKey.args[1];
           return {
-            tradingPair: data[0].toJSON(),
-            positionId: data[0].toString()
+            pair: data[0].toJSON(),
+            positionId: data[1].toString()
           };
         });
       })
@@ -238,12 +284,11 @@ class Margin {
           .filter(([, value]) => {
             return !value.isEmpty;
           })
-          .map(([storageKey, value]) => {
+          .map(([storageKey]) => {
             const data: any = storageKey.args[1];
             return {
               poolId: data[0].toString(),
-              positionId: data[1].toString(),
-              isOpen: (value as any).value.isTrue
+              positionId: data[1].toString()
             };
           });
       })

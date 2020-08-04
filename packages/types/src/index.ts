@@ -3,7 +3,6 @@ import polkadotJSONRpc from '@polkadot/types/interfaces/jsonrpc';
 import { RegistryTypes } from '@polkadot/types/types';
 import './augment-api';
 import './augment-types';
-import * as genericTypes from './generic';
 import * as laminarDefinations from './interfaces/definitions';
 import jsonrpc from './interfaces/jsonrpc';
 
@@ -31,8 +30,5 @@ export const allJSONRpc = {
 };
 
 export const types: RegistryTypes = Object.values(allDefinitions)
-  .map(({ types }) => ({
-    ...types,
-    ...genericTypes
-  }))
+  .map(({ types }) => types as any)
   .reduce((all, types) => Object.assign(all, types), {});

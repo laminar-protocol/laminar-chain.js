@@ -45,7 +45,7 @@ class Synthetic {
     return this.apiProvider.currencies.tokens().pipe(
       switchMap(async tokens => {
         const owner = await poolInterface.methods.owner().call();
-        const getBalance = this.apiProvider.baseTokenContracts.methods.balanceOf(owner).call();
+        const getBalancePromise = this.apiProvider.baseTokenContracts.methods.balanceOf(owner).call();
         const enabledTokens = await Promise.all(
           tokens.map(token =>
             poolInterface.methods
@@ -73,7 +73,7 @@ class Synthetic {
         return {
           poolId: poolInterface.options.address.toLowerCase(),
           owner: owner,
-          balance: await getBalance,
+          balance: await getBalancePromise,
           options
         };
       })

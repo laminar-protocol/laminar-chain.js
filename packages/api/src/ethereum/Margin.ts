@@ -1,4 +1,3 @@
-import { fromPrecision, toNumber } from '@laminar/types/utils/precision';
 import BN from 'bn.js';
 import { from, Observable, of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
@@ -128,12 +127,12 @@ class Margin {
       ]).then(([ELLLiquidateThreshold, ELLMarginThreshold, ENPLiquidateThreshold, ENPMarginThreshold]) => {
         return {
           ellThreshold: {
-            marginCall: toNumber(ELLMarginThreshold),
-            stopOut: toNumber(ELLLiquidateThreshold)
+            marginCall: ELLMarginThreshold,
+            stopOut: ELLLiquidateThreshold
           },
           enpThreshold: {
-            marginCall: toNumber(ENPMarginThreshold),
-            stopOut: toNumber(ENPLiquidateThreshold)
+            marginCall: ENPMarginThreshold,
+            stopOut: ENPLiquidateThreshold
           }
         };
       })
@@ -177,8 +176,8 @@ class Margin {
             poolId: poolInterface.options.address.toLowerCase(),
             balance,
             owner,
-            enp: Number(fromPrecision(enpAndEll[0][0])),
-            ell: Number(fromPrecision(enpAndEll[1][0])),
+            enp: enpAndEll[0][0],
+            ell: enpAndEll[1][0],
             options,
             minLeveragedAmount: minLeverageAmount
           };
@@ -202,7 +201,7 @@ class Margin {
           equity,
           freeMargin,
           marginHeld,
-          marginLevel: fromPrecision(marginLevel[0]),
+          marginLevel: marginLevel[0],
           unrealizedPl: '0',
           totalLeveragedPosition: leveraged,
           accumulatedSwap: '0'
@@ -218,8 +217,8 @@ class Margin {
         this.marginFlowProtocolConfig.methods.traderRiskMarginCallThreshold().call()
       ]).then(([stopOut, marginCall]) => {
         return {
-          marginCall: toNumber(marginCall),
-          stopOut: toNumber(stopOut)
+          marginCall: marginCall,
+          stopOut: stopOut
         };
       })
     );

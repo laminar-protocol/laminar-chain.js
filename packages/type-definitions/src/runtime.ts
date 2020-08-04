@@ -30,7 +30,7 @@ export default {
       short: 'Rate'
     },
     CurrencyIdOf: 'CurrencyId',
-    Amount: 'i128',
+    Amount: 'FixedI128',
     AmountOf: 'Amount',
     OracleKey: 'CurrencyId',
     OracleValue: 'Price',
@@ -71,23 +71,23 @@ export default {
     },
     MarginTradingPairOption: {
       enabled: 'bool',
-      maxSpread: 'Option<u128>',
+      maxSpread: 'Option<FixedU128>',
       swapRate: 'SwapRate',
       accumulateConfig: 'Option<AccumulateConfig>'
     },
     MarginPoolOption: {
       additionalSwapRate: 'FixedI128',
-      minLeveragedAmount: 'u128'
+      minLeveragedAmount: 'FixedU128'
     },
     MarginPoolTradingPairOption: {
       enabled: 'bool',
-      bidSpread: 'Option<Spread>',
-      askSpread: 'Option<Spread>',
+      bidSpread: 'Option<FixedU128>',
+      askSpread: 'Option<FixedU128>',
       enabledTrades: 'Leverages'
     },
     SyntheticPoolCurrencyOption: {
-      bidSpread: 'Option<Spread>',
-      askSpread: 'Option<Spread>',
+      bidSpread: 'Option<FixedU128>',
+      askSpread: 'Option<FixedU128>',
       additionalCollateralRatio: 'Option<Permill>',
       syntheticEnabled: 'bool'
     },
@@ -102,8 +102,8 @@ export default {
       marginHeld: 'FixedI128'
     },
     SyntheticPosition: {
-      collateral: 'Balance',
-      synthetic: 'Balance'
+      collateral: 'FixedU128',
+      synthetic: 'FixedU128'
     },
     RiskThreshold: {
       marginCall: 'Permill',
@@ -111,7 +111,6 @@ export default {
     },
     FixedI128: 'i128',
     PositionId: 'u64',
-    Spread: 'Balance',
     Rate: 'FixedI128',
     PoolTraderInfo: {
       positionNum: 'PositionId',
