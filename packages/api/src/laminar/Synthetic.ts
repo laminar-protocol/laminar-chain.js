@@ -26,7 +26,7 @@ class Synthetic {
 
         const { owner, balance } = pool.unwrap();
 
-        let maxSpreadMap = new Map();
+        const maxSpreadMap = new Map();
 
         for (const [storageKey, value] of allMaxSpread) {
           if (!value.isNone) {
