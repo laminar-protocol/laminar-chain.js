@@ -6,6 +6,11 @@ export default {
         {
           name: 'pool_id',
           type: 'u32'
+        },
+        {
+          name: 'at',
+          type: 'BlockHash',
+          isOptional: true
         }
       ],
       type: 'MarginPoolState'
@@ -20,6 +25,11 @@ export default {
         {
           name: 'pool_id',
           type: 'LiquidityPoolId'
+        },
+        {
+          name: 'at',
+          type: 'BlockHash',
+          isOptional: true
         }
       ],
       type: 'MarginTraderState'
