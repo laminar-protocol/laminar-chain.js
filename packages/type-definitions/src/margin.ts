@@ -9,7 +9,7 @@ export default {
         },
         {
           name: 'at',
-          type: 'BlockNumber',
+          type: 'BlockHash',
           isOptional: true
         }
       ],
@@ -28,7 +28,7 @@ export default {
         },
         {
           name: 'at',
-          type: 'BlockNumber',
+          type: 'BlockHash',
           isOptional: true
         }
       ],
