@@ -6,6 +6,7 @@ import { Compact, Enum, Int, Option, Set, Struct, U8aFixed, Vec } from '@polkado
 import { GenericAccountId, GenericAccountIndex, GenericAddress, GenericBlock, GenericCall, GenericConsensusEngineId } from '@polkadot/types/generic';
 import { Bytes, DoNotConstruct, Null, StorageKey, bool, i128, u128, u32, u64, u8 } from '@polkadot/types/primitive';
 import { Price } from '@open-web3/orml-types/interfaces/prices';
+import { FixedU128 } from '@open-web3/orml-types/interfaces/utilities';
 import { AuthorityId } from '@polkadot/types/interfaces/consensus';
 import { Signature } from '@polkadot/types/interfaces/extrinsics';
 
@@ -28,7 +29,7 @@ export interface AccumulateConfig extends Struct {
 export interface Address extends GenericAddress {}
 
 /** @name Amount */
-export interface Amount extends i128 {}
+export interface Amount extends FixedI128 {}
 
 /** @name AmountOf */
 export interface AmountOf extends Amount {}
@@ -226,14 +227,14 @@ export interface LookupTarget extends AccountId {}
 /** @name MarginPoolOption */
 export interface MarginPoolOption extends Struct {
   readonly additionalSwapRate: FixedI128;
-  readonly minLeveragedAmount: u128;
+  readonly minLeveragedAmount: FixedU128;
 }
 
 /** @name MarginPoolTradingPairOption */
 export interface MarginPoolTradingPairOption extends Struct {
   readonly enabled: bool;
-  readonly bidSpread: Option<Spread>;
-  readonly askSpread: Option<Spread>;
+  readonly bidSpread: Option<FixedU128>;
+  readonly askSpread: Option<FixedU128>;
   readonly enabledTrades: Leverages;
 }
 
@@ -252,7 +253,7 @@ export interface MarginPosition extends Struct {
 /** @name MarginTradingPairOption */
 export interface MarginTradingPairOption extends Struct {
   readonly enabled: bool;
-  readonly maxSpread: Option<u128>;
+  readonly maxSpread: Option<FixedU128>;
   readonly swapRate: SwapRate;
   readonly accumulateConfig: Option<AccumulateConfig>;
 }
@@ -383,9 +384,6 @@ export interface SignedBlock extends Struct {
   readonly justification: Justification;
 }
 
-/** @name Spread */
-export interface Spread extends Balance {}
-
 /** @name StorageData */
 export interface StorageData extends Bytes {}
 
@@ -397,16 +395,16 @@ export interface SwapRate extends Struct {
 
 /** @name SyntheticPoolCurrencyOption */
 export interface SyntheticPoolCurrencyOption extends Struct {
-  readonly bidSpread: Option<Spread>;
-  readonly askSpread: Option<Spread>;
+  readonly bidSpread: Option<FixedU128>;
+  readonly askSpread: Option<FixedU128>;
   readonly additionalCollateralRatio: Option<Permill>;
   readonly syntheticEnabled: bool;
 }
 
 /** @name SyntheticPosition */
 export interface SyntheticPosition extends Struct {
-  readonly collateral: Balance;
-  readonly synthetic: Balance;
+  readonly collateral: FixedU128;
+  readonly synthetic: FixedU128;
 }
 
 /** @name SyntheticTokensRatio */

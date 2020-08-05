@@ -30,7 +30,7 @@ declare module '@polkadot/rpc-core/types.jsonrpc' {
       /**
        * 
        **/
-      poolState: AugmentedRpc<(pool_id: LiquidityPoolId | null, at?: BlockHash | string | Uint8Array) => Observable<MarginPoolState>>;
+      poolState: AugmentedRpc<(pool_id: u32 | AnyNumber | Uint8Array, at?: BlockHash | string | Uint8Array) => Observable<MarginPoolState>>;
       /**
        * 
        **/
@@ -40,7 +40,7 @@ declare module '@polkadot/rpc-core/types.jsonrpc' {
       /**
        * 
        **/
-      poolState: AugmentedRpc<(pool_id: LiquidityPoolId | null, currency_id: CurrencyId | null) => Observable<SyntheticPoolState>>;
+      poolState: AugmentedRpc<(pool_id: u32 | AnyNumber | Uint8Array, currency_id: CurrencyId | null) => Observable<SyntheticPoolState>>;
     };
     oracle: {
       /**

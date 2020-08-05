@@ -4,7 +4,7 @@
 import { Compact, Option, Raw, Vec } from '@polkadot/types/codec';
 import { BitVec, Bytes, Data, DoNotConstruct, Null, StorageKey, Text, Type, U256, bool, i128, i16, i256, i32, i64, i8, u128, u16, u256, u32, u64, u8, usize } from '@polkadot/types/primitive';
 import { MarginPoolState, MarginTraderState } from '@laminar/types/interfaces/margin';
-import { AccountId, AccountIdOf, AccountIndex, AccumulateConfig, Address, Amount, AmountOf, AssetId, Balance, BalanceOf, Block, BlockNumber, Call, ChangesTrieConfiguration, Consensus, ConsensusEngineId, CurrencyId, CurrencyIdOf, Digest, DigestItem, ExtrinsicsWeight, Fixed128, Fixed64, FixedI128, H160, H256, H512, Hash, Header, IdentityDepositBalanceOf, Index, Justification, KeyTypeId, KeyValue, Leverage, LeveragedAmounts, Leverages, LiquidityPoolId, LiquidityPoolIdentityInfo, LockIdentifier, LookupSource, LookupTarget, MarginPoolOption, MarginPoolTradingPairOption, MarginPosition, MarginTradingPairOption, ModuleId, Moment, OpaqueCall, OracleKey, OracleValue, Origin, PairInfo, Pays, Perbill, Percent, Permill, Perquintill, Phantom, PhantomData, Pool, PoolTraderInfo, PositionId, PositionsSnapshot, PreRuntime, ProxyType, Rate, Releases, RiskThreshold, RuntimeDbWeight, Seal, SealV0, SignedBlock, Spread, StorageData, SwapRate, SyntheticPoolCurrencyOption, SyntheticPosition, SyntheticTokensRatio, TradingPair, TradingPairRiskThreshold, ValidatorId, Weight, WeightMultiplier } from '@laminar/types/interfaces/runtime';
+import { AccountId, AccountIdOf, AccountIndex, AccumulateConfig, Address, Amount, AmountOf, AssetId, Balance, BalanceOf, Block, BlockNumber, Call, ChangesTrieConfiguration, Consensus, ConsensusEngineId, CurrencyId, CurrencyIdOf, Digest, DigestItem, ExtrinsicsWeight, Fixed128, Fixed64, FixedI128, H160, H256, H512, Hash, Header, IdentityDepositBalanceOf, Index, Justification, KeyTypeId, KeyValue, Leverage, LeveragedAmounts, Leverages, LiquidityPoolId, LiquidityPoolIdentityInfo, LockIdentifier, LookupSource, LookupTarget, MarginPoolOption, MarginPoolTradingPairOption, MarginPosition, MarginTradingPairOption, ModuleId, Moment, OpaqueCall, OracleKey, OracleValue, Origin, PairInfo, Pays, Perbill, Percent, Permill, Perquintill, Phantom, PhantomData, Pool, PoolTraderInfo, PositionId, PositionsSnapshot, PreRuntime, ProxyType, Rate, Releases, RiskThreshold, RuntimeDbWeight, Seal, SealV0, SignedBlock, StorageData, SwapRate, SyntheticPoolCurrencyOption, SyntheticPosition, SyntheticTokensRatio, TradingPair, TradingPairRiskThreshold, ValidatorId, Weight, WeightMultiplier } from '@laminar/types/interfaces/runtime';
 import { SyntheticPoolState } from '@laminar/types/interfaces/synthetic';
 import { CallOf } from '@open-web3/orml-types/interfaces/authority';
 import { GraduallyUpdate, StorageValue } from '@open-web3/orml-types/interfaces/graduallyUpdates';
@@ -1977,9 +1977,6 @@ declare module '@polkadot/types/types/registry' {
     'Compact<PositionId>': Compact<PositionId>;
     'Option<PositionId>': Option<PositionId>;
     'Vec<PositionId>': Vec<PositionId>;
-    Spread: Spread;
-    'Option<Spread>': Option<Spread>;
-    'Vec<Spread>': Vec<Spread>;
     Rate: Rate;
     'Option<Rate>': Option<Rate>;
     'Vec<Rate>': Vec<Rate>;
