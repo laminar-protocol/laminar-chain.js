@@ -1,5 +1,3 @@
-import BN from 'bn.js';
-
 export type LaminarTokenNames = [
   'LAMI',
   'AUSD',
@@ -42,8 +40,8 @@ export type LeverageEnum = [
 ][number];
 
 export type Threshold = {
-  marginCall: number;
-  stopOut: number;
+  marginCall: string;
+  stopOut: string;
 };
 
 export interface PoolInfo {
@@ -76,8 +74,8 @@ export interface AccumulatedSwapRate {
     quote: string;
   };
   pairId: string;
-  long: number;
-  short: number;
+  long: string;
+  short: string;
 }
 
 export interface MarginPosition {
@@ -90,9 +88,8 @@ export interface MarginPosition {
   leverage: string;
   leveragedHeld: string;
   leveragedDebits: string;
-  leveragedDebitsInUsd: string;
   marginHeld: string;
-  openAccumulatedSwapRate: number;
+  openAccumulatedSwapRate: string;
 }
 
 export interface TokenInfo {
@@ -103,15 +100,6 @@ export interface TokenInfo {
   isBaseToken: boolean;
   isNetworkToken: boolean;
   address?: string;
-}
-
-export interface PoolOptions {
-  poolId: string;
-  tokenId: string;
-  additionalCollateralRatio: number | null;
-  askSpread: string | null;
-  bidSpread: string | null;
-  syntheticEnabled: boolean;
 }
 
 export interface TraderPairOptions {
@@ -129,8 +117,8 @@ export interface MarginPoolInfo {
   poolId: string;
   owner: string;
   balance: string;
-  ell: number;
-  enp: number;
+  ell: string;
+  enp: string;
   options: TraderPairOptions[];
   minLeveragedAmount: string;
 }
@@ -140,7 +128,7 @@ export interface SyntheticPoolInfo {
   owner: string;
   balance: string;
   options: {
-    additionalCollateralRatio: number | null;
+    additionalCollateralRatio: string | null;
     askSpread: string | null;
     bidSpread: string | null;
     tokenId: TokenId;
@@ -168,34 +156,4 @@ export interface OracleValue {
 export interface TokenBalance {
   tokenId: TokenId;
   free: string;
-}
-
-export interface FlowApi {
-  chainType: ChainType;
-
-  isReady(): Promise<void>;
-
-  getBalance(address: string, tokenName: TokenId): Promise<string>;
-
-  getPoolOptions(poolId: string, tokenName: TokenId): Promise<PoolOptions>;
-
-  getPoolOwner(poolId: string): Promise<PoolInfo['owner'] | null>;
-
-  getLiquidity(poolId: string): Promise<string>;
-
-  redeem(account: string, poolId: string, fromSymbol: string, fromAmount: string | BN): Promise<ActionStatus>;
-
-  mint(account: string, poolId: string, toSymbol: string, fromAmount: string | BN): Promise<ActionStatus>;
-
-  depositLiquidity(account: string, poolId: string, amount: string | BN): Promise<ActionStatus>;
-
-  withdrawLiquidity(account: string, poolId: string, amount: string | BN): Promise<ActionStatus>;
-
-  createPool(account: string): Promise<ActionStatus>;
-
-  getOraclePrice(tokenName: string): Promise<string>;
-
-  getDefaultPools(): Promise<PoolInfo[]>;
-
-  getTokens(): Promise<TokenInfo[]>;
 }

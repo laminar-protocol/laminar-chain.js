@@ -13,11 +13,6 @@ class Currencies {
     this.api = provider.api;
   }
 
-  public transfer = async (account: string, dest: string, tokenId: TokenId, amount: string | BN) => {
-    const extrinsic = this.api.tx.currencies.transfer(dest, tokenId as any, amount);
-    return this.apiProvider.extrinsicHelper(extrinsic, account, { action: 'Transfer' });
-  };
-
   public tokens = (): Observable<TokenInfo[]> => {
     return of([
       {
@@ -161,7 +156,7 @@ class Currencies {
           };
 
           if (!curr.isEmpty) {
-            result.timestamp = curr.value.timestamp.toJSON();
+            result.timestamp = curr.value.timestamp.toNumber();
             result.value = curr.value.value.toString();
           }
 
@@ -169,6 +164,11 @@ class Currencies {
         });
       })
     );
+  };
+
+  public transfer = async (account: string, dest: string, tokenId: TokenId, amount: string | BN) => {
+    const extrinsic = this.api.tx.currencies.transfer(dest, tokenId as any, amount);
+    return this.apiProvider.extrinsicHelper(extrinsic, account, { action: 'Transfer' });
   };
 }
 

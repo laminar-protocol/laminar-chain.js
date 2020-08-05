@@ -5,7 +5,7 @@ export default {
       params: [
         {
           name: 'pool_id',
-          type: 'LiquidityPoolId'
+          type: 'u32'
         },
         {
           name: 'currency_id',
