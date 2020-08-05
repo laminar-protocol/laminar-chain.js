@@ -52,12 +52,18 @@ declare module '@polkadot/rpc-core/types.jsonrpc' {
       /**
        *
        **/
-      poolState: AugmentedRpc<(pool_id: LiquidityPoolId | null) => Observable<MarginPoolState>>;
+      poolState: AugmentedRpc<
+        (pool_id: LiquidityPoolId | null, at?: BlockNumber | AnyNumber | Uint8Array) => Observable<MarginPoolState>
+      >;
       /**
        *
        **/
       traderState: AugmentedRpc<
-        (who: AccountId | string | Uint8Array, pool_id: LiquidityPoolId | null) => Observable<MarginTraderState>
+        (
+          who: AccountId | string | Uint8Array,
+          pool_id: LiquidityPoolId | null,
+          at?: BlockNumber | AnyNumber | Uint8Array
+        ) => Observable<MarginTraderState>
       >;
     };
     synthetic: {
