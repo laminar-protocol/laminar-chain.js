@@ -3,10 +3,16 @@
 
 import { ITuple } from '@polkadot/types/types';
 import { Compact, Enum, Int, Option, Set, Struct, U8aFixed, Vec } from '@polkadot/types/codec';
-import { GenericAccountId, GenericAccountIndex, GenericAddress, GenericBlock, GenericCall, GenericConsensusEngineId } from '@polkadot/types/generic';
+import {
+  GenericAccountId,
+  GenericAccountIndex,
+  GenericAddress,
+  GenericBlock,
+  GenericCall,
+  GenericConsensusEngineId
+} from '@polkadot/types/generic';
 import { Bytes, DoNotConstruct, Null, StorageKey, bool, i128, u128, u32, u64, u8 } from '@polkadot/types/primitive';
-import { Price } from '@open-web3/orml-types/interfaces/prices';
-import { FixedU128 } from '@open-web3/orml-types/interfaces/utilities';
+import { FixedU128, Price } from '@open-web3/orml-types/interfaces/traits';
 import { AuthorityId } from '@polkadot/types/interfaces/consensus';
 import { Signature } from '@polkadot/types/interfaces/extrinsics';
 
@@ -272,9 +278,6 @@ export interface OracleKey extends CurrencyId {}
 
 /** @name OracleValue */
 export interface OracleValue extends Price {}
-
-/** @name OrderedSet */
-export interface OrderedSet extends Vec<AccountId> {}
 
 /** @name Origin */
 export interface Origin extends DoNotConstruct {}
