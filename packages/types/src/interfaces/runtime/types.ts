@@ -2,10 +2,29 @@
 /* eslint-disable */
 
 import { ITuple } from '@polkadot/types/types';
-import { Compact, Enum, Int, Option, Set, Struct, U8aFixed, Vec } from '@polkadot/types/codec';
-import { GenericAccountId, GenericAccountIndex, GenericAddress, GenericBlock, GenericCall, GenericConsensusEngineId } from '@polkadot/types/generic';
-import { Bytes, DoNotConstruct, Null, StorageKey, bool, i128, u128, u32, u64, u8 } from '@polkadot/types/primitive';
-import { FixedU128, Price } from '@open-web3/orml-types/interfaces/traits';
+import { Compact, Enum, Int, Option, Set, Struct, U8aFixed, UInt, Vec } from '@polkadot/types/codec';
+import {
+  GenericAccountId,
+  GenericAccountIndex,
+  GenericBlock,
+  GenericCall,
+  GenericConsensusEngineId,
+  GenericLookupSource
+} from '@polkadot/types/generic';
+import {
+  Bytes,
+  DoNotConstruct,
+  Null,
+  StorageKey,
+  bool,
+  i128,
+  u128,
+  u16,
+  u32,
+  u64,
+  u8
+} from '@polkadot/types/primitive';
+import { Price } from '@open-web3/orml-types/interfaces/traits';
 import { AuthorityId } from '@polkadot/types/interfaces/consensus';
 import { Signature } from '@polkadot/types/interfaces/extrinsics';
 
@@ -50,6 +69,12 @@ export interface BlockNumber extends u32 {}
 
 /** @name Call */
 export interface Call extends GenericCall {}
+
+/** @name CallHash */
+export interface CallHash extends Hash {}
+
+/** @name CallHashOf */
+export interface CallHashOf extends CallHash {}
 
 /** @name ChangesTrieConfiguration */
 export interface ChangesTrieConfiguration extends Struct {
@@ -120,6 +145,18 @@ export interface Fixed64 extends Int {}
 /** @name FixedI128 */
 export interface FixedI128 extends i128 {}
 
+/** @name FixedI64 */
+export interface FixedI64 extends Int {}
+
+/** @name FixedU128 */
+export interface FixedU128 extends UInt {}
+
+/** @name FixedU64 */
+export interface FixedU64 extends UInt {}
+
+/** @name GenericAddress */
+export interface GenericAddress extends LookupSource {}
+
 /** @name H160 */
 export interface H160 extends U8aFixed {}
 
@@ -140,6 +177,9 @@ export interface Header extends Struct {
   readonly extrinsicsRoot: Hash;
   readonly digest: Digest;
 }
+
+/** @name I32F32 */
+export interface I32F32 extends Int {}
 
 /** @name IdentityDepositBalanceOf */
 export interface IdentityDepositBalanceOf extends Balance {}
@@ -218,7 +258,7 @@ export interface LiquidityPoolIdentityInfo extends Struct {
 export interface LockIdentifier extends U8aFixed {}
 
 /** @name LookupSource */
-export interface LookupSource extends Address {}
+export interface LookupSource extends GenericLookupSource {}
 
 /** @name LookupTarget */
 export interface LookupTarget extends AccountId {}
@@ -299,6 +339,9 @@ export interface Permill extends u32 {}
 /** @name Perquintill */
 export interface Perquintill extends u64 {}
 
+/** @name PerU16 */
+export interface PerU16 extends u16 {}
+
 /** @name Phantom */
 export interface Phantom extends Null {}
 
@@ -330,14 +373,6 @@ export interface PositionsSnapshot extends Struct {
 
 /** @name PreRuntime */
 export interface PreRuntime extends ITuple<[ConsensusEngineId, Bytes]> {}
-
-/** @name ProxyType */
-export interface ProxyType extends Enum {
-  readonly isAny: boolean;
-  readonly isNonTransfer: boolean;
-  readonly isGovernance: boolean;
-  readonly isStaking: boolean;
-}
 
 /** @name Rate */
 export interface Rate extends FixedI128 {}
@@ -422,6 +457,12 @@ export interface TradingPairRiskThreshold extends Struct {
   readonly enp: Option<RiskThreshold>;
   readonly ell: Option<RiskThreshold>;
 }
+
+/** @name TransactionPriority */
+export interface TransactionPriority extends u64 {}
+
+/** @name U32F32 */
+export interface U32F32 extends UInt {}
 
 /** @name ValidatorId */
 export interface ValidatorId extends AccountId {}
