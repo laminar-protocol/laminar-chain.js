@@ -108,7 +108,6 @@ export default {
       marginCall: 'Permill',
       stopOut: 'Permill'
     },
-    FixedI128: 'i128',
     PositionId: 'u64',
     Rate: 'FixedI128',
     PoolTraderInfo: {
