@@ -2,7 +2,7 @@ import { combineLatest, Observable, of, from, timer } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { OracleValue, TokenBalance, TokenInfo } from '../types';
 import EthereumApi from './EthereumApi';
-import { toNumber } from '@laminar/types/utils/precision';
+import { fixed18toNumber } from '../utils';
 
 class Currencies {
   private apiProvider: EthereumApi;
@@ -124,7 +124,7 @@ class Currencies {
       this.apiProvider.baseContracts.moneyMarket.methods
         .exchangeRate()
         .call()
-        .then((result: string) => toNumber(result)) as Promise<number>
+        .then((result: string) => fixed18toNumber(result)) as Promise<number>
     );
   };
 
