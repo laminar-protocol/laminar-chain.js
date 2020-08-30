@@ -65,7 +65,7 @@ export const fixed18toString = (input: string) => {
     fraction = '';
   }
 
-  let whole = wei.div(base).toString(10);
+  const whole = wei.div(base).toString(10);
 
   let value = `${whole}${fraction && `.${fraction}`}`;
 
