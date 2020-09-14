@@ -6,9 +6,23 @@ import { HashMap, Option, Vec } from '@polkadot/types/codec';
 import { Bytes, Null, StorageKey, Text, bool, u32, u64 } from '@polkadot/types/primitive';
 import { Metadata } from '@polkadot/types';
 import { MarginPoolState, MarginTraderState } from '@laminar/types/interfaces/margin';
-import { AccountId, BlockNumber, CurrencyId, H256, Hash, Header, Index, Justification, KeyValue, LiquidityPoolId, OracleKey, SignedBlock, StorageData } from '@laminar/types/interfaces/runtime';
+import {
+  AccountId,
+  BlockNumber,
+  CurrencyId,
+  H256,
+  Hash,
+  Header,
+  Index,
+  Justification,
+  KeyValue,
+  LiquidityPoolId,
+  OracleKey,
+  SignedBlock,
+  StorageData
+} from '@laminar/types/interfaces/runtime';
 import { SyntheticPoolState } from '@laminar/types/interfaces/synthetic';
-import { TimestampedValue } from '@open-web3/orml-types/interfaces/oracle';
+import { DataProviderId, TimestampedValue } from '@open-web3/orml-types/interfaces/oracle';
 import { ExtrinsicOrHash, ExtrinsicStatus } from '@polkadot/types/interfaces/author';
 import { EpochAuthorship } from '@polkadot/types/interfaces/babe';
 import { BlockHash } from '@polkadot/types/interfaces/chain';
@@ -17,40 +31,62 @@ import { AuthorityId } from '@polkadot/types/interfaces/consensus';
 import { ContractCallRequest, ContractExecResult } from '@polkadot/types/interfaces/contracts';
 import { CreatedBlock } from '@polkadot/types/interfaces/engine';
 import { Extrinsic } from '@polkadot/types/interfaces/extrinsics';
-import { ReportedRoundStates } from '@polkadot/types/interfaces/grandpa';
+import { JustificationNotification, ReportedRoundStates } from '@polkadot/types/interfaces/grandpa';
 import { StorageKind } from '@polkadot/types/interfaces/offchain';
 import { RuntimeDispatchInfo } from '@polkadot/types/interfaces/payment';
 import { RpcMethods } from '@polkadot/types/interfaces/rpc';
 import { ReadProof, RuntimeVersion } from '@polkadot/types/interfaces/state';
-import { ApplyExtrinsicResult, ChainProperties, ChainType, Health, NetworkState, NodeRole, PeerInfo } from '@polkadot/types/interfaces/system';
+import {
+  ApplyExtrinsicResult,
+  ChainProperties,
+  ChainType,
+  Health,
+  NetworkState,
+  NodeRole,
+  PeerInfo
+} from '@polkadot/types/interfaces/system';
 
 declare module '@polkadot/rpc-core/types.jsonrpc' {
   export interface RpcInterface {
     margin: {
       /**
-       * 
+       *
        **/
-      poolState: AugmentedRpc<(pool_id: u32 | AnyNumber | Uint8Array, at?: BlockHash | string | Uint8Array) => Observable<MarginPoolState>>;
+      poolState: AugmentedRpc<
+        (pool_id: u32 | AnyNumber | Uint8Array, at?: BlockHash | string | Uint8Array) => Observable<MarginPoolState>
+      >;
       /**
-       * 
+       *
        **/
-      traderState: AugmentedRpc<(who: AccountId | string | Uint8Array, pool_id: LiquidityPoolId | null, at?: BlockHash | string | Uint8Array) => Observable<MarginTraderState>>;
+      traderState: AugmentedRpc<
+        (
+          who: AccountId | string | Uint8Array,
+          pool_id: LiquidityPoolId | null,
+          at?: BlockHash | string | Uint8Array
+        ) => Observable<MarginTraderState>
+      >;
     };
     synthetic: {
       /**
-       * 
+       *
        **/
-      poolState: AugmentedRpc<(pool_id: u32 | AnyNumber | Uint8Array, currency_id: CurrencyId | null) => Observable<SyntheticPoolState>>;
+      poolState: AugmentedRpc<
+        (pool_id: u32 | AnyNumber | Uint8Array, currency_id: CurrencyId | null) => Observable<SyntheticPoolState>
+      >;
     };
     oracle: {
       /**
        * Retrieves all oracle values.
        **/
-      getAllValues: AugmentedRpc<() => Observable<Vec<ITuple<[OracleKey, Option<TimestampedValue>]>>>>;
+      getAllValues: AugmentedRpc<
+        (DataProviderId: DataProviderId | null) => Observable<Vec<ITuple<[OracleKey, Option<TimestampedValue>]>>>
+      >;
       /**
        * Retrieves the oracle value for a given key.
        **/
-      getValue: AugmentedRpc<(key: OracleKey | null) => Observable<Option<TimestampedValue>>>;
+      getValue: AugmentedRpc<
+        (DataProviderId: DataProviderId | null, key: OracleKey | null) => Observable<Option<TimestampedValue>>
+      >;
     };
     author: {
       /**
@@ -64,7 +100,9 @@ declare module '@polkadot/rpc-core/types.jsonrpc' {
       /**
        * Insert a key into the keystore.
        **/
-      insertKey: AugmentedRpc<(keyType: Text | string, suri: Text | string, publicKey: Bytes | string | Uint8Array) => Observable<Bytes>>;
+      insertKey: AugmentedRpc<
+        (keyType: Text | string, suri: Text | string, publicKey: Bytes | string | Uint8Array) => Observable<Bytes>
+      >;
       /**
        * Returns all pending extrinsics, potentially grouped by sender
        **/
@@ -72,7 +110,13 @@ declare module '@polkadot/rpc-core/types.jsonrpc' {
       /**
        * Remove given extrinsic from the pool and temporarily ban it to prevent reimporting
        **/
-      removeExtrinsic: AugmentedRpc<(bytesOrHash: Vec<ExtrinsicOrHash> | (ExtrinsicOrHash | { Hash: any } | { Extrinsic: any } | string | Uint8Array)[]) => Observable<Vec<Hash>>>;
+      removeExtrinsic: AugmentedRpc<
+        (
+          bytesOrHash:
+            | Vec<ExtrinsicOrHash>
+            | (ExtrinsicOrHash | { Hash: any } | { Extrinsic: any } | string | Uint8Array)[]
+        ) => Observable<Vec<Hash>>
+      >;
       /**
        * Generate new session keys and returns the corresponding public keys
        **/
@@ -126,65 +170,137 @@ declare module '@polkadot/rpc-core/types.jsonrpc' {
       /**
        * Returns the keys with prefix from a child storage, leave empty to get all the keys
        **/
-      getKeys: AugmentedRpc<(childKey: PrefixedStorageKey | string | Uint8Array, prefix: StorageKey | string | Uint8Array | any, at?: Hash | string | Uint8Array) => Observable<Vec<StorageKey>>>;
+      getKeys: AugmentedRpc<
+        (
+          childKey: PrefixedStorageKey | string | Uint8Array,
+          prefix: StorageKey | string | Uint8Array | any,
+          at?: Hash | string | Uint8Array
+        ) => Observable<Vec<StorageKey>>
+      >;
       /**
        * Returns a child storage entry at a specific block state
        **/
-      getStorage: AugmentedRpc<(childKey: PrefixedStorageKey | string | Uint8Array, key: StorageKey | string | Uint8Array | any, at?: Hash | string | Uint8Array) => Observable<Option<StorageData>>>;
+      getStorage: AugmentedRpc<
+        (
+          childKey: PrefixedStorageKey | string | Uint8Array,
+          key: StorageKey | string | Uint8Array | any,
+          at?: Hash | string | Uint8Array
+        ) => Observable<Option<StorageData>>
+      >;
       /**
        * Returns the hash of a child storage entry at a block state
        **/
-      getStorageHash: AugmentedRpc<(childKey: PrefixedStorageKey | string | Uint8Array, key: StorageKey | string | Uint8Array | any, at?: Hash | string | Uint8Array) => Observable<Option<Hash>>>;
+      getStorageHash: AugmentedRpc<
+        (
+          childKey: PrefixedStorageKey | string | Uint8Array,
+          key: StorageKey | string | Uint8Array | any,
+          at?: Hash | string | Uint8Array
+        ) => Observable<Option<Hash>>
+      >;
       /**
        * Returns the size of a child storage entry at a block state
        **/
-      getStorageSize: AugmentedRpc<(childKey: PrefixedStorageKey | string | Uint8Array, key: StorageKey | string | Uint8Array | any, at?: Hash | string | Uint8Array) => Observable<Option<u64>>>;
+      getStorageSize: AugmentedRpc<
+        (
+          childKey: PrefixedStorageKey | string | Uint8Array,
+          key: StorageKey | string | Uint8Array | any,
+          at?: Hash | string | Uint8Array
+        ) => Observable<Option<u64>>
+      >;
     };
     contracts: {
       /**
        * Executes a call to a contract
        **/
-      call: AugmentedRpc<(callRequest: ContractCallRequest | { origin?: any; dest?: any; value?: any; gasLimit?: any; inputData?: any } | string | Uint8Array, at?: BlockHash | string | Uint8Array) => Observable<ContractExecResult>>;
+      call: AugmentedRpc<
+        (
+          callRequest:
+            | ContractCallRequest
+            | { origin?: any; dest?: any; value?: any; gasLimit?: any; inputData?: any }
+            | string
+            | Uint8Array,
+          at?: BlockHash | string | Uint8Array
+        ) => Observable<ContractExecResult>
+      >;
       /**
        * Returns the value under a specified storage key in a contract
        **/
-      getStorage: AugmentedRpc<(address: AccountId | string | Uint8Array, key: H256 | string | Uint8Array, at?: BlockHash | string | Uint8Array) => Observable<Option<Bytes>>>;
+      getStorage: AugmentedRpc<
+        (
+          address: AccountId | string | Uint8Array,
+          key: H256 | string | Uint8Array,
+          at?: BlockHash | string | Uint8Array
+        ) => Observable<Option<Bytes>>
+      >;
       /**
        * Returns the projected time a given contract will be able to sustain paying its rent
        **/
-      rentProjection: AugmentedRpc<(address: AccountId | string | Uint8Array, at?: BlockHash | string | Uint8Array) => Observable<Option<BlockNumber>>>;
+      rentProjection: AugmentedRpc<
+        (
+          address: AccountId | string | Uint8Array,
+          at?: BlockHash | string | Uint8Array
+        ) => Observable<Option<BlockNumber>>
+      >;
     };
     engine: {
       /**
        * Instructs the manual-seal authorship task to create a new block
        **/
-      createBlock: AugmentedRpc<(createEmpty: bool | boolean | Uint8Array, finalize: bool | boolean | Uint8Array, parentHash?: BlockHash | string | Uint8Array) => Observable<CreatedBlock>>;
+      createBlock: AugmentedRpc<
+        (
+          createEmpty: bool | boolean | Uint8Array,
+          finalize: bool | boolean | Uint8Array,
+          parentHash?: BlockHash | string | Uint8Array
+        ) => Observable<CreatedBlock>
+      >;
       /**
        * Instructs the manual-seal authorship task to finalize a block
        **/
-      finalizeBlock: AugmentedRpc<(hash: BlockHash | string | Uint8Array, justification?: Justification | string | Uint8Array) => Observable<bool>>;
+      finalizeBlock: AugmentedRpc<
+        (hash: BlockHash | string | Uint8Array, justification?: Justification | string | Uint8Array) => Observable<bool>
+      >;
     };
     grandpa: {
       /**
        * Returns the state of the current best round state as well as the ongoing background rounds
        **/
       roundState: AugmentedRpc<() => Observable<ReportedRoundStates>>;
+      /**
+       * Subscribes to grandpa justifications
+       **/
+      subscribeJustifications: AugmentedRpc<() => Observable<JustificationNotification>>;
     };
     offchain: {
       /**
        * Get offchain local storage under given key and prefix
        **/
-      localStorageGet: AugmentedRpc<(kind: StorageKind | '__UNUSED' | 'PERSISTENT' | 'LOCAL' | number | Uint8Array, key: Bytes | string | Uint8Array) => Observable<Option<Bytes>>>;
+      localStorageGet: AugmentedRpc<
+        (
+          kind: StorageKind | '__UNUSED' | 'PERSISTENT' | 'LOCAL' | number | Uint8Array,
+          key: Bytes | string | Uint8Array
+        ) => Observable<Option<Bytes>>
+      >;
       /**
        * Set offchain local storage under given key and prefix
        **/
-      localStorageSet: AugmentedRpc<(kind: StorageKind | '__UNUSED' | 'PERSISTENT' | 'LOCAL' | number | Uint8Array, key: Bytes | string | Uint8Array, value: Bytes | string | Uint8Array) => Observable<Null>>;
+      localStorageSet: AugmentedRpc<
+        (
+          kind: StorageKind | '__UNUSED' | 'PERSISTENT' | 'LOCAL' | number | Uint8Array,
+          key: Bytes | string | Uint8Array,
+          value: Bytes | string | Uint8Array
+        ) => Observable<Null>
+      >;
     };
     payment: {
       /**
        * Retrieves the fee information for an encoded extrinsic
        **/
-      queryInfo: AugmentedRpc<(extrinsic: Bytes | string | Uint8Array, at?: BlockHash | string | Uint8Array) => Observable<RuntimeDispatchInfo>>;
+      queryInfo: AugmentedRpc<
+        (
+          extrinsic: Bytes | string | Uint8Array,
+          at?: BlockHash | string | Uint8Array
+        ) => Observable<RuntimeDispatchInfo>
+      >;
     };
     rpc: {
       /**
@@ -196,31 +312,81 @@ declare module '@polkadot/rpc-core/types.jsonrpc' {
       /**
        * Perform a call to a builtin on the chain
        **/
-      call: AugmentedRpc<(method: Text | string, data: Bytes | string | Uint8Array, at?: BlockHash | string | Uint8Array) => Observable<Bytes>>;
+      call: AugmentedRpc<
+        (
+          method: Text | string,
+          data: Bytes | string | Uint8Array,
+          at?: BlockHash | string | Uint8Array
+        ) => Observable<Bytes>
+      >;
       /**
        * Retrieves the keys with prefix of a specific child storage
        **/
-      getChildKeys: AugmentedRpc<(childStorageKey: StorageKey | string | Uint8Array | any, childDefinition: StorageKey | string | Uint8Array | any, childType: u32 | AnyNumber | Uint8Array, key: StorageKey | string | Uint8Array | any, at?: BlockHash | string | Uint8Array) => Observable<Vec<StorageKey>>>;
+      getChildKeys: AugmentedRpc<
+        (
+          childStorageKey: StorageKey | string | Uint8Array | any,
+          childDefinition: StorageKey | string | Uint8Array | any,
+          childType: u32 | AnyNumber | Uint8Array,
+          key: StorageKey | string | Uint8Array | any,
+          at?: BlockHash | string | Uint8Array
+        ) => Observable<Vec<StorageKey>>
+      >;
       /**
        * Retrieves the child storage for a key
        **/
-      getChildStorage: AugmentedRpc<(childStorageKey: StorageKey | string | Uint8Array | any, childDefinition: StorageKey | string | Uint8Array | any, childType: u32 | AnyNumber | Uint8Array, key: StorageKey | string | Uint8Array | any, at?: BlockHash | string | Uint8Array) => Observable<StorageData>>;
+      getChildStorage: AugmentedRpc<
+        (
+          childStorageKey: StorageKey | string | Uint8Array | any,
+          childDefinition: StorageKey | string | Uint8Array | any,
+          childType: u32 | AnyNumber | Uint8Array,
+          key: StorageKey | string | Uint8Array | any,
+          at?: BlockHash | string | Uint8Array
+        ) => Observable<StorageData>
+      >;
       /**
        * Retrieves the child storage hash
        **/
-      getChildStorageHash: AugmentedRpc<(childStorageKey: StorageKey | string | Uint8Array | any, childDefinition: StorageKey | string | Uint8Array | any, childType: u32 | AnyNumber | Uint8Array, key: StorageKey | string | Uint8Array | any, at?: BlockHash | string | Uint8Array) => Observable<Hash>>;
+      getChildStorageHash: AugmentedRpc<
+        (
+          childStorageKey: StorageKey | string | Uint8Array | any,
+          childDefinition: StorageKey | string | Uint8Array | any,
+          childType: u32 | AnyNumber | Uint8Array,
+          key: StorageKey | string | Uint8Array | any,
+          at?: BlockHash | string | Uint8Array
+        ) => Observable<Hash>
+      >;
       /**
        * Retrieves the child storage size
        **/
-      getChildStorageSize: AugmentedRpc<(childStorageKey: StorageKey | string | Uint8Array | any, childDefinition: StorageKey | string | Uint8Array | any, childType: u32 | AnyNumber | Uint8Array, key: StorageKey | string | Uint8Array | any, at?: BlockHash | string | Uint8Array) => Observable<u64>>;
+      getChildStorageSize: AugmentedRpc<
+        (
+          childStorageKey: StorageKey | string | Uint8Array | any,
+          childDefinition: StorageKey | string | Uint8Array | any,
+          childType: u32 | AnyNumber | Uint8Array,
+          key: StorageKey | string | Uint8Array | any,
+          at?: BlockHash | string | Uint8Array
+        ) => Observable<u64>
+      >;
       /**
        * Retrieves the keys with a certain prefix
        **/
-      getKeys: AugmentedRpc<(key: StorageKey | string | Uint8Array | any, at?: BlockHash | string | Uint8Array) => Observable<Vec<StorageKey>>>;
+      getKeys: AugmentedRpc<
+        (
+          key: StorageKey | string | Uint8Array | any,
+          at?: BlockHash | string | Uint8Array
+        ) => Observable<Vec<StorageKey>>
+      >;
       /**
        * Returns the keys with prefix with pagination support.
        **/
-      getKeysPaged: AugmentedRpc<(key: StorageKey | string | Uint8Array | any, count: u32 | AnyNumber | Uint8Array, startKey?: StorageKey | string | Uint8Array | any, at?: BlockHash | string | Uint8Array) => Observable<Vec<StorageKey>>>;
+      getKeysPaged: AugmentedRpc<
+        (
+          key: StorageKey | string | Uint8Array | any,
+          count: u32 | AnyNumber | Uint8Array,
+          startKey?: StorageKey | string | Uint8Array | any,
+          at?: BlockHash | string | Uint8Array
+        ) => Observable<Vec<StorageKey>>
+      >;
       /**
        * Returns the runtime metadata
        **/
@@ -228,11 +394,21 @@ declare module '@polkadot/rpc-core/types.jsonrpc' {
       /**
        * Returns the keys with prefix, leave empty to get all the keys (deprecated: Use getKeysPaged)
        **/
-      getPairs: AugmentedRpc<(prefix: StorageKey | string | Uint8Array | any, at?: BlockHash | string | Uint8Array) => Observable<Vec<KeyValue>>>;
+      getPairs: AugmentedRpc<
+        (
+          prefix: StorageKey | string | Uint8Array | any,
+          at?: BlockHash | string | Uint8Array
+        ) => Observable<Vec<KeyValue>>
+      >;
       /**
        * Returns proof of storage entries at a specific block state
        **/
-      getReadProof: AugmentedRpc<(keys: Vec<StorageKey> | (StorageKey | string | Uint8Array | any)[], at?: BlockHash | string | Uint8Array) => Observable<ReadProof>>;
+      getReadProof: AugmentedRpc<
+        (
+          keys: Vec<StorageKey> | (StorageKey | string | Uint8Array | any)[],
+          at?: BlockHash | string | Uint8Array
+        ) => Observable<ReadProof>
+      >;
       /**
        * Get the runtime version
        **/
@@ -240,23 +416,40 @@ declare module '@polkadot/rpc-core/types.jsonrpc' {
       /**
        * Retrieves the storage for a key
        **/
-      getStorage: AugmentedRpc<<T = Codec>(key: StorageKey | string | Uint8Array | any, block?: Hash | Uint8Array | string) => Observable<T>>;
+      getStorage: AugmentedRpc<
+        <T = Codec>(key: StorageKey | string | Uint8Array | any, block?: Hash | Uint8Array | string) => Observable<T>
+      >;
       /**
        * Retrieves the storage hash
        **/
-      getStorageHash: AugmentedRpc<(key: StorageKey | string | Uint8Array | any, at?: BlockHash | string | Uint8Array) => Observable<Hash>>;
+      getStorageHash: AugmentedRpc<
+        (key: StorageKey | string | Uint8Array | any, at?: BlockHash | string | Uint8Array) => Observable<Hash>
+      >;
       /**
        * Retrieves the storage size
        **/
-      getStorageSize: AugmentedRpc<(key: StorageKey | string | Uint8Array | any, at?: BlockHash | string | Uint8Array) => Observable<u64>>;
+      getStorageSize: AugmentedRpc<
+        (key: StorageKey | string | Uint8Array | any, at?: BlockHash | string | Uint8Array) => Observable<u64>
+      >;
       /**
        * Query historical storage entries (by key) starting from a start block
        **/
-      queryStorage: AugmentedRpc<<T = Codec[]>(keys: Vec<StorageKey> | (StorageKey | string | Uint8Array | any)[], fromBlock?: Hash | Uint8Array | string, toBlock?: Hash | Uint8Array | string) => Observable<[Hash, T][]>>;
+      queryStorage: AugmentedRpc<
+        <T = Codec[]>(
+          keys: Vec<StorageKey> | (StorageKey | string | Uint8Array | any)[],
+          fromBlock?: Hash | Uint8Array | string,
+          toBlock?: Hash | Uint8Array | string
+        ) => Observable<[Hash, T][]>
+      >;
       /**
        * Query storage entries (by key) starting at block hash given as the second parameter
        **/
-      queryStorageAt: AugmentedRpc<<T = Codec[]>(keys: Vec<StorageKey> | (StorageKey | string | Uint8Array | any)[], at?: Hash | Uint8Array | string) => Observable<T>>;
+      queryStorageAt: AugmentedRpc<
+        <T = Codec[]>(
+          keys: Vec<StorageKey> | (StorageKey | string | Uint8Array | any)[],
+          at?: Hash | Uint8Array | string
+        ) => Observable<T>
+      >;
       /**
        * Retrieves the runtime version via subscription
        **/
@@ -264,7 +457,9 @@ declare module '@polkadot/rpc-core/types.jsonrpc' {
       /**
        * Subscribes to storage changes for the provided keys
        **/
-      subscribeStorage: AugmentedRpc<<T = Codec[]>(keys?: Vec<StorageKey> | (StorageKey | string | Uint8Array | any)[]) => Observable<T>>;
+      subscribeStorage: AugmentedRpc<
+        <T = Codec[]>(keys?: Vec<StorageKey> | (StorageKey | string | Uint8Array | any)[]) => Observable<T>
+      >;
     };
     system: {
       /**
@@ -286,7 +481,12 @@ declare module '@polkadot/rpc-core/types.jsonrpc' {
       /**
        * Dry run an extrinsic at a given block
        **/
-      dryRun: AugmentedRpc<(extrinsic: Bytes | string | Uint8Array, at?: BlockHash | string | Uint8Array) => Observable<ApplyExtrinsicResult>>;
+      dryRun: AugmentedRpc<
+        (
+          extrinsic: Bytes | string | Uint8Array,
+          at?: BlockHash | string | Uint8Array
+        ) => Observable<ApplyExtrinsicResult>
+      >;
       /**
        * Return health status of the node
        **/

@@ -133,7 +133,7 @@ class Currencies {
     );
   };
 
-  public oracleValues = (): Observable<OracleValue[]> => {
+  public oracleValues = (providerId?: number | null): Observable<any> => {
     return this.api.rpc.chain.subscribeNewHeads().pipe(
       switchMap(() => this.tokens()),
       switchMap(tokens => {
@@ -141,7 +141,7 @@ class Currencies {
           tokens
             .filter(token => !token.isNetworkToken && !token.isBaseToken)
             .map(({ id }) =>
-              this.api.rpc.oracle.getValue(id as any).pipe(
+              this.api.rpc.oracle.getValue(providerId as any, id as any).pipe(
                 map(result => {
                   return [id, result];
                 })
@@ -161,7 +161,7 @@ class Currencies {
           }
 
           return result;
-        });
+        }) as any;
       })
     );
   };

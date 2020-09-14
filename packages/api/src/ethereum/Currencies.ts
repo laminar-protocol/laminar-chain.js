@@ -149,7 +149,7 @@ class Currencies {
     );
   };
 
-  public oracleValues = (): Observable<OracleValue[]> => {
+  public oracleValues = (providerId?: number): Observable<OracleValue[]> => {
     return timer(0, 120000).pipe(
       switchMap(() => this.tokens()),
       switchMap(tokens => {
