@@ -133,7 +133,7 @@ class Currencies {
     );
   };
 
-  public oracleValues = (dataProviderId: string | number): Observable<any> => {
+  public oracleValues = (dataProviderId: string | number): Observable<OracleValue[]> => {
     return this.api.rpc.chain.subscribeNewHeads().pipe(
       switchMap(() => this.tokens()),
       switchMap(tokens => {
