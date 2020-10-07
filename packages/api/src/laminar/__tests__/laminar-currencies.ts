@@ -7,7 +7,7 @@ describe('laminar currencies', () => {
   jest.setTimeout(300000);
 
   const api = new LaminarApi({
-    provider: new WsProvider('wss://testnet-node-1.laminar-chain.laminar.one/ws')
+    provider: new WsProvider('wss://dev-node.laminar-chain.laminar.one/ws')
   });
 
   let alice;
@@ -64,7 +64,7 @@ describe('laminar currencies', () => {
   });
 
   it('oracleValues', done => {
-    api.currencies.oracleValues().subscribe(result => {
+    api.currencies.oracleValues(1).subscribe(result => {
       console.log(result);
 
       expect(result).toMatchObject(expect.arrayContaining([oracleValueMatch]));

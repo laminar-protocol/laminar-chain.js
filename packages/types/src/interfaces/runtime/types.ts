@@ -3,8 +3,15 @@
 
 import { ITuple } from '@polkadot/types/types';
 import { Compact, Enum, Int, Option, Set, Struct, U8aFixed, UInt, Vec } from '@polkadot/types/codec';
-import { GenericAccountId, GenericAccountIndex, GenericBlock, GenericCall, GenericConsensusEngineId, GenericLookupSource } from '@polkadot/types/generic';
-import { Bytes, DoNotConstruct, Null, StorageKey, bool, u128, u16, u32, u64, u8 } from '@polkadot/types/primitive';
+import {
+  GenericAccountId,
+  GenericAccountIndex,
+  GenericBlock,
+  GenericCall,
+  GenericConsensusEngineId,
+  GenericLookupSource
+} from '@polkadot/types/generic';
+import { Bytes, DoNotConstruct, Null, StorageKey, bool, u16, u32, u64, u8 } from '@polkadot/types/primitive';
 import { Price } from '@open-web3/orml-types/interfaces/traits';
 import { AuthorityId } from '@polkadot/types/interfaces/consensus';
 import { Signature } from '@polkadot/types/interfaces/extrinsics';
@@ -37,7 +44,7 @@ export interface AmountOf extends Amount {}
 export interface AssetId extends u32 {}
 
 /** @name Balance */
-export interface Balance extends u128 {}
+export interface Balance extends UInt {}
 
 /** @name BalanceOf */
 export interface BalanceOf extends Balance {}
@@ -302,6 +309,13 @@ export interface PairInfo extends Struct {
   readonly quoteAmount: FixedI128;
 }
 
+/** @name PalletVersion */
+export interface PalletVersion extends Struct {
+  readonly major: u16;
+  readonly minor: u8;
+  readonly patch: u8;
+}
+
 /** @name Pays */
 export interface Pays extends Enum {
   readonly isYes: boolean;
@@ -309,19 +323,19 @@ export interface Pays extends Enum {
 }
 
 /** @name Perbill */
-export interface Perbill extends u32 {}
+export interface Perbill extends UInt {}
 
 /** @name Percent */
-export interface Percent extends u8 {}
+export interface Percent extends UInt {}
 
 /** @name Permill */
-export interface Permill extends u32 {}
+export interface Permill extends UInt {}
 
 /** @name Perquintill */
-export interface Perquintill extends u64 {}
+export interface Perquintill extends UInt {}
 
 /** @name PerU16 */
-export interface PerU16 extends u16 {}
+export interface PerU16 extends UInt {}
 
 /** @name Phantom */
 export interface Phantom extends Null {}
