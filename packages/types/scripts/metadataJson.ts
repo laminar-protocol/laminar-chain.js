@@ -13,6 +13,10 @@ const main = () => {
     typesAlias: typesModules
   });
   const metadata = new Metadata(registry, metadataStatic);
+
+  // hack https://github.com/polkadot-js/api/issues/2687#issuecomment-705342442
+  metadata.asLatest.toJSON();
+
   try {
     metadata.getUniqTypes(true);
   } catch (err) {
