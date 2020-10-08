@@ -23,6 +23,7 @@ import {
   MarginPosition,
   MarginTradingPairOption,
   Moment,
+  OpaqueCall,
   OracleKey,
   Perbill,
   Permill,
@@ -39,6 +40,7 @@ import {
   ValidatorId
 } from '@laminar/types/interfaces/runtime';
 import { OrderedSet, TimestampedValueOf } from '@open-web3/orml-types/interfaces/oracle';
+import { UncleEntryItem } from '@polkadot/types/interfaces/authorship';
 import {
   BabeAuthorityWeight,
   MaybeRandomness,
@@ -84,12 +86,26 @@ import {
   LastRuntimeUpgradeInfo,
   Phase
 } from '@polkadot/types/interfaces/system';
-import { OpenTip } from '@polkadot/types/interfaces/treasury';
+import { Bounty, BountyIndex, OpenTip } from '@polkadot/types/interfaces/treasury';
 import { Multiplier } from '@polkadot/types/interfaces/txpayment';
 import { Multisig } from '@polkadot/types/interfaces/utility';
 import { BaseStorageType, StorageDoubleMap, StorageMap } from '@open-web3/api-mobx';
 
 export interface StorageType extends BaseStorageType {
+  authorship: {
+    /**
+     * Author of current block.
+     **/
+    author: Option<AccountId> | null;
+    /**
+     * Whether uncles were already set in this block.
+     **/
+    didSetUncles: bool | null;
+    /**
+     * Uncles
+     **/
+    uncles: Vec<UncleEntryItem> | null;
+  };
   babe: {
     /**
      * Current epoch authorities.
@@ -182,6 +198,78 @@ export interface StorageType extends BaseStorageType {
      **/
     totalIssuance: Balance | null;
   };
+  bandOracle: {
+    /**
+     * If an oracle operator has feed a value in this block
+     **/
+    hasDispatched: OrderedSet | null;
+    /**
+     * True if Self::values(key) is up to date, otherwise the value is stale
+     **/
+    isUpdated: StorageMap<
+      | OracleKey
+      | 'LAMI'
+      | 'AUSD'
+      | 'FEUR'
+      | 'FJPY'
+      | 'FBTC'
+      | 'FETH'
+      | 'FAUD'
+      | 'FCAD'
+      | 'FCHF'
+      | 'FXAU'
+      | 'FOIL'
+      | 'FGBP'
+      | number,
+      bool
+    >;
+    /**
+     * The current members of the collective. This is stored sorted (just by value).
+     **/
+    members: OrderedSet | null;
+    nonces: StorageMap<AccountId | string, u32>;
+    /**
+     * Raw values for each oracle operators
+     **/
+    rawValues: StorageDoubleMap<
+      AccountId | string,
+      | OracleKey
+      | 'LAMI'
+      | 'AUSD'
+      | 'FEUR'
+      | 'FJPY'
+      | 'FBTC'
+      | 'FETH'
+      | 'FAUD'
+      | 'FCAD'
+      | 'FCHF'
+      | 'FXAU'
+      | 'FOIL'
+      | 'FGBP'
+      | number,
+      Option<TimestampedValueOf>
+    >;
+    /**
+     * Combined value, may not be up to date
+     **/
+    values: StorageMap<
+      | OracleKey
+      | 'LAMI'
+      | 'AUSD'
+      | 'FEUR'
+      | 'FJPY'
+      | 'FBTC'
+      | 'FETH'
+      | 'FAUD'
+      | 'FCAD'
+      | 'FCHF'
+      | 'FXAU'
+      | 'FOIL'
+      | 'FGBP'
+      | number,
+      Option<TimestampedValueOf>
+    >;
+  };
   baseLiquidityPoolsForMargin: {
     /**
      * Identity info of liquidity pools: `(identity_info, deposit_amount, is_verified)`.
@@ -230,8 +318,7 @@ export interface StorageType extends BaseStorageType {
      **/
     members: Vec<AccountId> | null;
     /**
-     * The member who provides the default vote for any other members that do not vote before
-     * the timeout. If None, then no member has that privilege.
+     * The prime member that helps determine the default vote behavior in case of absentations.
      **/
     prime: Option<AccountId> | null;
     /**
@@ -267,8 +354,7 @@ export interface StorageType extends BaseStorageType {
      **/
     members: Vec<AccountId> | null;
     /**
-     * The member who provides the default vote for any other members that do not vote before
-     * the timeout. If None, then no member has that privilege.
+     * The prime member that helps determine the default vote behavior in case of absentations.
      **/
     prime: Option<AccountId> | null;
     /**
@@ -334,6 +420,78 @@ export interface StorageType extends BaseStorageType {
      **/
     accounts: StorageMap<AccountIndex | AnyNumber, Option<ITuple<[AccountId, BalanceOf, bool]>>>;
   };
+  laminarOracle: {
+    /**
+     * If an oracle operator has feed a value in this block
+     **/
+    hasDispatched: OrderedSet | null;
+    /**
+     * True if Self::values(key) is up to date, otherwise the value is stale
+     **/
+    isUpdated: StorageMap<
+      | OracleKey
+      | 'LAMI'
+      | 'AUSD'
+      | 'FEUR'
+      | 'FJPY'
+      | 'FBTC'
+      | 'FETH'
+      | 'FAUD'
+      | 'FCAD'
+      | 'FCHF'
+      | 'FXAU'
+      | 'FOIL'
+      | 'FGBP'
+      | number,
+      bool
+    >;
+    /**
+     * The current members of the collective. This is stored sorted (just by value).
+     **/
+    members: OrderedSet | null;
+    nonces: StorageMap<AccountId | string, u32>;
+    /**
+     * Raw values for each oracle operators
+     **/
+    rawValues: StorageDoubleMap<
+      AccountId | string,
+      | OracleKey
+      | 'LAMI'
+      | 'AUSD'
+      | 'FEUR'
+      | 'FJPY'
+      | 'FBTC'
+      | 'FETH'
+      | 'FAUD'
+      | 'FCAD'
+      | 'FCHF'
+      | 'FXAU'
+      | 'FOIL'
+      | 'FGBP'
+      | number,
+      Option<TimestampedValueOf>
+    >;
+    /**
+     * Combined value, may not be up to date
+     **/
+    values: StorageMap<
+      | OracleKey
+      | 'LAMI'
+      | 'AUSD'
+      | 'FEUR'
+      | 'FJPY'
+      | 'FBTC'
+      | 'FETH'
+      | 'FAUD'
+      | 'FCAD'
+      | 'FCHF'
+      | 'FXAU'
+      | 'FOIL'
+      | 'FGBP'
+      | number,
+      Option<TimestampedValueOf>
+    >;
+  };
   marginLiquidityPools: {
     /**
      * The accumulated swap rate of trading pairs in liquidity pools.
@@ -376,7 +534,7 @@ export interface StorageType extends BaseStorageType {
      *
      * The balance value could be positive or negative:
      * - If positive, it represents 'balance' the trader could use to open positions, withdraw etc.
-     * - If negative, it represents how much the trader owns the pool. Owning could happen when realizing loss.
+     * - If negative, it represents how much the trader owes the pool. Owing could happen when realizing loss.
      * but trader has not enough free margin at the moment; Then repayment would be done while realizing profit.
      **/
     balances: StorageDoubleMap<AccountId | string, LiquidityPoolId | AnyNumber, FixedI128>;
@@ -434,7 +592,7 @@ export interface StorageType extends BaseStorageType {
     riskThresholds: StorageMap<TradingPair | { base?: any; quote?: any } | string, TradingPairRiskThreshold>;
   };
   multisig: {
-    calls: StorageMap<U8aFixed | string, Option<ITuple<[Bytes, AccountId, BalanceOf]>>>;
+    calls: StorageMap<U8aFixed | string, Option<ITuple<[OpaqueCall, AccountId, BalanceOf]>>>;
     /**
      * The set of open multisig operations.
      **/
@@ -464,7 +622,7 @@ export interface StorageType extends BaseStorageType {
      **/
     reportsByKindIndex: StorageMap<Kind | string, Bytes>;
   };
-  operatorMembership: {
+  operatorMembershipBand: {
     /**
      * The current membership, stored as an ordered Vec.
      **/
@@ -474,87 +632,37 @@ export interface StorageType extends BaseStorageType {
      **/
     prime: Option<AccountId> | null;
   };
-  oracle: {
+  operatorMembershipLaminar: {
     /**
-     * If an oracle operator has feed a value in this block
+     * The current membership, stored as an ordered Vec.
      **/
-    hasDispatched: OrderedSet | null;
+    members: Vec<AccountId> | null;
     /**
-     * True if Self::values(key) is up to date, otherwise the value is stale
+     * The current prime member, if one exists.
      **/
-    isUpdated: StorageMap<
-      | OracleKey
-      | 'LAMI'
-      | 'AUSD'
-      | 'FEUR'
-      | 'FJPY'
-      | 'FBTC'
-      | 'FETH'
-      | 'FAUD'
-      | 'FCAD'
-      | 'FCHF'
-      | 'FXAU'
-      | 'FOIL'
-      | 'FGBP'
-      | number,
-      bool
-    >;
-    /**
-     * The current members of the collective. This is stored sorted (just by value).
-     **/
-    members: OrderedSet | null;
-    nonces: StorageMap<AccountId | string, u32>;
-    /**
-     * Raw values for each oracle operators
-     **/
-    rawValues: StorageDoubleMap<
-      AccountId | string,
-      | OracleKey
-      | 'LAMI'
-      | 'AUSD'
-      | 'FEUR'
-      | 'FJPY'
-      | 'FBTC'
-      | 'FETH'
-      | 'FAUD'
-      | 'FCAD'
-      | 'FCHF'
-      | 'FXAU'
-      | 'FOIL'
-      | 'FGBP'
-      | number,
-      Option<TimestampedValueOf>
-    >;
-    /**
-     * Session key for oracle operators
-     **/
-    sessionKeys: StorageMap<AccountId | string, Option<AuthorityId>>;
-    /**
-     * Combined value, may not be up to date
-     **/
-    values: StorageMap<
-      | OracleKey
-      | 'LAMI'
-      | 'AUSD'
-      | 'FEUR'
-      | 'FJPY'
-      | 'FBTC'
-      | 'FETH'
-      | 'FAUD'
-      | 'FCAD'
-      | 'FCHF'
-      | 'FXAU'
-      | 'FOIL'
-      | 'FGBP'
-      | number,
-      Option<TimestampedValueOf>
-    >;
+    prime: Option<AccountId> | null;
   };
   palletTreasury: {
     /**
      * Proposal indices that have been approved but not yet awarded.
      **/
     approvals: Vec<ProposalIndex> | null;
+    /**
+     * Bounties that have been made.
+     **/
+    bounties: StorageMap<BountyIndex | AnyNumber, Option<Bounty>>;
+    /**
+     * Bounty indices that have been approved but not yet funded.
+     **/
+    bountyApprovals: Vec<BountyIndex> | null;
+    /**
+     * Number of bounty proposals that have been made.
+     **/
+    bountyCount: BountyIndex | null;
+    /**
+     * The description of each bounty.
+     **/
+    bountyDescriptions: StorageMap<BountyIndex | AnyNumber, Option<Bytes>>;
     /**
      * Number of proposals that have been made.
      **/
@@ -983,6 +1091,10 @@ export interface StorageType extends BaseStorageType {
      * Hash of the previous block.
      **/
     parentHash: Hash | null;
+    /**
+     * True if we have upgraded so that `type RefCount` is `u32`. False (default) if not.
+     **/
+    upgradedToU32RefCount: bool | null;
   };
   timestamp: {
     /**

@@ -3,7 +3,7 @@
 
 import { AnyNumber, ITuple, Observable } from '@polkadot/types/types';
 import { Option, Vec } from '@polkadot/types/codec';
-import { bool, u32 } from '@polkadot/types/primitive';
+import { bool } from '@polkadot/types/primitive';
 import {
   AccountId,
   Balance,
@@ -11,25 +11,24 @@ import {
   FixedI128,
   IdentityDepositBalanceOf,
   LiquidityPoolId,
+  LiquidityPoolIdentityInfo,
   MarginPoolOption,
   MarginPoolTradingPairOption,
+  MarginPosition,
   MarginTradingPairOption,
   Moment,
-  OracleKey,
   Permill,
   Pool,
   PositionId,
   PositionsSnapshot,
   SwapRate,
   SyntheticPoolCurrencyOption,
+  SyntheticPosition,
   SyntheticTokensRatio,
   TradingPair,
   TradingPairRiskThreshold
 } from '@laminar/types/interfaces/runtime';
-import { OrderedSet, TimestampedValueOf } from '@open-web3/orml-types/interfaces/oracle';
 import { AccountData, BalanceLock } from '@polkadot/types/interfaces/balances';
-import { AuthorityId } from '@polkadot/types/interfaces/consensus';
-import { IdentityInfo } from '@polkadot/types/interfaces/identity';
 import { ApiTypes } from '@polkadot/api/types';
 
 declare module '@polkadot/api/types/storage' {
@@ -45,7 +44,7 @@ declare module '@polkadot/api/types/storage' {
         ApiType,
         (
           arg: LiquidityPoolId | AnyNumber | Uint8Array
-        ) => Observable<Option<ITuple<[IdentityInfo, IdentityDepositBalanceOf, bool]>>>
+        ) => Observable<Option<ITuple<[LiquidityPoolIdentityInfo, IdentityDepositBalanceOf, bool]>>>
       > &
         QueryableStorageEntry<ApiType>;
       /**
@@ -71,7 +70,7 @@ declare module '@polkadot/api/types/storage' {
         ApiType,
         (
           arg: LiquidityPoolId | AnyNumber | Uint8Array
-        ) => Observable<Option<ITuple<[IdentityInfo, IdentityDepositBalanceOf, bool]>>>
+        ) => Observable<Option<ITuple<[LiquidityPoolIdentityInfo, IdentityDepositBalanceOf, bool]>>>
       > &
         QueryableStorageEntry<ApiType>;
       /**
@@ -144,7 +143,7 @@ declare module '@polkadot/api/types/storage' {
        *
        * The balance value could be positive or negative:
        * - If positive, it represents 'balance' the trader could use to open positions, withdraw etc.
-       * - If negative, it represents how much the trader owns the pool. Owning could happen when realizing loss.
+       * - If negative, it represents how much the trader owes the pool. Owing could happen when realizing loss.
        * but trader has not enough free margin at the moment; Then repayment would be done while realizing profit.
        **/
       balances: AugmentedQueryDoubleMap<
@@ -182,7 +181,10 @@ declare module '@polkadot/api/types/storage' {
       /**
        * Positions.
        **/
-      positions: AugmentedQuery<ApiType, (arg: PositionId | AnyNumber | Uint8Array) => Observable<Option<Position>>> &
+      positions: AugmentedQuery<
+        ApiType,
+        (arg: PositionId | AnyNumber | Uint8Array) => Observable<Option<MarginPosition>>
+      > &
         QueryableStorageEntry<ApiType>;
       /**
        * Positions existence check by pools and trading pairs.
@@ -231,100 +233,6 @@ declare module '@polkadot/api/types/storage' {
       riskThresholds: AugmentedQuery<
         ApiType,
         (arg: TradingPair | { base?: any; quote?: any } | string | Uint8Array) => Observable<TradingPairRiskThreshold>
-      > &
-        QueryableStorageEntry<ApiType>;
-    };
-    oracle: {
-      [key: string]: QueryableStorageEntry<ApiType>;
-      /**
-       * If an oracle operator has feed a value in this block
-       **/
-      hasDispatched: AugmentedQuery<ApiType, () => Observable<OrderedSet>> & QueryableStorageEntry<ApiType>;
-      /**
-       * True if Self::values(key) is up to date, otherwise the value is stale
-       **/
-      isUpdated: AugmentedQuery<
-        ApiType,
-        (
-          arg:
-            | OracleKey
-            | 'LAMI'
-            | 'AUSD'
-            | 'FEUR'
-            | 'FJPY'
-            | 'FBTC'
-            | 'FETH'
-            | 'FAUD'
-            | 'FCAD'
-            | 'FCHF'
-            | 'FXAU'
-            | 'FOIL'
-            | 'FGBP'
-            | number
-            | Uint8Array
-        ) => Observable<bool>
-      > &
-        QueryableStorageEntry<ApiType>;
-      /**
-       * The current members of the collective. This is stored sorted (just by value).
-       **/
-      members: AugmentedQuery<ApiType, () => Observable<OrderedSet>> & QueryableStorageEntry<ApiType>;
-      nonces: AugmentedQuery<ApiType, (arg: AccountId | string | Uint8Array) => Observable<u32>> &
-        QueryableStorageEntry<ApiType>;
-      /**
-       * Raw values for each oracle operators
-       **/
-      rawValues: AugmentedQueryDoubleMap<
-        ApiType,
-        (
-          key1: AccountId | string | Uint8Array,
-          key2:
-            | OracleKey
-            | 'LAMI'
-            | 'AUSD'
-            | 'FEUR'
-            | 'FJPY'
-            | 'FBTC'
-            | 'FETH'
-            | 'FAUD'
-            | 'FCAD'
-            | 'FCHF'
-            | 'FXAU'
-            | 'FOIL'
-            | 'FGBP'
-            | number
-            | Uint8Array
-        ) => Observable<Option<TimestampedValueOf>>
-      > &
-        QueryableStorageEntry<ApiType>;
-      /**
-       * Session key for oracle operators
-       **/
-      sessionKeys: AugmentedQuery<ApiType, (arg: AccountId | string | Uint8Array) => Observable<Option<AuthorityId>>> &
-        QueryableStorageEntry<ApiType>;
-      /**
-       * Combined value, may not be up to date
-       **/
-      values: AugmentedQuery<
-        ApiType,
-        (
-          arg:
-            | OracleKey
-            | 'LAMI'
-            | 'AUSD'
-            | 'FEUR'
-            | 'FJPY'
-            | 'FBTC'
-            | 'FETH'
-            | 'FAUD'
-            | 'FCAD'
-            | 'FCHF'
-            | 'FXAU'
-            | 'FOIL'
-            | 'FGBP'
-            | number
-            | Uint8Array
-        ) => Observable<Option<TimestampedValueOf>>
       > &
         QueryableStorageEntry<ApiType>;
     };
@@ -411,7 +319,7 @@ declare module '@polkadot/api/types/storage' {
             | 'FGBP'
             | number
             | Uint8Array
-        ) => Observable<Position>
+        ) => Observable<SyntheticPosition>
       > &
         QueryableStorageEntry<ApiType>;
       /**

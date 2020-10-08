@@ -1,9 +1,9 @@
 // Auto-generated via `yarn polkadot-types-from-chain`, do not edit
 /* eslint-disable */
 
-import { AnyNumber, ITuple } from '@polkadot/types/types';
-import { Compact, Option, Vec } from '@polkadot/types/codec';
-import { bool, u32 } from '@polkadot/types/primitive';
+import { AnyNumber } from '@polkadot/types/types';
+import { Compact, Option } from '@polkadot/types/codec';
+import { bool } from '@polkadot/types/primitive';
 import {
   AccountId,
   AccountIndex,
@@ -11,7 +11,6 @@ import {
   AmountOf,
   Balance,
   BalanceOf,
-  BlockNumber,
   Call,
   CurrencyId,
   CurrencyIdOf,
@@ -19,10 +18,9 @@ import {
   Leverage,
   Leverages,
   LiquidityPoolId,
+  LiquidityPoolIdentityInfo,
   LookupSource,
   Moment,
-  OracleKey,
-  OracleValue,
   Permill,
   PositionId,
   RiskThreshold,
@@ -30,9 +28,7 @@ import {
   TradingPair
 } from '@laminar/types/interfaces/runtime';
 import { Price } from '@open-web3/orml-types/interfaces/traits';
-import { AuthorityId } from '@polkadot/types/interfaces/consensus';
-import { Extrinsic, Signature } from '@polkadot/types/interfaces/extrinsics';
-import { IdentityInfo } from '@polkadot/types/interfaces/identity';
+import { Extrinsic } from '@polkadot/types/interfaces/extrinsics';
 import { ApiTypes, SubmittableExtrinsic } from '@polkadot/api/types';
 
 declare module '@polkadot/api/types/submittable' {
@@ -87,18 +83,8 @@ declare module '@polkadot/api/types/submittable' {
         (
           poolId: Compact<LiquidityPoolId> | AnyNumber | Uint8Array,
           identityInfo:
-            | IdentityInfo
-            | {
-                additional?: any;
-                display?: any;
-                legal?: any;
-                web?: any;
-                riot?: any;
-                email?: any;
-                pgpFingerprint?: any;
-                image?: any;
-                twitter?: any;
-              }
+            | LiquidityPoolIdentityInfo
+            | { legalName?: any; displayName?: any; web?: any; email?: any; image_url?: any }
             | string
             | Uint8Array
         ) => SubmittableExtrinsic<ApiType>
@@ -182,18 +168,8 @@ declare module '@polkadot/api/types/submittable' {
         (
           poolId: Compact<LiquidityPoolId> | AnyNumber | Uint8Array,
           identityInfo:
-            | IdentityInfo
-            | {
-                additional?: any;
-                display?: any;
-                legal?: any;
-                web?: any;
-                riot?: any;
-                email?: any;
-                pgpFingerprint?: any;
-                image?: any;
-                twitter?: any;
-              }
+            | LiquidityPoolIdentityInfo
+            | { legalName?: any; displayName?: any; web?: any; email?: any; image_url?: any }
             | string
             | Uint8Array
         ) => SubmittableExtrinsic<ApiType>
@@ -239,12 +215,12 @@ declare module '@polkadot/api/types/submittable' {
        * - T::MultiCurrency is orml_tokens
        * - T::NativeCurrency is pallet_balances
        * - Complexity: `O(1)`
-       * - Db reads: 2 * `Accounts`
-       * - Db writes: 2 * `Accounts`
+       * - Db reads: 5
+       * - Db writes: 2
        * -------------------
        * Base Weight:
-       * - non-native currency: 26.72 µs
-       * - native currency in worst case: 29.9 µs
+       * - non-native currency: 90.23 µs
+       * - native currency in worst case: 70 µs
        * # </weight>
        **/
       transfer: AugmentedSubmittable<
@@ -282,7 +258,7 @@ declare module '@polkadot/api/types/submittable' {
        * - Db reads: 2 * `Accounts`
        * - Db writes: 2 * `Accounts`
        * -------------------
-       * Base Weight: 29.53 µs
+       * Base Weight: 70 µs
        * # </weight>
        **/
       transferNativeCurrency: AugmentedSubmittable<
@@ -301,11 +277,13 @@ declare module '@polkadot/api/types/submittable' {
        * - T::MultiCurrency is orml_tokens
        * - T::NativeCurrency is pallet_balances
        * - Complexity: `O(1)`
-       * - Db reads: `Accounts`
-       * - Db writes: `Accounts`
+       * - Db reads:
+       * - non-native currency: 5
+       * - Db writes:
+       * - non-native currency: 2
        * -------------------
        * Base Weight:
-       * - non-native currency: 25.36 µs
+       * - non-native currency: 66.24 µs
        * - native currency and killing account: 26.33 µs
        * - native currency and create account: 27.39 µs
        * # </weight>
@@ -500,7 +478,7 @@ declare module '@polkadot/api/types/submittable' {
         (pool: Compact<LiquidityPoolId> | AnyNumber | Uint8Array) => SubmittableExtrinsic<ApiType>
       >;
       /**
-       * Margin call a liqudity pool.
+       * Margin call a liquidity pool.
        *
        * May only be called from none origin. Would fail if the pool still safe.
        **/
@@ -593,39 +571,6 @@ declare module '@polkadot/api/types/submittable' {
           amount: Compact<Balance> | AnyNumber | Uint8Array
         ) => SubmittableExtrinsic<ApiType>
       >;
-    };
-    oracle: {
-      [key: string]: SubmittableExtrinsicFunction<ApiType>;
-      feedValues: AugmentedSubmittable<
-        (
-          values:
-            | Vec<ITuple<[OracleKey, OracleValue]>>
-            | [
-                (
-                  | OracleKey
-                  | 'LAMI'
-                  | 'AUSD'
-                  | 'FEUR'
-                  | 'FJPY'
-                  | 'FBTC'
-                  | 'FETH'
-                  | 'FAUD'
-                  | 'FCAD'
-                  | 'FCHF'
-                  | 'FXAU'
-                  | 'FOIL'
-                  | 'FGBP'
-                  | number
-                  | Uint8Array
-                ),
-                OracleValue | AnyNumber | Uint8Array
-              ][],
-          index: Compact<u32> | AnyNumber | Uint8Array,
-          block: BlockNumber | AnyNumber | Uint8Array,
-          signature: Signature | string | Uint8Array
-        ) => SubmittableExtrinsic<ApiType>
-      >;
-      setSessionKey: AugmentedSubmittable<(key: AuthorityId | string | Uint8Array) => SubmittableExtrinsic<ApiType>>;
     };
     syntheticLiquidityPools: {
       [key: string]: SubmittableExtrinsicFunction<ApiType>;
@@ -967,10 +912,10 @@ declare module '@polkadot/api/types/submittable' {
        *
        * # <weight>
        * - Complexity: `O(1)`
-       * - Db reads: 2 * `Accounts`
-       * - Db writes: 2 * `Accounts`
+       * - Db reads: 4
+       * - Db writes: 2
        * -------------------
-       * Base Weight: 26.65 µs
+       * Base Weight: 84.08 µs
        * # </weight>
        **/
       transfer: AugmentedSubmittable<
@@ -1002,10 +947,10 @@ declare module '@polkadot/api/types/submittable' {
        *
        * # <weight>
        * - Complexity: `O(1)`
-       * - Db reads: 2 * `Accounts`
-       * - Db writes: 2 * `Accounts`
+       * - Db reads: 4
+       * - Db writes: 2
        * -------------------
-       * Base Weight: 26.99 µs
+       * Base Weight: 87.71 µs
        * # </weight>
        **/
       transferAll: AugmentedSubmittable<
