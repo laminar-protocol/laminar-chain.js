@@ -1,6 +1,6 @@
 import Metadata from '@polkadot/metadata/Metadata';
 import { TypeRegistry } from '@polkadot/types';
-import { types, typesModules } from '../index';
+import { types, typesAlias } from '../index';
 import metadataStatic from '../metadata/static-latest';
 
 describe('metadata', () => {
@@ -8,7 +8,7 @@ describe('metadata', () => {
     const registry = new TypeRegistry();
     registry.register(types);
     registry.setKnownTypes({
-      typesAlias: typesModules
+      typesAlias
     });
     const metadata = new Metadata(registry, metadataStatic);
     console.log(metadata.toString());

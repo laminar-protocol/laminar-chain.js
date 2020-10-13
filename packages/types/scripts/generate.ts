@@ -17,14 +17,14 @@ import * as ormlDefinations from '@open-web3/orml-types/interfaces/definitions';
 
 import * as laminarDefinations from '../src/interfaces/definitions';
 
-import { typesModules } from '../src/known';
+import { typesAlias } from '../src';
 
 // Only keep our own modules to avoid confllicts with the one provided by polkadot.js
 // TODO: make an issue on polkadot.js
 function filterModules(names: string[], defs: any) {
   const registry = new TypeRegistry();
   registry.setKnownTypes({
-    typesAlias: typesModules
+    typesAlias
   });
   registerDefinitions(registry, defs);
   const metadata = new Metadata(registry, metaHex);
@@ -74,5 +74,5 @@ generateRpcTypes(definations, 'packages/types/src/augment-api-rpc.ts');
 generateQuery('packages/types/src/augment-api-query.ts', metadata, definations);
 
 generateMobx('packages/types/src/augment-api-mobx.ts', metaHex, definations, {
-  typesAlias: typesModules
+  typesAlias
 });

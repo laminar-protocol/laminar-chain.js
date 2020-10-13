@@ -1,5 +1,9 @@
 import { derive as ormlDerives } from '@open-web3/orml-api-derive';
-import { types as laminarTypes, metadata as laminarMetadata, typesModules } from '@laminar/types';
+import {
+  types as laminarTypes,
+  typesAlias as laminarTypesAlias,
+  typesBundle as laminarTypesBundle
+} from '@laminar/types';
 import { ApiOptions } from '@polkadot/api/types';
 import jsonrpc from '@laminar/types/interfaces/jsonrpc';
 
@@ -18,7 +22,7 @@ export const options = ({
   rpc = {},
   derives = {},
   typesAlias = {},
-  metadata = {},
+  typesBundle = {},
   ...otherOptions
 }: ApiOptions): ApiOptions => ({
   types: {
@@ -26,8 +30,18 @@ export const options = ({
     ...types
   },
   typesAlias: {
-    ...typesModules,
+    ...laminarTypesAlias,
     ...typesAlias
+  },
+  typesBundle: {
+    ...typesBundle,
+    spec: {
+      ...typesBundle.spec,
+      acala: {
+        ...laminarTypesBundle?.spec?.acala,
+        ...typesBundle?.spec?.acala
+      }
+    }
   },
   rpc: {
     ...laminarRpc,
@@ -36,10 +50,6 @@ export const options = ({
   derives: {
     ...anyOrmlDerives,
     ...derives
-  },
-  metadata: {
-    ...laminarMetadata,
-    ...metadata
   },
   ...otherOptions
 });

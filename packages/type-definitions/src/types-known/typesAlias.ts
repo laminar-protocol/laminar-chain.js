@@ -1,7 +1,4 @@
-import { OverrideModuleType } from '@polkadot/types/types';
-
-// type overrides for modules (where duplication between modules exist)
-const typesModules: Record<string, OverrideModuleType> = {
+const typesModules = {
   syntheticTokens: {
     Position: 'SyntheticPosition'
   },
