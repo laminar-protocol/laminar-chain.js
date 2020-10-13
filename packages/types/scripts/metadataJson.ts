@@ -3,14 +3,14 @@ import fs from 'fs';
 import Metadata from '@polkadot/metadata/Metadata';
 import { TypeRegistry } from '@polkadot/types';
 
-import { types, typesModules } from '../src';
+import { types, typesAlias } from '../src';
 import metadataStatic from '../src/metadata/static-latest';
 
 const main = () => {
   const registry = new TypeRegistry();
   registry.register(types);
   registry.setKnownTypes({
-    typesAlias: typesModules
+    typesAlias
   });
   const metadata = new Metadata(registry, metadataStatic);
   try {

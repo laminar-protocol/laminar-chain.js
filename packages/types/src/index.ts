@@ -1,13 +1,13 @@
+import _typesAlias from '@laminar/type-definitions/types-known/typesAlias';
+import _typesBundle from '@laminar/type-definitions/types-known/typesBundle';
 import * as ormlDefinations from '@open-web3/orml-types/interfaces/definitions';
 import polkadotJSONRpc from '@polkadot/types/interfaces/jsonrpc';
-import { RegistryTypes } from '@polkadot/types/types';
+import { OverrideBundleType, OverrideModuleType, RegistryTypes } from '@polkadot/types/types';
+
 import './augment-api';
 import './augment-types';
 import * as laminarDefinations from './interfaces/definitions';
 import jsonrpc from './interfaces/jsonrpc';
-import _typesBundle from '@laminar/type-definitions/types-known/typesBundle';
-import _typesAlias from '@laminar/type-definitions/types-known/typesAlias';
-import { OverrideModuleType, OverrideBundleType } from '@polkadot/types/types';
 
 export * from './augment-api-mobx';
 
