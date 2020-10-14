@@ -124,11 +124,12 @@ import {
   WeightMultiplier
 } from '@laminar/types/interfaces/runtime';
 import { SyntheticPoolState } from '@laminar/types/interfaces/synthetic';
-import { CallOf } from '@open-web3/orml-types/interfaces/authority';
+import { CallOf, DelayedOrigin, DispatchTime, ScheduleTaskIndex } from '@open-web3/orml-types/interfaces/authority';
 import { GraduallyUpdate, StorageValue } from '@open-web3/orml-types/interfaces/graduallyUpdates';
 import {
   DataProviderId,
   OrderedSet,
+  RpcDataProviderId,
   TimestampedValue,
   TimestampedValueOf
 } from '@open-web3/orml-types/interfaces/oracle';
@@ -1957,7 +1958,21 @@ declare module '@polkadot/types/types/registry' {
     CallOf: CallOf;
     'Option<CallOf>': Option<CallOf>;
     'Vec<CallOf>': Vec<CallOf>;
+    DispatchTime: DispatchTime;
+    'Option<DispatchTime>': Option<DispatchTime>;
+    'Vec<DispatchTime>': Vec<DispatchTime>;
+    ScheduleTaskIndex: ScheduleTaskIndex;
+    'Compact<ScheduleTaskIndex>': Compact<ScheduleTaskIndex>;
+    'Option<ScheduleTaskIndex>': Option<ScheduleTaskIndex>;
+    'Vec<ScheduleTaskIndex>': Vec<ScheduleTaskIndex>;
+    DelayedOrigin: DelayedOrigin;
+    'Option<DelayedOrigin>': Option<DelayedOrigin>;
+    'Vec<DelayedOrigin>': Vec<DelayedOrigin>;
+    RpcDataProviderId: RpcDataProviderId;
+    'Option<RpcDataProviderId>': Option<RpcDataProviderId>;
+    'Vec<RpcDataProviderId>': Vec<RpcDataProviderId>;
     DataProviderId: DataProviderId;
+    'Compact<DataProviderId>': Compact<DataProviderId>;
     'Option<DataProviderId>': Option<DataProviderId>;
     'Vec<DataProviderId>': Vec<DataProviderId>;
     TimestampedValue: TimestampedValue;

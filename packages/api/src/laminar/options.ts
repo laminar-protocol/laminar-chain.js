@@ -1,13 +1,11 @@
 import { derive as ormlDerives } from '@open-web3/orml-api-derive';
 import {
+  rpc as laminarRpc,
   types as laminarTypes,
   typesAlias as laminarTypesAlias,
   typesBundle as laminarTypesBundle
 } from '@laminar/types';
 import { ApiOptions } from '@polkadot/api/types';
-import jsonrpc from '@laminar/types/interfaces/jsonrpc';
-
-const laminarRpc = jsonrpc;
 
 const anyOrmlDerives = ormlDerives as any;
 
