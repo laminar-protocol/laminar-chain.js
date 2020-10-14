@@ -22,7 +22,7 @@ import {
   StorageData
 } from '@laminar/types/interfaces/runtime';
 import { SyntheticPoolState } from '@laminar/types/interfaces/synthetic';
-import { DataProviderId, TimestampedValue } from '@open-web3/orml-types/interfaces/oracle';
+import { RpcDataProviderId, TimestampedValue } from '@open-web3/orml-types/interfaces/oracle';
 import { ExtrinsicOrHash, ExtrinsicStatus } from '@polkadot/types/interfaces/author';
 import { EpochAuthorship } from '@polkadot/types/interfaces/babe';
 import { BlockHash } from '@polkadot/types/interfaces/chain';
@@ -83,13 +83,13 @@ declare module '@polkadot/rpc-core/types.jsonrpc' {
        * Retrieves all oracle values.
        **/
       getAllValues: AugmentedRpc<
-        (providerId: DataProviderId | null) => Observable<Vec<ITuple<[OracleKey, Option<TimestampedValue>]>>>
+        (providerId: RpcDataProviderId | null) => Observable<Vec<ITuple<[OracleKey, Option<TimestampedValue>]>>>
       >;
       /**
        * Retrieves the oracle value for a given key.
        **/
       getValue: AugmentedRpc<
-        (providerId: DataProviderId | null, key: OracleKey | null) => Observable<Option<TimestampedValue>>
+        (providerId: RpcDataProviderId | null, key: OracleKey | null) => Observable<Option<TimestampedValue>>
       >;
     };
     author: {

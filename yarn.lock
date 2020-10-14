@@ -2228,34 +2228,34 @@
   dependencies:
     "@types/node" ">= 8"
 
-"@open-web3/api-mobx@^0.6.0-beta.21":
-  version "0.6.0-beta.21"
-  resolved "https://registry.yarnpkg.com/@open-web3/api-mobx/-/api-mobx-0.6.0-beta.21.tgz#a6bd665f2486a01f830bf1c75f860682f51c870f"
-  integrity sha512-6hbXkd+qRY5y/78KWUUeo5ekFpQJksQNFbeCCsTqzjdR19piSruu0KDGEX+VyMTzpVVSsyhx5jsCXGvxjneL1w==
+"@open-web3/api-mobx@^0.6.0-beta.26":
+  version "0.6.0-beta.26"
+  resolved "https://registry.yarnpkg.com/@open-web3/api-mobx/-/api-mobx-0.6.0-beta.26.tgz#c9346140376a1d3a61d5494270f8a8b285c36b3b"
+  integrity sha512-yOVme0wvI4AzHJcmUvgBDKGeFKQejWFPjax57JuSAcITYn9IHHsUNQ53tnsxyWlOCE2hvBHOdr61VgjbpKxQJA==
   dependencies:
     "@polkadot/util" "^3.5.1"
     mobx "^5.15.4"
     mobx-utils "^5.5.7"
 
-"@open-web3/orml-api-derive@^0.6.0-beta.21":
-  version "0.6.0-beta.21"
-  resolved "https://registry.yarnpkg.com/@open-web3/orml-api-derive/-/orml-api-derive-0.6.0-beta.21.tgz#989934ca2a467d40951739e0a0a25e66542b42e1"
-  integrity sha512-m1OOGyQuW3atid4GZ+wgY5xEG0qx4t8KdY6bRRl+cDpZwR8MJ+VyyQnJxWzk+ixcRbaYkPuLuP8DmOXQlWzACA==
+"@open-web3/orml-api-derive@^0.6.0-beta.26":
+  version "0.6.0-beta.26"
+  resolved "https://registry.yarnpkg.com/@open-web3/orml-api-derive/-/orml-api-derive-0.6.0-beta.26.tgz#437a2af28a132306c785edc206b693c96e59a9aa"
+  integrity sha512-3dZVYtXHMn6hoerh6YSFfzuhmLDU8dtA6o29rVa9CBR9mfMjwP7nE4JkGimI4U1IvCBBCd0T6aon4t0kV4zgtw==
   dependencies:
     memoizee "^0.4.14"
     rxjs "^6.6.3"
 
-"@open-web3/orml-type-definitions@^0.6.0-beta.21":
-  version "0.6.0-beta.21"
-  resolved "https://registry.yarnpkg.com/@open-web3/orml-type-definitions/-/orml-type-definitions-0.6.0-beta.21.tgz#da1deddc2bf1924770efa46522dd0ef4cc4c0cd2"
-  integrity sha512-dZKhmWkpzgxEuSBBMgAzG+/V7HpTAR9JGN3FfyuksR9/mGYOMIfx6YHS9qePvtsM+dUK/YLfJIvkue0u8q8Qxg==
+"@open-web3/orml-type-definitions@^0.6.0-beta.26":
+  version "0.6.0-beta.26"
+  resolved "https://registry.yarnpkg.com/@open-web3/orml-type-definitions/-/orml-type-definitions-0.6.0-beta.26.tgz#b4a94b88ace6db224eadcaf13df08d9cb9e96b91"
+  integrity sha512-uBguglRrYeKYlJlI70nWOSiGZHKhYZoNPvx2JfS+nwZ+fkoFH4WIoQI1S0pH6WFqJUIzP5rJ43KsHU1c5dcaZw==
 
-"@open-web3/orml-types@^0.6.0-beta.21":
-  version "0.6.0-beta.21"
-  resolved "https://registry.yarnpkg.com/@open-web3/orml-types/-/orml-types-0.6.0-beta.21.tgz#fff3dec7ec8568e666df1db63341ded8b74c43e4"
-  integrity sha512-E+EzGMA8tLrfnqemM+jtZTmrGXI+eXDk47TF05a1eeBKdO2DFYVJfygNrkHqbsa4ZFE8SZKWunbgQRDy15aSig==
+"@open-web3/orml-types@^0.6.0-beta.26":
+  version "0.6.0-beta.26"
+  resolved "https://registry.yarnpkg.com/@open-web3/orml-types/-/orml-types-0.6.0-beta.26.tgz#88c610ff887f3fcce5a9c464eacb73a21460e22c"
+  integrity sha512-ZVb71EU7dOCfxb2saOwMXOV1luEMMiZfbDvQZ7RRR75KoEGCxbMz6anh54NB0A7N2Q+MIJRze7Qse+HWXOhJ2w==
   dependencies:
-    "@open-web3/orml-type-definitions" "^0.6.0-beta.21"
+    "@open-web3/orml-type-definitions" "^0.6.0-beta.26"
 
 "@open-web3/util@^0.6.0-beta.20":
   version "0.6.0-beta.20"

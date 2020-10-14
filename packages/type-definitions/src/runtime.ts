@@ -145,5 +145,19 @@ export default {
       email: 'Vec<u8>',
       image_url: 'Vec<u8>'
     }
+  },
+  typesAlias: {
+    marginProtocol: {
+      Position: 'MarginPosition'
+    },
+    baseLiquidityPoolsForMargin: {
+      IdentityInfo: 'LiquidityPoolIdentityInfo'
+    },
+    syntheticTokens: {
+      Position: 'SyntheticPosition'
+    },
+    baseLiquidityPoolsForSynthetic: {
+      IdentityInfo: 'LiquidityPoolIdentityInfo'
+    }
   }
 };

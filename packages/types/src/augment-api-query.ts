@@ -28,7 +28,7 @@ import {
   TradingPair,
   TradingPairRiskThreshold
 } from '@laminar/types/interfaces/runtime';
-import { AccountData, BalanceLock } from '@polkadot/types/interfaces/balances';
+import { OrmlAccountData, OrmlBalanceLock } from '@open-web3/orml-types/interfaces/tokens';
 import { ApiTypes } from '@polkadot/api/types';
 
 declare module '@polkadot/api/types/storage' {
@@ -377,7 +377,7 @@ declare module '@polkadot/api/types/storage' {
             | 'FGBP'
             | number
             | Uint8Array
-        ) => Observable<AccountData>
+        ) => Observable<OrmlAccountData>
       > &
         QueryableStorageEntry<ApiType>;
       /**
@@ -404,7 +404,7 @@ declare module '@polkadot/api/types/storage' {
             | 'FGBP'
             | number
             | Uint8Array
-        ) => Observable<Vec<BalanceLock>>
+        ) => Observable<Vec<OrmlBalanceLock>>
       > &
         QueryableStorageEntry<ApiType>;
       /**

@@ -40,6 +40,7 @@ import {
   ValidatorId
 } from '@laminar/types/interfaces/runtime';
 import { OrderedSet, TimestampedValueOf } from '@open-web3/orml-types/interfaces/oracle';
+import { OrmlAccountData, OrmlBalanceLock } from '@open-web3/orml-types/interfaces/tokens';
 import { UncleEntryItem } from '@polkadot/types/interfaces/authorship';
 import {
   BabeAuthorityWeight,
@@ -1130,7 +1131,7 @@ export interface StorageType extends BaseStorageType {
       | 'FOIL'
       | 'FGBP'
       | number,
-      AccountData
+      OrmlAccountData
     >;
     /**
      * Any liquidity locks of a token type under an account.
@@ -1152,7 +1153,7 @@ export interface StorageType extends BaseStorageType {
       | 'FOIL'
       | 'FGBP'
       | number,
-      Vec<BalanceLock>
+      Vec<OrmlBalanceLock>
     >;
     /**
      * The total issuance of a token type.
