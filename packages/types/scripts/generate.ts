@@ -29,11 +29,16 @@ function filterModules(names: string[], defs: any) {
   registerDefinitions(registry, defs);
   const metadata = new Metadata(registry, metaHex);
 
+  // hack https://github.com/polkadot-js/api/issues/2687#issuecomment-705342442
+  metadata.asLatest.toJSON();
+
   const filtered = metadata.toJSON() as any;
 
-  filtered.metadata.V11.modules = filtered.metadata.V11.modules.filter(({ name }: any) => names.includes(name));
+  filtered.metadata.V12.modules = filtered.metadata.V12.modules.filter(({ name }: any) => names.includes(name));
 
-  return new Metadata(registry, filtered).toHex();
+  const newMetadata = new Metadata(registry, filtered);
+
+  return newMetadata.toHex();
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars

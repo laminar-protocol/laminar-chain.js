@@ -2,6 +2,7 @@ import Metadata from '@polkadot/metadata/Metadata';
 import { TypeRegistry } from '@polkadot/types';
 import { types, typesAlias } from '../index';
 import metadataStatic from '../metadata/static-latest';
+import fs from 'fs';
 
 describe('metadata', () => {
   it('check types', () => {
@@ -11,8 +12,13 @@ describe('metadata', () => {
       typesAlias
     });
     const metadata = new Metadata(registry, metadataStatic);
-    console.log(metadata.toString());
-    metadata.getUniqTypes(true);
+
+    // hack
+    metadata.asLatest.toJSON();
+
+    fs.writeFileSync('./hhhh', metadata.toString());
+    // console.log(metadata.toString());
+    // metadata.getUniqTypes(true);
     expect(true).toBe(true);
   });
 });
