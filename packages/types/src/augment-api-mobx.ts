@@ -4,97 +4,27 @@
 import { AnyNumber, ITuple } from '@polkadot/types/types';
 import { Option, U8aFixed, Vec } from '@polkadot/types/codec';
 import { Bytes, bool, u32, u64 } from '@polkadot/types/primitive';
-import {
-  AccountId,
-  AccountIndex,
-  Balance,
-  BalanceOf,
-  BlockNumber,
-  CurrencyId,
-  ExtrinsicsWeight,
-  FixedI128,
-  Hash,
-  IdentityDepositBalanceOf,
-  KeyTypeId,
-  LiquidityPoolId,
-  LiquidityPoolIdentityInfo,
-  MarginPoolOption,
-  MarginPoolTradingPairOption,
-  MarginPosition,
-  MarginTradingPairOption,
-  Moment,
-  OpaqueCall,
-  OracleKey,
-  Perbill,
-  Permill,
-  Pool,
-  PositionId,
-  PositionsSnapshot,
-  Releases,
-  SwapRate,
-  SyntheticPoolCurrencyOption,
-  SyntheticPosition,
-  SyntheticTokensRatio,
-  TradingPair,
-  TradingPairRiskThreshold,
-  ValidatorId
-} from '@laminar/types/interfaces/runtime';
+import { AccountId, AccountIndex, Balance, BalanceOf, BlockNumber, CurrencyId, ExtrinsicsWeight, FixedI128, Hash, IdentityDepositBalanceOf, KeyTypeId, LiquidityPoolId, LiquidityPoolIdentityInfo, MarginPoolOption, MarginPoolTradingPairOption, MarginPosition, MarginTradingPairOption, Moment, OpaqueCall, OracleKey, Perbill, Permill, Pool, PositionId, PositionsSnapshot, Releases, SwapRate, SyntheticPoolCurrencyOption, SyntheticPosition, SyntheticTokensRatio, TradingPair, TradingPairRiskThreshold, ValidatorId } from '@laminar/types/interfaces/runtime';
 import { OrderedSet, TimestampedValueOf } from '@open-web3/orml-types/interfaces/oracle';
 import { OrmlAccountData, OrmlBalanceLock } from '@open-web3/orml-types/interfaces/tokens';
 import { UncleEntryItem } from '@polkadot/types/interfaces/authorship';
-import {
-  BabeAuthorityWeight,
-  MaybeRandomness,
-  NextConfigDescriptor,
-  Randomness
-} from '@polkadot/types/interfaces/babe';
+import { BabeAuthorityWeight, MaybeRandomness, NextConfigDescriptor, Randomness } from '@polkadot/types/interfaces/babe';
 import { AccountData, BalanceLock } from '@polkadot/types/interfaces/balances';
 import { ProposalIndex, Votes } from '@polkadot/types/interfaces/collective';
 import { AuthorityId } from '@polkadot/types/interfaces/consensus';
 import { Proposal } from '@polkadot/types/interfaces/democracy';
 import { SetId, StoredPendingChange, StoredState } from '@polkadot/types/interfaces/grandpa';
-import {
-  DeferredOffenceOf,
-  Kind,
-  OffenceDetails,
-  OpaqueTimeSlot,
-  ReportIdOf
-} from '@polkadot/types/interfaces/offences';
+import { DeferredOffenceOf, Kind, OffenceDetails, OpaqueTimeSlot, ReportIdOf } from '@polkadot/types/interfaces/offences';
 import { Keys, SessionIndex } from '@polkadot/types/interfaces/session';
-import {
-  ActiveEraInfo,
-  ElectionResult,
-  ElectionScore,
-  ElectionStatus,
-  EraIndex,
-  EraRewardPoints,
-  Exposure,
-  Forcing,
-  Nominations,
-  RewardDestination,
-  SlashingSpans,
-  SpanIndex,
-  SpanRecord,
-  StakingLedger,
-  UnappliedSlash,
-  ValidatorPrefs
-} from '@polkadot/types/interfaces/staking';
-import {
-  AccountInfo,
-  DigestOf,
-  EventIndex,
-  EventRecord,
-  LastRuntimeUpgradeInfo,
-  Phase
-} from '@polkadot/types/interfaces/system';
+import { ActiveEraInfo, ElectionResult, ElectionScore, ElectionStatus, EraIndex, EraRewardPoints, Exposure, Forcing, Nominations, RewardDestination, SlashingSpans, SpanIndex, SpanRecord, StakingLedger, UnappliedSlash, ValidatorPrefs } from '@polkadot/types/interfaces/staking';
+import { AccountInfo, DigestOf, EventIndex, EventRecord, LastRuntimeUpgradeInfo, Phase } from '@polkadot/types/interfaces/system';
 import { Bounty, BountyIndex, OpenTip } from '@polkadot/types/interfaces/treasury';
 import { Multiplier } from '@polkadot/types/interfaces/txpayment';
 import { Multisig } from '@polkadot/types/interfaces/utility';
 import { BaseStorageType, StorageDoubleMap, StorageMap } from '@open-web3/api-mobx';
 
 export interface StorageType extends BaseStorageType {
-  authorship: {
-    /**
+  authorship: {    /**
      * Author of current block.
      **/
     author: Option<AccountId> | null;
@@ -107,8 +37,7 @@ export interface StorageType extends BaseStorageType {
      **/
     uncles: Vec<UncleEntryItem> | null;
   };
-  babe: {
-    /**
+  babe: {    /**
      * Current epoch authorities.
      **/
     authorities: Vec<ITuple<[AuthorityId, BabeAuthorityWeight]>> | null;
@@ -132,7 +61,7 @@ export interface StorageType extends BaseStorageType {
     initialized: Option<MaybeRandomness> | null;
     /**
      * How late the current block is compared to its parent.
-     *
+     * 
      * This entry is populated as part of block execution and is cleaned up
      * on block finalization. Querying this storage entry outside of block
      * execution context should always yield zero.
@@ -148,9 +77,9 @@ export interface StorageType extends BaseStorageType {
     nextRandomness: Randomness | null;
     /**
      * The epoch randomness for the *current* epoch.
-     *
+     * 
      * # Security
-     *
+     * 
      * This MUST NOT be used for gambling, as it can be influenced by a
      * malicious validator in the short term. It MAY be used in many
      * cryptographic protocols, however, so long as one remembers that this
@@ -161,11 +90,11 @@ export interface StorageType extends BaseStorageType {
     randomness: Randomness | null;
     /**
      * Randomness under construction.
-     *
+     * 
      * We make a tradeoff between storage accesses and list length.
      * We store the under-construction randomness in segments of up to
      * `UNDER_CONSTRUCTION_SEGMENT_LENGTH`.
-     *
+     * 
      * Once a segment reaches this length, we begin the next one.
      * We reset all segments and return to `0` at the beginning of every
      * epoch.
@@ -176,10 +105,9 @@ export interface StorageType extends BaseStorageType {
      **/
     underConstruction: StorageMap<u32 | AnyNumber, Vec<Randomness>>;
   };
-  balances: {
-    /**
+  balances: {    /**
      * The balance of an account.
-     *
+     * 
      * NOTE: This is only used in the case that this module is used to store balances.
      **/
     account: StorageMap<AccountId | string, AccountData>;
@@ -190,7 +118,7 @@ export interface StorageType extends BaseStorageType {
     locks: StorageMap<AccountId | string, Vec<BalanceLock>>;
     /**
      * Storage version of the pallet.
-     *
+     * 
      * This is set to v2.0.0 for new networks.
      **/
     storageVersion: Releases | null;
@@ -199,31 +127,14 @@ export interface StorageType extends BaseStorageType {
      **/
     totalIssuance: Balance | null;
   };
-  bandOracle: {
-    /**
+  bandOracle: {    /**
      * If an oracle operator has feed a value in this block
      **/
     hasDispatched: OrderedSet | null;
     /**
      * True if Self::values(key) is up to date, otherwise the value is stale
      **/
-    isUpdated: StorageMap<
-      | OracleKey
-      | 'LAMI'
-      | 'AUSD'
-      | 'FEUR'
-      | 'FJPY'
-      | 'FBTC'
-      | 'FETH'
-      | 'FAUD'
-      | 'FCAD'
-      | 'FCHF'
-      | 'FXAU'
-      | 'FOIL'
-      | 'FGBP'
-      | number,
-      bool
-    >;
+    isUpdated: StorageMap<OracleKey | 'LAMI'|'AUSD'|'FEUR'|'FJPY'|'FBTC'|'FETH'|'FAUD'|'FCAD'|'FCHF'|'FXAU'|'FOIL'|'FGBP' | number, bool>;
     /**
      * The current members of the collective. This is stored sorted (just by value).
      **/
@@ -232,89 +143,47 @@ export interface StorageType extends BaseStorageType {
     /**
      * Raw values for each oracle operators
      **/
-    rawValues: StorageDoubleMap<
-      AccountId | string,
-      | OracleKey
-      | 'LAMI'
-      | 'AUSD'
-      | 'FEUR'
-      | 'FJPY'
-      | 'FBTC'
-      | 'FETH'
-      | 'FAUD'
-      | 'FCAD'
-      | 'FCHF'
-      | 'FXAU'
-      | 'FOIL'
-      | 'FGBP'
-      | number,
-      Option<TimestampedValueOf>
-    >;
+    rawValues: StorageDoubleMap<AccountId | string, OracleKey | 'LAMI'|'AUSD'|'FEUR'|'FJPY'|'FBTC'|'FETH'|'FAUD'|'FCAD'|'FCHF'|'FXAU'|'FOIL'|'FGBP' | number, Option<TimestampedValueOf>>;
     /**
      * Combined value, may not be up to date
      **/
-    values: StorageMap<
-      | OracleKey
-      | 'LAMI'
-      | 'AUSD'
-      | 'FEUR'
-      | 'FJPY'
-      | 'FBTC'
-      | 'FETH'
-      | 'FAUD'
-      | 'FCAD'
-      | 'FCHF'
-      | 'FXAU'
-      | 'FOIL'
-      | 'FGBP'
-      | number,
-      Option<TimestampedValueOf>
-    >;
+    values: StorageMap<OracleKey | 'LAMI'|'AUSD'|'FEUR'|'FJPY'|'FBTC'|'FETH'|'FAUD'|'FCAD'|'FCHF'|'FXAU'|'FOIL'|'FGBP' | number, Option<TimestampedValueOf>>;
   };
-  baseLiquidityPoolsForMargin: {
-    /**
+  baseLiquidityPoolsForMargin: {    /**
      * Identity info of liquidity pools: `(identity_info, deposit_amount, is_verified)`.
-     *
+     * 
      * Returns `None` if identity info of the pool not set or removed.
      **/
-    identityInfos: StorageMap<
-      LiquidityPoolId | AnyNumber,
-      Option<ITuple<[LiquidityPoolIdentityInfo, IdentityDepositBalanceOf, bool]>>
-    >;
+    identityInfos: StorageMap<LiquidityPoolId | AnyNumber, Option<ITuple<[LiquidityPoolIdentityInfo, IdentityDepositBalanceOf, bool]>>>;
     /**
      * Next available liquidity pool ID.
      **/
     nextPoolId: LiquidityPoolId | null;
     /**
      * Liquidity pool information.
-     *
+     * 
      * Returns `None` if no such pool exists.
      **/
     pools: StorageMap<LiquidityPoolId | AnyNumber, Option<Pool>>;
   };
-  baseLiquidityPoolsForSynthetic: {
-    /**
+  baseLiquidityPoolsForSynthetic: {    /**
      * Identity info of liquidity pools: `(identity_info, deposit_amount, is_verified)`.
-     *
+     * 
      * Returns `None` if identity info of the pool not set or removed.
      **/
-    identityInfos: StorageMap<
-      LiquidityPoolId | AnyNumber,
-      Option<ITuple<[LiquidityPoolIdentityInfo, IdentityDepositBalanceOf, bool]>>
-    >;
+    identityInfos: StorageMap<LiquidityPoolId | AnyNumber, Option<ITuple<[LiquidityPoolIdentityInfo, IdentityDepositBalanceOf, bool]>>>;
     /**
      * Next available liquidity pool ID.
      **/
     nextPoolId: LiquidityPoolId | null;
     /**
      * Liquidity pool information.
-     *
+     * 
      * Returns `None` if no such pool exists.
      **/
     pools: StorageMap<LiquidityPoolId | AnyNumber, Option<Pool>>;
   };
-  financialCouncil: {
-    /**
+  financialCouncil: {    /**
      * The current members of the collective. This is stored sorted (just by value).
      **/
     members: Vec<AccountId> | null;
@@ -339,8 +208,7 @@ export interface StorageType extends BaseStorageType {
      **/
     voting: StorageMap<Hash | string, Option<Votes>>;
   };
-  financialCouncilMembership: {
-    /**
+  financialCouncilMembership: {    /**
      * The current membership, stored as an ordered Vec.
      **/
     members: Vec<AccountId> | null;
@@ -349,8 +217,7 @@ export interface StorageType extends BaseStorageType {
      **/
     prime: Option<AccountId> | null;
   };
-  generalCouncil: {
-    /**
+  generalCouncil: {    /**
      * The current members of the collective. This is stored sorted (just by value).
      **/
     members: Vec<AccountId> | null;
@@ -375,8 +242,7 @@ export interface StorageType extends BaseStorageType {
      **/
     voting: StorageMap<Hash | string, Option<Votes>>;
   };
-  generalCouncilMembership: {
-    /**
+  generalCouncilMembership: {    /**
      * The current membership, stored as an ordered Vec.
      **/
     members: Vec<AccountId> | null;
@@ -385,8 +251,7 @@ export interface StorageType extends BaseStorageType {
      **/
     prime: Option<AccountId> | null;
   };
-  grandpa: {
-    /**
+  grandpa: {    /**
      * The number of changes (both in terms of keys and underlying economic responsibilities)
      * in the "set" of Grandpa validators from genesis.
      **/
@@ -402,7 +267,7 @@ export interface StorageType extends BaseStorageType {
     /**
      * A mapping from grandpa set ID to the index of the *most recent* session for which its
      * members were responsible.
-     *
+     * 
      * TWOX-NOTE: `SetId` is not under user control.
      **/
     setIdSession: StorageMap<SetId | AnyNumber, Option<SessionIndex>>;
@@ -415,37 +280,19 @@ export interface StorageType extends BaseStorageType {
      **/
     state: StoredState | null;
   };
-  indices: {
-    /**
+  indices: {    /**
      * The lookup from index to account.
      **/
     accounts: StorageMap<AccountIndex | AnyNumber, Option<ITuple<[AccountId, BalanceOf, bool]>>>;
   };
-  laminarOracle: {
-    /**
+  laminarOracle: {    /**
      * If an oracle operator has feed a value in this block
      **/
     hasDispatched: OrderedSet | null;
     /**
      * True if Self::values(key) is up to date, otherwise the value is stale
      **/
-    isUpdated: StorageMap<
-      | OracleKey
-      | 'LAMI'
-      | 'AUSD'
-      | 'FEUR'
-      | 'FJPY'
-      | 'FBTC'
-      | 'FETH'
-      | 'FAUD'
-      | 'FCAD'
-      | 'FCHF'
-      | 'FXAU'
-      | 'FOIL'
-      | 'FGBP'
-      | number,
-      bool
-    >;
+    isUpdated: StorageMap<OracleKey | 'LAMI'|'AUSD'|'FEUR'|'FJPY'|'FBTC'|'FETH'|'FAUD'|'FCAD'|'FCHF'|'FXAU'|'FOIL'|'FGBP' | number, bool>;
     /**
      * The current members of the collective. This is stored sorted (just by value).
      **/
@@ -454,54 +301,16 @@ export interface StorageType extends BaseStorageType {
     /**
      * Raw values for each oracle operators
      **/
-    rawValues: StorageDoubleMap<
-      AccountId | string,
-      | OracleKey
-      | 'LAMI'
-      | 'AUSD'
-      | 'FEUR'
-      | 'FJPY'
-      | 'FBTC'
-      | 'FETH'
-      | 'FAUD'
-      | 'FCAD'
-      | 'FCHF'
-      | 'FXAU'
-      | 'FOIL'
-      | 'FGBP'
-      | number,
-      Option<TimestampedValueOf>
-    >;
+    rawValues: StorageDoubleMap<AccountId | string, OracleKey | 'LAMI'|'AUSD'|'FEUR'|'FJPY'|'FBTC'|'FETH'|'FAUD'|'FCAD'|'FCHF'|'FXAU'|'FOIL'|'FGBP' | number, Option<TimestampedValueOf>>;
     /**
      * Combined value, may not be up to date
      **/
-    values: StorageMap<
-      | OracleKey
-      | 'LAMI'
-      | 'AUSD'
-      | 'FEUR'
-      | 'FJPY'
-      | 'FBTC'
-      | 'FETH'
-      | 'FAUD'
-      | 'FCAD'
-      | 'FCHF'
-      | 'FXAU'
-      | 'FOIL'
-      | 'FGBP'
-      | number,
-      Option<TimestampedValueOf>
-    >;
+    values: StorageMap<OracleKey | 'LAMI'|'AUSD'|'FEUR'|'FJPY'|'FBTC'|'FETH'|'FAUD'|'FCAD'|'FCHF'|'FXAU'|'FOIL'|'FGBP' | number, Option<TimestampedValueOf>>;
   };
-  marginLiquidityPools: {
-    /**
+  marginLiquidityPools: {    /**
      * The accumulated swap rate of trading pairs in liquidity pools.
      **/
-    accumulatedSwapRates: StorageDoubleMap<
-      LiquidityPoolId | AnyNumber,
-      TradingPair | { base?: any; quote?: any } | string,
-      SwapRate
-    >;
+    accumulatedSwapRates: StorageDoubleMap<LiquidityPoolId | AnyNumber, TradingPair | { base?: any; quote?: any } | string, SwapRate>;
     /**
      * The default minimum leveraged amount allowed to open a position.
      **/
@@ -516,23 +325,18 @@ export interface StorageType extends BaseStorageType {
     poolOptions: StorageMap<LiquidityPoolId | AnyNumber, MarginPoolOption>;
     /**
      * Trading pair options in a liquidity pool.
-     *
+     * 
      * Getter is implemented manually to cap the spread with max spread.
      **/
-    poolTradingPairOptions: StorageDoubleMap<
-      LiquidityPoolId | AnyNumber,
-      TradingPair | { base?: any; quote?: any } | string,
-      MarginPoolTradingPairOption
-    >;
+    poolTradingPairOptions: StorageDoubleMap<LiquidityPoolId | AnyNumber, TradingPair | { base?: any; quote?: any } | string, MarginPoolTradingPairOption>;
     /**
      * Trading pair options.
      **/
     tradingPairOptions: StorageMap<TradingPair | { base?: any; quote?: any } | string, MarginTradingPairOption>;
   };
-  marginProtocol: {
-    /**
+  marginProtocol: {    /**
      * Balance of a trader in a liquidity pool.
-     *
+     * 
      * The balance value could be positive or negative:
      * - If positive, it represents 'balance' the trader could use to open positions, withdraw etc.
      * - If negative, it represents how much the trader owes the pool. Owing could happen when realizing loss.
@@ -541,13 +345,13 @@ export interface StorageType extends BaseStorageType {
     balances: StorageDoubleMap<AccountId | string, LiquidityPoolId | AnyNumber, FixedI128>;
     /**
      * Margin call pool.
-     *
+     * 
      * New positions may only be opened in a pool if which not in margin called state.
      **/
     marginCalledPools: StorageMap<LiquidityPoolId | AnyNumber, Option<ITuple<[]>>>;
     /**
      * Margin call check of a trader in a pool.
-     *
+     * 
      * A trader may only open new positions if not in margin called state.
      **/
     marginCalledTraders: StorageDoubleMap<AccountId | string, LiquidityPoolId | AnyNumber, Option<ITuple<[]>>>;
@@ -562,45 +366,31 @@ export interface StorageType extends BaseStorageType {
     /**
      * Positions existence check by pools and trading pairs.
      **/
-    positionsByPool: StorageDoubleMap<
-      LiquidityPoolId | AnyNumber,
-      ITuple<[TradingPair, PositionId]> | [TradingPair | { base?: any; quote?: any } | string, PositionId | AnyNumber],
-      Option<ITuple<[]>>
-    >;
+    positionsByPool: StorageDoubleMap<LiquidityPoolId | AnyNumber, ITuple<[TradingPair, PositionId]> | [TradingPair | { base?: any; quote?: any } | string, PositionId | AnyNumber], Option<ITuple<[]>>>;
     /**
      * Positions existence check by traders and liquidity pool IDs.
      **/
-    positionsByTrader: StorageDoubleMap<
-      AccountId | string,
-      ITuple<[LiquidityPoolId, PositionId]> | [LiquidityPoolId | AnyNumber, PositionId | AnyNumber],
-      Option<ITuple<[]>>
-    >;
+    positionsByTrader: StorageDoubleMap<AccountId | string, ITuple<[LiquidityPoolId, PositionId]> | [LiquidityPoolId | AnyNumber, PositionId | AnyNumber], Option<ITuple<[]>>>;
     /**
      * Positions snapshots.
-     *
+     * 
      * Used for performance improvement.
      **/
-    positionsSnapshots: StorageDoubleMap<
-      LiquidityPoolId | AnyNumber,
-      TradingPair | { base?: any; quote?: any } | string,
-      PositionsSnapshot
-    >;
+    positionsSnapshots: StorageDoubleMap<LiquidityPoolId | AnyNumber, TradingPair | { base?: any; quote?: any } | string, PositionsSnapshot>;
     /**
      * Risk thresholds of a trading pair, including trader risk threshold, pool ENP and ELL risk threshold.
-     *
+     * 
      * DEFAULT-NOTE: `trader`, `enp`, and `ell` are all `None` by default.
      **/
     riskThresholds: StorageMap<TradingPair | { base?: any; quote?: any } | string, TradingPairRiskThreshold>;
   };
-  multisig: {
-    calls: StorageMap<U8aFixed | string, Option<ITuple<[OpaqueCall, AccountId, BalanceOf]>>>;
+  multisig: {    calls: StorageMap<U8aFixed | string, Option<ITuple<[OpaqueCall, AccountId, BalanceOf]>>>;
     /**
      * The set of open multisig operations.
      **/
     multisigs: StorageDoubleMap<AccountId | string, U8aFixed | string, Option<Multisig>>;
   };
-  offences: {
-    /**
+  offences: {    /**
      * A vector of reports of the same kind that happened at the same time slot.
      **/
     concurrentReportsIndex: StorageDoubleMap<Kind | string, OpaqueTimeSlot | string, Vec<ReportIdOf>>;
@@ -615,16 +405,15 @@ export interface StorageType extends BaseStorageType {
     reports: StorageMap<ReportIdOf | string, Option<OffenceDetails>>;
     /**
      * Enumerates all reports of a kind along with the time they happened.
-     *
+     * 
      * All reports are sorted by the time of offence.
-     *
+     * 
      * Note that the actual type of this mapping is `Vec<u8>`, this is because values of
      * different types are not supported at the moment so we are doing the manual serialization.
      **/
     reportsByKindIndex: StorageMap<Kind | string, Bytes>;
   };
-  operatorMembershipBand: {
-    /**
+  operatorMembershipBand: {    /**
      * The current membership, stored as an ordered Vec.
      **/
     members: Vec<AccountId> | null;
@@ -633,8 +422,7 @@ export interface StorageType extends BaseStorageType {
      **/
     prime: Option<AccountId> | null;
   };
-  operatorMembershipLaminar: {
-    /**
+  operatorMembershipLaminar: {    /**
      * The current membership, stored as an ordered Vec.
      **/
     members: Vec<AccountId> | null;
@@ -643,8 +431,7 @@ export interface StorageType extends BaseStorageType {
      **/
     prime: Option<AccountId> | null;
   };
-  palletTreasury: {
-    /**
+  palletTreasury: {    /**
      * Proposal indices that have been approved but not yet awarded.
      **/
     approvals: Vec<ProposalIndex> | null;
@@ -684,22 +471,20 @@ export interface StorageType extends BaseStorageType {
      **/
     tips: StorageMap<Hash | string, Option<OpenTip>>;
   };
-  randomnessCollectiveFlip: {
-    /**
+  randomnessCollectiveFlip: {    /**
      * Series of block headers from the last 81 blocks that acts as random seed material. This
      * is arranged as a ring buffer with `block_number % 81` being the index into the `Vec` of
      * the oldest hash.
      **/
     randomMaterial: Vec<Hash> | null;
   };
-  session: {
-    /**
+  session: {    /**
      * Current index of the session.
      **/
     currentIndex: SessionIndex | null;
     /**
      * Indices of disabled validators.
-     *
+     * 
      * The set is cleared when `on_session_ending` returns a new set of identities.
      **/
     disabledValidators: Vec<u32> | null;
@@ -726,10 +511,9 @@ export interface StorageType extends BaseStorageType {
      **/
     validators: Vec<ValidatorId> | null;
   };
-  staking: {
-    /**
+  staking: {    /**
      * The active era information, it holds index and start.
-     *
+     * 
      * The active era is the era currently rewarded.
      * Validator set of this era must be equal to `SessionInterface::validators`.
      **/
@@ -740,7 +524,7 @@ export interface StorageType extends BaseStorageType {
     bonded: StorageMap<AccountId | string, Option<AccountId>>;
     /**
      * A mapping from still-bonded eras to the first session index of that era.
-     *
+     * 
      * Must contains information for eras for the range:
      * `[active_era - bounding_duration; active_era]`
      **/
@@ -752,7 +536,7 @@ export interface StorageType extends BaseStorageType {
     canceledSlashPayout: BalanceOf | null;
     /**
      * The current era index.
-     *
+     * 
      * This is the latest planned era, depending on how the Session pallet queues the validator
      * set, it might be active or not.
      **/
@@ -773,23 +557,23 @@ export interface StorageType extends BaseStorageType {
     erasRewardPoints: StorageMap<EraIndex | AnyNumber, EraRewardPoints>;
     /**
      * Exposure of validator at era.
-     *
+     * 
      * This is keyed first by the era index to allow bulk deletion and then the stash account.
-     *
+     * 
      * Is it removed after `HISTORY_DEPTH` eras.
      * If stakers hasn't been set or has been removed then empty exposure is returned.
      **/
     erasStakers: StorageDoubleMap<EraIndex | AnyNumber, AccountId | string, Exposure>;
     /**
      * Clipped Exposure of validator at era.
-     *
+     * 
      * This is similar to [`ErasStakers`] but number of nominators exposed is reduced to the
      * `T::MaxNominatorRewardedPerValidator` biggest stakers.
      * (Note: the field `total` and `own` of the exposure remains unchanged).
      * This is used to limit the i/o cost for the nominator payout.
-     *
+     * 
      * This is keyed fist by the era index to allow bulk deletion and then the stash account.
-     *
+     * 
      * Is it removed after `HISTORY_DEPTH` eras.
      * If stakers hasn't been set or has been removed then empty exposure is returned.
      **/
@@ -805,15 +589,15 @@ export interface StorageType extends BaseStorageType {
     erasTotalStake: StorageMap<EraIndex | AnyNumber, BalanceOf>;
     /**
      * Similar to `ErasStakers`, this holds the preferences of validators.
-     *
+     * 
      * This is keyed first by the era index to allow bulk deletion and then the stash account.
-     *
+     * 
      * Is it removed after `HISTORY_DEPTH` eras.
      **/
     erasValidatorPrefs: StorageDoubleMap<EraIndex | AnyNumber, AccountId | string, ValidatorPrefs>;
     /**
      * The total validator era payout for the last `HISTORY_DEPTH` eras.
-     *
+     * 
      * Eras that haven't finished yet or has been removed doesn't have reward.
      **/
     erasValidatorReward: StorageMap<EraIndex | AnyNumber, Option<BalanceOf>>;
@@ -823,9 +607,9 @@ export interface StorageType extends BaseStorageType {
     forceEra: Forcing | null;
     /**
      * Number of eras to keep in history.
-     *
+     * 
      * Information is kept for eras in `[current_era - history_depth; current_era]`.
-     *
+     * 
      * Must be more than the number of eras delayed by session otherwise. I.e. active era must
      * always be in history. I.e. `active_era > current_era - history_depth` must be
      * guaranteed.
@@ -878,7 +662,7 @@ export interface StorageType extends BaseStorageType {
     slashingSpans: StorageMap<AccountId | string, Option<SlashingSpans>>;
     /**
      * The percentage of the slash that is distributed to reporters.
-     *
+     * 
      * The rest of the slashed value is handled by the `Slash`.
      **/
     slashRewardFraction: Perbill | null;
@@ -900,7 +684,7 @@ export interface StorageType extends BaseStorageType {
     /**
      * True if network has been upgraded to this version.
      * Storage version of the pallet.
-     *
+     * 
      * This is set to v3.0.0 for new networks.
      **/
     storageVersion: Releases | null;
@@ -920,39 +704,17 @@ export interface StorageType extends BaseStorageType {
      * All slashing events on validators, mapped by era to the highest slash proportion
      * and slash value of the era.
      **/
-    validatorSlashInEra: StorageDoubleMap<
-      EraIndex | AnyNumber,
-      AccountId | string,
-      Option<ITuple<[Perbill, BalanceOf]>>
-    >;
+    validatorSlashInEra: StorageDoubleMap<EraIndex | AnyNumber, AccountId | string, Option<ITuple<[Perbill, BalanceOf]>>>;
   };
-  sudo: {
-    /**
+  sudo: {    /**
      * The `AccountId` of the sudo key.
      **/
     key: AccountId | null;
   };
-  syntheticLiquidityPools: {
-    /**
+  syntheticLiquidityPools: {    /**
      * Maximum spread of a currency.
      **/
-    maxSpread: StorageMap<
-      | CurrencyId
-      | 'LAMI'
-      | 'AUSD'
-      | 'FEUR'
-      | 'FJPY'
-      | 'FBTC'
-      | 'FETH'
-      | 'FAUD'
-      | 'FCAD'
-      | 'FCHF'
-      | 'FXAU'
-      | 'FOIL'
-      | 'FGBP'
-      | number,
-      Option<Balance>
-    >;
+    maxSpread: StorageMap<CurrencyId | 'LAMI'|'AUSD'|'FEUR'|'FJPY'|'FBTC'|'FETH'|'FAUD'|'FCAD'|'FCHF'|'FXAU'|'FOIL'|'FGBP' | number, Option<Balance>>;
     /**
      * Minimum additional collateral ratio.
      **/
@@ -960,70 +722,18 @@ export interface StorageType extends BaseStorageType {
     /**
      * Currency options in a liquidity pool.
      **/
-    poolCurrencyOptions: StorageDoubleMap<
-      LiquidityPoolId | AnyNumber,
-      | CurrencyId
-      | 'LAMI'
-      | 'AUSD'
-      | 'FEUR'
-      | 'FJPY'
-      | 'FBTC'
-      | 'FETH'
-      | 'FAUD'
-      | 'FCAD'
-      | 'FCHF'
-      | 'FXAU'
-      | 'FOIL'
-      | 'FGBP'
-      | number,
-      SyntheticPoolCurrencyOption
-    >;
+    poolCurrencyOptions: StorageDoubleMap<LiquidityPoolId | AnyNumber, CurrencyId | 'LAMI'|'AUSD'|'FEUR'|'FJPY'|'FBTC'|'FETH'|'FAUD'|'FCAD'|'FCHF'|'FXAU'|'FOIL'|'FGBP' | number, SyntheticPoolCurrencyOption>;
   };
-  syntheticTokens: {
-    /**
+  syntheticTokens: {    /**
      * Positions of a currency in a pool
      **/
-    positions: StorageDoubleMap<
-      LiquidityPoolId | AnyNumber,
-      | CurrencyId
-      | 'LAMI'
-      | 'AUSD'
-      | 'FEUR'
-      | 'FJPY'
-      | 'FBTC'
-      | 'FETH'
-      | 'FAUD'
-      | 'FCAD'
-      | 'FCHF'
-      | 'FXAU'
-      | 'FOIL'
-      | 'FGBP'
-      | number,
-      SyntheticPosition
-    >;
+    positions: StorageDoubleMap<LiquidityPoolId | AnyNumber, CurrencyId | 'LAMI'|'AUSD'|'FEUR'|'FJPY'|'FBTC'|'FETH'|'FAUD'|'FCAD'|'FCHF'|'FXAU'|'FOIL'|'FGBP' | number, SyntheticPosition>;
     /**
      * Ratios for each currency.
      **/
-    ratios: StorageMap<
-      | CurrencyId
-      | 'LAMI'
-      | 'AUSD'
-      | 'FEUR'
-      | 'FJPY'
-      | 'FBTC'
-      | 'FETH'
-      | 'FAUD'
-      | 'FCAD'
-      | 'FCHF'
-      | 'FXAU'
-      | 'FOIL'
-      | 'FGBP'
-      | number,
-      SyntheticTokensRatio
-    >;
+    ratios: StorageMap<CurrencyId | 'LAMI'|'AUSD'|'FEUR'|'FJPY'|'FBTC'|'FETH'|'FAUD'|'FCAD'|'FCHF'|'FXAU'|'FOIL'|'FGBP' | number, SyntheticTokensRatio>;
   };
-  system: {
-    /**
+  system: {    /**
      * The full account information for a particular account ID.
      **/
     account: StorageMap<AccountId | string, AccountInfo>;
@@ -1054,11 +764,11 @@ export interface StorageType extends BaseStorageType {
     /**
      * Mapping between a topic (represented by T::Hash) and a vector of indexes
      * of events in the `<Events<T>>` list.
-     *
+     * 
      * All topic vectors have deterministic storage locations depending on the topic. This
      * allows light-clients to leverage the changes trie storage tracking mechanism and
      * in case of changes fetch the list of events of interest.
-     *
+     * 
      * The value has the type `(T::BlockNumber, EventIndex)` because if we used only just
      * the `EventIndex` then in case if the topic has the same contents on the next block
      * no notification will be triggered thus the event might be lost.
@@ -1097,8 +807,7 @@ export interface StorageType extends BaseStorageType {
      **/
     upgradedToU32RefCount: bool | null;
   };
-  timestamp: {
-    /**
+  timestamp: {    /**
      * Did the timestamp get updated in this block?
      **/
     didUpdate: bool | null;
@@ -1107,75 +816,26 @@ export interface StorageType extends BaseStorageType {
      **/
     now: Moment | null;
   };
-  tokens: {
-    /**
+  tokens: {    /**
      * The balance of a token type under an account.
-     *
+     * 
      * NOTE: If the total is ever zero, decrease account ref account.
-     *
+     * 
      * NOTE: This is only used in the case that this module is used to store balances.
      **/
-    accounts: StorageDoubleMap<
-      AccountId | string,
-      | CurrencyId
-      | 'LAMI'
-      | 'AUSD'
-      | 'FEUR'
-      | 'FJPY'
-      | 'FBTC'
-      | 'FETH'
-      | 'FAUD'
-      | 'FCAD'
-      | 'FCHF'
-      | 'FXAU'
-      | 'FOIL'
-      | 'FGBP'
-      | number,
-      OrmlAccountData
-    >;
+    accounts: StorageDoubleMap<AccountId | string, CurrencyId | 'LAMI'|'AUSD'|'FEUR'|'FJPY'|'FBTC'|'FETH'|'FAUD'|'FCAD'|'FCHF'|'FXAU'|'FOIL'|'FGBP' | number, OrmlAccountData>;
     /**
      * Any liquidity locks of a token type under an account.
      * NOTE: Should only be accessed when setting, changing and freeing a lock.
      **/
-    locks: StorageDoubleMap<
-      AccountId | string,
-      | CurrencyId
-      | 'LAMI'
-      | 'AUSD'
-      | 'FEUR'
-      | 'FJPY'
-      | 'FBTC'
-      | 'FETH'
-      | 'FAUD'
-      | 'FCAD'
-      | 'FCHF'
-      | 'FXAU'
-      | 'FOIL'
-      | 'FGBP'
-      | number,
-      Vec<OrmlBalanceLock>
-    >;
+    locks: StorageDoubleMap<AccountId | string, CurrencyId | 'LAMI'|'AUSD'|'FEUR'|'FJPY'|'FBTC'|'FETH'|'FAUD'|'FCAD'|'FCHF'|'FXAU'|'FOIL'|'FGBP' | number, Vec<OrmlBalanceLock>>;
     /**
      * The total issuance of a token type.
      **/
-    totalIssuance: StorageMap<
-      | CurrencyId
-      | 'LAMI'
-      | 'AUSD'
-      | 'FEUR'
-      | 'FJPY'
-      | 'FBTC'
-      | 'FETH'
-      | 'FAUD'
-      | 'FCAD'
-      | 'FCHF'
-      | 'FXAU'
-      | 'FOIL'
-      | 'FGBP'
-      | number,
-      Balance
-    >;
+    totalIssuance: StorageMap<CurrencyId | 'LAMI'|'AUSD'|'FEUR'|'FJPY'|'FBTC'|'FETH'|'FAUD'|'FCAD'|'FCHF'|'FXAU'|'FOIL'|'FGBP' | number, Balance>;
   };
-  transactionPayment: { nextFeeMultiplier: Multiplier | null; storageVersion: Releases | null };
-  utility: {};
+  transactionPayment: {    nextFeeMultiplier: Multiplier | null;
+    storageVersion: Releases | null;
+  };
+  utility: {  };
 }

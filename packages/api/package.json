@@ -1,6 +1,6 @@
 {
   "name": "@laminar/api",
-  "version": "0.2.0-beta.141",
+  "version": "0.2.0-beta.142",
   "description": "Laminar Chain JS API",
   "main": "index.js",
   "author": "Laminar Developers <hello@laminar.one>",
@@ -17,7 +17,7 @@
   "dependencies": {
     "@babel/runtime": "^7.8.0",
     "@laminar/flow-protocol-ethereum": "0.0.12",
-    "@laminar/types": "^0.2.0-beta.141",
+    "@laminar/types": "^0.2.0-beta.142",
     "@open-web3/orml-api-derive": "^0.6.0-beta.26",
     "@polkadot/api": "^2.1.2-3",
     "rxjs": "^6.6.3",

@@ -3,14 +3,7 @@
 
 import { ITuple } from '@polkadot/types/types';
 import { Compact, Enum, Int, Option, Set, Struct, U8aFixed, UInt, Vec } from '@polkadot/types/codec';
-import {
-  GenericAccountId,
-  GenericAccountIndex,
-  GenericBlock,
-  GenericCall,
-  GenericConsensusEngineId,
-  GenericLookupSource
-} from '@polkadot/types/generic';
+import { GenericAccountId, GenericAccountIndex, GenericBlock, GenericCall, GenericConsensusEngineId, GenericLookupSource } from '@polkadot/types/generic';
 import { Bytes, DoNotConstruct, Null, StorageKey, bool, u16, u32, u64, u8 } from '@polkadot/types/primitive';
 import { Price } from '@open-web3/orml-types/interfaces/traits';
 import { AuthorityId } from '@polkadot/types/interfaces/consensus';
