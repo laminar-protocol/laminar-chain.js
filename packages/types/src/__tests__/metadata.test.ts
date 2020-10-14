@@ -5,7 +5,7 @@ import metadataStatic from '../metadata/static-latest';
 import fs from 'fs';
 
 describe('metadata', () => {
-  it('check types', () => {
+  it.skip('check types', () => {
     const registry = new TypeRegistry();
     registry.register(types);
     registry.setKnownTypes({

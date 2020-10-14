@@ -1,7 +1,6 @@
-import { LaminarApi } from '../..';
-import { WsProvider } from '@polkadot/rpc-provider';
 import { Keyring } from '@polkadot/api';
-import { take } from 'rxjs/operators';
+import { WsProvider } from '@polkadot/rpc-provider';
+import { LaminarApi } from '../../..';
 
 describe('laminar currencies', () => {
   jest.setTimeout(300000);
