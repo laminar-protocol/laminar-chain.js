@@ -3,11 +3,20 @@
 
 import { ITuple } from '@polkadot/types/types';
 import { Compact, Enum, Int, Option, Set, Struct, U8aFixed, UInt, Vec } from '@polkadot/types/codec';
-import { GenericAccountId, GenericAccountIndex, GenericBlock, GenericCall, GenericConsensusEngineId, GenericLookupSource } from '@polkadot/types/generic';
+import {
+  GenericAccountId,
+  GenericAccountIndex,
+  GenericBlock,
+  GenericCall,
+  GenericConsensusEngineId,
+  GenericLookupSource,
+  GenericMultiAddress
+} from '@polkadot/types/generic';
 import { Bytes, DoNotConstruct, Null, StorageKey, bool, u16, u32, u64, u8 } from '@polkadot/types/primitive';
 import { Price } from '@open-web3/orml-types/interfaces/traits';
 import { AuthorityId } from '@polkadot/types/interfaces/consensus';
 import { Signature } from '@polkadot/types/interfaces/extrinsics';
+import { SystemOrigin } from '@polkadot/types/interfaces/system';
 
 /** @name AccountId */
 export interface AccountId extends GenericAccountId {}
@@ -284,6 +293,9 @@ export interface ModuleId extends LockIdentifier {}
 /** @name Moment */
 export interface Moment extends u64 {}
 
+/** @name MultiAddress */
+export interface MultiAddress extends GenericMultiAddress {}
+
 /** @name OpaqueCall */
 export interface OpaqueCall extends Bytes {}
 
@@ -296,11 +308,20 @@ export interface OracleValue extends Price {}
 /** @name Origin */
 export interface Origin extends DoNotConstruct {}
 
+/** @name OriginCaller */
+export interface OriginCaller extends Enum {
+  readonly isSystem: boolean;
+  readonly asSystem: SystemOrigin;
+}
+
 /** @name PairInfo */
 export interface PairInfo extends Struct {
   readonly baseAmount: FixedI128;
   readonly quoteAmount: FixedI128;
 }
+
+/** @name PalletsOrigin */
+export interface PalletsOrigin extends OriginCaller {}
 
 /** @name PalletVersion */
 export interface PalletVersion extends Struct {

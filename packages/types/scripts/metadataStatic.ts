@@ -15,7 +15,7 @@ const main = (): void => {
   ws.onmessage = (msg: any): void => {
     const metadata = JSON.parse(msg.data).result;
 
-    fs.writeFileSync('packages/types/src/metadata/static-latest.ts', `export default '${metadata}'`);
+    fs.writeFileSync('packages/types/src/metadata/static-latest.ts', `export default '${metadata}';\n`);
     console.log('✅ static-latest.ts generated.\n');
 
     process.exit(0);
