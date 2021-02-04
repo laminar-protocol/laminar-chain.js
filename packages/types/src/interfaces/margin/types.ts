@@ -1,8 +1,8 @@
 // Auto-generated via `yarn polkadot-types-from-defs`, do not edit
 /* eslint-disable */
 
-import { Struct } from '@polkadot/types/codec';
-import { FixedI128 } from '@laminar/types/interfaces/runtime';
+import type { Struct } from '@polkadot/types';
+import type { FixedI128 } from '@laminar/types/interfaces/runtime';
 
 /** @name MarginPoolState */
 export interface MarginPoolState extends Struct {

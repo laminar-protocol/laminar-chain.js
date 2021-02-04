@@ -1,14 +1,12 @@
 // Auto-generated via `yarn polkadot-types-from-defs`, do not edit
 /* eslint-disable */
 
-import { ITuple } from '@polkadot/types/types';
-import { Compact, Enum, Int, Option, Set, Struct, U8aFixed, UInt, Vec } from '@polkadot/types/codec';
-import { GenericAccountId, GenericAccountIndex, GenericBlock, GenericCall, GenericConsensusEngineId, GenericLookupSource, GenericMultiAddress } from '@polkadot/types/generic';
-import { Bytes, DoNotConstruct, Null, StorageKey, bool, u16, u32, u64, u8 } from '@polkadot/types/primitive';
-import { Price } from '@open-web3/orml-types/interfaces/traits';
-import { AuthorityId } from '@polkadot/types/interfaces/consensus';
-import { Signature } from '@polkadot/types/interfaces/extrinsics';
-import { SystemOrigin } from '@polkadot/types/interfaces/system';
+import type { Bytes, Compact, DoNotConstruct, Enum, GenericAccountId, GenericAccountIndex, GenericBlock, GenericCall, GenericConsensusEngineId, GenericLookupSource, GenericMultiAddress, Int, Null, Option, Set, StorageKey, Struct, U8aFixed, UInt, Vec, bool, u16, u32, u64, u8 } from '@polkadot/types';
+import type { ITuple } from '@polkadot/types/types';
+import type { Price } from '@open-web3/orml-types/interfaces/traits';
+import type { AuthorityId } from '@polkadot/types/interfaces/consensus';
+import type { Signature } from '@polkadot/types/interfaces/extrinsics';
+import type { SystemOrigin } from '@polkadot/types/interfaces/system';
 
 /** @name AccountId */
 export interface AccountId extends GenericAccountId {}
@@ -26,7 +24,7 @@ export interface AccumulateConfig extends Struct {
 }
 
 /** @name Address */
-export interface Address extends GenericAddress {}
+export interface Address extends LookupSource {}
 
 /** @name Amount */
 export interface Amount extends FixedI128 {}
@@ -136,17 +134,26 @@ export interface FixedU128 extends UInt {}
 /** @name FixedU64 */
 export interface FixedU64 extends UInt {}
 
-/** @name GenericAddress */
-export interface GenericAddress extends LookupSource {}
+/** @name H1024 */
+export interface H1024 extends U8aFixed {}
+
+/** @name H128 */
+export interface H128 extends U8aFixed {}
 
 /** @name H160 */
 export interface H160 extends U8aFixed {}
+
+/** @name H2048 */
+export interface H2048 extends U8aFixed {}
 
 /** @name H256 */
 export interface H256 extends U8aFixed {}
 
 /** @name H512 */
 export interface H512 extends U8aFixed {}
+
+/** @name H64 */
+export interface H64 extends U8aFixed {}
 
 /** @name Hash */
 export interface Hash extends H256 {}
@@ -168,6 +175,9 @@ export interface IdentityDepositBalanceOf extends Balance {}
 
 /** @name Index */
 export interface Index extends u32 {}
+
+/** @name IndicesLookupSource */
+export interface IndicesLookupSource extends GenericLookupSource {}
 
 /** @name Justification */
 export interface Justification extends Bytes {}
@@ -240,7 +250,7 @@ export interface LiquidityPoolIdentityInfo extends Struct {
 export interface LockIdentifier extends U8aFixed {}
 
 /** @name LookupSource */
-export interface LookupSource extends GenericLookupSource {}
+export interface LookupSource extends IndicesLookupSource {}
 
 /** @name LookupTarget */
 export interface LookupTarget extends AccountId {}
@@ -283,7 +293,7 @@ export interface MarginTradingPairOption extends Struct {
 export interface ModuleId extends LockIdentifier {}
 
 /** @name Moment */
-export interface Moment extends u64 {}
+export interface Moment extends UInt {}
 
 /** @name MultiAddress */
 export interface MultiAddress extends GenericMultiAddress {}
@@ -467,6 +477,9 @@ export interface U32F32 extends UInt {}
 
 /** @name ValidatorId */
 export interface ValidatorId extends AccountId {}
+
+/** @name ValidatorIdOf */
+export interface ValidatorIdOf extends ValidatorId {}
 
 /** @name Weight */
 export interface Weight extends u64 {}

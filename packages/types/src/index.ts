@@ -14,6 +14,7 @@ import {
 import './augment-api';
 import './augment-api-consts';
 import './augment-api-query';
+import './augment-api-rpc';
 import './augment-api-tx';
 import './augment-types';
 

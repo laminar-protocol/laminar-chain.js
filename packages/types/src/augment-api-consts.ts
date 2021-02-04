@@ -1,11 +1,10 @@
 // Auto-generated via `yarn polkadot-types-from-chain`, do not edit
 /* eslint-disable */
 
-import { Codec } from '@polkadot/types/types';
-import { Vec } from '@polkadot/types/codec';
-import { u32 } from '@polkadot/types/primitive';
-import { AccountId, Balance, CurrencyId, CurrencyIdOf, IdentityDepositBalanceOf, Permill, TransactionPriority } from '@laminar/types/interfaces/runtime';
-import { ApiTypes } from '@polkadot/api/types';
+import type { Vec, u32 } from '@polkadot/types';
+import type { Codec } from '@polkadot/types/types';
+import type { AccountId, Balance, CurrencyId, CurrencyIdOf, IdentityDepositBalanceOf, Permill, TransactionPriority } from '@laminar/types/interfaces/runtime';
+import type { ApiTypes } from '@polkadot/api/types';
 
 declare module '@polkadot/api/types/consts' {
   export interface AugmentedConsts<ApiType> {

@@ -1,12 +1,13 @@
-import { Metadata } from '@polkadot/types';
+import { Metadata } from '@polkadot/metadata';
 import { TypeRegistry } from '@polkadot/types/create';
 import { generateInterfaceTypes } from '@polkadot/typegen/generate/interfaceRegistry';
 import { generateTsDef } from '@polkadot/typegen/generate/tsDef';
-import generateConst from '@polkadot/typegen/generate/consts';
-import generateQuery from '@polkadot/typegen/generate/query';
-import generateTx from '@polkadot/typegen/generate/tx';
-// Wait for @polkadot/typegen update
-import { generateRpcTypes } from '@polkadot/typegen/generate/rpc';
+import {
+  generateDefaultConsts,
+  generateDefaultQuery,
+  generateDefaultTx,
+  generateDefaultRpc
+} from '@polkadot/typegen/generate';
 import { registerDefinitions } from '@polkadot/typegen/util';
 import metaHex from '../src/metadata/static-latest';
 import generateMobx from '@open-web3/api-mobx/scripts/mobx';
@@ -71,12 +72,12 @@ const metadata = filterModules(
 
 generateTsDef(definations, 'packages/types/src/interfaces', '@laminar/types/interfaces');
 generateInterfaceTypes(definations, 'packages/types/src/augment-types.ts');
-generateConst('packages/types/src/augment-api-consts.ts', metadata, definations);
+generateDefaultConsts('packages/types/src/augment-api-consts.ts', metadata, definations);
 
-generateTx('packages/types/src/augment-api-tx.ts', metadata, definations);
-// Wait for @polkadot/typegen update
-generateRpcTypes(definations, 'packages/types/src/augment-api-rpc.ts');
-generateQuery('packages/types/src/augment-api-query.ts', metadata, definations);
+generateDefaultTx('packages/types/src/augment-api-tx.ts', metadata, definations);
+
+generateDefaultRpc('packages/types/src/augment-api-rpc.ts', definations);
+generateDefaultQuery('packages/types/src/augment-api-query.ts', metadata, definations);
 
 generateMobx('packages/types/src/augment-api-mobx.ts', metaHex, definations, {
   typesAlias

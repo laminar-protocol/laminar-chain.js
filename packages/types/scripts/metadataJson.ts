@@ -1,6 +1,6 @@
 import fs from 'fs';
 
-import Metadata from '@polkadot/metadata/Metadata';
+import { Metadata } from '@polkadot/metadata';
 import { TypeRegistry } from '@polkadot/types';
 
 import { types, typesAlias } from '../src';
