@@ -37,10 +37,5 @@
     "pretty-quick": "^2.0.1",
     "ts-node": "^8.6.1",
     "typescript": "^3.8.3"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "pretty-quick --staged"
-    }
   }
 }
