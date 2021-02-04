@@ -101,7 +101,7 @@ class Margin {
     return combineLatest([
       this.tradingPairOptions(poolId),
       this.api.query.baseLiquidityPoolsForMargin.pools(poolId),
-      this.api.rpc.margin.poolState(poolId as any),
+      this.api.rpc.margin.poolState(poolId),
       this.api.query.marginLiquidityPools.poolOptions(poolId),
       this.api.query.marginLiquidityPools.defaultMinLeveragedAmount()
     ]).pipe(
@@ -118,8 +118,8 @@ class Margin {
           poolId: `${poolId}`,
           owner: owner.toString(),
           balance: balance.toString(),
-          enp: poolState.enp.toString(),
-          ell: poolState.ell.toString(),
+          enp: (poolState as any).enp.toString(),
+          ell: (poolState as any).ell.toString(),
           options: tradingPairOptions,
           minLeveragedAmount
         };
