@@ -3,7 +3,7 @@ import {
   rpc as laminarRpc,
   types as laminarTypes,
   typesAlias as laminarTypesAlias,
-  typesBundle as laminarTypesBundle
+  typesBundle as laminarTypesBundle,
 } from '@laminar/types';
 import { ApiOptions } from '@polkadot/api/types';
 
@@ -12,7 +12,7 @@ const anyOrmlDerives = ormlDerives as any;
 export const defaultOptions: ApiOptions = {
   types: laminarTypes,
   rpc: laminarRpc,
-  derives: anyOrmlDerives
+  derives: anyOrmlDerives,
 };
 
 export const options = ({
@@ -25,11 +25,11 @@ export const options = ({
 }: ApiOptions): ApiOptions => ({
   types: {
     ...laminarTypes,
-    ...types
+    ...types,
   },
   typesAlias: {
     ...laminarTypesAlias,
-    ...typesAlias
+    ...typesAlias,
   },
   typesBundle: {
     ...typesBundle,
@@ -37,17 +37,17 @@ export const options = ({
       ...typesBundle.spec,
       laminar: {
         ...laminarTypesBundle?.spec?.laminar,
-        ...typesBundle?.spec?.laminar
-      }
-    }
+        ...typesBundle?.spec?.laminar,
+      },
+    },
   },
   rpc: {
     ...laminarRpc,
-    ...rpc
+    ...rpc,
   },
   derives: {
     ...anyOrmlDerives,
-    ...derives
+    ...derives,
   },
-  ...otherOptions
+  ...otherOptions,
 });

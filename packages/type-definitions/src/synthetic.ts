@@ -5,20 +5,20 @@ export default {
       params: [
         {
           name: 'pool_id',
-          type: 'u32'
+          type: 'u32',
         },
         {
           name: 'currency_id',
-          type: 'CurrencyId'
-        }
+          type: 'CurrencyId',
+        },
       ],
-      type: 'SyntheticPoolState'
-    }
+      type: 'SyntheticPoolState',
+    },
   },
   types: {
     SyntheticPoolState: {
       collateral_ratio: 'FixedI128',
-      is_safe: 'boolean'
-    }
-  }
+      is_safe: 'boolean',
+    },
+  },
 };

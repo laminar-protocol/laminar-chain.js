@@ -9,7 +9,7 @@ import {
   MarginPosition,
   TokenId,
   TokenInfo,
-  TraderInfo
+  TraderInfo,
 } from '../types';
 import EthereumApi, { UINT256_MAX } from './EthereumApi';
 
@@ -30,7 +30,7 @@ class Margin {
 
   private getWhiteListTradePairs = () => {
     return this.apiProvider.currencies.tokens().pipe(
-      switchMap(async tokens => {
+      switchMap(async (tokens) => {
         const whiteListRequest: Promise<[boolean, TokenInfo, TokenInfo]>[] = [];
         for (const base of tokens) {
           for (const quote of tokens) {
@@ -45,12 +45,12 @@ class Margin {
           }
         }
 
-        const whiteList = await Promise.all(whiteListRequest).then(result =>
+        const whiteList = await Promise.all(whiteListRequest).then((result) =>
           result
             .filter(([isWhiteList]) => isWhiteList)
             .map(([, base, quote]) => ({
               base,
-              quote
+              quote,
             }))
         );
 
@@ -61,7 +61,7 @@ class Margin {
 
   private getEnableTradePairs = (poolId: string) => {
     return this.getWhiteListTradePairs().pipe(
-      switchMap(async whiteList => {
+      switchMap(async (whiteList) => {
         const enableTradePairsRequest: Promise<[boolean, TokenInfo, TokenInfo]>[] = [];
 
         for (const { base, quote } of whiteList) {
@@ -76,12 +76,12 @@ class Margin {
           );
         }
 
-        const enableTradePairs = await Promise.all(enableTradePairsRequest).then(result =>
+        const enableTradePairs = await Promise.all(enableTradePairsRequest).then((result) =>
           result
             .filter(([isEnable]) => isEnable)
             .map(([, base, quote]) => ({
               base,
-              quote
+              quote,
             }))
         );
 
@@ -111,7 +111,7 @@ class Margin {
   public allPoolIds = () => {
     return of([
       this.protocol.addresses.marginPoolGeneral.toLowerCase(),
-      this.protocol.addresses.marginPoolACME.toLowerCase()
+      this.protocol.addresses.marginPoolACME.toLowerCase(),
     ]);
   };
 
@@ -123,17 +123,17 @@ class Margin {
         methods.liquidityPoolELLLiquidateThreshold().call(),
         methods.liquidityPoolELLMarginThreshold().call(),
         methods.liquidityPoolENPLiquidateThreshold().call(),
-        methods.liquidityPoolENPMarginThreshold().call()
+        methods.liquidityPoolENPMarginThreshold().call(),
       ]).then(([ELLLiquidateThreshold, ELLMarginThreshold, ENPLiquidateThreshold, ENPMarginThreshold]) => {
         return {
           ellThreshold: {
             marginCall: ELLMarginThreshold,
-            stopOut: ELLLiquidateThreshold
+            stopOut: ELLLiquidateThreshold,
           },
           enpThreshold: {
             marginCall: ENPMarginThreshold,
-            stopOut: ENPLiquidateThreshold
-          }
+            stopOut: ENPLiquidateThreshold,
+          },
         };
       })
     );
@@ -146,7 +146,7 @@ class Margin {
   public poolInfo = (poolId: string): Observable<MarginPoolInfo> => {
     const poolInterface = this.apiProvider.getMarginPoolInterfaceContract(poolId);
     return this.getEnableTradePairs(poolId).pipe(
-      switchMap(async tradingPairs => {
+      switchMap(async (tradingPairs) => {
         return Promise.all([
           this.apiProvider.tokenContracts.DAI.methods.balanceOf(poolId).call(),
           poolInterface.methods.owner().call(),
@@ -154,23 +154,23 @@ class Margin {
             tradingPairs.map(({ base, quote }) => {
               return Promise.all([
                 poolInterface.methods.getAskSpread(base.id, quote.id).call(),
-                poolInterface.methods.getBidSpread(base.id, quote.id).call()
+                poolInterface.methods.getBidSpread(base.id, quote.id).call(),
               ]).then(([askSpread, bidSpread]) => {
                 return {
                   askSpread,
                   bidSpread,
                   pair: {
                     base: base.id,
-                    quote: quote.id
+                    quote: quote.id,
                   },
                   enabledTrades: ['LongFive', 'LongTen', 'LongTwenty', 'ShortFive', 'ShortTen', 'ShortTwenty'],
-                  pairId: `${base.name.toUpperCase()}${quote.name.toUpperCase()}`
+                  pairId: `${base.name.toUpperCase()}${quote.name.toUpperCase()}`,
                 };
               });
             })
           ),
           this.marginFlowProtocolSafety.methods.getEnpAndEll(poolId).call(),
-          poolInterface.methods.minLeverageAmount().call()
+          poolInterface.methods.minLeverageAmount().call(),
         ]).then(([balance, owner, options, enpAndEll, minLeverageAmount]) => {
           return {
             poolId: poolInterface.options.address.toLowerCase(),
@@ -179,7 +179,7 @@ class Margin {
             enp: enpAndEll[0][0],
             ell: enpAndEll[1][0],
             options,
-            minLeveragedAmount: minLeverageAmount
+            minLeveragedAmount: minLeverageAmount,
           };
         });
       })
@@ -194,7 +194,7 @@ class Margin {
         this.marginFlowProtocol.methods.getExactFreeMargin(poolId, account).call(),
         this.marginFlowProtocol.methods.getMarginHeld(poolId, account).call(),
         this.marginFlowProtocolSafety.methods.getMarginLevel(poolId, account).call(),
-        this.marginFlowProtocolSafety.methods.getLeveragedDebitsOfTrader(poolId, account).call()
+        this.marginFlowProtocolSafety.methods.getLeveragedDebitsOfTrader(poolId, account).call(),
       ]).then(([balances, equity, freeMargin, marginHeld, marginLevel, leveraged]) => {
         return {
           balance: balances,
@@ -204,7 +204,7 @@ class Margin {
           marginLevel: marginLevel[0],
           unrealizedPl: '0',
           totalLeveragedPosition: leveraged,
-          accumulatedSwap: '0'
+          accumulatedSwap: '0',
         };
       })
     );
@@ -214,11 +214,11 @@ class Margin {
     return from(
       Promise.all([
         this.marginFlowProtocolConfig.methods.traderRiskLiquidateThreshold().call(),
-        this.marginFlowProtocolConfig.methods.traderRiskMarginCallThreshold().call()
+        this.marginFlowProtocolConfig.methods.traderRiskMarginCallThreshold().call(),
       ]).then(([stopOut, marginCall]) => {
         return {
           marginCall: marginCall,
-          stopOut: stopOut
+          stopOut: stopOut,
         };
       })
     );
@@ -256,7 +256,7 @@ class Margin {
       Five: 5,
       Ten: 10,
       Twenty: 20,
-      Fifty: 50
+      Fifty: 50,
     };
 
     if (!multipleMap[multiple]) throw new Error('leverage is incorrect');

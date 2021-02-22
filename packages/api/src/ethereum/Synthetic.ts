@@ -43,11 +43,11 @@ class Synthetic {
   poolInfo(poolId: string): Observable<SyntheticPoolInfo | null> {
     const poolInterface = this.apiProvider.getSyntheticPoolInterfaceContract(poolId);
     return this.apiProvider.currencies.tokens().pipe(
-      switchMap(async tokens => {
+      switchMap(async (tokens) => {
         const owner = await poolInterface.methods.owner().call();
         const getBalancePromise = this.apiProvider.baseTokenContracts.methods.balanceOf(owner).call();
         const enabledTokens = await Promise.all(
-          tokens.map(token =>
+          tokens.map((token) =>
             poolInterface.methods
               .allowedTokens(token.id)
               .call()
@@ -56,16 +56,16 @@ class Synthetic {
         ).then((results: [TokenInfo, boolean][]) => results.filter(([, enabled]) => enabled).map(([token]) => token));
 
         const options = await Promise.all(
-          enabledTokens.map(token =>
+          enabledTokens.map((token) =>
             Promise.all([
               poolInterface.methods.getAdditionalCollateralRatio(token.id).call(),
               poolInterface.methods.getAskSpread(token.id).call(),
-              poolInterface.methods.getBidSpread(token.id).call()
+              poolInterface.methods.getBidSpread(token.id).call(),
             ]).then(([additionalCollateralRatio, askSpread, bidSpread]) => ({
               tokenId: token.id,
               additionalCollateralRatio,
               askSpread,
-              bidSpread
+              bidSpread,
             }))
           )
         );
@@ -74,7 +74,7 @@ class Synthetic {
           poolId: poolInterface.options.address.toLowerCase(),
           owner: owner,
           balance: await getBalancePromise,
-          options
+          options,
         };
       })
     );
@@ -83,7 +83,7 @@ class Synthetic {
   public allPoolIds = () => {
     return of([
       this.protocol.addresses.syntheticPoolGeneral.toLowerCase(),
-      this.protocol.addresses.syntheticPoolXYZ.toLowerCase()
+      this.protocol.addresses.syntheticPoolXYZ.toLowerCase(),
     ]);
   };
 

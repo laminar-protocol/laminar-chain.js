@@ -32,16 +32,16 @@ class LaminarApi {
     'FCHF',
     'FXAU',
     'FOIL',
-    'FGBP'
+    'FGBP',
   ];
 
   constructor(options: LaminarApiOptions) {
     const allOptions = getOptions({
       ...options,
       types: {
-        ...options.types
+        ...options.types,
       },
-      provider: options.provider
+      provider: options.provider,
     });
 
     this.api = new ApiRx(allOptions);
@@ -59,7 +59,7 @@ class LaminarApi {
     return new Promise((resolve, reject) => {
       const actionStatus = {
         txHash: extrinsic.toHex(),
-        action
+        action,
       } as Partial<ActionStatus>;
 
       extrinsic.signAndSend(signOption).subscribe(
@@ -76,7 +76,7 @@ class LaminarApi {
               .filter(({ event: { section } }: any): boolean => section === 'system')
               .forEach((event: any): void => {
                 const {
-                  event: { data, method }
+                  event: { data, method },
                 } = event;
 
                 if (method === 'ExtrinsicFailed') {

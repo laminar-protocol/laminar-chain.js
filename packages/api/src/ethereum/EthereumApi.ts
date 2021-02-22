@@ -28,7 +28,7 @@ class EthereumApi extends LaminarContract {
   ): Promise<ActionStatus> => {
     const actionStatus = {
       account: signOption.from,
-      action
+      action,
     } as Partial<ActionStatus>;
 
     if (this.gas) {

@@ -19,7 +19,7 @@ class Currencies {
         precision: 18,
         isBaseToken: true,
         isNetworkToken: false,
-        id: this.apiProvider.tokenContracts.DAI.options.address.toLowerCase()
+        id: this.apiProvider.tokenContracts.DAI.options.address.toLowerCase(),
       },
       {
         name: 'EUR',
@@ -27,7 +27,7 @@ class Currencies {
         precision: 18,
         isBaseToken: false,
         isNetworkToken: false,
-        id: this.apiProvider.tokenContracts.FEUR.options.address.toLowerCase()
+        id: this.apiProvider.tokenContracts.FEUR.options.address.toLowerCase(),
       },
       {
         name: 'JPY',
@@ -35,7 +35,7 @@ class Currencies {
         precision: 18,
         isBaseToken: false,
         isNetworkToken: false,
-        id: this.apiProvider.tokenContracts.FJPY.options.address.toLowerCase()
+        id: this.apiProvider.tokenContracts.FJPY.options.address.toLowerCase(),
       },
       {
         name: 'BTC',
@@ -43,7 +43,7 @@ class Currencies {
         precision: 18,
         isBaseToken: false,
         isNetworkToken: false,
-        id: this.apiProvider.tokenContracts.FBTC.options.address.toLowerCase()
+        id: this.apiProvider.tokenContracts.FBTC.options.address.toLowerCase(),
       },
       {
         name: 'ETH',
@@ -51,7 +51,7 @@ class Currencies {
         precision: 18,
         isBaseToken: false,
         isNetworkToken: false,
-        id: this.apiProvider.tokenContracts.FETH.options.address.toLowerCase()
+        id: this.apiProvider.tokenContracts.FETH.options.address.toLowerCase(),
       },
       {
         name: 'AUD',
@@ -59,7 +59,7 @@ class Currencies {
         precision: 18,
         isBaseToken: false,
         isNetworkToken: false,
-        id: this.apiProvider.tokenContracts.FAUD.options.address.toLowerCase()
+        id: this.apiProvider.tokenContracts.FAUD.options.address.toLowerCase(),
       },
       {
         name: 'CAD',
@@ -67,7 +67,7 @@ class Currencies {
         precision: 18,
         isBaseToken: false,
         isNetworkToken: false,
-        id: this.apiProvider.tokenContracts.FCAD.options.address.toLowerCase()
+        id: this.apiProvider.tokenContracts.FCAD.options.address.toLowerCase(),
       },
       {
         name: 'CHF',
@@ -75,7 +75,7 @@ class Currencies {
         precision: 18,
         isBaseToken: false,
         isNetworkToken: false,
-        id: this.apiProvider.tokenContracts.FCHF.options.address.toLowerCase()
+        id: this.apiProvider.tokenContracts.FCHF.options.address.toLowerCase(),
       },
       {
         name: 'XAU',
@@ -83,7 +83,7 @@ class Currencies {
         precision: 18,
         isBaseToken: false,
         isNetworkToken: false,
-        id: this.apiProvider.tokenContracts.FXAU.options.address.toLowerCase()
+        id: this.apiProvider.tokenContracts.FXAU.options.address.toLowerCase(),
       },
       {
         name: 'USOIL',
@@ -91,7 +91,7 @@ class Currencies {
         precision: 18,
         isBaseToken: false,
         isNetworkToken: false,
-        id: this.apiProvider.tokenContracts.FOIL.options.address.toLowerCase()
+        id: this.apiProvider.tokenContracts.FOIL.options.address.toLowerCase(),
       },
       {
         name: 'GBP',
@@ -99,8 +99,8 @@ class Currencies {
         precision: 18,
         isBaseToken: false,
         isNetworkToken: false,
-        id: this.apiProvider.tokenContracts.FGBP.options.address.toLowerCase()
-      }
+        id: this.apiProvider.tokenContracts.FGBP.options.address.toLowerCase(),
+      },
     ]);
   };
 
@@ -112,10 +112,7 @@ class Currencies {
 
   public convertAmountFromBase = (amount: string): Observable<string> => {
     return from(
-      this.apiProvider.baseContracts.moneyMarket.methods
-        .convertAmountFromBase(amount)
-        .call()
-        .then() as Promise<string>
+      this.apiProvider.baseContracts.moneyMarket.methods.convertAmountFromBase(amount).call().then() as Promise<string>
     );
   };
 
@@ -130,7 +127,7 @@ class Currencies {
 
   public balances = (address: string): Observable<TokenBalance[]> => {
     return this.tokens().pipe(
-      switchMap(tokens => {
+      switchMap((tokens) => {
         return combineLatest(
           ...tokens.map(({ id }) =>
             this.apiProvider
@@ -140,7 +137,7 @@ class Currencies {
               .then((result: any) => {
                 return {
                   tokenId: id,
-                  free: result
+                  free: result,
                 };
               })
           )
@@ -152,17 +149,17 @@ class Currencies {
   public oracleValues = (): Observable<OracleValue[]> => {
     return timer(0, 120000).pipe(
       switchMap(() => this.tokens()),
-      switchMap(tokens => {
+      switchMap((tokens) => {
         const timestamp = +new Date();
         return Promise.all(
           tokens
-            .filter(token => !token.isNetworkToken && !token.isBaseToken)
+            .filter((token) => !token.isNetworkToken && !token.isBaseToken)
             .map(async ({ id }) => {
               const value = await this.apiProvider.baseContracts.priceOracleInterface.methods.getPrice(id).call();
               return {
                 tokenId: id,
                 timestamp,
-                value: value
+                value: value,
               };
             })
         );

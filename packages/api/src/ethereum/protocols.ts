@@ -29,7 +29,7 @@ export const abis = [
   'SimplePriceOracle',
   'SyntheticFlowProtocol',
   'SyntheticFlowToken',
-  'SyntheticLiquidityPoolInterface'
+  'SyntheticLiquidityPoolInterface',
 ] as const;
 
 export const TokenNames = [
@@ -43,7 +43,7 @@ export const TokenNames = [
   'fUSOIL',
   'fXAU',
   'fBTC',
-  'fETH'
+  'fETH',
 ] as const;
 
 export type ProtocolType = 'kovan';
@@ -73,13 +73,13 @@ const kovan: Readonly<Protocol> = {
     SimplePriceOracle: KovanSimplePriceOracle,
     SyntheticFlowProtocol: KovanSyntheticFlowProtocol,
     SyntheticFlowToken: KovanSyntheticFlowToken,
-    SyntheticLiquidityPoolInterface: KovanSyntheticLiquidityPoolInterface
+    SyntheticLiquidityPoolInterface: KovanSyntheticLiquidityPoolInterface,
   } as Protocol['abis'],
-  addresses: KovanAddresses
+  addresses: KovanAddresses,
 };
 
 const protocols: Record<ProtocolType, Protocol> = {
-  kovan
+  kovan,
 };
 
 export default protocols;

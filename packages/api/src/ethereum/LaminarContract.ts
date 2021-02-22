@@ -46,7 +46,7 @@ class LaminarContract implements LaminarContract {
       marginLiquidityPoolRegistry: this.createContract(abis.MarginLiquidityPoolRegistry, addresses.marginPoolRegistry),
       syntheticFlowProtocol: this.createContract(abis.SyntheticFlowProtocol, addresses.syntheticProtocol),
       priceOracleInterface: this.createContract(abis.PriceOracleInterface, addresses.oracle),
-      moneyMarket: this.createContract(abis.MoneyMarket, addresses.moneyMarket)
+      moneyMarket: this.createContract(abis.MoneyMarket, addresses.moneyMarket),
     };
 
     this.tokenIds = {
@@ -61,7 +61,7 @@ class LaminarContract implements LaminarContract {
       FOIL: addresses.fUSOIL,
       FXAU: addresses.fXAU,
       FBTC: addresses.fBTC,
-      FETH: addresses.fETH
+      FETH: addresses.fETH,
     };
 
     this.tokenContracts = {
@@ -76,7 +76,7 @@ class LaminarContract implements LaminarContract {
       FOIL: this.createContract(abis.ERC20, this.tokenIds.FOIL),
       FXAU: this.createContract(abis.ERC20, this.tokenIds.FXAU),
       FBTC: this.createContract(abis.ERC20, this.tokenIds.FBTC),
-      FETH: this.createContract(abis.ERC20, this.tokenIds.FETH)
+      FETH: this.createContract(abis.ERC20, this.tokenIds.FETH),
     };
 
     this.baseTokenContracts = this.tokenContracts.DAI;
