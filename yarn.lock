@@ -2023,7 +2023,7 @@ __metadata:
   dependencies:
     "@babel/runtime": ^7.10.2
     "@laminar/flow-protocol-ethereum": 0.0.12
-    "@laminar/types": ^0.3.0
+    "@laminar/types": ^0.3.1
     "@open-web3/orml-api-derive": ^0.8.2-9
     "@polkadot/api": ^3.8.1
     rxjs: ^6.6.3
@@ -2041,7 +2041,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@laminar/type-definitions@^0.3.0, @laminar/type-definitions@workspace:packages/type-definitions":
+"@laminar/type-definitions@^0.3.1, @laminar/type-definitions@workspace:packages/type-definitions":
   version: 0.0.0-use.local
   resolution: "@laminar/type-definitions@workspace:packages/type-definitions"
   dependencies:
@@ -2049,12 +2049,12 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@laminar/types@^0.3.0, @laminar/types@workspace:packages/types":
+"@laminar/types@^0.3.1, @laminar/types@workspace:packages/types":
   version: 0.0.0-use.local
   resolution: "@laminar/types@workspace:packages/types"
   dependencies:
     "@babel/runtime": ^7.10.2
-    "@laminar/type-definitions": ^0.3.0
+    "@laminar/type-definitions": ^0.3.1
     "@open-web3/api-mobx": ^0.8.2-9
     "@open-web3/orml-types": ^0.8.2-9
     "@polkadot/api": ^3.8.1
