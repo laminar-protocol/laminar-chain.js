@@ -133,7 +133,7 @@ declare module '@polkadot/api/types/storage' {
       /**
        * Maximum spread of a currency.
        **/
-      maxSpread: AugmentedQuery<ApiType, (arg: CurrencyId | 'LAMI' | 'AUSD' | 'FEUR' | 'FJPY' | 'FBTC' | 'FETH' | 'FAUD' | 'FCAD' | 'FCHF' | 'FXAU' | 'FOIL' | 'FGBP' | number | Uint8Array) => Observable<Option<Balance>>, [CurrencyId]> & QueryableStorageEntry<ApiType, [CurrencyId]>;
+      maxSpread: AugmentedQuery<ApiType, (arg: CurrencyId | 'LAMI' | 'AUSD' | 'DOT' | 'FEUR' | 'FJPY' | 'FBTC' | 'FETH' | 'FAUD' | 'FCAD' | 'FCHF' | 'FXAU' | 'FOIL' | 'FGBP' | number | Uint8Array) => Observable<Option<Balance>>, [CurrencyId]> & QueryableStorageEntry<ApiType, [CurrencyId]>;
       /**
        * Minimum additional collateral ratio.
        **/
@@ -141,18 +141,18 @@ declare module '@polkadot/api/types/storage' {
       /**
        * Currency options in a liquidity pool.
        **/
-      poolCurrencyOptions: AugmentedQueryDoubleMap<ApiType, (key1: LiquidityPoolId | AnyNumber | Uint8Array, key2: CurrencyId | 'LAMI' | 'AUSD' | 'FEUR' | 'FJPY' | 'FBTC' | 'FETH' | 'FAUD' | 'FCAD' | 'FCHF' | 'FXAU' | 'FOIL' | 'FGBP' | number | Uint8Array) => Observable<SyntheticPoolCurrencyOption>, [LiquidityPoolId, CurrencyId]> & QueryableStorageEntry<ApiType, [LiquidityPoolId, CurrencyId]>;
+      poolCurrencyOptions: AugmentedQueryDoubleMap<ApiType, (key1: LiquidityPoolId | AnyNumber | Uint8Array, key2: CurrencyId | 'LAMI' | 'AUSD' | 'DOT' | 'FEUR' | 'FJPY' | 'FBTC' | 'FETH' | 'FAUD' | 'FCAD' | 'FCHF' | 'FXAU' | 'FOIL' | 'FGBP' | number | Uint8Array) => Observable<SyntheticPoolCurrencyOption>, [LiquidityPoolId, CurrencyId]> & QueryableStorageEntry<ApiType, [LiquidityPoolId, CurrencyId]>;
     };
     syntheticTokens: {
       [key: string]: QueryableStorageEntry<ApiType>;
       /**
        * Positions of a currency in a pool
        **/
-      positions: AugmentedQueryDoubleMap<ApiType, (key1: LiquidityPoolId | AnyNumber | Uint8Array, key2: CurrencyId | 'LAMI' | 'AUSD' | 'FEUR' | 'FJPY' | 'FBTC' | 'FETH' | 'FAUD' | 'FCAD' | 'FCHF' | 'FXAU' | 'FOIL' | 'FGBP' | number | Uint8Array) => Observable<SyntheticPosition>, [LiquidityPoolId, CurrencyId]> & QueryableStorageEntry<ApiType, [LiquidityPoolId, CurrencyId]>;
+      positions: AugmentedQueryDoubleMap<ApiType, (key1: LiquidityPoolId | AnyNumber | Uint8Array, key2: CurrencyId | 'LAMI' | 'AUSD' | 'DOT' | 'FEUR' | 'FJPY' | 'FBTC' | 'FETH' | 'FAUD' | 'FCAD' | 'FCHF' | 'FXAU' | 'FOIL' | 'FGBP' | number | Uint8Array) => Observable<SyntheticPosition>, [LiquidityPoolId, CurrencyId]> & QueryableStorageEntry<ApiType, [LiquidityPoolId, CurrencyId]>;
       /**
        * Ratios for each currency.
        **/
-      ratios: AugmentedQuery<ApiType, (arg: CurrencyId | 'LAMI' | 'AUSD' | 'FEUR' | 'FJPY' | 'FBTC' | 'FETH' | 'FAUD' | 'FCAD' | 'FCHF' | 'FXAU' | 'FOIL' | 'FGBP' | number | Uint8Array) => Observable<SyntheticTokensRatio>, [CurrencyId]> & QueryableStorageEntry<ApiType, [CurrencyId]>;
+      ratios: AugmentedQuery<ApiType, (arg: CurrencyId | 'LAMI' | 'AUSD' | 'DOT' | 'FEUR' | 'FJPY' | 'FBTC' | 'FETH' | 'FAUD' | 'FCAD' | 'FCHF' | 'FXAU' | 'FOIL' | 'FGBP' | number | Uint8Array) => Observable<SyntheticTokensRatio>, [CurrencyId]> & QueryableStorageEntry<ApiType, [CurrencyId]>;
     };
     tokens: {
       [key: string]: QueryableStorageEntry<ApiType>;
@@ -163,16 +163,16 @@ declare module '@polkadot/api/types/storage' {
        * 
        * NOTE: This is only used in the case that this module is used to store balances.
        **/
-      accounts: AugmentedQueryDoubleMap<ApiType, (key1: AccountId | string | Uint8Array, key2: CurrencyId | 'LAMI' | 'AUSD' | 'FEUR' | 'FJPY' | 'FBTC' | 'FETH' | 'FAUD' | 'FCAD' | 'FCHF' | 'FXAU' | 'FOIL' | 'FGBP' | number | Uint8Array) => Observable<OrmlAccountData>, [AccountId, CurrencyId]> & QueryableStorageEntry<ApiType, [AccountId, CurrencyId]>;
+      accounts: AugmentedQueryDoubleMap<ApiType, (key1: AccountId | string | Uint8Array, key2: CurrencyId | 'LAMI' | 'AUSD' | 'DOT' | 'FEUR' | 'FJPY' | 'FBTC' | 'FETH' | 'FAUD' | 'FCAD' | 'FCHF' | 'FXAU' | 'FOIL' | 'FGBP' | number | Uint8Array) => Observable<OrmlAccountData>, [AccountId, CurrencyId]> & QueryableStorageEntry<ApiType, [AccountId, CurrencyId]>;
       /**
        * Any liquidity locks of a token type under an account.
        * NOTE: Should only be accessed when setting, changing and freeing a lock.
        **/
-      locks: AugmentedQueryDoubleMap<ApiType, (key1: AccountId | string | Uint8Array, key2: CurrencyId | 'LAMI' | 'AUSD' | 'FEUR' | 'FJPY' | 'FBTC' | 'FETH' | 'FAUD' | 'FCAD' | 'FCHF' | 'FXAU' | 'FOIL' | 'FGBP' | number | Uint8Array) => Observable<Vec<OrmlBalanceLock>>, [AccountId, CurrencyId]> & QueryableStorageEntry<ApiType, [AccountId, CurrencyId]>;
+      locks: AugmentedQueryDoubleMap<ApiType, (key1: AccountId | string | Uint8Array, key2: CurrencyId | 'LAMI' | 'AUSD' | 'DOT' | 'FEUR' | 'FJPY' | 'FBTC' | 'FETH' | 'FAUD' | 'FCAD' | 'FCHF' | 'FXAU' | 'FOIL' | 'FGBP' | number | Uint8Array) => Observable<Vec<OrmlBalanceLock>>, [AccountId, CurrencyId]> & QueryableStorageEntry<ApiType, [AccountId, CurrencyId]>;
       /**
        * The total issuance of a token type.
        **/
-      totalIssuance: AugmentedQuery<ApiType, (arg: CurrencyId | 'LAMI' | 'AUSD' | 'FEUR' | 'FJPY' | 'FBTC' | 'FETH' | 'FAUD' | 'FCAD' | 'FCHF' | 'FXAU' | 'FOIL' | 'FGBP' | number | Uint8Array) => Observable<Balance>, [CurrencyId]> & QueryableStorageEntry<ApiType, [CurrencyId]>;
+      totalIssuance: AugmentedQuery<ApiType, (arg: CurrencyId | 'LAMI' | 'AUSD' | 'DOT' | 'FEUR' | 'FJPY' | 'FBTC' | 'FETH' | 'FAUD' | 'FCAD' | 'FCHF' | 'FXAU' | 'FOIL' | 'FGBP' | number | Uint8Array) => Observable<Balance>, [CurrencyId]> & QueryableStorageEntry<ApiType, [CurrencyId]>;
     };
   }
 

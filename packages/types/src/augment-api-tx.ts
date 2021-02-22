@@ -3,7 +3,7 @@
 
 import type { Compact, Option, bool } from '@polkadot/types';
 import type { AnyNumber } from '@polkadot/types/types';
-import type { AccountId, AccountIndex, Address, AmountOf, Balance, BalanceOf, Call, CurrencyId, CurrencyIdOf, FixedI128, Leverage, Leverages, LiquidityPoolId, LiquidityPoolIdentityInfo, LookupSource, Moment, Permill, PositionId, RiskThreshold, SwapRate, TradingPair } from '@laminar/types/interfaces/runtime';
+import type { AccountId, AmountOf, Balance, BalanceOf, Call, CurrencyId, CurrencyIdOf, FixedI128, Leverage, Leverages, LiquidityPoolId, LiquidityPoolIdentityInfo, LookupSource, Moment, Permill, PositionId, RiskThreshold, SwapRate, TradingPair } from '@laminar/types/interfaces/runtime';
 import type { Price } from '@open-web3/orml-types/interfaces/traits';
 import type { Extrinsic } from '@polkadot/types/interfaces/extrinsics';
 import type { ApiTypes, SubmittableExtrinsic } from '@polkadot/api/types';
@@ -136,7 +136,7 @@ declare module '@polkadot/api/types/submittable' {
        * - native currency in worst case: 70 µs
        * # </weight>
        **/
-      transfer: AugmentedSubmittable<(dest: LookupSource | Address | AccountId | AccountIndex | string | Uint8Array, currencyId: CurrencyIdOf | 'LAMI' | 'AUSD' | 'FEUR' | 'FJPY' | 'FBTC' | 'FETH' | 'FAUD' | 'FCAD' | 'FCHF' | 'FXAU' | 'FOIL' | 'FGBP' | number | Uint8Array, amount: Compact<BalanceOf> | AnyNumber | Uint8Array) => SubmittableExtrinsic<ApiType>, [LookupSource, CurrencyIdOf, Compact<BalanceOf>]>;
+      transfer: AugmentedSubmittable<(dest: LookupSource | { Id: any } | { Index: any } | { Raw: any } | { Address32: any } | { Address20: any } | string | Uint8Array, currencyId: CurrencyIdOf | 'LAMI' | 'AUSD' | 'DOT' | 'FEUR' | 'FJPY' | 'FBTC' | 'FETH' | 'FAUD' | 'FCAD' | 'FCHF' | 'FXAU' | 'FOIL' | 'FGBP' | number | Uint8Array, amount: Compact<BalanceOf> | AnyNumber | Uint8Array) => SubmittableExtrinsic<ApiType>, [LookupSource, CurrencyIdOf, Compact<BalanceOf>]>;
       /**
        * Transfer some native currency to another account.
        * 
@@ -153,7 +153,7 @@ declare module '@polkadot/api/types/submittable' {
        * Base Weight: 70 µs
        * # </weight>
        **/
-      transferNativeCurrency: AugmentedSubmittable<(dest: LookupSource | Address | AccountId | AccountIndex | string | Uint8Array, amount: Compact<BalanceOf> | AnyNumber | Uint8Array) => SubmittableExtrinsic<ApiType>, [LookupSource, Compact<BalanceOf>]>;
+      transferNativeCurrency: AugmentedSubmittable<(dest: LookupSource | { Id: any } | { Index: any } | { Raw: any } | { Address32: any } | { Address20: any } | string | Uint8Array, amount: Compact<BalanceOf> | AnyNumber | Uint8Array) => SubmittableExtrinsic<ApiType>, [LookupSource, Compact<BalanceOf>]>;
       /**
        * update amount of account `who` under `currency_id`.
        * 
@@ -175,7 +175,7 @@ declare module '@polkadot/api/types/submittable' {
        * - native currency and create account: 27.39 µs
        * # </weight>
        **/
-      updateBalance: AugmentedSubmittable<(who: LookupSource | Address | AccountId | AccountIndex | string | Uint8Array, currencyId: CurrencyIdOf | 'LAMI' | 'AUSD' | 'FEUR' | 'FJPY' | 'FBTC' | 'FETH' | 'FAUD' | 'FCAD' | 'FCHF' | 'FXAU' | 'FOIL' | 'FGBP' | number | Uint8Array, amount: AmountOf | AnyNumber | Uint8Array) => SubmittableExtrinsic<ApiType>, [LookupSource, CurrencyIdOf, AmountOf]>;
+      updateBalance: AugmentedSubmittable<(who: LookupSource | { Id: any } | { Index: any } | { Raw: any } | { Address32: any } | { Address20: any } | string | Uint8Array, currencyId: CurrencyIdOf | 'LAMI' | 'AUSD' | 'DOT' | 'FEUR' | 'FJPY' | 'FBTC' | 'FETH' | 'FAUD' | 'FCAD' | 'FCHF' | 'FXAU' | 'FOIL' | 'FGBP' | number | Uint8Array, amount: AmountOf | AnyNumber | Uint8Array) => SubmittableExtrinsic<ApiType>, [LookupSource, CurrencyIdOf, AmountOf]>;
     };
     marginLiquidityPools: {
       [key: string]: SubmittableExtrinsicFunction<ApiType>;
@@ -295,19 +295,19 @@ declare module '@polkadot/api/types/submittable' {
        * 
        * May only be called from none origin. Would fail if the trader is not safe yet.
        **/
-      traderBecomeSafe: AugmentedSubmittable<(who: LookupSource | Address | AccountId | AccountIndex | string | Uint8Array, poolId: Compact<LiquidityPoolId> | AnyNumber | Uint8Array) => SubmittableExtrinsic<ApiType>, [LookupSource, Compact<LiquidityPoolId>]>;
+      traderBecomeSafe: AugmentedSubmittable<(who: LookupSource | { Id: any } | { Index: any } | { Raw: any } | { Address32: any } | { Address20: any } | string | Uint8Array, poolId: Compact<LiquidityPoolId> | AnyNumber | Uint8Array) => SubmittableExtrinsic<ApiType>, [LookupSource, Compact<LiquidityPoolId>]>;
       /**
        * Margin call a trader.
        * 
        * May only be called from none origin. Would fail if the trader is still safe.
        **/
-      traderMarginCall: AugmentedSubmittable<(who: LookupSource | Address | AccountId | AccountIndex | string | Uint8Array, poolId: Compact<LiquidityPoolId> | AnyNumber | Uint8Array) => SubmittableExtrinsic<ApiType>, [LookupSource, Compact<LiquidityPoolId>]>;
+      traderMarginCall: AugmentedSubmittable<(who: LookupSource | { Id: any } | { Index: any } | { Raw: any } | { Address32: any } | { Address20: any } | string | Uint8Array, poolId: Compact<LiquidityPoolId> | AnyNumber | Uint8Array) => SubmittableExtrinsic<ApiType>, [LookupSource, Compact<LiquidityPoolId>]>;
       /**
        * Stop out a trader.
        * 
        * May only be called from none origin. Would fail if stop out threshold not reached.
        **/
-      traderStopOut: AugmentedSubmittable<(who: LookupSource | Address | AccountId | AccountIndex | string | Uint8Array, poolId: Compact<LiquidityPoolId> | AnyNumber | Uint8Array) => SubmittableExtrinsic<ApiType>, [LookupSource, Compact<LiquidityPoolId>]>;
+      traderStopOut: AugmentedSubmittable<(who: LookupSource | { Id: any } | { Index: any } | { Raw: any } | { Address32: any } | { Address20: any } | string | Uint8Array, poolId: Compact<LiquidityPoolId> | AnyNumber | Uint8Array) => SubmittableExtrinsic<ApiType>, [LookupSource, Compact<LiquidityPoolId>]>;
       /**
        * Withdraw liquidity from caller's account.
        **/
@@ -320,13 +320,13 @@ declare module '@polkadot/api/types/submittable' {
        * 
        * May only be called from the pool owner.
        **/
-      setAdditionalCollateralRatio: AugmentedSubmittable<(poolId: Compact<LiquidityPoolId> | AnyNumber | Uint8Array, currencyId: CurrencyId | 'LAMI' | 'AUSD' | 'FEUR' | 'FJPY' | 'FBTC' | 'FETH' | 'FAUD' | 'FCAD' | 'FCHF' | 'FXAU' | 'FOIL' | 'FGBP' | number | Uint8Array, ratio: Option<Permill> | null | object | string | Uint8Array) => SubmittableExtrinsic<ApiType>, [Compact<LiquidityPoolId>, CurrencyId, Option<Permill>]>;
+      setAdditionalCollateralRatio: AugmentedSubmittable<(poolId: Compact<LiquidityPoolId> | AnyNumber | Uint8Array, currencyId: CurrencyId | 'LAMI' | 'AUSD' | 'DOT' | 'FEUR' | 'FJPY' | 'FBTC' | 'FETH' | 'FAUD' | 'FCAD' | 'FCHF' | 'FXAU' | 'FOIL' | 'FGBP' | number | Uint8Array, ratio: Option<Permill> | null | object | string | Uint8Array) => SubmittableExtrinsic<ApiType>, [Compact<LiquidityPoolId>, CurrencyId, Option<Permill>]>;
       /**
        * Set max spread of `currency_id`.
        * 
        * May only be called from `UpdateOrigin`.
        **/
-      setMaxSpread: AugmentedSubmittable<(currencyId: CurrencyId | 'LAMI' | 'AUSD' | 'FEUR' | 'FJPY' | 'FBTC' | 'FETH' | 'FAUD' | 'FCAD' | 'FCHF' | 'FXAU' | 'FOIL' | 'FGBP' | number | Uint8Array, maxSpread: Compact<Balance> | AnyNumber | Uint8Array) => SubmittableExtrinsic<ApiType>, [CurrencyId, Compact<Balance>]>;
+      setMaxSpread: AugmentedSubmittable<(currencyId: CurrencyId | 'LAMI' | 'AUSD' | 'DOT' | 'FEUR' | 'FJPY' | 'FBTC' | 'FETH' | 'FAUD' | 'FCAD' | 'FCHF' | 'FXAU' | 'FOIL' | 'FGBP' | number | Uint8Array, maxSpread: Compact<Balance> | AnyNumber | Uint8Array) => SubmittableExtrinsic<ApiType>, [CurrencyId, Compact<Balance>]>;
       /**
        * Set minimum additional collateral ratio.
        * 
@@ -338,38 +338,38 @@ declare module '@polkadot/api/types/submittable' {
        * 
        * May only be called from the pool owner.
        **/
-      setSpread: AugmentedSubmittable<(poolId: Compact<LiquidityPoolId> | AnyNumber | Uint8Array, currencyId: CurrencyId | 'LAMI' | 'AUSD' | 'FEUR' | 'FJPY' | 'FBTC' | 'FETH' | 'FAUD' | 'FCAD' | 'FCHF' | 'FXAU' | 'FOIL' | 'FGBP' | number | Uint8Array, bid: Compact<Balance> | AnyNumber | Uint8Array, ask: Compact<Balance> | AnyNumber | Uint8Array) => SubmittableExtrinsic<ApiType>, [Compact<LiquidityPoolId>, CurrencyId, Compact<Balance>, Compact<Balance>]>;
+      setSpread: AugmentedSubmittable<(poolId: Compact<LiquidityPoolId> | AnyNumber | Uint8Array, currencyId: CurrencyId | 'LAMI' | 'AUSD' | 'DOT' | 'FEUR' | 'FJPY' | 'FBTC' | 'FETH' | 'FAUD' | 'FCAD' | 'FCHF' | 'FXAU' | 'FOIL' | 'FGBP' | number | Uint8Array, bid: Compact<Balance> | AnyNumber | Uint8Array, ask: Compact<Balance> | AnyNumber | Uint8Array) => SubmittableExtrinsic<ApiType>, [Compact<LiquidityPoolId>, CurrencyId, Compact<Balance>, Compact<Balance>]>;
       /**
        * Enable or disable synthetic of `currency_id` in `pool_id`.
        * 
        * May only be called from the pool owner.
        **/
-      setSyntheticEnabled: AugmentedSubmittable<(poolId: Compact<LiquidityPoolId> | AnyNumber | Uint8Array, currencyId: CurrencyId | 'LAMI' | 'AUSD' | 'FEUR' | 'FJPY' | 'FBTC' | 'FETH' | 'FAUD' | 'FCAD' | 'FCHF' | 'FXAU' | 'FOIL' | 'FGBP' | number | Uint8Array, enabled: bool | boolean | Uint8Array) => SubmittableExtrinsic<ApiType>, [Compact<LiquidityPoolId>, CurrencyId, bool]>;
+      setSyntheticEnabled: AugmentedSubmittable<(poolId: Compact<LiquidityPoolId> | AnyNumber | Uint8Array, currencyId: CurrencyId | 'LAMI' | 'AUSD' | 'DOT' | 'FEUR' | 'FJPY' | 'FBTC' | 'FETH' | 'FAUD' | 'FCAD' | 'FCHF' | 'FXAU' | 'FOIL' | 'FGBP' | number | Uint8Array, enabled: bool | boolean | Uint8Array) => SubmittableExtrinsic<ApiType>, [Compact<LiquidityPoolId>, CurrencyId, bool]>;
     };
     syntheticProtocol: {
       [key: string]: SubmittableExtrinsicFunction<ApiType>;
       /**
        * Add collateral to `currency_id` in `pool_id` by `collateral_amount`.
        **/
-      addCollateral: AugmentedSubmittable<(poolId: Compact<LiquidityPoolId> | AnyNumber | Uint8Array, currencyId: CurrencyId | 'LAMI' | 'AUSD' | 'FEUR' | 'FJPY' | 'FBTC' | 'FETH' | 'FAUD' | 'FCAD' | 'FCHF' | 'FXAU' | 'FOIL' | 'FGBP' | number | Uint8Array, collateralAmount: Compact<Balance> | AnyNumber | Uint8Array) => SubmittableExtrinsic<ApiType>, [Compact<LiquidityPoolId>, CurrencyId, Compact<Balance>]>;
+      addCollateral: AugmentedSubmittable<(poolId: Compact<LiquidityPoolId> | AnyNumber | Uint8Array, currencyId: CurrencyId | 'LAMI' | 'AUSD' | 'DOT' | 'FEUR' | 'FJPY' | 'FBTC' | 'FETH' | 'FAUD' | 'FCAD' | 'FCHF' | 'FXAU' | 'FOIL' | 'FGBP' | number | Uint8Array, collateralAmount: Compact<Balance> | AnyNumber | Uint8Array) => SubmittableExtrinsic<ApiType>, [Compact<LiquidityPoolId>, CurrencyId, Compact<Balance>]>;
       /**
        * Liquidite `currency_id` in `pool_id` by `synthetic_amount`.
        **/
-      liquidate: AugmentedSubmittable<(poolId: Compact<LiquidityPoolId> | AnyNumber | Uint8Array, currencyId: CurrencyId | 'LAMI' | 'AUSD' | 'FEUR' | 'FJPY' | 'FBTC' | 'FETH' | 'FAUD' | 'FCAD' | 'FCHF' | 'FXAU' | 'FOIL' | 'FGBP' | number | Uint8Array, syntheticAmount: Compact<Balance> | AnyNumber | Uint8Array) => SubmittableExtrinsic<ApiType>, [Compact<LiquidityPoolId>, CurrencyId, Compact<Balance>]>;
+      liquidate: AugmentedSubmittable<(poolId: Compact<LiquidityPoolId> | AnyNumber | Uint8Array, currencyId: CurrencyId | 'LAMI' | 'AUSD' | 'DOT' | 'FEUR' | 'FJPY' | 'FBTC' | 'FETH' | 'FAUD' | 'FCAD' | 'FCHF' | 'FXAU' | 'FOIL' | 'FGBP' | number | Uint8Array, syntheticAmount: Compact<Balance> | AnyNumber | Uint8Array) => SubmittableExtrinsic<ApiType>, [Compact<LiquidityPoolId>, CurrencyId, Compact<Balance>]>;
       /**
        * Mint synthetic tokens.
        **/
-      mint: AugmentedSubmittable<(poolId: Compact<LiquidityPoolId> | AnyNumber | Uint8Array, currencyId: CurrencyId | 'LAMI' | 'AUSD' | 'FEUR' | 'FJPY' | 'FBTC' | 'FETH' | 'FAUD' | 'FCAD' | 'FCHF' | 'FXAU' | 'FOIL' | 'FGBP' | number | Uint8Array, collateralAmount: Compact<Balance> | AnyNumber | Uint8Array, maxPrice: Price | AnyNumber | Uint8Array) => SubmittableExtrinsic<ApiType>, [Compact<LiquidityPoolId>, CurrencyId, Compact<Balance>, Price]>;
+      mint: AugmentedSubmittable<(poolId: Compact<LiquidityPoolId> | AnyNumber | Uint8Array, currencyId: CurrencyId | 'LAMI' | 'AUSD' | 'DOT' | 'FEUR' | 'FJPY' | 'FBTC' | 'FETH' | 'FAUD' | 'FCAD' | 'FCHF' | 'FXAU' | 'FOIL' | 'FGBP' | number | Uint8Array, collateralAmount: Compact<Balance> | AnyNumber | Uint8Array, maxPrice: Price | AnyNumber | Uint8Array) => SubmittableExtrinsic<ApiType>, [Compact<LiquidityPoolId>, CurrencyId, Compact<Balance>, Price]>;
       /**
        * Redeem collateral.
        **/
-      redeem: AugmentedSubmittable<(poolId: Compact<LiquidityPoolId> | AnyNumber | Uint8Array, currencyId: CurrencyId | 'LAMI' | 'AUSD' | 'FEUR' | 'FJPY' | 'FBTC' | 'FETH' | 'FAUD' | 'FCAD' | 'FCHF' | 'FXAU' | 'FOIL' | 'FGBP' | number | Uint8Array, syntheticAmount: Compact<Balance> | AnyNumber | Uint8Array, minPrice: Price | AnyNumber | Uint8Array) => SubmittableExtrinsic<ApiType>, [Compact<LiquidityPoolId>, CurrencyId, Compact<Balance>, Price]>;
+      redeem: AugmentedSubmittable<(poolId: Compact<LiquidityPoolId> | AnyNumber | Uint8Array, currencyId: CurrencyId | 'LAMI' | 'AUSD' | 'DOT' | 'FEUR' | 'FJPY' | 'FBTC' | 'FETH' | 'FAUD' | 'FCAD' | 'FCHF' | 'FXAU' | 'FOIL' | 'FGBP' | number | Uint8Array, syntheticAmount: Compact<Balance> | AnyNumber | Uint8Array, minPrice: Price | AnyNumber | Uint8Array) => SubmittableExtrinsic<ApiType>, [Compact<LiquidityPoolId>, CurrencyId, Compact<Balance>, Price]>;
       /**
        * Withdraw all available collateral.
        * 
        * May only be called from the pool owner.
        **/
-      withdrawCollateral: AugmentedSubmittable<(poolId: Compact<LiquidityPoolId> | AnyNumber | Uint8Array, currencyId: CurrencyId | 'LAMI' | 'AUSD' | 'FEUR' | 'FJPY' | 'FBTC' | 'FETH' | 'FAUD' | 'FCAD' | 'FCHF' | 'FXAU' | 'FOIL' | 'FGBP' | number | Uint8Array) => SubmittableExtrinsic<ApiType>, [Compact<LiquidityPoolId>, CurrencyId]>;
+      withdrawCollateral: AugmentedSubmittable<(poolId: Compact<LiquidityPoolId> | AnyNumber | Uint8Array, currencyId: CurrencyId | 'LAMI' | 'AUSD' | 'DOT' | 'FEUR' | 'FJPY' | 'FBTC' | 'FETH' | 'FAUD' | 'FCAD' | 'FCHF' | 'FXAU' | 'FOIL' | 'FGBP' | number | Uint8Array) => SubmittableExtrinsic<ApiType>, [Compact<LiquidityPoolId>, CurrencyId]>;
     };
     syntheticTokens: {
       [key: string]: SubmittableExtrinsicFunction<ApiType>;
@@ -378,19 +378,19 @@ declare module '@polkadot/api/types/submittable' {
        * 
        * May only be called from `UpdateOrigin`.
        **/
-      setCollateralRatio: AugmentedSubmittable<(currencyId: CurrencyId | 'LAMI' | 'AUSD' | 'FEUR' | 'FJPY' | 'FBTC' | 'FETH' | 'FAUD' | 'FCAD' | 'FCHF' | 'FXAU' | 'FOIL' | 'FGBP' | number | Uint8Array, ratio: Compact<Permill> | AnyNumber | Uint8Array) => SubmittableExtrinsic<ApiType>, [CurrencyId, Compact<Permill>]>;
+      setCollateralRatio: AugmentedSubmittable<(currencyId: CurrencyId | 'LAMI' | 'AUSD' | 'DOT' | 'FEUR' | 'FJPY' | 'FBTC' | 'FETH' | 'FAUD' | 'FCAD' | 'FCHF' | 'FXAU' | 'FOIL' | 'FGBP' | number | Uint8Array, ratio: Compact<Permill> | AnyNumber | Uint8Array) => SubmittableExtrinsic<ApiType>, [CurrencyId, Compact<Permill>]>;
       /**
        * Set extreme liquidation ratio.
        * 
        * May only be called from `UpdateOrigin`.
        **/
-      setExtremeRatio: AugmentedSubmittable<(currencyId: CurrencyId | 'LAMI' | 'AUSD' | 'FEUR' | 'FJPY' | 'FBTC' | 'FETH' | 'FAUD' | 'FCAD' | 'FCHF' | 'FXAU' | 'FOIL' | 'FGBP' | number | Uint8Array, ratio: Compact<Permill> | AnyNumber | Uint8Array) => SubmittableExtrinsic<ApiType>, [CurrencyId, Compact<Permill>]>;
+      setExtremeRatio: AugmentedSubmittable<(currencyId: CurrencyId | 'LAMI' | 'AUSD' | 'DOT' | 'FEUR' | 'FJPY' | 'FBTC' | 'FETH' | 'FAUD' | 'FCAD' | 'FCHF' | 'FXAU' | 'FOIL' | 'FGBP' | number | Uint8Array, ratio: Compact<Permill> | AnyNumber | Uint8Array) => SubmittableExtrinsic<ApiType>, [CurrencyId, Compact<Permill>]>;
       /**
        * Set liquidation ratio.
        * 
        * May only be called from `UpdateOrigin`.
        **/
-      setLiquidationRatio: AugmentedSubmittable<(currencyId: CurrencyId | 'LAMI' | 'AUSD' | 'FEUR' | 'FJPY' | 'FBTC' | 'FETH' | 'FAUD' | 'FCAD' | 'FCHF' | 'FXAU' | 'FOIL' | 'FGBP' | number | Uint8Array, ratio: Compact<Permill> | AnyNumber | Uint8Array) => SubmittableExtrinsic<ApiType>, [CurrencyId, Compact<Permill>]>;
+      setLiquidationRatio: AugmentedSubmittable<(currencyId: CurrencyId | 'LAMI' | 'AUSD' | 'DOT' | 'FEUR' | 'FJPY' | 'FBTC' | 'FETH' | 'FAUD' | 'FCAD' | 'FCHF' | 'FXAU' | 'FOIL' | 'FGBP' | number | Uint8Array, ratio: Compact<Permill> | AnyNumber | Uint8Array) => SubmittableExtrinsic<ApiType>, [CurrencyId, Compact<Permill>]>;
     };
     tokens: {
       [key: string]: SubmittableExtrinsicFunction<ApiType>;
@@ -407,7 +407,7 @@ declare module '@polkadot/api/types/submittable' {
        * Base Weight: 84.08 µs
        * # </weight>
        **/
-      transfer: AugmentedSubmittable<(dest: LookupSource | Address | AccountId | AccountIndex | string | Uint8Array, currencyId: CurrencyId | 'LAMI' | 'AUSD' | 'FEUR' | 'FJPY' | 'FBTC' | 'FETH' | 'FAUD' | 'FCAD' | 'FCHF' | 'FXAU' | 'FOIL' | 'FGBP' | number | Uint8Array, amount: Compact<Balance> | AnyNumber | Uint8Array) => SubmittableExtrinsic<ApiType>, [LookupSource, CurrencyId, Compact<Balance>]>;
+      transfer: AugmentedSubmittable<(dest: LookupSource | { Id: any } | { Index: any } | { Raw: any } | { Address32: any } | { Address20: any } | string | Uint8Array, currencyId: CurrencyId | 'LAMI' | 'AUSD' | 'DOT' | 'FEUR' | 'FJPY' | 'FBTC' | 'FETH' | 'FAUD' | 'FCAD' | 'FCHF' | 'FXAU' | 'FOIL' | 'FGBP' | number | Uint8Array, amount: Compact<Balance> | AnyNumber | Uint8Array) => SubmittableExtrinsic<ApiType>, [LookupSource, CurrencyId, Compact<Balance>]>;
       /**
        * Transfer all remaining balance to the given account.
        * 
@@ -421,7 +421,7 @@ declare module '@polkadot/api/types/submittable' {
        * Base Weight: 87.71 µs
        * # </weight>
        **/
-      transferAll: AugmentedSubmittable<(dest: LookupSource | Address | AccountId | AccountIndex | string | Uint8Array, currencyId: CurrencyId | 'LAMI' | 'AUSD' | 'FEUR' | 'FJPY' | 'FBTC' | 'FETH' | 'FAUD' | 'FCAD' | 'FCHF' | 'FXAU' | 'FOIL' | 'FGBP' | number | Uint8Array) => SubmittableExtrinsic<ApiType>, [LookupSource, CurrencyId]>;
+      transferAll: AugmentedSubmittable<(dest: LookupSource | { Id: any } | { Index: any } | { Raw: any } | { Address32: any } | { Address20: any } | string | Uint8Array, currencyId: CurrencyId | 'LAMI' | 'AUSD' | 'DOT' | 'FEUR' | 'FJPY' | 'FBTC' | 'FETH' | 'FAUD' | 'FCAD' | 'FCHF' | 'FXAU' | 'FOIL' | 'FGBP' | number | Uint8Array) => SubmittableExtrinsic<ApiType>, [LookupSource, CurrencyId]>;
     };
   }
 

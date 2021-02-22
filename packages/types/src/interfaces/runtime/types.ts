@@ -24,7 +24,7 @@ export interface AccumulateConfig extends Struct {
 }
 
 /** @name Address */
-export interface Address extends LookupSource {}
+export interface Address extends MultiAddress {}
 
 /** @name Amount */
 export interface Amount extends FixedI128 {}
@@ -72,6 +72,7 @@ export interface ConsensusEngineId extends GenericConsensusEngineId {}
 export interface CurrencyId extends Enum {
   readonly isLami: boolean;
   readonly isAusd: boolean;
+  readonly isDot: boolean;
   readonly isFeur: boolean;
   readonly isFjpy: boolean;
   readonly isFbtc: boolean;
@@ -250,7 +251,7 @@ export interface LiquidityPoolIdentityInfo extends Struct {
 export interface LockIdentifier extends U8aFixed {}
 
 /** @name LookupSource */
-export interface LookupSource extends IndicesLookupSource {}
+export interface LookupSource extends MultiAddress {}
 
 /** @name LookupTarget */
 export interface LookupTarget extends AccountId {}
@@ -426,8 +427,16 @@ export interface SignedBlock extends Struct {
   readonly justification: Justification;
 }
 
+/** @name Slot */
+export interface Slot extends u64 {}
+
 /** @name StorageData */
 export interface StorageData extends Bytes {}
+
+/** @name StorageProof */
+export interface StorageProof extends Struct {
+  readonly trieNodes: Vec<Bytes>;
+}
 
 /** @name SwapRate */
 export interface SwapRate extends Struct {
