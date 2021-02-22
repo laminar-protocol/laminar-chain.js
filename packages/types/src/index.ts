@@ -2,14 +2,14 @@ import {
   rpc as lamianrRpc,
   types as lamianrTypes,
   typesAlias as lamianrTypesAlias,
-  typesBundle as lamianrTypesBundle
+  typesBundle as lamianrTypesBundle,
 } from '@laminar/type-definitions';
 import {
   DefinitionRpc,
   DefinitionRpcSub,
   OverrideBundleType,
   OverrideModuleType,
-  RegistryTypes
+  RegistryTypes,
 } from '@polkadot/types/types';
 import './augment-api';
 import './augment-api-consts';
@@ -26,4 +26,4 @@ export const rpc: Record<string, Record<string, DefinitionRpc | DefinitionRpcSub
 
 export const typesAlias: Record<string, OverrideModuleType> = lamianrTypesAlias;
 
-export const typesBundle = lamianrTypesBundle as OverrideBundleType;
+export const typesBundle = (lamianrTypesBundle as unknown) as OverrideBundleType;

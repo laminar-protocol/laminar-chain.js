@@ -10,7 +10,7 @@ const main = () => {
   const registry = new TypeRegistry();
   registry.register(types);
   registry.setKnownTypes({
-    typesAlias
+    typesAlias,
   });
   const metadata = new Metadata(registry, metadataStatic);
 

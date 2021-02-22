@@ -6,7 +6,7 @@ import {
   generateDefaultConsts,
   generateDefaultQuery,
   generateDefaultTx,
-  generateDefaultRpc
+  generateDefaultRpc,
 } from '@polkadot/typegen/generate';
 import { registerDefinitions } from '@polkadot/typegen/util';
 import metaHex from '../src/metadata/static-latest';
@@ -25,7 +25,7 @@ import { typesAlias } from '../src';
 function filterModules(names: string[], defs: any) {
   const registry = new TypeRegistry();
   registry.setKnownTypes({
-    typesAlias
+    typesAlias,
   });
   registerDefinitions(registry, defs);
   const metadata = new Metadata(registry, metaHex);
@@ -51,7 +51,7 @@ const { runtime: _runtime, ...ormlModulesDefinations } = ormlDefinations;
 const definations = {
   '@polkadot/types/interfaces': substrateDefinations,
   '@open-web3/orml-types/interfaces': ormlModulesDefinations,
-  '@laminar/types/interfaces': laminarDefinations
+  '@laminar/types/interfaces': laminarDefinations,
 } as any;
 
 const metadata = filterModules(
@@ -65,7 +65,7 @@ const metadata = filterModules(
     'BaseLiquidityPoolsForMargin',
     'MarginLiquidityPools',
     'BaseLiquidityPoolsForSynthetic',
-    'SyntheticLiquidityPools'
+    'SyntheticLiquidityPools',
   ],
   definations
 );
@@ -80,5 +80,5 @@ generateDefaultRpc('packages/types/src/augment-api-rpc.ts', definations);
 generateDefaultQuery('packages/types/src/augment-api-query.ts', metadata, definations);
 
 generateMobx('packages/types/src/augment-api-mobx.ts', metaHex, definations, {
-  typesAlias
+  typesAlias,
 });

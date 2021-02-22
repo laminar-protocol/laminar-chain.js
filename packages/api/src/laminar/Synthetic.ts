@@ -19,7 +19,7 @@ class Synthetic {
       this.api.query.baseLiquidityPoolsForSynthetic.pools(poolId),
       this.api.query.syntheticLiquidityPools.poolCurrencyOptions.entries(poolId),
       this.api.query.syntheticLiquidityPools.minAdditionalCollateralRatio(),
-      this.api.query.syntheticLiquidityPools.maxSpread.entries()
+      this.api.query.syntheticLiquidityPools.maxSpread.entries(),
     ]).pipe(
       map(([pool, liquidityPoolOptions, minAdditionalCollateralRatio, allMaxSpread]) => {
         if (pool.isEmpty) return null;
@@ -62,9 +62,9 @@ class Synthetic {
               tokenId: tokenId,
               askSpread: askSpread.toString(),
               bidSpread: bidSpread.toString(),
-              additionalCollateralRatio: permillToFixedU128(additionalCollateralRatio).toString()
+              additionalCollateralRatio: permillToFixedU128(additionalCollateralRatio).toString(),
             };
-          })
+          }),
         };
       })
     );
@@ -73,7 +73,7 @@ class Synthetic {
   public allPoolIds = () => {
     return this.api.query.baseLiquidityPoolsForSynthetic
       .nextPoolId()
-      .pipe(map(result => [...new Array(result.toNumber())].map((_, i) => `${i}`)));
+      .pipe(map((result) => [...new Array(result.toNumber())].map((_, i) => `${i}`)));
   };
 
   depositLiquidity(account: string, poolId: string, amount: string | BN) {

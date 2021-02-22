@@ -21,7 +21,7 @@ class Currencies {
         precision: 18,
         isBaseToken: false,
         isNetworkToken: true,
-        id: 'LAMI'
+        id: 'LAMI',
       },
       {
         name: 'USD',
@@ -29,7 +29,7 @@ class Currencies {
         precision: 18,
         isBaseToken: true,
         isNetworkToken: false,
-        id: 'AUSD'
+        id: 'AUSD',
       },
       {
         name: 'EUR',
@@ -37,7 +37,7 @@ class Currencies {
         precision: 18,
         isBaseToken: false,
         isNetworkToken: false,
-        id: 'FEUR'
+        id: 'FEUR',
       },
       {
         name: 'JPY',
@@ -45,7 +45,7 @@ class Currencies {
         precision: 18,
         isBaseToken: false,
         isNetworkToken: false,
-        id: 'FJPY'
+        id: 'FJPY',
       },
       {
         name: 'BTC',
@@ -53,7 +53,7 @@ class Currencies {
         precision: 18,
         isBaseToken: false,
         isNetworkToken: false,
-        id: 'FBTC'
+        id: 'FBTC',
       },
       {
         name: 'ETH',
@@ -61,7 +61,7 @@ class Currencies {
         precision: 18,
         isBaseToken: false,
         isNetworkToken: false,
-        id: 'FETH'
+        id: 'FETH',
       },
       {
         name: 'AUD',
@@ -69,7 +69,7 @@ class Currencies {
         precision: 18,
         isBaseToken: false,
         isNetworkToken: false,
-        id: 'FAUD'
+        id: 'FAUD',
       },
       {
         name: 'CAD',
@@ -77,7 +77,7 @@ class Currencies {
         precision: 18,
         isBaseToken: false,
         isNetworkToken: false,
-        id: 'FCAD'
+        id: 'FCAD',
       },
       {
         name: 'CHF',
@@ -85,7 +85,7 @@ class Currencies {
         precision: 18,
         isBaseToken: false,
         isNetworkToken: false,
-        id: 'FCHF'
+        id: 'FCHF',
       },
       {
         name: 'XAU',
@@ -93,7 +93,7 @@ class Currencies {
         precision: 18,
         isBaseToken: false,
         isNetworkToken: false,
-        id: 'FXAU'
+        id: 'FXAU',
       },
       {
         name: 'OIL',
@@ -101,8 +101,8 @@ class Currencies {
         precision: 18,
         isBaseToken: false,
         isNetworkToken: false,
-        id: 'FOIL'
-      }
+        id: 'FOIL',
+      },
       // {
       //   name: 'FGBP',
       //   symbol: 'GBP',
@@ -116,14 +116,14 @@ class Currencies {
 
   public balances = (address: string): Observable<TokenBalance[]> => {
     return this.tokens().pipe(
-      switchMap(tokens => {
+      switchMap((tokens) => {
         return combineLatest(
           ...tokens.map(({ id }) =>
             (this.api.derive as any).currencies.balance(address, id).pipe(
               map((result: any) => {
                 return {
                   tokenId: id,
-                  free: result.toString()
+                  free: result.toString(),
                 };
               })
             )
@@ -136,13 +136,13 @@ class Currencies {
   public oracleValues = (dataProviderId: string | number): Observable<OracleValue[]> => {
     return this.api.rpc.chain.subscribeNewHeads().pipe(
       switchMap(() => this.tokens()),
-      switchMap(tokens => {
+      switchMap((tokens) => {
         return combineLatest(
           tokens
-            .filter(token => !token.isNetworkToken && !token.isBaseToken)
+            .filter((token) => !token.isNetworkToken && !token.isBaseToken)
             .map(({ id }) =>
               this.api.rpc.oracle.getValue(dataProviderId as any, id as any).pipe(
-                map(result => {
+                map((result) => {
                   return [id, result];
                 })
               )
@@ -152,7 +152,7 @@ class Currencies {
       map((values: any) => {
         return values.map(([tokenId, curr]: any) => {
           const result: Partial<OracleValue> = {
-            tokenId
+            tokenId,
           };
 
           if (!curr.isEmpty) {

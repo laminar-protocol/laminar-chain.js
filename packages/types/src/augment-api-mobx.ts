@@ -133,7 +133,7 @@ export interface StorageType extends BaseStorageType {
     /**
      * True if Self::values(key) is up to date, otherwise the value is stale
      **/
-    isUpdated: StorageMap<OracleKey | 'LAMI'|'AUSD'|'FEUR'|'FJPY'|'FBTC'|'FETH'|'FAUD'|'FCAD'|'FCHF'|'FXAU'|'FOIL'|'FGBP' | number, bool>;
+    isUpdated: StorageMap<OracleKey | 'LAMI'|'AUSD'|'DOT'|'FEUR'|'FJPY'|'FBTC'|'FETH'|'FAUD'|'FCAD'|'FCHF'|'FXAU'|'FOIL'|'FGBP' | number, bool>;
     /**
      * The current members of the collective. This is stored sorted (just by value).
      **/
@@ -142,11 +142,11 @@ export interface StorageType extends BaseStorageType {
     /**
      * Raw values for each oracle operators
      **/
-    rawValues: StorageDoubleMap<AccountId | string, OracleKey | 'LAMI'|'AUSD'|'FEUR'|'FJPY'|'FBTC'|'FETH'|'FAUD'|'FCAD'|'FCHF'|'FXAU'|'FOIL'|'FGBP' | number, Option<TimestampedValueOf>>;
+    rawValues: StorageDoubleMap<AccountId | string, OracleKey | 'LAMI'|'AUSD'|'DOT'|'FEUR'|'FJPY'|'FBTC'|'FETH'|'FAUD'|'FCAD'|'FCHF'|'FXAU'|'FOIL'|'FGBP' | number, Option<TimestampedValueOf>>;
     /**
      * Combined value, may not be up to date
      **/
-    values: StorageMap<OracleKey | 'LAMI'|'AUSD'|'FEUR'|'FJPY'|'FBTC'|'FETH'|'FAUD'|'FCAD'|'FCHF'|'FXAU'|'FOIL'|'FGBP' | number, Option<TimestampedValueOf>>;
+    values: StorageMap<OracleKey | 'LAMI'|'AUSD'|'DOT'|'FEUR'|'FJPY'|'FBTC'|'FETH'|'FAUD'|'FCAD'|'FCHF'|'FXAU'|'FOIL'|'FGBP' | number, Option<TimestampedValueOf>>;
   };
   baseLiquidityPoolsForMargin: {    /**
      * Identity info of liquidity pools: `(identity_info, deposit_amount, is_verified)`.
@@ -291,7 +291,7 @@ export interface StorageType extends BaseStorageType {
     /**
      * True if Self::values(key) is up to date, otherwise the value is stale
      **/
-    isUpdated: StorageMap<OracleKey | 'LAMI'|'AUSD'|'FEUR'|'FJPY'|'FBTC'|'FETH'|'FAUD'|'FCAD'|'FCHF'|'FXAU'|'FOIL'|'FGBP' | number, bool>;
+    isUpdated: StorageMap<OracleKey | 'LAMI'|'AUSD'|'DOT'|'FEUR'|'FJPY'|'FBTC'|'FETH'|'FAUD'|'FCAD'|'FCHF'|'FXAU'|'FOIL'|'FGBP' | number, bool>;
     /**
      * The current members of the collective. This is stored sorted (just by value).
      **/
@@ -300,11 +300,11 @@ export interface StorageType extends BaseStorageType {
     /**
      * Raw values for each oracle operators
      **/
-    rawValues: StorageDoubleMap<AccountId | string, OracleKey | 'LAMI'|'AUSD'|'FEUR'|'FJPY'|'FBTC'|'FETH'|'FAUD'|'FCAD'|'FCHF'|'FXAU'|'FOIL'|'FGBP' | number, Option<TimestampedValueOf>>;
+    rawValues: StorageDoubleMap<AccountId | string, OracleKey | 'LAMI'|'AUSD'|'DOT'|'FEUR'|'FJPY'|'FBTC'|'FETH'|'FAUD'|'FCAD'|'FCHF'|'FXAU'|'FOIL'|'FGBP' | number, Option<TimestampedValueOf>>;
     /**
      * Combined value, may not be up to date
      **/
-    values: StorageMap<OracleKey | 'LAMI'|'AUSD'|'FEUR'|'FJPY'|'FBTC'|'FETH'|'FAUD'|'FCAD'|'FCHF'|'FXAU'|'FOIL'|'FGBP' | number, Option<TimestampedValueOf>>;
+    values: StorageMap<OracleKey | 'LAMI'|'AUSD'|'DOT'|'FEUR'|'FJPY'|'FBTC'|'FETH'|'FAUD'|'FCAD'|'FCHF'|'FXAU'|'FOIL'|'FGBP' | number, Option<TimestampedValueOf>>;
   };
   marginLiquidityPools: {    /**
      * The accumulated swap rate of trading pairs in liquidity pools.
@@ -713,7 +713,7 @@ export interface StorageType extends BaseStorageType {
   syntheticLiquidityPools: {    /**
      * Maximum spread of a currency.
      **/
-    maxSpread: StorageMap<CurrencyId | 'LAMI'|'AUSD'|'FEUR'|'FJPY'|'FBTC'|'FETH'|'FAUD'|'FCAD'|'FCHF'|'FXAU'|'FOIL'|'FGBP' | number, Option<Balance>>;
+    maxSpread: StorageMap<CurrencyId | 'LAMI'|'AUSD'|'DOT'|'FEUR'|'FJPY'|'FBTC'|'FETH'|'FAUD'|'FCAD'|'FCHF'|'FXAU'|'FOIL'|'FGBP' | number, Option<Balance>>;
     /**
      * Minimum additional collateral ratio.
      **/
@@ -721,16 +721,16 @@ export interface StorageType extends BaseStorageType {
     /**
      * Currency options in a liquidity pool.
      **/
-    poolCurrencyOptions: StorageDoubleMap<LiquidityPoolId | AnyNumber, CurrencyId | 'LAMI'|'AUSD'|'FEUR'|'FJPY'|'FBTC'|'FETH'|'FAUD'|'FCAD'|'FCHF'|'FXAU'|'FOIL'|'FGBP' | number, SyntheticPoolCurrencyOption>;
+    poolCurrencyOptions: StorageDoubleMap<LiquidityPoolId | AnyNumber, CurrencyId | 'LAMI'|'AUSD'|'DOT'|'FEUR'|'FJPY'|'FBTC'|'FETH'|'FAUD'|'FCAD'|'FCHF'|'FXAU'|'FOIL'|'FGBP' | number, SyntheticPoolCurrencyOption>;
   };
   syntheticTokens: {    /**
      * Positions of a currency in a pool
      **/
-    positions: StorageDoubleMap<LiquidityPoolId | AnyNumber, CurrencyId | 'LAMI'|'AUSD'|'FEUR'|'FJPY'|'FBTC'|'FETH'|'FAUD'|'FCAD'|'FCHF'|'FXAU'|'FOIL'|'FGBP' | number, SyntheticPosition>;
+    positions: StorageDoubleMap<LiquidityPoolId | AnyNumber, CurrencyId | 'LAMI'|'AUSD'|'DOT'|'FEUR'|'FJPY'|'FBTC'|'FETH'|'FAUD'|'FCAD'|'FCHF'|'FXAU'|'FOIL'|'FGBP' | number, SyntheticPosition>;
     /**
      * Ratios for each currency.
      **/
-    ratios: StorageMap<CurrencyId | 'LAMI'|'AUSD'|'FEUR'|'FJPY'|'FBTC'|'FETH'|'FAUD'|'FCAD'|'FCHF'|'FXAU'|'FOIL'|'FGBP' | number, SyntheticTokensRatio>;
+    ratios: StorageMap<CurrencyId | 'LAMI'|'AUSD'|'DOT'|'FEUR'|'FJPY'|'FBTC'|'FETH'|'FAUD'|'FCAD'|'FCHF'|'FXAU'|'FOIL'|'FGBP' | number, SyntheticTokensRatio>;
   };
   system: {    /**
      * The full account information for a particular account ID.
@@ -822,16 +822,16 @@ export interface StorageType extends BaseStorageType {
      * 
      * NOTE: This is only used in the case that this module is used to store balances.
      **/
-    accounts: StorageDoubleMap<AccountId | string, CurrencyId | 'LAMI'|'AUSD'|'FEUR'|'FJPY'|'FBTC'|'FETH'|'FAUD'|'FCAD'|'FCHF'|'FXAU'|'FOIL'|'FGBP' | number, OrmlAccountData>;
+    accounts: StorageDoubleMap<AccountId | string, CurrencyId | 'LAMI'|'AUSD'|'DOT'|'FEUR'|'FJPY'|'FBTC'|'FETH'|'FAUD'|'FCAD'|'FCHF'|'FXAU'|'FOIL'|'FGBP' | number, OrmlAccountData>;
     /**
      * Any liquidity locks of a token type under an account.
      * NOTE: Should only be accessed when setting, changing and freeing a lock.
      **/
-    locks: StorageDoubleMap<AccountId | string, CurrencyId | 'LAMI'|'AUSD'|'FEUR'|'FJPY'|'FBTC'|'FETH'|'FAUD'|'FCAD'|'FCHF'|'FXAU'|'FOIL'|'FGBP' | number, Vec<OrmlBalanceLock>>;
+    locks: StorageDoubleMap<AccountId | string, CurrencyId | 'LAMI'|'AUSD'|'DOT'|'FEUR'|'FJPY'|'FBTC'|'FETH'|'FAUD'|'FCAD'|'FCHF'|'FXAU'|'FOIL'|'FGBP' | number, Vec<OrmlBalanceLock>>;
     /**
      * The total issuance of a token type.
      **/
-    totalIssuance: StorageMap<CurrencyId | 'LAMI'|'AUSD'|'FEUR'|'FJPY'|'FBTC'|'FETH'|'FAUD'|'FCAD'|'FCHF'|'FXAU'|'FOIL'|'FGBP' | number, Balance>;
+    totalIssuance: StorageMap<CurrencyId | 'LAMI'|'AUSD'|'DOT'|'FEUR'|'FJPY'|'FBTC'|'FETH'|'FAUD'|'FCAD'|'FCHF'|'FXAU'|'FOIL'|'FGBP' | number, Balance>;
   };
   transactionPayment: {    nextFeeMultiplier: Multiplier | null;
     storageVersion: Releases | null;

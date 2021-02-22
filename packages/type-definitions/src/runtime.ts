@@ -2,7 +2,7 @@ export default {
   rpc: {},
   types: {
     CurrencyId: {
-      _enum: ['LAMI', 'AUSD', 'FEUR', 'FJPY', 'FBTC', 'FETH', 'FAUD', 'FCAD', 'FCHF', 'FXAU', 'FOIL', 'FGBP']
+      _enum: ['LAMI', 'AUSD', 'DOT', 'FEUR', 'FJPY', 'FBTC', 'FETH', 'FAUD', 'FCAD', 'FCHF', 'FXAU', 'FOIL', 'FGBP'],
     },
     Leverage: {
       _enum: [
@@ -21,12 +21,12 @@ export default {
         'ShortTwenty',
         'ShortThirty',
         'ShortFifty',
-        'ShortReserved'
-      ]
+        'ShortReserved',
+      ],
     },
     SwapRate: {
       long: 'Rate',
-      short: 'Rate'
+      short: 'Rate',
     },
     CurrencyIdOf: 'CurrencyId',
     Amount: 'FixedI128',
@@ -52,43 +52,43 @@ export default {
         ShortTwenty: 0b0001000000000000,
         ShortThirty: 0b0010000000000000,
         ShortFifty: 0b0100000000000000,
-        ShortReserved: 0b1000000000000000
-      }
+        ShortReserved: 0b1000000000000000,
+      },
     },
     TradingPair: {
       base: 'CurrencyId',
-      quote: 'CurrencyId'
+      quote: 'CurrencyId',
     },
     AccumulateConfig: {
       frequency: 'Moment',
-      offset: 'Moment'
+      offset: 'Moment',
     },
     IdentityDepositBalanceOf: 'Balance',
     Pool: {
       owner: 'AccountId',
-      balance: 'Balance'
+      balance: 'Balance',
     },
     MarginTradingPairOption: {
       enabled: 'bool',
       maxSpread: 'Option<FixedU128>',
       swapRate: 'SwapRate',
-      accumulateConfig: 'Option<AccumulateConfig>'
+      accumulateConfig: 'Option<AccumulateConfig>',
     },
     MarginPoolOption: {
       additionalSwapRate: 'FixedI128',
-      minLeveragedAmount: 'FixedU128'
+      minLeveragedAmount: 'FixedU128',
     },
     MarginPoolTradingPairOption: {
       enabled: 'bool',
       bidSpread: 'Option<FixedU128>',
       askSpread: 'Option<FixedU128>',
-      enabledTrades: 'Leverages'
+      enabledTrades: 'Leverages',
     },
     SyntheticPoolCurrencyOption: {
       bidSpread: 'Option<FixedU128>',
       askSpread: 'Option<FixedU128>',
       additionalCollateralRatio: 'Option<Permill>',
-      syntheticEnabled: 'bool'
+      syntheticEnabled: 'bool',
     },
     MarginPosition: {
       owner: 'AccountId',
@@ -98,66 +98,66 @@ export default {
       leveragedHeld: 'FixedI128',
       leveragedDebits: 'FixedI128',
       openAccumulatedSwapRate: 'Rate',
-      marginHeld: 'FixedI128'
+      marginHeld: 'FixedI128',
     },
     SyntheticPosition: {
       collateral: 'FixedU128',
-      synthetic: 'FixedU128'
+      synthetic: 'FixedU128',
     },
     RiskThreshold: {
       marginCall: 'Permill',
-      stopOut: 'Permill'
+      stopOut: 'Permill',
     },
     PositionId: 'u64',
     Rate: 'FixedI128',
     PoolTraderInfo: {
       positionNum: 'PositionId',
       long: 'PairInfo',
-      short: 'PairInfo'
+      short: 'PairInfo',
     },
     PairInfo: {
       baseAmount: 'FixedI128',
-      quoteAmount: 'FixedI128'
+      quoteAmount: 'FixedI128',
     },
     TradingPairRiskThreshold: {
       trader: 'Option<RiskThreshold>',
       enp: 'Option<RiskThreshold>',
-      ell: 'Option<RiskThreshold>'
+      ell: 'Option<RiskThreshold>',
     },
     SyntheticTokensRatio: {
       extreme: 'Option<Permill>',
       liquidation: 'Option<Permill>',
-      collateral: 'Option<Permill>'
+      collateral: 'Option<Permill>',
     },
     PositionsSnapshot: {
       positionsCount: 'PositionId',
       long: 'LeveragedAmounts',
-      short: 'LeveragedAmounts'
+      short: 'LeveragedAmounts',
     },
     LeveragedAmounts: {
       held: 'FixedI128',
-      debits: 'FixedI128'
+      debits: 'FixedI128',
     },
     LiquidityPoolIdentityInfo: {
       legalName: 'Vec<u8>',
       displayName: 'Vec<u8>',
       web: 'Vec<u8>',
       email: 'Vec<u8>',
-      image_url: 'Vec<u8>'
-    }
+      image_url: 'Vec<u8>',
+    },
   },
   typesAlias: {
     marginProtocol: {
-      Position: 'MarginPosition'
+      Position: 'MarginPosition',
     },
     baseLiquidityPoolsForMargin: {
-      IdentityInfo: 'LiquidityPoolIdentityInfo'
+      IdentityInfo: 'LiquidityPoolIdentityInfo',
     },
     syntheticTokens: {
-      Position: 'SyntheticPosition'
+      Position: 'SyntheticPosition',
     },
     baseLiquidityPoolsForSynthetic: {
-      IdentityInfo: 'LiquidityPoolIdentityInfo'
-    }
-  }
+      IdentityInfo: 'LiquidityPoolIdentityInfo',
+    },
+  },
 };

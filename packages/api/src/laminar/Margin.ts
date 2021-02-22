@@ -9,7 +9,7 @@ import {
   MarginPosition,
   Threshold,
   TokenId,
-  TraderInfo
+  TraderInfo,
 } from '../types';
 import { unit, permillToFixedU128 } from '../utils';
 import LaminarApi from './LaminarApi';
@@ -25,7 +25,7 @@ class Margin {
 
   public pairIdHelper = (): Observable<(pair: { base: string; quote: string }) => string> => {
     return this.apiProvider.currencies.tokens().pipe(
-      map(tokens => {
+      map((tokens) => {
         return (pair: { base: string; quote: string }): string => {
           const baseToken = tokens.find(({ id }) => pair.base === id);
           const quoteToken = tokens.find(({ id }) => pair.quote === id);
@@ -37,7 +37,7 @@ class Margin {
 
   public balance = (address: string) => {
     return this.api.query.marginProtocol.balances.entries(address).pipe(
-      map(result =>
+      map((result) =>
         result
           .reduce((total, [, balance]) => {
             return total.add(new BN(balance.toString()));
@@ -51,7 +51,7 @@ class Margin {
     return combineLatest([
       this.api.query.marginLiquidityPools.poolTradingPairOptions.entries(poolId),
       this.api.query.marginLiquidityPools.tradingPairOptions.entries(),
-      this.pairIdHelper()
+      this.pairIdHelper(),
     ]).pipe(
       map(([poolTradingPairOptionsList, tradingPairOptionsList, getPairId]) => {
         const tradingPairOptionsMap: Record<string, any> = {};
@@ -90,7 +90,7 @@ class Margin {
             pairId: pairId,
             enabledTrades,
             askSpread: askSpread.toString(),
-            bidSpread: bidSpread.toString()
+            bidSpread: bidSpread.toString(),
           };
         });
       })
@@ -103,7 +103,7 @@ class Margin {
       this.api.query.baseLiquidityPoolsForMargin.pools(poolId),
       this.api.rpc.margin.poolState(poolId),
       this.api.query.marginLiquidityPools.poolOptions(poolId),
-      this.api.query.marginLiquidityPools.defaultMinLeveragedAmount()
+      this.api.query.marginLiquidityPools.defaultMinLeveragedAmount(),
     ]).pipe(
       map(([tradingPairOptions, pool, poolState, poolOptions, defaultMinLeveragedAmount]) => {
         if (pool.isEmpty) return null;
@@ -121,7 +121,7 @@ class Margin {
           enp: (poolState as any).enp.toString(),
           ell: (poolState as any).ell.toString(),
           options: tradingPairOptions,
-          minLeveragedAmount
+          minLeveragedAmount,
         };
       })
     );
@@ -129,7 +129,7 @@ class Margin {
 
   public marginInfo = (): Observable<MarginInfo> => {
     return this.api.query.marginProtocol.riskThresholds.entries().pipe(
-      map(result => {
+      map((result) => {
         const list = result.map(([, s]) => s);
 
         const ellList = list.filter(({ ell }) => !ell.isNone).map(({ ell }) => ell.unwrap());
@@ -146,12 +146,12 @@ class Margin {
         return {
           ellThreshold: {
             marginCall: getListMaxValue(ellList.map(({ marginCall }) => marginCall)),
-            stopOut: getListMaxValue(ellList.map(({ stopOut }) => stopOut))
+            stopOut: getListMaxValue(ellList.map(({ stopOut }) => stopOut)),
           },
           enpThreshold: {
             marginCall: getListMaxValue(enpList.map(({ marginCall }) => marginCall)),
-            stopOut: getListMaxValue(enpList.map(({ stopOut }) => stopOut))
-          }
+            stopOut: getListMaxValue(enpList.map(({ stopOut }) => stopOut)),
+          },
         };
       })
     );
@@ -160,7 +160,7 @@ class Margin {
   public traderInfo = (account: string, poolId: string): Observable<TraderInfo> => {
     return combineLatest([
       this.api.rpc.margin.traderState(account, poolId as any),
-      this.api.query.marginProtocol.balances(account, poolId)
+      this.api.query.marginProtocol.balances(account, poolId),
     ]).pipe(
       map(([result, balance]) => {
         const equity = result.equity;
@@ -172,16 +172,10 @@ class Margin {
           freeMargin: result.free_margin.toString(),
           marginHeld: result.margin_held.toString(),
           unrealizedPl: unrealizedPl.toString(),
-          accumulatedSwap: equity
-            .sub(balance)
-            .sub(unrealizedPl)
-            .toString(),
+          accumulatedSwap: equity.sub(balance).sub(unrealizedPl).toString(),
           equity: equity.toString(),
           marginLevel: marginLevel.toString(),
-          totalLeveragedPosition: equity
-            .mul(unit)
-            .div(marginLevel)
-            .toString()
+          totalLeveragedPosition: equity.mul(unit).div(marginLevel).toString(),
         };
       })
     );
@@ -191,20 +185,20 @@ class Margin {
     return this.api.query.marginProtocol
       .riskThresholds({
         base: baseToken,
-        quote: quoteToken
+        quote: quoteToken,
       })
       .pipe(
-        map(result => {
+        map((result) => {
           if (result.trader.isNone) {
             return {
               marginCall: '0',
-              stopOut: '0'
+              stopOut: '0',
             };
           } else {
             const { marginCall, stopOut } = result.trader.unwrap();
             return {
               marginCall: permillToFixedU128(marginCall).toString(),
-              stopOut: permillToFixedU128(stopOut).toString()
+              stopOut: permillToFixedU128(stopOut).toString(),
             };
           }
         })
@@ -214,7 +208,7 @@ class Margin {
   public accumulatedSwapRates = (): Observable<AccumulatedSwapRate[]> => {
     return combineLatest([
       this.api.query.marginLiquidityPools.accumulatedSwapRates.entries(),
-      this.pairIdHelper()
+      this.pairIdHelper(),
     ]).pipe(
       map(([result, getPairId]) => {
         return result.map(([key, value]) => {
@@ -226,7 +220,7 @@ class Margin {
             pair,
             pairId,
             long: value.long.toString(),
-            short: value.short.toString()
+            short: value.short.toString(),
           };
         });
       })
@@ -235,7 +229,7 @@ class Margin {
 
   public position = (positionId: string): Observable<MarginPosition | null> => {
     return this.api.query.marginProtocol.positions(positionId).pipe(
-      map(result => {
+      map((result) => {
         if (result.isEmpty) return null;
 
         const unwrapPosition = result.unwrap();
@@ -245,13 +239,13 @@ class Margin {
           poolId: unwrapPosition.poolId.toString(),
           pair: {
             base: unwrapPosition.pair.base.toString(),
-            quote: unwrapPosition.pair.quote.toString()
+            quote: unwrapPosition.pair.quote.toString(),
           },
           leverage: unwrapPosition.leverage.toString(),
           leveragedHeld: unwrapPosition.leveragedHeld.toString(),
           leveragedDebits: unwrapPosition.leveragedDebits.toString(),
           marginHeld: unwrapPosition.marginHeld.toString(),
-          openAccumulatedSwapRate: unwrapPosition.openAccumulatedSwapRate.toString()
+          openAccumulatedSwapRate: unwrapPosition.openAccumulatedSwapRate.toString(),
         };
       })
     );
@@ -260,17 +254,17 @@ class Margin {
   public allPoolIds = () => {
     return this.api.query.baseLiquidityPoolsForMargin
       .nextPoolId()
-      .pipe(map(result => [...new Array(result.toNumber())].map((_, i) => `${i}`)));
+      .pipe(map((result) => [...new Array(result.toNumber())].map((_, i) => `${i}`)));
   };
 
   public positionsByPool = (poolId: string) => {
     return this.api.query.marginProtocol.positionsByPool.entries(poolId).pipe(
-      map(allResult => {
+      map((allResult) => {
         return allResult.map(([storageKey]) => {
           const data: any = storageKey.args[1];
           return {
             pair: data[0].toJSON(),
-            positionId: data[1].toString()
+            positionId: data[1].toString(),
           };
         });
       })
@@ -279,7 +273,7 @@ class Margin {
 
   public positionsByTrader = (address: string) => {
     return this.api.query.marginProtocol.positionsByTrader.entries(address).pipe(
-      map(allResult => {
+      map((allResult) => {
         return allResult
           .filter(([, value]) => {
             return !value.isEmpty;
@@ -288,7 +282,7 @@ class Margin {
             const data: any = storageKey.args[1];
             return {
               poolId: data[0].toString(),
-              positionId: data[1].toString()
+              positionId: data[1].toString(),
             };
           });
       })

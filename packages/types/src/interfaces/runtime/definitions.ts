@@ -4,10 +4,10 @@ import { Definitions } from '@polkadot/types/types';
 
 export default {
   rpc: {
-    ...definitions.rpc
+    ...definitions.rpc,
   },
   types: {
     ...definitions.types,
-    ...runtime.types
-  }
+    ...runtime.types,
+  },
 } as Definitions;
