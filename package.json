@@ -9,6 +9,7 @@
   ],
   "scripts": {
     "build": "yarn check-deps && yarn build:interfaces && polkadot-dev-build-ts",
+    "build:release": "polkadot-ci-ghact-build",
     "build:interfaces": "node -r ts-node/register -r tsconfig-paths/register packages/types/scripts/generate.ts",
     "build:metadata": "yarn build:metadataStatic && yarn build:metadataJson",
     "build:metadataStatic": "ts-node -r tsconfig-paths/register --project ./tsconfig.json packages/types/scripts/metadataStatic.ts",
