@@ -35,9 +35,9 @@ export const options = ({
     ...typesBundle,
     spec: {
       ...typesBundle.spec,
-      acala: {
-        ...laminarTypesBundle?.spec?.acala,
-        ...typesBundle?.spec?.acala
+      laminar: {
+        ...laminarTypesBundle?.spec?.laminar,
+        ...typesBundle?.spec?.laminar
       }
     }
   },

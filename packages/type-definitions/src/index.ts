@@ -25,7 +25,7 @@ export const types = {
 
 export const typesBundle = {
   spec: {
-    acala: {
+    laminar: {
       types: versioned
     }
   }
@@ -36,7 +36,7 @@ export const typesAlias = typesAliasFromDefs(laminarDefs, { ...ormlAlias });
 // Type overrides have priority issues
 export const typesBundleForPolkadot = {
   spec: {
-    acala: {
+    laminar: {
       types: [...versioned].map(version => {
         return {
           minmax: version.minmax,

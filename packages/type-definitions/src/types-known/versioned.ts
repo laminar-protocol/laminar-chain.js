@@ -6,8 +6,18 @@ const versioned = [
     }
   },
   {
-    minmax: [300, undefined] as any,
-    types: {}
+    minmax: [300, 399] as any,
+    types: {
+      CurrencyId: {
+        _enum: ['LAMI', 'AUSD', 'FEUR', 'FJPY', 'FBTC', 'FETH', 'FAUD', 'FCAD', 'FCHF', 'FXAU', 'FOIL', 'FGBP']
+      }
+    }
+  },
+  {
+    minmax: [400, undefined] as any,
+    types: {
+
+    }
   }
 ];
 

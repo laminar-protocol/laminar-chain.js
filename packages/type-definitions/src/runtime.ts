@@ -2,7 +2,7 @@ export default {
   rpc: {},
   types: {
     CurrencyId: {
-      _enum: ['LAMI', 'AUSD', 'FEUR', 'FJPY', 'FBTC', 'FETH', 'FAUD', 'FCAD', 'FCHF', 'FXAU', 'FOIL', 'FGBP']
+      _enum: ['LAMI', 'AUSD', 'DOT', 'FEUR', 'FJPY', 'FBTC', 'FETH', 'FAUD', 'FCAD', 'FCHF', 'FXAU', 'FOIL', 'FGBP']
     },
     Leverage: {
       _enum: [

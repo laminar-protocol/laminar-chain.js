@@ -1,5 +1,5 @@
 {
-  "extends": "./node_modules/@polkadot/dev/config/tsconfig",
+  "extends": "./node_modules/@open-web3/dev-config/config/tsconfig",
   "exclude": ["build/**/*", "**/build/**/*", "**/__tests__/**/*"],
   "compilerOptions": {
     "module": "commonjs",
