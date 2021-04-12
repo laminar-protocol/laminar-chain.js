@@ -7,10 +7,10 @@
   "scripts": {
     "build": "yarn build:interfaces && polkadot-dev-build-ts",
     "build:release": "polkadot-ci-ghact-build",
-    "build:interfaces": "node -r ts-node/register -r tsconfig-paths/register packages/types/scripts/generate.ts",
+    "build:interfaces": "ts-node -r tsconfig-paths/register --transpile-only packages/types/scripts/generate.ts",
     "build:metadata": "yarn build:metadataStatic && yarn build:metadataJson",
     "build:metadataStatic": "ts-node -r tsconfig-paths/register --project ./tsconfig.json packages/types/scripts/metadataStatic.ts",
-    "build:metadataJson": "ts-node -r tsconfig-paths/register --project ./tsconfig.json packages/types/scripts/metadataJson.ts",
+    "build:metadataJson": "ts-node -r tsconfig-paths/register --transpile-only --project ./tsconfig.json packages/types/scripts/metadataJson.ts",
     "lint": "polkadot-dev-run-lint",
     "clean": "polkadot-dev-clean-build",
     "postinstall": "polkadot-dev-yarn-only",

@@ -62,6 +62,9 @@ export interface ChangesTrieConfiguration extends Struct {
   readonly digestLevels: u32;
 }
 
+/** @name CodecHash */
+export interface CodecHash extends Hash {}
+
 /** @name Consensus */
 export interface Consensus extends ITuple<[ConsensusEngineId, Bytes]> {}
 
@@ -110,6 +113,9 @@ export interface DigestItem extends Enum {
   readonly isPreRuntime: boolean;
   readonly asPreRuntime: PreRuntime;
 }
+
+/** @name EncodedJustification */
+export interface EncodedJustification extends Bytes {}
 
 /** @name ExtrinsicsWeight */
 export interface ExtrinsicsWeight extends Struct {
@@ -181,7 +187,10 @@ export interface Index extends u32 {}
 export interface IndicesLookupSource extends GenericLookupSource {}
 
 /** @name Justification */
-export interface Justification extends Bytes {}
+export interface Justification extends ITuple<[ConsensusEngineId, EncodedJustification]> {}
+
+/** @name Justifications */
+export interface Justifications extends Vec<Justification> {}
 
 /** @name KeyTypeId */
 export interface KeyTypeId extends u32 {}
@@ -299,6 +308,16 @@ export interface Moment extends UInt {}
 /** @name MultiAddress */
 export interface MultiAddress extends GenericMultiAddress {}
 
+/** @name MultiSigner */
+export interface MultiSigner extends Enum {
+  readonly isEd25519: boolean;
+  readonly asEd25519: U8aFixed;
+  readonly isSr25519: boolean;
+  readonly asSr25519: U8aFixed;
+  readonly isEcdsa: boolean;
+  readonly asEcdsa: U8aFixed;
+}
+
 /** @name OpaqueCall */
 export interface OpaqueCall extends Bytes {}
 
@@ -322,6 +341,9 @@ export interface PairInfo extends Struct {
   readonly baseAmount: FixedI128;
   readonly quoteAmount: FixedI128;
 }
+
+/** @name PalletId */
+export interface PalletId extends LockIdentifier {}
 
 /** @name PalletsOrigin */
 export interface PalletsOrigin extends OriginCaller {}
@@ -422,9 +444,18 @@ export interface Seal extends ITuple<[ConsensusEngineId, Bytes]> {}
 export interface SealV0 extends ITuple<[u64, Signature]> {}
 
 /** @name SignedBlock */
-export interface SignedBlock extends Struct {
+export interface SignedBlock extends SignedBlockWithJustifications {}
+
+/** @name SignedBlockWithJustification */
+export interface SignedBlockWithJustification extends Struct {
   readonly block: Block;
-  readonly justification: Justification;
+  readonly justification: Option<EncodedJustification>;
+}
+
+/** @name SignedBlockWithJustifications */
+export interface SignedBlockWithJustifications extends Struct {
+  readonly block: Block;
+  readonly justifications: Option<Justifications>;
 }
 
 /** @name Slot */

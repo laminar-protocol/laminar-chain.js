@@ -5,6 +5,7 @@ import type { Option, Vec, bool } from '@polkadot/types';
 import type { AnyNumber, ITuple, Observable } from '@polkadot/types/types';
 import type { AccountId, Balance, CurrencyId, FixedI128, IdentityDepositBalanceOf, LiquidityPoolId, LiquidityPoolIdentityInfo, MarginPoolOption, MarginPoolTradingPairOption, MarginPosition, MarginTradingPairOption, Moment, Permill, Pool, PositionId, PositionsSnapshot, SwapRate, SyntheticPoolCurrencyOption, SyntheticPosition, SyntheticTokensRatio, TradingPair, TradingPairRiskThreshold } from '@laminar/types/interfaces/runtime';
 import type { OrmlAccountData, OrmlBalanceLock } from '@open-web3/orml-types/interfaces/tokens';
+import type { Price } from '@open-web3/orml-types/interfaces/traits';
 import type { ApiTypes } from '@polkadot/api/types';
 
 declare module '@polkadot/api/types/storage' {
@@ -133,7 +134,7 @@ declare module '@polkadot/api/types/storage' {
       /**
        * Maximum spread of a currency.
        **/
-      maxSpread: AugmentedQuery<ApiType, (arg: CurrencyId | 'LAMI' | 'AUSD' | 'DOT' | 'FEUR' | 'FJPY' | 'FBTC' | 'FETH' | 'FAUD' | 'FCAD' | 'FCHF' | 'FXAU' | 'FOIL' | 'FGBP' | number | Uint8Array) => Observable<Option<Balance>>, [CurrencyId]> & QueryableStorageEntry<ApiType, [CurrencyId]>;
+      maxSpread: AugmentedQuery<ApiType, (arg: CurrencyId | 'LAMI' | 'AUSD' | 'DOT' | 'FEUR' | 'FJPY' | 'FBTC' | 'FETH' | 'FAUD' | 'FCAD' | 'FCHF' | 'FXAU' | 'FOIL' | 'FGBP' | number | Uint8Array) => Observable<Option<Price>>, [CurrencyId]> & QueryableStorageEntry<ApiType, [CurrencyId]>;
       /**
        * Minimum additional collateral ratio.
        **/

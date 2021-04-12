@@ -6,6 +6,7 @@ import type { AnyNumber, ITuple } from '@polkadot/types/types';
 import type { AccountId, AccountIndex, Balance, BalanceOf, BlockNumber, CurrencyId, ExtrinsicsWeight, FixedI128, Hash, IdentityDepositBalanceOf, KeyTypeId, LiquidityPoolId, LiquidityPoolIdentityInfo, MarginPoolOption, MarginPoolTradingPairOption, MarginPosition, MarginTradingPairOption, Moment, OpaqueCall, OracleKey, Perbill, Permill, Pool, PositionId, PositionsSnapshot, Releases, SwapRate, SyntheticPoolCurrencyOption, SyntheticPosition, SyntheticTokensRatio, TradingPair, TradingPairRiskThreshold, ValidatorId } from '@laminar/types/interfaces/runtime';
 import type { OrderedSet, TimestampedValueOf } from '@open-web3/orml-types/interfaces/oracle';
 import type { OrmlAccountData, OrmlBalanceLock } from '@open-web3/orml-types/interfaces/tokens';
+import type { Price } from '@open-web3/orml-types/interfaces/traits';
 import type { UncleEntryItem } from '@polkadot/types/interfaces/authorship';
 import type { BabeAuthorityWeight, MaybeRandomness, NextConfigDescriptor, Randomness } from '@polkadot/types/interfaces/babe';
 import type { AccountData, BalanceLock } from '@polkadot/types/interfaces/balances';
@@ -40,6 +41,12 @@ export interface StorageType extends BaseStorageType {
      * Current epoch authorities.
      **/
     authorities: Vec<ITuple<[AuthorityId, BabeAuthorityWeight]>> | null;
+    /**
+     * Temporary value (cleared at block finalization) that includes the VRF output generated
+     * at this block. This field should always be populated during block processing unless
+     * secondary plain slots are enabled (which don't contain a VRF output).
+     **/
+    authorVrfRandomness: MaybeRandomness | null;
     /**
      * Current slot number.
      **/
@@ -713,7 +720,7 @@ export interface StorageType extends BaseStorageType {
   syntheticLiquidityPools: {    /**
      * Maximum spread of a currency.
      **/
-    maxSpread: StorageMap<CurrencyId | 'LAMI'|'AUSD'|'DOT'|'FEUR'|'FJPY'|'FBTC'|'FETH'|'FAUD'|'FCAD'|'FCHF'|'FXAU'|'FOIL'|'FGBP' | number, Option<Balance>>;
+    maxSpread: StorageMap<CurrencyId | 'LAMI'|'AUSD'|'DOT'|'FEUR'|'FJPY'|'FBTC'|'FETH'|'FAUD'|'FCAD'|'FCHF'|'FXAU'|'FOIL'|'FGBP' | number, Option<Price>>;
     /**
      * Minimum additional collateral ratio.
      **/
