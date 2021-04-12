@@ -35,7 +35,7 @@ function filterModules(names: string[], defs: any) {
 
   const filtered = metadata.toJSON() as any;
 
-  filtered.metadata.V12.modules = filtered.metadata.V12.modules.filter(({ name }: any) => names.includes(name));
+  filtered.metadata.v12.modules = filtered.metadata.v12.modules.filter(({ name }: any) => names.includes(name));
 
   const newMetadata = new Metadata(registry, filtered);
 

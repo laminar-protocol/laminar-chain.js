@@ -232,7 +232,7 @@ declare module '@polkadot/api/types/submittable' {
        * 
        * May only be called from `UpdateOrigin`.
        **/
-      setMaxSpread: AugmentedSubmittable<(pair: TradingPair | { base?: any; quote?: any } | string | Uint8Array, maxSpread: Compact<Balance> | AnyNumber | Uint8Array) => SubmittableExtrinsic<ApiType>, [TradingPair, Compact<Balance>]>;
+      setMaxSpread: AugmentedSubmittable<(pair: TradingPair | { base?: any; quote?: any } | string | Uint8Array, maxSpread: Compact<Price> | AnyNumber | Uint8Array) => SubmittableExtrinsic<ApiType>, [TradingPair, Compact<Price>]>;
       /**
        * Set minimum leveraged amount to open a position in `pool_id`.
        * 
@@ -244,7 +244,7 @@ declare module '@polkadot/api/types/submittable' {
        * 
        * May only be called from the pool owner.
        **/
-      setSpread: AugmentedSubmittable<(poolId: Compact<LiquidityPoolId> | AnyNumber | Uint8Array, pair: TradingPair | { base?: any; quote?: any } | string | Uint8Array, bid: Compact<Balance> | AnyNumber | Uint8Array, ask: Compact<Balance> | AnyNumber | Uint8Array) => SubmittableExtrinsic<ApiType>, [Compact<LiquidityPoolId>, TradingPair, Compact<Balance>, Compact<Balance>]>;
+      setSpread: AugmentedSubmittable<(poolId: Compact<LiquidityPoolId> | AnyNumber | Uint8Array, pair: TradingPair | { base?: any; quote?: any } | string | Uint8Array, bid: Compact<Price> | AnyNumber | Uint8Array, ask: Compact<Price> | AnyNumber | Uint8Array) => SubmittableExtrinsic<ApiType>, [Compact<LiquidityPoolId>, TradingPair, Compact<Price>, Compact<Price>]>;
       /**
        * Set swap rate for `pair`.
        * 
@@ -326,7 +326,7 @@ declare module '@polkadot/api/types/submittable' {
        * 
        * May only be called from `UpdateOrigin`.
        **/
-      setMaxSpread: AugmentedSubmittable<(currencyId: CurrencyId | 'LAMI' | 'AUSD' | 'DOT' | 'FEUR' | 'FJPY' | 'FBTC' | 'FETH' | 'FAUD' | 'FCAD' | 'FCHF' | 'FXAU' | 'FOIL' | 'FGBP' | number | Uint8Array, maxSpread: Compact<Balance> | AnyNumber | Uint8Array) => SubmittableExtrinsic<ApiType>, [CurrencyId, Compact<Balance>]>;
+      setMaxSpread: AugmentedSubmittable<(currencyId: CurrencyId | 'LAMI' | 'AUSD' | 'DOT' | 'FEUR' | 'FJPY' | 'FBTC' | 'FETH' | 'FAUD' | 'FCAD' | 'FCHF' | 'FXAU' | 'FOIL' | 'FGBP' | number | Uint8Array, maxSpread: Compact<Price> | AnyNumber | Uint8Array) => SubmittableExtrinsic<ApiType>, [CurrencyId, Compact<Price>]>;
       /**
        * Set minimum additional collateral ratio.
        * 
@@ -338,7 +338,7 @@ declare module '@polkadot/api/types/submittable' {
        * 
        * May only be called from the pool owner.
        **/
-      setSpread: AugmentedSubmittable<(poolId: Compact<LiquidityPoolId> | AnyNumber | Uint8Array, currencyId: CurrencyId | 'LAMI' | 'AUSD' | 'DOT' | 'FEUR' | 'FJPY' | 'FBTC' | 'FETH' | 'FAUD' | 'FCAD' | 'FCHF' | 'FXAU' | 'FOIL' | 'FGBP' | number | Uint8Array, bid: Compact<Balance> | AnyNumber | Uint8Array, ask: Compact<Balance> | AnyNumber | Uint8Array) => SubmittableExtrinsic<ApiType>, [Compact<LiquidityPoolId>, CurrencyId, Compact<Balance>, Compact<Balance>]>;
+      setSpread: AugmentedSubmittable<(poolId: Compact<LiquidityPoolId> | AnyNumber | Uint8Array, currencyId: CurrencyId | 'LAMI' | 'AUSD' | 'DOT' | 'FEUR' | 'FJPY' | 'FBTC' | 'FETH' | 'FAUD' | 'FCAD' | 'FCHF' | 'FXAU' | 'FOIL' | 'FGBP' | number | Uint8Array, bid: Compact<Price> | AnyNumber | Uint8Array, ask: Compact<Price> | AnyNumber | Uint8Array) => SubmittableExtrinsic<ApiType>, [Compact<LiquidityPoolId>, CurrencyId, Compact<Price>, Compact<Price>]>;
       /**
        * Enable or disable synthetic of `currency_id` in `pool_id`.
        * 

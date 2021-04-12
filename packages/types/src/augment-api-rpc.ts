@@ -18,6 +18,7 @@ import type { CreatedBlock } from '@polkadot/types/interfaces/engine';
 import type { EthAccount, EthCallRequest, EthFilter, EthFilterChanges, EthLog, EthReceipt, EthRichBlock, EthSubKind, EthSubParams, EthSyncStatus, EthTransaction, EthTransactionRequest, EthWork } from '@polkadot/types/interfaces/eth';
 import type { Extrinsic } from '@polkadot/types/interfaces/extrinsics';
 import type { EncodedFinalityProofs, JustificationNotification, ReportedRoundStates } from '@polkadot/types/interfaces/grandpa';
+import type { MmrLeafProof } from '@polkadot/types/interfaces/mmr';
 import type { StorageKind } from '@polkadot/types/interfaces/offchain';
 import type { FeeDetails, RuntimeDispatchInfo } from '@polkadot/types/interfaces/payment';
 import type { RpcMethods } from '@polkadot/types/interfaces/rpc';
@@ -136,7 +137,7 @@ declare module '@polkadot/rpc-core/types.jsonrpc' {
       /**
        * Instructs the manual-seal authorship task to finalize a block
        **/
-      finalizeBlock: AugmentedRpc<(hash: BlockHash | string | Uint8Array, justification?: Justification | string | Uint8Array) => Observable<bool>>;
+      finalizeBlock: AugmentedRpc<(hash: BlockHash | string | Uint8Array, justification?: Justification) => Observable<bool>>;
     };
     eth: {
       /**
@@ -328,6 +329,12 @@ declare module '@polkadot/rpc-core/types.jsonrpc' {
        **/
       traderState: AugmentedRpc<(who: AccountId | string | Uint8Array, pool_id: LiquidityPoolId | AnyNumber | Uint8Array, at?: BlockHash | string | Uint8Array) => Observable<MarginTraderState>>;
     };
+    mmr: {
+      /**
+       * Generate MMR proof for given leaf index.
+       **/
+      generateProof: AugmentedRpc<(leafIndex: u64 | AnyNumber | Uint8Array, at?: BlockHash | string | Uint8Array) => Observable<MmrLeafProof>>;
+    };
     net: {
       /**
        * Returns true if client is actively listening for network connections. Otherwise false.
@@ -346,11 +353,11 @@ declare module '@polkadot/rpc-core/types.jsonrpc' {
       /**
        * Get offchain local storage under given key and prefix
        **/
-      localStorageGet: AugmentedRpc<(kind: StorageKind | '__UNUSED' | 'PERSISTENT' | 'LOCAL' | number | Uint8Array, key: Bytes | string | Uint8Array) => Observable<Option<Bytes>>>;
+      localStorageGet: AugmentedRpc<(kind: StorageKind | 'PERSISTENT' | 'LOCAL' | number | Uint8Array, key: Bytes | string | Uint8Array) => Observable<Option<Bytes>>>;
       /**
        * Set offchain local storage under given key and prefix
        **/
-      localStorageSet: AugmentedRpc<(kind: StorageKind | '__UNUSED' | 'PERSISTENT' | 'LOCAL' | number | Uint8Array, key: Bytes | string | Uint8Array, value: Bytes | string | Uint8Array) => Observable<Null>>;
+      localStorageSet: AugmentedRpc<(kind: StorageKind | 'PERSISTENT' | 'LOCAL' | number | Uint8Array, key: Bytes | string | Uint8Array, value: Bytes | string | Uint8Array) => Observable<Null>>;
     };
     oracle: {
       /**
