@@ -1,6 +1,6 @@
 {
   "name": "@laminar/types",
-  "version": "0.3.1",
+  "version": "0.3.2-0",
   "description": "Laminar Chain JS types",
   "main": "index.js",
   "author": "Laminar Developers <hello@laminar.one>",
@@ -16,7 +16,7 @@
   "homepage": "https://github.com/laminar-protocol/laminar-chain.js",
   "dependencies": {
     "@babel/runtime": "^7.10.2",
-    "@laminar/type-definitions": "^0.3.1",
+    "@laminar/type-definitions": "^0.3.2-0",
     "@open-web3/api-mobx": "^0.9.2-0",
     "@open-web3/orml-types": "^0.9.2-0",
     "@polkadot/api": "^4.5.1",
