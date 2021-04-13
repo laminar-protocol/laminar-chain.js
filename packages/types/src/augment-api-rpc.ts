@@ -367,7 +367,7 @@ declare module '@polkadot/rpc-core/types.jsonrpc' {
       /**
        * Retrieves the oracle value for a given key.
        **/
-      getValue: AugmentedRpc<(providerId: RpcDataProviderId | string, key: OracleKey | 'LAMI' | 'AUSD' | 'DOT' | 'FEUR' | 'FJPY' | 'FBTC' | 'FETH' | 'FAUD' | 'FCAD' | 'FCHF' | 'FXAU' | 'FOIL' | 'FGBP' | number | Uint8Array) => Observable<Option<TimestampedValue>>>;
+      getValue: AugmentedRpc<(providerId: RpcDataProviderId | string, key: OracleKey | 'LAMI' | 'AUSD' | 'FEUR' | 'FJPY' | 'FBTC' | 'FETH' | 'FAUD' | 'FCAD' | 'FCHF' | 'FXAU' | 'FOIL' | 'FGBP' | number | Uint8Array) => Observable<Option<TimestampedValue>>>;
     };
     payment: {
       /**
@@ -469,7 +469,7 @@ declare module '@polkadot/rpc-core/types.jsonrpc' {
       /**
        * 
        **/
-      poolState: AugmentedRpc<(pool_id: u32 | AnyNumber | Uint8Array, currency_id: CurrencyId | 'LAMI' | 'AUSD' | 'DOT' | 'FEUR' | 'FJPY' | 'FBTC' | 'FETH' | 'FAUD' | 'FCAD' | 'FCHF' | 'FXAU' | 'FOIL' | 'FGBP' | number | Uint8Array) => Observable<SyntheticPoolState>>;
+      poolState: AugmentedRpc<(pool_id: u32 | AnyNumber | Uint8Array, currency_id: CurrencyId | 'LAMI' | 'AUSD' | 'FEUR' | 'FJPY' | 'FBTC' | 'FETH' | 'FAUD' | 'FCAD' | 'FCHF' | 'FXAU' | 'FOIL' | 'FGBP' | number | Uint8Array) => Observable<SyntheticPoolState>>;
     };
     system: {
       /**

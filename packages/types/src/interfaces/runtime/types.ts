@@ -75,7 +75,6 @@ export interface ConsensusEngineId extends GenericConsensusEngineId {}
 export interface CurrencyId extends Enum {
   readonly isLami: boolean;
   readonly isAusd: boolean;
-  readonly isDot: boolean;
   readonly isFeur: boolean;
   readonly isFjpy: boolean;
   readonly isFbtc: boolean;
